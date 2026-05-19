@@ -96283,51 +96283,14 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "mw6bd",
-                      "name": "s47ctx",
-                      "fill": "$--accent",
-                      "cornerRadius": "$--radius-pill",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$--border"
-                      },
-                      "gap": 8,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "Rc6Ph",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "user-round",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "kJE5Z",
-                          "fill": "$--foreground",
-                          "content": "Master view",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon_font",
-                          "id": "p5KLen",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "chevrons-up-down",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "OKz2u",
+                      "name": "settings-title",
+                      "fill": "$--foreground",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
@@ -98358,51 +98321,14 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "s5REQz",
-                      "name": "s48ctx",
-                      "fill": "$--accent",
-                      "cornerRadius": "$--radius-pill",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$--border"
-                      },
-                      "gap": 8,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "i64cPE",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "user-round",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "SAebG",
-                          "fill": "$--foreground",
-                          "content": "Master view",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon_font",
-                          "id": "qdgg0",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "chevrons-up-down",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "X275Kf",
+                      "name": "settings-title",
+                      "fill": "$--foreground",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
@@ -99943,51 +99869,14 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "MWwco",
-                      "name": "s49ctx",
-                      "fill": "$--accent",
-                      "cornerRadius": "$--radius-pill",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$--border"
-                      },
-                      "gap": 8,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "pTSZj",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "user-round",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "zwEOo",
-                          "fill": "$--foreground",
-                          "content": "Master view",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon_font",
-                          "id": "nAee3",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "chevrons-up-down",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "hGg1x",
+                      "name": "settings-title",
+                      "fill": "$--foreground",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
@@ -101221,51 +101110,14 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "Doe2y",
+                      "type": "text",
+                      "id": "wJNqX",
                       "name": "s44ctx",
-                      "fill": "$--accent",
-                      "cornerRadius": "$--radius-pill",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$--border"
-                      },
-                      "gap": 8,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "g3ycf",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "user-round",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "zPS2g",
-                          "fill": "$--foreground",
-                          "content": "Master view",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon_font",
-                          "id": "MoGF3",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "chevrons-up-down",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
+                      "fill": "$--foreground",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
@@ -103397,51 +103249,14 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "L1QK1i",
+                      "type": "text",
+                      "id": "YFlGQ",
                       "name": "s44ctx",
-                      "fill": "$--accent",
-                      "cornerRadius": "$--radius-pill",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$--border"
-                      },
-                      "gap": 8,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "HwxJ7",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "user-round",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "zfmCt",
-                          "fill": "$--foreground",
-                          "content": "Master view",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon_font",
-                          "id": "ATwka",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "chevrons-up-down",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
+                      "fill": "$--foreground",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
@@ -105233,51 +105048,14 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "dv5qw",
+                      "type": "text",
+                      "id": "oqzrj",
                       "name": "s44ctx",
-                      "fill": "$--accent",
-                      "cornerRadius": "$--radius-pill",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$--border"
-                      },
-                      "gap": 8,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "m8TVyv",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "user-round",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "qjVpj",
-                          "fill": "$--foreground",
-                          "content": "Master view",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon_font",
-                          "id": "UphMK",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "chevrons-up-down",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
+                      "fill": "$--foreground",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
@@ -107013,51 +106791,14 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "M1OLL",
+                      "type": "text",
+                      "id": "ki5S4",
                       "name": "s44ctx",
-                      "fill": "$--accent",
-                      "cornerRadius": "$--radius-pill",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$--border"
-                      },
-                      "gap": 8,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "JIlTg",
-                          "width": 12,
-                          "height": 12,
-                          "iconFontName": "user-round",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "z2f7Rg",
-                          "fill": "$--foreground",
-                          "content": "Master view",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon_font",
-                          "id": "T0T3J",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "chevrons-up-down",
-                          "iconFontFamily": "lucide",
-                          "fill": "$--muted-foreground"
-                        }
-                      ]
+                      "fill": "$--foreground",
+                      "content": "Settings",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "600"
                     },
                     {
                       "type": "frame",
