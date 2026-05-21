@@ -73558,6 +73558,1900 @@
         },
         {
           "type": "frame",
+          "id": "G9pywI",
+          "name": "sec-account-type",
+          "layout": "vertical",
+          "gap": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "Ue5Ry",
+              "name": "h0",
+              "fill": "$--foreground",
+              "content": "Account Type Selection",
+              "fontFamily": "$--font-primary",
+              "fontSize": 28,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "Vo1HY",
+              "name": "accountTypeBox",
+              "width": 3000,
+              "height": 1000,
+              "fill": {
+                "type": "color",
+                "color": "#ffffff",
+                "enabled": false
+              },
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "nlnmY",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Account Type · Split Hero",
+                  "clip": true,
+                  "width": 1440,
+                  "height": 900,
+                  "fill": "$--background",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Mufr3",
+                      "x": 0,
+                      "y": 0,
+                      "name": "root",
+                      "width": 1440,
+                      "height": 900,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "BuRc7",
+                          "name": "leftPanel",
+                          "clip": true,
+                          "width": 600,
+                          "height": 900,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 225,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6B5EF9",
+                                "position": 0
+                              },
+                              {
+                                "color": "#5749F4",
+                                "position": 0.52
+                              },
+                              {
+                                "color": "#342B9E",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "lMn9u",
+                              "x": 300,
+                              "y": -190,
+                              "name": "glow1",
+                              "fill": "#FFFFFF14",
+                              "width": 480,
+                              "height": 480
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "F1QM31",
+                              "x": 360,
+                              "y": 560,
+                              "name": "glow2",
+                              "fill": "#FFFFFF0F",
+                              "width": 380,
+                              "height": 380
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "gl2as",
+                              "x": -130,
+                              "y": 650,
+                              "name": "ring1",
+                              "width": 320,
+                              "height": 320,
+                              "stroke": {
+                                "align": "center",
+                                "thickness": 1.5,
+                                "fill": "#FFFFFF2B"
+                              }
+                            },
+                            {
+                              "type": "frame",
+                              "id": "qCyoC",
+                              "x": 56,
+                              "y": 56,
+                              "name": "leftContent",
+                              "width": 488,
+                              "height": 788,
+                              "layout": "vertical",
+                              "justifyContent": "space_between",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "bhnO6",
+                                  "name": "brand",
+                                  "gap": 12,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "dx6xn",
+                                      "name": "logo",
+                                      "width": 36,
+                                      "height": 36,
+                                      "fill": "$--white",
+                                      "cornerRadius": 10,
+                                      "layout": "none",
+                                      "children": [
+                                        {
+                                          "type": "icon_font",
+                                          "id": "d71Sod",
+                                          "x": 8,
+                                          "y": 8,
+                                          "width": 20,
+                                          "height": 20,
+                                          "iconFontName": "wrench",
+                                          "iconFontFamily": "lucide",
+                                          "fill": "$--primary"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "s8gOmN",
+                                      "fill": "$--white",
+                                      "content": "Masters",
+                                      "fontFamily": "$--font-primary",
+                                      "fontSize": 24,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "r4gqY",
+                                  "name": "middle",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 26,
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "YjnRa",
+                                      "name": "eyebrow",
+                                      "fill": "#FFFFFF24",
+                                      "cornerRadius": "$--radius-pill",
+                                      "gap": 8,
+                                      "padding": [
+                                        7,
+                                        14
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon_font",
+                                          "id": "u7HH3j",
+                                          "width": 14,
+                                          "height": 14,
+                                          "iconFontName": "sparkles",
+                                          "iconFontFamily": "lucide",
+                                          "fill": "$--white"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "yebDn",
+                                          "fill": "$--white",
+                                          "content": "Welcome to Masters",
+                                          "fontFamily": "$--font-secondary",
+                                          "fontSize": 12,
+                                          "fontWeight": "600",
+                                          "letterSpacing": 0.3
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "AjwDV",
+                                      "name": "headline",
+                                      "fill": "$--white",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Your craft. Your hours. Your income.",
+                                      "lineHeight": 1.15,
+                                      "fontFamily": "$--font-primary",
+                                      "fontSize": 40,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "y0yiGw",
+                                      "name": "para",
+                                      "fill": "#FFFFFFC4",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Masters connects skilled repair professionals and growing businesses with the customers who need them — across the whole city, every day.",
+                                      "lineHeight": 1.55,
+                                      "fontFamily": "$--font-secondary",
+                                      "fontSize": 16,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "FJpWd",
+                                      "name": "bullets",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 16,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "P741tW",
+                                          "width": "fill_container",
+                                          "gap": 14,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "h4xIn",
+                                              "width": 38,
+                                              "height": 38,
+                                              "fill": "#FFFFFF1F",
+                                              "cornerRadius": 12,
+                                              "layout": "none",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "EHfhi",
+                                                  "x": 10,
+                                                  "y": 10,
+                                                  "width": 18,
+                                                  "height": 18,
+                                                  "iconFontName": "calendar-check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--white"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "jR0bq",
+                                              "fill": "#FFFFFFE6",
+                                              "content": "Work on a schedule that fits your life",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 15,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "sSviE",
+                                          "width": "fill_container",
+                                          "gap": 14,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "U5wcE",
+                                              "width": 38,
+                                              "height": 38,
+                                              "fill": "#FFFFFF1F",
+                                              "cornerRadius": 12,
+                                              "layout": "none",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "zYKh3",
+                                                  "x": 10,
+                                                  "y": 10,
+                                                  "width": 18,
+                                                  "height": 18,
+                                                  "iconFontName": "wallet",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--white"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "qSsgr",
+                                              "fill": "#FFFFFFE6",
+                                              "content": "Get paid quickly after every job",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 15,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "ZzVCb",
+                                          "width": "fill_container",
+                                          "gap": 14,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "J850rN",
+                                              "width": 38,
+                                              "height": 38,
+                                              "fill": "#FFFFFF1F",
+                                              "cornerRadius": 12,
+                                              "layout": "none",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "VjCbe",
+                                                  "x": 10,
+                                                  "y": 10,
+                                                  "width": 18,
+                                                  "height": 18,
+                                                  "iconFontName": "shield-check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--white"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "nEjyw",
+                                              "fill": "#FFFFFFE6",
+                                              "content": "Join a verified, trusted community",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 15,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Nm95r",
+                                  "name": "stats",
+                                  "gap": 22,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "xJpPz",
+                                      "layout": "vertical",
+                                      "gap": 3,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "IZUGt",
+                                          "fill": "$--white",
+                                          "content": "12K+",
+                                          "fontFamily": "$--font-primary",
+                                          "fontSize": 24,
+                                          "fontWeight": "700"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "cJtxg",
+                                          "fill": "#FFFFFF99",
+                                          "content": "Active masters",
+                                          "fontFamily": "$--font-secondary",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "rectangle",
+                                      "id": "O58rAR",
+                                      "fill": "#FFFFFF29",
+                                      "width": 1,
+                                      "height": 40
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "G8eSxa",
+                                      "layout": "vertical",
+                                      "gap": 3,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "z0egd",
+                                          "fill": "$--white",
+                                          "content": "4.9",
+                                          "fontFamily": "$--font-primary",
+                                          "fontSize": 24,
+                                          "fontWeight": "700"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "uLHOM",
+                                          "fill": "#FFFFFF99",
+                                          "content": "Average rating",
+                                          "fontFamily": "$--font-secondary",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "rectangle",
+                                      "id": "D3Eg2",
+                                      "fill": "#FFFFFF29",
+                                      "width": 1,
+                                      "height": 40
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "DeGCi",
+                                      "layout": "vertical",
+                                      "gap": 3,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Y3dANm",
+                                          "fill": "$--white",
+                                          "content": "98%",
+                                          "fontFamily": "$--font-primary",
+                                          "fontSize": 24,
+                                          "fontWeight": "700"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "rVDWN",
+                                          "fill": "#FFFFFF99",
+                                          "content": "Jobs completed",
+                                          "fontFamily": "$--font-secondary",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "UcZru",
+                          "name": "rightPanel",
+                          "width": "fill_container",
+                          "height": 900,
+                          "fill": "$--background",
+                          "layout": "vertical",
+                          "padding": [
+                            0,
+                            64
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "iT5Cq",
+                              "name": "rightContent",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 30,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "mwRaV",
+                                  "name": "header",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 12,
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "w7s4vx",
+                                      "name": "hchip",
+                                      "fill": "#5749F414",
+                                      "cornerRadius": "$--radius-pill",
+                                      "gap": 6,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon_font",
+                                          "id": "iKIJE",
+                                          "width": 13,
+                                          "height": 13,
+                                          "iconFontName": "user-plus",
+                                          "iconFontFamily": "lucide",
+                                          "fill": "$--primary"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Y5WUve",
+                                          "fill": "$--primary",
+                                          "content": "Create your account",
+                                          "fontFamily": "$--font-secondary",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "bf5WL",
+                                      "fill": "$--foreground",
+                                      "content": "Choose your account type",
+                                      "fontFamily": "$--font-primary",
+                                      "fontSize": 28,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "dNVbU",
+                                      "fill": "$--muted-foreground",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Tell us how you’ll use Masters so we can set up the right tools for you. Pick the option that fits you best.",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "$--font-secondary",
+                                      "fontSize": 15,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "lUlWo",
+                                  "name": "cardsRow",
+                                  "width": "fill_container",
+                                  "gap": 24,
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "Kmpix",
+                                      "name": "cardMaster",
+                                      "width": "fill_container",
+                                      "height": 436,
+                                      "fill": "$--card",
+                                      "cornerRadius": "$--radius-l",
+                                      "stroke": {
+                                        "align": "inside",
+                                        "thickness": 1,
+                                        "fill": "$--border"
+                                      },
+                                      "effect": {
+                                        "type": "shadow",
+                                        "shadowType": "outer",
+                                        "color": "#0000000a",
+                                        "offset": {
+                                          "x": 0,
+                                          "y": 10
+                                        },
+                                        "blur": 8.75
+                                      },
+                                      "layout": "vertical",
+                                      "gap": 16,
+                                      "padding": 28,
+                                      "justifyContent": "space_between",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "BvP6m",
+                                          "name": "contentGroup",
+                                          "width": "fill_container",
+                                          "layout": "vertical",
+                                          "gap": 16,
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "S38eG",
+                                              "name": "topRow",
+                                              "width": "fill_container",
+                                              "justifyContent": "space_between",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "frame",
+                                                  "id": "kVZqp",
+                                                  "name": "tile",
+                                                  "width": 56,
+                                                  "height": 56,
+                                                  "fill": "$--primary",
+                                                  "cornerRadius": "$--radius-m",
+                                                  "layout": "none",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "aiaf0",
+                                                      "x": 15,
+                                                      "y": 15,
+                                                      "width": 26,
+                                                      "height": 26,
+                                                      "iconFontName": "wrench",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--primary-foreground"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "frame",
+                                                  "id": "ayjSK",
+                                                  "name": "badge",
+                                                  "fill": "$--muted",
+                                                  "cornerRadius": "$--radius-pill",
+                                                  "padding": [
+                                                    5,
+                                                    11
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "type": "text",
+                                                      "id": "t6uoE1",
+                                                      "fill": "$--muted-foreground",
+                                                      "content": "FOR INDIVIDUALS",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 11,
+                                                      "fontWeight": "600",
+                                                      "letterSpacing": 0.4
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "bvXpb",
+                                              "name": "headG",
+                                              "width": "fill_container",
+                                              "layout": "vertical",
+                                              "gap": 4,
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "swf8z",
+                                                  "fill": "$--foreground",
+                                                  "content": "Master",
+                                                  "fontFamily": "$--font-primary",
+                                                  "fontSize": 20,
+                                                  "fontWeight": "600"
+                                                },
+                                                {
+                                                  "type": "text",
+                                                  "id": "K64yT4",
+                                                  "fill": "$--muted-foreground",
+                                                  "content": "Individual repair professional",
+                                                  "fontFamily": "$--font-secondary",
+                                                  "fontSize": 13,
+                                                  "fontWeight": "normal"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "la3WI",
+                                              "fill": "$--muted-foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Register as an individual craftsperson — take jobs, set your own rates, and earn on your own schedule.",
+                                              "lineHeight": 1.5,
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "id": "hjmNc",
+                                              "name": "divider",
+                                              "fill": "$--border",
+                                              "width": "fill_container",
+                                              "height": 1
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "S5ZrAL",
+                                              "name": "feats",
+                                              "width": "fill_container",
+                                              "layout": "vertical",
+                                              "gap": 11,
+                                              "children": [
+                                                {
+                                                  "type": "frame",
+                                                  "id": "U0ZUSn",
+                                                  "width": "fill_container",
+                                                  "gap": 10,
+                                                  "alignItems": "center",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "ijM79",
+                                                      "width": 18,
+                                                      "height": 18,
+                                                      "iconFontName": "circle-check",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--primary"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "e8YxkH",
+                                                      "fill": "$--foreground",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Set your own rates and schedule",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 13,
+                                                      "fontWeight": "normal"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "frame",
+                                                  "id": "rAVMI",
+                                                  "width": "fill_container",
+                                                  "gap": 10,
+                                                  "alignItems": "center",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "IoYiC",
+                                                      "width": 18,
+                                                      "height": 18,
+                                                      "iconFontName": "circle-check",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--primary"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "F0KMI",
+                                                      "fill": "$--foreground",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Fast payouts after every job",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 13,
+                                                      "fontWeight": "normal"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "frame",
+                                                  "id": "s3AR7",
+                                                  "width": "fill_container",
+                                                  "gap": 10,
+                                                  "alignItems": "center",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "NRqIM",
+                                                      "width": 18,
+                                                      "height": 18,
+                                                      "iconFontName": "circle-check",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--primary"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "q2GXH",
+                                                      "fill": "$--foreground",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Build your reputation with reviews",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 13,
+                                                      "fontWeight": "normal"
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "m24lV6",
+                                          "type": "ref",
+                                          "ref": "PoWVd",
+                                          "width": "fill_container",
+                                          "fill": "$--primary",
+                                          "descendants": {
+                                            "fIEfR": {
+                                              "content": "Continue as Master"
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "XpjGx",
+                                      "name": "cardBusiness",
+                                      "width": "fill_container",
+                                      "height": 436,
+                                      "fill": "$--card",
+                                      "cornerRadius": "$--radius-l",
+                                      "stroke": {
+                                        "align": "inside",
+                                        "thickness": 1,
+                                        "fill": "$--border"
+                                      },
+                                      "effect": {
+                                        "type": "shadow",
+                                        "shadowType": "outer",
+                                        "color": "#0000000a",
+                                        "offset": {
+                                          "x": 0,
+                                          "y": 10
+                                        },
+                                        "blur": 8.75
+                                      },
+                                      "layout": "vertical",
+                                      "gap": 16,
+                                      "padding": 28,
+                                      "justifyContent": "space_between",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "Tpum8",
+                                          "name": "contentGroup",
+                                          "width": "fill_container",
+                                          "layout": "vertical",
+                                          "gap": 16,
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "YXM3s",
+                                              "name": "topRow",
+                                              "width": "fill_container",
+                                              "justifyContent": "space_between",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "frame",
+                                                  "id": "j23LtF",
+                                                  "name": "tile",
+                                                  "width": 56,
+                                                  "height": 56,
+                                                  "fill": "$--foreground",
+                                                  "cornerRadius": "$--radius-m",
+                                                  "layout": "none",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "A9GM8",
+                                                      "x": 15,
+                                                      "y": 15,
+                                                      "width": 26,
+                                                      "height": 26,
+                                                      "iconFontName": "building-2",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--background"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "frame",
+                                                  "id": "yLz60",
+                                                  "name": "badge",
+                                                  "fill": "$--muted",
+                                                  "cornerRadius": "$--radius-pill",
+                                                  "padding": [
+                                                    5,
+                                                    11
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "type": "text",
+                                                      "id": "OmFrM",
+                                                      "fill": "$--muted-foreground",
+                                                      "content": "FOR COMPANIES",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 11,
+                                                      "fontWeight": "600",
+                                                      "letterSpacing": 0.4
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "jVoCo",
+                                              "name": "headG",
+                                              "width": "fill_container",
+                                              "layout": "vertical",
+                                              "gap": 4,
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "M8ttI7",
+                                                  "fill": "$--foreground",
+                                                  "content": "Business",
+                                                  "fontFamily": "$--font-primary",
+                                                  "fontSize": 20,
+                                                  "fontWeight": "600"
+                                                },
+                                                {
+                                                  "type": "text",
+                                                  "id": "MD460",
+                                                  "fill": "$--muted-foreground",
+                                                  "content": "Organization or company",
+                                                  "fontFamily": "$--font-secondary",
+                                                  "fontSize": 13,
+                                                  "fontWeight": "normal"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "yEn7J",
+                                              "fill": "$--muted-foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Register your company as a legal entity and manage a full team of masters from one shared dashboard.",
+                                              "lineHeight": 1.5,
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "id": "qcIHr",
+                                              "name": "divider",
+                                              "fill": "$--border",
+                                              "width": "fill_container",
+                                              "height": 1
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "SRxXG",
+                                              "name": "feats",
+                                              "width": "fill_container",
+                                              "layout": "vertical",
+                                              "gap": 11,
+                                              "children": [
+                                                {
+                                                  "type": "frame",
+                                                  "id": "qCPzx",
+                                                  "width": "fill_container",
+                                                  "gap": 10,
+                                                  "alignItems": "center",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "doQfv",
+                                                      "width": 18,
+                                                      "height": 18,
+                                                      "iconFontName": "circle-check",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--foreground"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "fAz62",
+                                                      "fill": "$--foreground",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Manage a full team of masters",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 13,
+                                                      "fontWeight": "normal"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "frame",
+                                                  "id": "wT1co",
+                                                  "width": "fill_container",
+                                                  "gap": 10,
+                                                  "alignItems": "center",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "a1Rad",
+                                                      "width": 18,
+                                                      "height": 18,
+                                                      "iconFontName": "circle-check",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--foreground"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "o1puSv",
+                                                      "fill": "$--foreground",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Assign and track jobs at scale",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 13,
+                                                      "fontWeight": "normal"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "frame",
+                                                  "id": "mqCPa",
+                                                  "width": "fill_container",
+                                                  "gap": 10,
+                                                  "alignItems": "center",
+                                                  "children": [
+                                                    {
+                                                      "type": "icon_font",
+                                                      "id": "b8rodE",
+                                                      "width": 18,
+                                                      "height": 18,
+                                                      "iconFontName": "circle-check",
+                                                      "iconFontFamily": "lucide",
+                                                      "fill": "$--foreground"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "fYlWp",
+                                                      "fill": "$--foreground",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Company billing & verified entity",
+                                                      "fontFamily": "$--font-secondary",
+                                                      "fontSize": 13,
+                                                      "fontWeight": "normal"
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "j7JA7E",
+                                          "type": "ref",
+                                          "ref": "PoWVd",
+                                          "width": "fill_container",
+                                          "fill": "$--foreground",
+                                          "descendants": {
+                                            "fIEfR": {
+                                              "content": "Continue as Business"
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "e8tTm4",
+                                  "name": "signin",
+                                  "width": "fill_container",
+                                  "gap": 6,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "B94vgQ",
+                                      "fill": "$--muted-foreground",
+                                      "content": "Already have an account?",
+                                      "fontFamily": "$--font-secondary",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "YkFr6",
+                                      "fill": "$--primary",
+                                      "content": "Sign in",
+                                      "fontFamily": "$--font-secondary",
+                                      "fontSize": 14,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "fbQ3C",
+                  "x": 1520,
+                  "y": 0,
+                  "name": "Account Type · Centered Cards",
+                  "clip": true,
+                  "width": 1440,
+                  "height": 900,
+                  "fill": "$--background",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "Z9WWz",
+                      "x": -240,
+                      "y": -320,
+                      "name": "blob1",
+                      "opacity": 0.08,
+                      "fill": "$--primary",
+                      "width": 880,
+                      "height": 880,
+                      "effect": {
+                        "type": "blur",
+                        "radius": 100
+                      }
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "yru5M",
+                      "x": 1000,
+                      "y": 460,
+                      "name": "blob2",
+                      "opacity": 0.07,
+                      "fill": "$--primary",
+                      "width": 760,
+                      "height": 760,
+                      "effect": {
+                        "type": "blur",
+                        "radius": 100
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "U8y1v",
+                      "x": 0,
+                      "y": 0,
+                      "name": "contentRoot",
+                      "width": 1440,
+                      "height": 900,
+                      "layout": "vertical",
+                      "padding": [
+                        44,
+                        80
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "sdd6J",
+                          "name": "brand",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "UbWxs",
+                              "name": "logo",
+                              "width": 36,
+                              "height": 36,
+                              "fill": "$--primary",
+                              "cornerRadius": 10,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "GxBSr",
+                                  "width": 20,
+                                  "height": 20,
+                                  "iconFontName": "wrench",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--primary-foreground"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "zwiJo",
+                              "fill": "$--foreground",
+                              "content": "Masters",
+                              "fontFamily": "$--font-primary",
+                              "fontSize": 22,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "K1fFGX",
+                          "name": "centerBlock",
+                          "layout": "vertical",
+                          "gap": 44,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "wjh5p",
+                              "name": "heading",
+                              "width": 620,
+                              "layout": "vertical",
+                              "gap": 12,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "DFbRO",
+                                  "fill": "$--foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Welcome to Masters",
+                                  "textAlign": "center",
+                                  "fontFamily": "$--font-primary",
+                                  "fontSize": 38,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "ru36d",
+                                  "fill": "$--muted-foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Choose the account type that fits you best. This tailors your whole experience — you can always change it later.",
+                                  "lineHeight": 1.5,
+                                  "textAlign": "center",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 16,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "GEqPQ",
+                              "name": "cardsRow",
+                              "gap": 28,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "Nuutv",
+                                  "name": "masterCard",
+                                  "width": 400,
+                                  "fill": "$--card",
+                                  "cornerRadius": "$--radius-l",
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--border"
+                                  },
+                                  "effect": {
+                                    "type": "shadow",
+                                    "shadowType": "outer",
+                                    "color": "#0000000f",
+                                    "offset": {
+                                      "x": 0,
+                                      "y": 12
+                                    },
+                                    "blur": 20
+                                  },
+                                  "layout": "vertical",
+                                  "gap": 22,
+                                  "padding": 32,
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "zeXtA",
+                                      "name": "hdr",
+                                      "width": "fill_container",
+                                      "justifyContent": "space_between",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "WbpWj",
+                                          "name": "iconBox",
+                                          "width": 64,
+                                          "height": 64,
+                                          "fill": "$--primary",
+                                          "cornerRadius": "$--radius-m",
+                                          "justifyContent": "center",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "F2Jbuw",
+                                              "width": 30,
+                                              "height": 30,
+                                              "iconFontName": "wrench",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "$--primary-foreground"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "SKHBi",
+                                          "name": "badge",
+                                          "fill": "$--accent",
+                                          "cornerRadius": "$--radius-pill",
+                                          "padding": [
+                                            6,
+                                            12
+                                          ],
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "ZQE1q",
+                                              "fill": "$--muted-foreground",
+                                              "content": "For individuals",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 12,
+                                              "fontWeight": "600"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "mTTn6",
+                                      "name": "titleGroup",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 8,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "o5mkyF",
+                                          "fill": "$--foreground",
+                                          "content": "Master",
+                                          "fontFamily": "$--font-primary",
+                                          "fontSize": 24,
+                                          "fontWeight": "700"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "DztCV",
+                                          "fill": "$--muted-foreground",
+                                          "textGrowth": "fixed-width-height",
+                                          "width": "fill_container",
+                                          "height": 42,
+                                          "content": "Work independently — accept jobs near you, set your own rates and grow your reputation.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "$--font-secondary",
+                                          "fontSize": 14,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "rectangle",
+                                      "id": "c3Q9F",
+                                      "name": "divider",
+                                      "fill": "$--border",
+                                      "width": "fill_container",
+                                      "height": 1
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "ZGs4x",
+                                      "name": "features",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 14,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "zUSQ8",
+                                          "name": "feat",
+                                          "width": "fill_container",
+                                          "gap": 10,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "NohWC",
+                                              "name": "chk",
+                                              "width": 22,
+                                              "height": 22,
+                                              "fill": "#5749F41A",
+                                              "cornerRadius": "$--radius-pill",
+                                              "justifyContent": "center",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "M7vcq",
+                                                  "width": 13,
+                                                  "height": 13,
+                                                  "iconFontName": "check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--primary"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "zmsiY",
+                                              "fill": "$--foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Set your own rates & schedule",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "mmX5d",
+                                          "name": "feat",
+                                          "width": "fill_container",
+                                          "gap": 10,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "ykzYB",
+                                              "name": "chk",
+                                              "width": 22,
+                                              "height": 22,
+                                              "fill": "#5749F41A",
+                                              "cornerRadius": "$--radius-pill",
+                                              "justifyContent": "center",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "AAklN",
+                                                  "width": 13,
+                                                  "height": 13,
+                                                  "iconFontName": "check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--primary"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "zXQPb",
+                                              "fill": "$--foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Get matched with nearby jobs",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "c2SNAR",
+                                          "name": "feat",
+                                          "width": "fill_container",
+                                          "gap": 10,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "qY7R7",
+                                              "name": "chk",
+                                              "width": 22,
+                                              "height": 22,
+                                              "fill": "#5749F41A",
+                                              "cornerRadius": "$--radius-pill",
+                                              "justifyContent": "center",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "J1x0W",
+                                                  "width": 13,
+                                                  "height": 13,
+                                                  "iconFontName": "check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--primary"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "D22jNI",
+                                              "fill": "$--foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Fast payouts after every job",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "T5YGpF",
+                                      "name": "cta",
+                                      "width": "fill_container",
+                                      "fill": "$--primary",
+                                      "cornerRadius": "$--radius-pill",
+                                      "gap": 8,
+                                      "padding": [
+                                        16,
+                                        20
+                                      ],
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "XlqOj",
+                                          "fill": "$--primary-foreground",
+                                          "content": "Continue as Master",
+                                          "fontFamily": "$--font-primary",
+                                          "fontSize": 15,
+                                          "fontWeight": "600"
+                                        },
+                                        {
+                                          "type": "icon_font",
+                                          "id": "xZGCu",
+                                          "width": 18,
+                                          "height": 18,
+                                          "iconFontName": "arrow-right",
+                                          "iconFontFamily": "lucide",
+                                          "fill": "$--primary-foreground"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Njy2R",
+                                  "name": "businessCard",
+                                  "width": 400,
+                                  "fill": "$--card",
+                                  "cornerRadius": "$--radius-l",
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--border"
+                                  },
+                                  "effect": {
+                                    "type": "shadow",
+                                    "shadowType": "outer",
+                                    "color": "#0000000f",
+                                    "offset": {
+                                      "x": 0,
+                                      "y": 12
+                                    },
+                                    "blur": 20
+                                  },
+                                  "layout": "vertical",
+                                  "gap": 22,
+                                  "padding": 32,
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "cuFpY",
+                                      "name": "hdr",
+                                      "width": "fill_container",
+                                      "justifyContent": "space_between",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "E1EoA",
+                                          "name": "iconBox",
+                                          "width": 64,
+                                          "height": 64,
+                                          "fill": "$--foreground",
+                                          "cornerRadius": "$--radius-m",
+                                          "justifyContent": "center",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "w6xnLT",
+                                              "width": 30,
+                                              "height": 30,
+                                              "iconFontName": "building-2",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "$--background"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "m7ulsk",
+                                          "name": "badge",
+                                          "fill": "$--accent",
+                                          "cornerRadius": "$--radius-pill",
+                                          "padding": [
+                                            6,
+                                            12
+                                          ],
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "XAtCf",
+                                              "fill": "$--muted-foreground",
+                                              "content": "For companies",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 12,
+                                              "fontWeight": "600"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "Z2Ezs",
+                                      "name": "titleGroup",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 8,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "fVymE",
+                                          "fill": "$--foreground",
+                                          "content": "Business",
+                                          "fontFamily": "$--font-primary",
+                                          "fontSize": 24,
+                                          "fontWeight": "700"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "oef73",
+                                          "fill": "$--muted-foreground",
+                                          "textGrowth": "fixed-width-height",
+                                          "width": "fill_container",
+                                          "height": 42,
+                                          "content": "Register your organization and manage a whole team of masters from one dashboard.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "$--font-secondary",
+                                          "fontSize": 14,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "rectangle",
+                                      "id": "ETrB1",
+                                      "name": "divider",
+                                      "fill": "$--border",
+                                      "width": "fill_container",
+                                      "height": 1
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "M1vKvj",
+                                      "name": "features",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 14,
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "aQo6z",
+                                          "name": "feat",
+                                          "width": "fill_container",
+                                          "gap": 10,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "SPAEI",
+                                              "name": "chk",
+                                              "width": 22,
+                                              "height": 22,
+                                              "fill": "#2A29331A",
+                                              "cornerRadius": "$--radius-pill",
+                                              "justifyContent": "center",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "m8b0f",
+                                                  "width": 13,
+                                                  "height": 13,
+                                                  "iconFontName": "check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--foreground"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "a2aRF",
+                                              "fill": "$--foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Manage a team of masters",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "biX3R",
+                                          "name": "feat",
+                                          "width": "fill_container",
+                                          "gap": 10,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "tuC5e",
+                                              "name": "chk",
+                                              "width": 22,
+                                              "height": 22,
+                                              "fill": "#2A29331A",
+                                              "cornerRadius": "$--radius-pill",
+                                              "justifyContent": "center",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "Eth07",
+                                                  "width": 13,
+                                                  "height": 13,
+                                                  "iconFontName": "check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--foreground"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "il7yQ",
+                                              "fill": "$--foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Register your legal entity (MChJ / YTT)",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "Zm5Nf",
+                                          "name": "feat",
+                                          "width": "fill_container",
+                                          "gap": 10,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "d4UiSx",
+                                              "name": "chk",
+                                              "width": 22,
+                                              "height": 22,
+                                              "fill": "#2A29331A",
+                                              "cornerRadius": "$--radius-pill",
+                                              "justifyContent": "center",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "icon_font",
+                                                  "id": "o7vXN",
+                                                  "width": 13,
+                                                  "height": 13,
+                                                  "iconFontName": "check",
+                                                  "iconFontFamily": "lucide",
+                                                  "fill": "$--foreground"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "hQLJ3",
+                                              "fill": "$--foreground",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Track jobs & invoices in one place",
+                                              "fontFamily": "$--font-secondary",
+                                              "fontSize": 14,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "JqnbN",
+                                      "name": "cta",
+                                      "width": "fill_container",
+                                      "fill": "$--foreground",
+                                      "cornerRadius": "$--radius-pill",
+                                      "gap": 8,
+                                      "padding": [
+                                        16,
+                                        20
+                                      ],
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "BPwPN",
+                                          "fill": "$--background",
+                                          "content": "Continue as Business",
+                                          "fontFamily": "$--font-primary",
+                                          "fontSize": 15,
+                                          "fontWeight": "600"
+                                        },
+                                        {
+                                          "type": "icon_font",
+                                          "id": "z82jh",
+                                          "width": 18,
+                                          "height": 18,
+                                          "iconFontName": "arrow-right",
+                                          "iconFontFamily": "lucide",
+                                          "fill": "$--background"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "QRQdQ",
+                          "name": "footer",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "HUX6x",
+                              "fill": "$--muted-foreground",
+                              "content": "Already have an account?",
+                              "fontFamily": "$--font-secondary",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "SgHfb",
+                              "fill": "$--primary",
+                              "content": "Sign in",
+                              "fontFamily": "$--font-secondary",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
           "id": "vUsGg",
           "name": "sec-master-auth",
           "layout": "vertical",
