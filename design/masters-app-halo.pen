@@ -73681,6 +73681,33 @@
                           "children": [
                             {
                               "type": "frame",
+                              "id": "vomIN",
+                              "name": "back2",
+                              "gap": 6,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "JkT3U",
+                                  "width": 16,
+                                  "height": 16,
+                                  "iconFontName": "arrow-left",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "I3NINB",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Back",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
                               "id": "r0m1T0",
                               "name": "hdr",
                               "width": "fill_container",
@@ -73708,130 +73735,6 @@
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "hlPNA",
-                              "name": "benefits",
-                              "width": "fill_container",
-                              "gap": 8,
-                              "justifyContent": "center",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "gqyx0",
-                                  "name": "b1a",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 5,
-                                  "padding": [
-                                    5,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "C5uq8b",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "clock-3",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "Fdm8Q",
-                                      "fill": "$--foreground",
-                                      "content": "Flexible hours",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 11,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "p9zCQ",
-                                  "name": "b1b",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 5,
-                                  "padding": [
-                                    5,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "ucWTW",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "wallet",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "fUCgm",
-                                      "fill": "$--foreground",
-                                      "content": "Keep 85% earnings",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 11,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "UokVd",
-                                  "name": "b1c",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 5,
-                                  "padding": [
-                                    5,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "aVN6F",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "shield-check",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "PUBXa",
-                                      "fill": "$--foreground",
-                                      "content": "Verified clients",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 11,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
                                 }
                               ]
                             },
@@ -74009,50 +73912,12 @@
                                   "type": "text",
                                   "id": "FEpsL",
                                   "fill": "$--primary",
-                                  "content": "Switch to org sign in",
+                                  "content": "Switch to Organization",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 13,
                                   "fontWeight": "500"
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "c12jkE",
-                          "name": "trustchip",
-                          "fill": "$--accent",
-                          "cornerRadius": "$--radius-pill",
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$--border"
-                          },
-                          "gap": 8,
-                          "padding": [
-                            8,
-                            14
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "bAKec",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "users",
-                              "iconFontFamily": "lucide",
-                              "fill": "$--primary"
-                            },
-                            {
-                              "type": "text",
-                              "id": "m4iXB",
-                              "fill": "$--muted-foreground",
-                              "content": "Trusted by 2,000+ master mechanics across Uzbekistan",
-                              "fontFamily": "$--font-secondary",
-                              "fontSize": 12,
-                              "fontWeight": "500"
                             }
                           ]
                         }
@@ -74187,12 +74052,17 @@
                               "width": "fill_container",
                               "layout": "vertical",
                               "gap": 8,
+                              "justifyContent": "center",
+                              "alignItems": "center",
                               "children": [
                                 {
                                   "type": "text",
                                   "id": "kSGUk",
                                   "fill": "$--foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "What's your number, master?",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-primary",
                                   "fontSize": 24,
                                   "fontWeight": "600"
@@ -74205,6 +74075,7 @@
                                   "width": "fill_container",
                                   "content": "We'll send a verification code so you can get back to your craft.",
                                   "lineHeight": 1.5,
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "normal"
@@ -74213,15 +74084,15 @@
                             },
                             {
                               "type": "frame",
-                              "id": "szewt",
-                              "name": "pf2",
+                              "id": "krCL3",
+                              "name": "pf",
                               "width": "fill_container",
                               "layout": "vertical",
-                              "gap": 8,
+                              "gap": 6,
                               "children": [
                                 {
                                   "type": "text",
-                                  "id": "RyA2H",
+                                  "id": "zz2pE",
                                   "fill": "$--foreground",
                                   "content": "Phone number",
                                   "fontFamily": "$--font-secondary",
@@ -74230,15 +74101,15 @@
                                 },
                                 {
                                   "type": "frame",
-                                  "id": "WLjnB",
-                                  "name": "pRow2",
+                                  "id": "w8QAd",
+                                  "name": "pRow",
                                   "width": "fill_container",
                                   "gap": 8,
                                   "children": [
                                     {
                                       "type": "frame",
-                                      "id": "xMhJw",
-                                      "name": "cc2",
+                                      "id": "i0Enrx",
+                                      "name": "cc",
                                       "fill": "$--accent",
                                       "cornerRadius": "$--radius-pill",
                                       "stroke": {
@@ -74255,16 +74126,7 @@
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "ZoIuN",
-                                          "fill": "$--foreground",
-                                          "content": "🇺🇿",
-                                          "fontFamily": "$--font-secondary",
-                                          "fontSize": 16,
-                                          "fontWeight": "normal"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "q2BY4g",
+                                          "id": "LjYVo",
                                           "fill": "$--foreground",
                                           "content": "+998",
                                           "fontFamily": "$--font-secondary",
@@ -74273,7 +74135,7 @@
                                         },
                                         {
                                           "type": "icon_font",
-                                          "id": "k8SdXW",
+                                          "id": "a1POc",
                                           "width": 14,
                                           "height": 14,
                                           "iconFontName": "chevron-down",
@@ -74284,8 +74146,8 @@
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "qTWIE",
-                                      "name": "ni2",
+                                      "id": "LEr2o",
+                                      "name": "ni",
                                       "width": "fill_container",
                                       "fill": "$--accent",
                                       "cornerRadius": "$--radius-pill",
@@ -74302,9 +74164,11 @@
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "I3s5cZ",
+                                          "id": "MIbp0",
                                           "fill": "$--foreground",
-                                          "content": "90 123 45 67",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "90 555 12 34",
                                           "fontFamily": "$--font-secondary",
                                           "fontSize": 14,
                                           "fontWeight": "normal"
@@ -74358,44 +74222,6 @@
                                   "fontWeight": "normal"
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "mvtO5",
-                          "name": "motto2",
-                          "fill": "$--accent",
-                          "cornerRadius": "$--radius-pill",
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$--border"
-                          },
-                          "gap": 8,
-                          "padding": [
-                            8,
-                            14
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "UwCik",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "clock-3",
-                              "iconFontFamily": "lucide",
-                              "fill": "$--primary"
-                            },
-                            {
-                              "type": "text",
-                              "id": "U08RQE",
-                              "fill": "$--muted-foreground",
-                              "content": "Setup takes less than 2 minutes",
-                              "fontFamily": "$--font-secondary",
-                              "fontSize": 12,
-                              "fontWeight": "500"
                             }
                           ]
                         }
@@ -74547,7 +74373,7 @@
                                       "y": 18,
                                       "width": 28,
                                       "height": 28,
-                                      "iconFontName": "shield-check",
+                                      "iconFontName": "message-circle-more",
                                       "iconFontFamily": "lucide",
                                       "fill": "$--primary"
                                     }
@@ -74592,7 +74418,12 @@
                               "type": "ref",
                               "ref": "QqVcT",
                               "width": "fill_container",
-                              "name": "otp3"
+                              "name": "otp3",
+                              "descendants": {
+                                "j8fuP": {
+                                  "content": "Verification code"
+                                }
+                              }
                             },
                             {
                               "type": "frame",
@@ -74666,44 +74497,6 @@
                                   "fontWeight": "500"
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "fiAop",
-                          "name": "quote3",
-                          "fill": "$--accent",
-                          "cornerRadius": "$--radius-pill",
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$--border"
-                          },
-                          "gap": 8,
-                          "padding": [
-                            8,
-                            14
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "ko5hr",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "quote",
-                              "iconFontFamily": "lucide",
-                              "fill": "$--primary"
-                            },
-                            {
-                              "type": "text",
-                              "id": "kyXL5",
-                              "fill": "$--muted-foreground",
-                              "content": "A good master is one short verification away",
-                              "fontFamily": "$--font-secondary",
-                              "fontSize": 12,
-                              "fontWeight": "500"
                             }
                           ]
                         }
@@ -74885,7 +74678,10 @@
                                   "type": "text",
                                   "id": "uwAwu",
                                   "fill": "$--foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Welcome back, master",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-primary",
                                   "fontSize": 22,
                                   "fontWeight": "600"
@@ -74894,7 +74690,10 @@
                                   "type": "text",
                                   "id": "B1HY67",
                                   "fill": "$--muted-foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Your next job is waiting — sign in to pick it up.",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "normal"
@@ -74936,15 +74735,6 @@
                                       "id": "i3F8F",
                                       "fill": "$--foreground",
                                       "content": "Password",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 14,
-                                      "fontWeight": "500"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "vnd4Z",
-                                      "fill": "$--primary",
-                                      "content": "Forgot password?",
                                       "fontFamily": "$--font-secondary",
                                       "fontSize": 14,
                                       "fontWeight": "500"
@@ -74995,29 +74785,6 @@
                               ]
                             },
                             {
-                              "type": "frame",
-                              "id": "Q7qiS",
-                              "name": "remRow4",
-                              "gap": 8,
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "id": "AtSq7",
-                                  "type": "ref",
-                                  "ref": "434AE"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "cdvRj",
-                                  "fill": "$--foreground",
-                                  "content": "Keep me signed in",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 14,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
                               "id": "K4CFe",
                               "type": "ref",
                               "ref": "PoWVd",
@@ -75028,47 +74795,47 @@
                                   "enabled": false
                                 },
                                 "fIEfR": {
-                                  "content": "Sign in to my workshop"
+                                  "content": "Sign in"
                                 }
                               }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "g5Kun",
-                          "name": "quote4",
-                          "fill": "$--accent",
-                          "cornerRadius": "$--radius-pill",
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$--border"
-                          },
-                          "gap": 8,
-                          "padding": [
-                            8,
-                            14
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "MmraG",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "hammer",
-                              "iconFontFamily": "lucide",
-                              "fill": "$--primary"
                             },
                             {
-                              "type": "text",
-                              "id": "mMZ7T",
-                              "fill": "$--muted-foreground",
-                              "content": "Every great workshop starts with skilled hands",
-                              "fontFamily": "$--font-secondary",
-                              "fontSize": 12,
-                              "fontWeight": "500"
+                              "type": "frame",
+                              "id": "ZARZa",
+                              "name": "resend3",
+                              "width": "fill_container",
+                              "gap": 6,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "h3oyh1",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Forgot password?",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "wCZW5",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Go to",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "B44nG9",
+                                  "fill": "$--primary",
+                                  "content": "Reset Password",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 14,
+                                  "fontWeight": "500"
+                                }
+                              ]
                             }
                           ]
                         }
@@ -75250,7 +75017,10 @@
                                   "type": "text",
                                   "id": "mDmsQ",
                                   "fill": "$--foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Create your master profile",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-primary",
                                   "fontSize": 22,
                                   "fontWeight": "600"
@@ -75263,6 +75033,7 @@
                                   "width": "fill_container",
                                   "content": "Your craft, your hours — join thousands of masters earning on their terms.",
                                   "lineHeight": 1.5,
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 13,
                                   "fontWeight": "normal"
@@ -75316,129 +75087,6 @@
                             },
                             {
                               "type": "frame",
-                              "id": "dOImh",
-                              "name": "benRow5",
-                              "width": "fill_container",
-                              "gap": 8,
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "xpX6o",
-                                  "name": "b5a",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 6,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "gXUpO",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "clock-3",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "UXm2i",
-                                      "fill": "$--foreground",
-                                      "content": "Flexible hours",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 11,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "Swlne",
-                                  "name": "b5b",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 6,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "lJZ7t",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "wallet",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "gFqMM",
-                                      "fill": "$--foreground",
-                                      "content": "Keep 85%",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 11,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "MeI6o",
-                                  "name": "b5c",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 6,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "uh4Zl",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "map-pin",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "R7MKH",
-                                      "fill": "$--foreground",
-                                      "content": "Local jobs",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 11,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "w8jFZZ",
                               "name": "trow5",
                               "width": "fill_container",
@@ -75474,7 +75122,7 @@
                                   "enabled": false
                                 },
                                 "fIEfR": {
-                                  "content": "Create master profile"
+                                  "content": "Create profile"
                                 }
                               }
                             }
@@ -75735,44 +75383,6 @@
                                   "fontWeight": "500"
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "x3m2t",
-                          "name": "chip6",
-                          "fill": "$--accent",
-                          "cornerRadius": "$--radius-pill",
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$--border"
-                          },
-                          "gap": 8,
-                          "padding": [
-                            8,
-                            14
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "jldks",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "life-buoy",
-                              "iconFontFamily": "lucide",
-                              "fill": "$--primary"
-                            },
-                            {
-                              "type": "text",
-                              "id": "fO2TA",
-                              "fill": "$--muted-foreground",
-                              "content": "Need help? Contact your Master support team",
-                              "fontFamily": "$--font-secondary",
-                              "fontSize": 12,
-                              "fontWeight": "500"
                             }
                           ]
                         }
@@ -76104,44 +75714,6 @@
                               ]
                             }
                           ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "OSI32",
-                          "name": "chip7",
-                          "fill": "$--accent",
-                          "cornerRadius": "$--radius-pill",
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$--border"
-                          },
-                          "gap": 8,
-                          "padding": [
-                            8,
-                            14
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "IwQ8V",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "shield-check",
-                              "iconFontFamily": "lucide",
-                              "fill": "$--primary"
-                            },
-                            {
-                              "type": "text",
-                              "id": "N8Hfs",
-                              "fill": "$--muted-foreground",
-                              "content": "Strong passwords protect your craft, clients, and payouts",
-                              "fontFamily": "$--font-secondary",
-                              "fontSize": 12,
-                              "fontWeight": "500"
-                            }
-                          ]
                         }
                       ]
                     }
@@ -76275,39 +75847,28 @@
                           "children": [
                             {
                               "type": "frame",
-                              "id": "RUFVh",
-                              "name": "badge",
-                              "fill": "$--accent",
-                              "cornerRadius": "$--radius-pill",
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "$--border"
-                              },
+                              "id": "r4cph",
+                              "name": "back",
                               "gap": 6,
-                              "padding": [
-                                6,
-                                12
-                              ],
                               "alignItems": "center",
                               "children": [
                                 {
                                   "type": "icon_font",
-                                  "id": "dompS",
-                                  "width": 12,
-                                  "height": 12,
-                                  "iconFontName": "building-2",
+                                  "id": "Q57zgL",
+                                  "width": 16,
+                                  "height": 16,
+                                  "iconFontName": "arrow-left",
                                   "iconFontFamily": "lucide",
-                                  "fill": "$--primary"
+                                  "fill": "$--muted-foreground"
                                 },
                                 {
                                   "type": "text",
-                                  "id": "yFZl3",
-                                  "fill": "$--foreground",
-                                  "content": "For Organizations",
+                                  "id": "u2zOCI",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Back",
                                   "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -76324,7 +75885,7 @@
                                   "type": "text",
                                   "id": "TPtcD",
                                   "fill": "$--foreground",
-                                  "content": "Sign in to your workspace",
+                                  "content": "Welcome to Masters · Business",
                                   "fontFamily": "$--font-primary",
                                   "fontSize": 24,
                                   "fontWeight": "600"
@@ -76337,48 +75898,6 @@
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "JQ0kB",
-                              "name": "tabs",
-                              "width": "fill_container",
-                              "height": 56,
-                              "fill": "$--card",
-                              "cornerRadius": "$--radius-pill",
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "$--input"
-                              },
-                              "gap": 8,
-                              "padding": 8,
-                              "children": [
-                                {
-                                  "id": "z8dYxg",
-                                  "type": "ref",
-                                  "ref": "Axg1e",
-                                  "name": "tabSI",
-                                  "width": "fill_container",
-                                  "descendants": {
-                                    "lsCeq": {
-                                      "content": "Sign in"
-                                    }
-                                  }
-                                },
-                                {
-                                  "id": "FIvQo",
-                                  "type": "ref",
-                                  "ref": "H2eCV",
-                                  "name": "tabCW",
-                                  "width": "fill_container",
-                                  "descendants": {
-                                    "lsCeq": {
-                                      "content": "Create workspace"
-                                    }
-                                  }
                                 }
                               ]
                             },
@@ -76421,33 +75940,31 @@
                             },
                             {
                               "type": "frame",
-                              "id": "iRjRn",
-                              "name": "divider",
+                              "id": "oYJ8x",
+                              "name": "div",
                               "width": "fill_container",
                               "gap": 12,
                               "alignItems": "center",
                               "children": [
                                 {
                                   "type": "rectangle",
-                                  "id": "iMswa",
-                                  "name": "line1",
+                                  "id": "tM4Di",
                                   "fill": "$--border",
                                   "width": "fill_container",
                                   "height": 1
                                 },
                                 {
                                   "type": "text",
-                                  "id": "LjrAu",
+                                  "id": "YqPae",
                                   "fill": "$--muted-foreground",
-                                  "content": "or continue with",
+                                  "content": "or",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 },
                                 {
                                   "type": "rectangle",
-                                  "id": "GUuzd",
-                                  "name": "line2",
+                                  "id": "UKRXR",
                                   "fill": "$--border",
                                   "width": "fill_container",
                                   "height": 1
@@ -76456,15 +75973,15 @@
                             },
                             {
                               "type": "frame",
-                              "id": "yrQCn",
-                              "name": "socials",
+                              "id": "YM3Lp",
+                              "name": "social",
                               "width": "fill_container",
                               "gap": 10,
                               "children": [
                                 {
                                   "type": "frame",
-                                  "id": "J57BpV",
-                                  "name": "google",
+                                  "id": "PYFW4",
+                                  "name": "gb1",
                                   "width": "fill_container",
                                   "fill": "$--card",
                                   "cornerRadius": "$--radius-pill",
@@ -76476,23 +75993,23 @@
                                   "gap": 8,
                                   "padding": [
                                     14,
-                                    18
+                                    16
                                   ],
                                   "justifyContent": "center",
                                   "alignItems": "center",
                                   "children": [
                                     {
                                       "type": "icon_font",
-                                      "id": "eBytz",
-                                      "width": 18,
-                                      "height": 18,
-                                      "iconFontName": "globe",
-                                      "iconFontFamily": "lucide",
+                                      "id": "UnCga",
+                                      "width": 16,
+                                      "height": 16,
+                                      "iconFontName": "google-logo",
+                                      "iconFontFamily": "phosphor",
                                       "fill": "$--foreground"
                                     },
                                     {
                                       "type": "text",
-                                      "id": "mZOez",
+                                      "id": "ObCwD",
                                       "fill": "$--foreground",
                                       "content": "Google",
                                       "fontFamily": "$--font-secondary",
@@ -76503,8 +76020,8 @@
                                 },
                                 {
                                   "type": "frame",
-                                  "id": "SqLBZ",
-                                  "name": "apple",
+                                  "id": "dhJfM",
+                                  "name": "ab1",
                                   "width": "fill_container",
                                   "fill": "$--card",
                                   "cornerRadius": "$--radius-pill",
@@ -76516,23 +76033,23 @@
                                   "gap": 8,
                                   "padding": [
                                     14,
-                                    18
+                                    16
                                   ],
                                   "justifyContent": "center",
                                   "alignItems": "center",
                                   "children": [
                                     {
                                       "type": "icon_font",
-                                      "id": "Zbzrb",
-                                      "width": 18,
-                                      "height": 18,
-                                      "iconFontName": "apple",
-                                      "iconFontFamily": "lucide",
+                                      "id": "LLtc0",
+                                      "width": 16,
+                                      "height": 16,
+                                      "iconFontName": "apple-logo",
+                                      "iconFontFamily": "phosphor",
                                       "fill": "$--foreground"
                                     },
                                     {
                                       "type": "text",
-                                      "id": "BafHc",
+                                      "id": "sjwJu",
                                       "fill": "$--foreground",
                                       "content": "Apple",
                                       "fontFamily": "$--font-secondary",
@@ -76542,107 +76059,37 @@
                                   ]
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "f98nQ",
-                          "name": "benefits",
-                          "gap": 28,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "Yd2pH",
-                              "name": "b1",
-                              "gap": 6,
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon_font",
-                                  "id": "tOj1j",
-                                  "width": 14,
-                                  "height": 14,
-                                  "iconFontName": "users",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--muted-foreground"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "M2e1Zj",
-                                  "fill": "$--muted-foreground",
-                                  "content": "Team management",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
                             },
                             {
                               "type": "frame",
-                              "id": "nod2g",
-                              "name": "b2",
+                              "id": "yJ8x6",
+                              "name": "ftrow",
+                              "width": "fill_container",
                               "gap": 6,
+                              "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "icon_font",
-                                  "id": "RXWNC",
-                                  "width": 14,
-                                  "height": 14,
-                                  "iconFontName": "calendar-clock",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--muted-foreground"
+                                  "type": "text",
+                                  "id": "Hlp49",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Are you a master?",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
-                                  "id": "ehmxl",
-                                  "fill": "$--muted-foreground",
-                                  "content": "Smart scheduling",
+                                  "id": "R27iAb",
+                                  "fill": "$--primary",
+                                  "content": "Switch to Master",
                                   "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "T2vhX",
-                              "name": "b3",
-                              "gap": 6,
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon_font",
-                                  "id": "FaGii",
-                                  "width": 14,
-                                  "height": 14,
-                                  "iconFontName": "trending-up",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--muted-foreground"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "JpnxD",
-                                  "fill": "$--muted-foreground",
-                                  "content": "Real-time analytics",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
                                 }
                               ]
                             }
                           ]
-                        },
-                        {
-                          "type": "text",
-                          "id": "YsNOz",
-                          "fill": "$--muted-foreground",
-                          "content": "By continuing you agree to the Business Terms and Privacy Policy",
-                          "fontFamily": "$--font-secondary",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -76769,44 +76216,6 @@
                             },
                             {
                               "type": "frame",
-                              "id": "fsodX",
-                              "name": "badge",
-                              "fill": "$--accent",
-                              "cornerRadius": "$--radius-pill",
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "$--border"
-                              },
-                              "gap": 6,
-                              "padding": [
-                                6,
-                                12
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon_font",
-                                  "id": "TDRVG",
-                                  "width": 12,
-                                  "height": 12,
-                                  "iconFontName": "building-2",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--primary"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "aqhGF",
-                                  "fill": "$--foreground",
-                                  "content": "For Organizations",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "QQnXA",
                               "name": "hdr",
                               "width": "fill_container",
@@ -76847,7 +76256,7 @@
                                   "type": "text",
                                   "id": "Vn6GC",
                                   "fill": "$--foreground",
-                                  "content": "Admin phone number",
+                                  "content": "Phone number",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "500"
@@ -76933,42 +76342,6 @@
                               ]
                             },
                             {
-                              "type": "frame",
-                              "id": "CB3BW",
-                              "name": "noteRow",
-                              "width": "fill_container",
-                              "fill": "$--accent",
-                              "cornerRadius": "$--radius-xs",
-                              "gap": 8,
-                              "padding": [
-                                10,
-                                14
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon_font",
-                                  "id": "HCEv5",
-                                  "width": 16,
-                                  "height": 16,
-                                  "iconFontName": "shield-check",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--primary"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "r9DhIv",
-                                  "fill": "$--muted-foreground",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "We use your phone to secure your workspace",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
                               "id": "Mk6wq",
                               "type": "ref",
                               "ref": "PoWVd",
@@ -76979,9 +76352,38 @@
                                   "enabled": false
                                 },
                                 "fIEfR": {
-                                  "content": "Send verification code"
+                                  "content": "Send code"
                                 }
                               }
+                            },
+                            {
+                              "type": "frame",
+                              "id": "gLw0O",
+                              "name": "helprow2",
+                              "width": "fill_container",
+                              "gap": 8,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "jxLBJ",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "shield-check",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "sJSax",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Your number stays private — we use it only to verify you.",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
                             }
                           ]
                         }
@@ -77110,39 +76512,33 @@
                             },
                             {
                               "type": "frame",
-                              "id": "FqWve",
-                              "name": "badge",
-                              "fill": "$--accent",
-                              "cornerRadius": "$--radius-pill",
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "$--border"
-                              },
-                              "gap": 6,
-                              "padding": [
-                                6,
-                                12
-                              ],
-                              "alignItems": "center",
+                              "id": "m807Gj",
+                              "name": "icoWrap3",
+                              "width": "fill_container",
+                              "justifyContent": "center",
                               "children": [
                                 {
-                                  "type": "icon_font",
-                                  "id": "sLf4w",
-                                  "width": 12,
-                                  "height": 12,
-                                  "iconFontName": "building-2",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--primary"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "w4WlF4",
-                                  "fill": "$--foreground",
-                                  "content": "For Organizations",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
+                                  "type": "frame",
+                                  "id": "n3MDQu",
+                                  "name": "icoBg3",
+                                  "width": 64,
+                                  "height": 64,
+                                  "fill": "$--accent",
+                                  "cornerRadius": "$--radius-pill",
+                                  "layout": "none",
+                                  "children": [
+                                    {
+                                      "type": "icon_font",
+                                      "id": "Yxx9K",
+                                      "x": 18,
+                                      "y": 18,
+                                      "width": 28,
+                                      "height": 28,
+                                      "iconFontName": "message-circle-more",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "$--primary"
+                                    }
+                                  ]
                                 }
                               ]
                             },
@@ -77158,7 +76554,10 @@
                                   "type": "text",
                                   "id": "hgnp8",
                                   "fill": "$--foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Verify your workspace",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-primary",
                                   "fontSize": 24,
                                   "fontWeight": "600"
@@ -77170,6 +76569,7 @@
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
                                   "content": "We sent a 6-digit code to +998 90 555 12 34",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "normal"
@@ -77181,7 +76581,12 @@
                               "type": "ref",
                               "ref": "QqVcT",
                               "name": "otp",
-                              "width": "fill_container"
+                              "width": "fill_container",
+                              "descendants": {
+                                "j8fuP": {
+                                  "content": "Verification code"
+                                }
+                              }
                             },
                             {
                               "type": "frame",
@@ -77248,7 +76653,7 @@
                                   "type": "text",
                                   "id": "b8W2c",
                                   "fill": "$--primary",
-                                  "content": "Resend code",
+                                  "content": "Resend",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "500"
@@ -77382,44 +76787,6 @@
                             },
                             {
                               "type": "frame",
-                              "id": "jipoc",
-                              "name": "badge",
-                              "fill": "$--accent",
-                              "cornerRadius": "$--radius-pill",
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "$--border"
-                              },
-                              "gap": 6,
-                              "padding": [
-                                6,
-                                12
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon_font",
-                                  "id": "wduKM",
-                                  "width": 12,
-                                  "height": 12,
-                                  "iconFontName": "building-2",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--primary"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "DgkCa",
-                                  "fill": "$--foreground",
-                                  "content": "For Organizations",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "sQqW0",
                               "name": "tabs",
                               "width": "fill_container",
@@ -77472,7 +76839,10 @@
                                   "type": "text",
                                   "id": "qTVZF",
                                   "fill": "$--foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Welcome back, admin",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-primary",
                                   "fontSize": 22,
                                   "fontWeight": "600"
@@ -77481,7 +76851,10 @@
                                   "type": "text",
                                   "id": "uskda",
                                   "fill": "$--muted-foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Sign in to manage your team and bookings",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "normal"
@@ -77523,15 +76896,6 @@
                                       "id": "SJBoo",
                                       "fill": "$--foreground",
                                       "content": "Password",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 14,
-                                      "fontWeight": "500"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "EMlQi",
-                                      "fill": "$--primary",
-                                      "content": "Forgot password?",
                                       "fontFamily": "$--font-secondary",
                                       "fontSize": 14,
                                       "fontWeight": "500"
@@ -77582,29 +76946,6 @@
                               ]
                             },
                             {
-                              "type": "frame",
-                              "id": "N0BvSC",
-                              "name": "remRow",
-                              "gap": 8,
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "id": "o6ZqIN",
-                                  "type": "ref",
-                                  "ref": "434AE"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "gJMwK",
-                                  "fill": "$--foreground",
-                                  "content": "Keep me signed in on this device",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 14,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
                               "id": "YOwlT",
                               "type": "ref",
                               "ref": "PoWVd",
@@ -77615,35 +76956,44 @@
                                   "enabled": false
                                 },
                                 "fIEfR": {
-                                  "content": "Sign in to workspace"
+                                  "content": "Sign in"
                                 }
                               }
                             },
                             {
                               "type": "frame",
-                              "id": "UdnUJ",
-                              "name": "ssoRow",
+                              "id": "e4jTu",
+                              "name": "resend3",
                               "width": "fill_container",
                               "gap": 6,
                               "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "icon_font",
-                                  "id": "KkjNS",
-                                  "width": 14,
-                                  "height": 14,
-                                  "iconFontName": "shield",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--muted-foreground"
+                                  "type": "text",
+                                  "id": "Dysai",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Forgot password?",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
-                                  "id": "a0pxo",
-                                  "fill": "$--primary",
-                                  "content": "Use Single Sign-On (SSO) for your organization",
+                                  "id": "IXhIX",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Go to",
                                   "fontFamily": "$--font-secondary",
-                                  "fontSize": 13,
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "NdFHA",
+                                  "fill": "$--primary",
+                                  "content": "Reset Password",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 14,
                                   "fontWeight": "500"
                                 }
                               ]
@@ -77780,73 +77130,6 @@
                                       "fontWeight": "normal"
                                     }
                                   ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "q70ai7",
-                                  "name": "step",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 6,
-                                  "padding": [
-                                    4,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "X3gmR",
-                                      "fill": "$--muted-foreground",
-                                      "content": "Step 1 of 2",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 11,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "RFiaj",
-                              "name": "badge",
-                              "fill": "$--accent",
-                              "cornerRadius": "$--radius-pill",
-                              "stroke": {
-                                "align": "inside",
-                                "thickness": 1,
-                                "fill": "$--border"
-                              },
-                              "gap": 6,
-                              "padding": [
-                                6,
-                                12
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon_font",
-                                  "id": "XqAUp",
-                                  "width": 12,
-                                  "height": 12,
-                                  "iconFontName": "building-2",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--primary"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "F96yV",
-                                  "fill": "$--foreground",
-                                  "content": "For Organizations",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
                                 }
                               ]
                             },
@@ -77904,7 +77187,10 @@
                                   "type": "text",
                                   "id": "V2da71",
                                   "fill": "$--foreground",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Set up your shop",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-primary",
                                   "fontSize": 22,
                                   "fontWeight": "600"
@@ -77916,6 +77202,7 @@
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
                                   "content": "Create your workspace and invite your team in minutes",
+                                  "textAlign": "center",
                                   "fontFamily": "$--font-secondary",
                                   "fontSize": 14,
                                   "fontWeight": "normal"
@@ -78016,44 +77303,16 @@
                               "width": "fill_container",
                               "descendants": {
                                 "dwwx2": {
-                                  "enabled": true
+                                  "enabled": false
                                 },
                                 "cfxzz": {
-                                  "iconFontName": "arrow-right"
+                                  "iconFontName": "arrow-right",
+                                  "enabled": false
                                 },
                                 "fIEfR": {
                                   "content": "Create workspace"
                                 }
                               }
-                            },
-                            {
-                              "type": "frame",
-                              "id": "d0Nlcx",
-                              "name": "nextNote",
-                              "width": "fill_container",
-                              "gap": 6,
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon_font",
-                                  "id": "ioEre",
-                                  "width": 14,
-                                  "height": 14,
-                                  "iconFontName": "info",
-                                  "iconFontFamily": "lucide",
-                                  "fill": "$--muted-foreground"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "KXnSH",
-                                  "fill": "$--muted-foreground",
-                                  "content": "Next: invite your masters and set service hours",
-                                  "fontFamily": "$--font-secondary",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
                             }
                           ]
                         }
@@ -78192,53 +77451,6 @@
                             },
                             {
                               "type": "frame",
-                              "id": "RVAby",
-                              "name": "badgeWrap",
-                              "width": "fill_container",
-                              "justifyContent": "center",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "q6ojQ",
-                                  "name": "badge",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 6,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "IxgWq",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "building-2",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "SSYE7",
-                                      "fill": "$--foreground",
-                                      "content": "For Organizations",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 12,
-                                      "fontWeight": "500"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "BR11W",
                               "name": "hdr",
                               "width": "fill_container",
@@ -78281,7 +77493,7 @@
                               "width": "fill_container",
                               "descendants": {
                                 "EVJFg": {
-                                  "content": "Admin email"
+                                  "content": "Email"
                                 },
                                 "SdDrF": {
                                   "content": "admin@yourgarage.uz"
@@ -78289,22 +77501,56 @@
                               }
                             },
                             {
-                              "id": "H8bIa",
+                              "id": "cSOXO",
                               "type": "ref",
                               "ref": "PoWVd",
-                              "name": "sBtn",
                               "width": "fill_container",
+                              "name": "sbtn6",
+                              "x": 40,
+                              "y": 335,
                               "descendants": {
                                 "dwwx2": {
-                                  "enabled": true
-                                },
-                                "cfxzz": {
-                                  "iconFontName": "send"
+                                  "enabled": false
                                 },
                                 "fIEfR": {
                                   "content": "Send reset link"
                                 }
                               }
+                            },
+                            {
+                              "type": "frame",
+                              "id": "sBizx",
+                              "name": "hint6",
+                              "width": "fill_container",
+                              "fill": "$--accent",
+                              "cornerRadius": "$--radius-m",
+                              "gap": 8,
+                              "padding": [
+                                12,
+                                16
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "Mjuqq",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "mail",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Ir8Hr",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Check your spam folder if you don't see it within a minute.",
+                                  "fontFamily": "$--font-secondary",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
                             },
                             {
                               "type": "frame",
@@ -78334,33 +77580,6 @@
                                   "fontWeight": "500"
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "u7rTSn",
-                          "name": "helpRow",
-                          "gap": 6,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "Y9K2f",
-                              "width": 14,
-                              "height": 14,
-                              "iconFontName": "life-buoy",
-                              "iconFontFamily": "lucide",
-                              "fill": "$--muted-foreground"
-                            },
-                            {
-                              "type": "text",
-                              "id": "L6D1zo",
-                              "fill": "$--muted-foreground",
-                              "content": "Need help? Contact your account manager",
-                              "fontFamily": "$--font-secondary",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -78492,53 +77711,6 @@
                                       "iconFontName": "lock",
                                       "iconFontFamily": "lucide",
                                       "fill": "$--primary"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "PU7r7",
-                              "name": "badgeWrap",
-                              "width": "fill_container",
-                              "justifyContent": "center",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "R7TQS",
-                                  "name": "badge",
-                                  "fill": "$--accent",
-                                  "cornerRadius": "$--radius-pill",
-                                  "stroke": {
-                                    "align": "inside",
-                                    "thickness": 1,
-                                    "fill": "$--border"
-                                  },
-                                  "gap": 6,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon_font",
-                                      "id": "WfH9b",
-                                      "width": 12,
-                                      "height": 12,
-                                      "iconFontName": "building-2",
-                                      "iconFontFamily": "lucide",
-                                      "fill": "$--primary"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "j2Nnh",
-                                      "fill": "$--foreground",
-                                      "content": "For Organizations",
-                                      "fontFamily": "$--font-secondary",
-                                      "fontSize": 12,
-                                      "fontWeight": "500"
                                     }
                                   ]
                                 }
@@ -78736,10 +77908,11 @@
                               "width": "fill_container",
                               "descendants": {
                                 "dwwx2": {
-                                  "enabled": true
+                                  "enabled": false
                                 },
                                 "cfxzz": {
-                                  "iconFontName": "shield-check"
+                                  "iconFontName": "shield-check",
+                                  "enabled": false
                                 },
                                 "fIEfR": {
                                   "content": "Set new password"
@@ -123413,7 +122586,8 @@
                           "width": "fill_container",
                           "content": "Sherzod Rakhimov • Engine diagnostics",
                           "fontFamily": "Inter",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -123489,7 +122663,8 @@
                           "content": "The customer flagged an unusual idle vibration on a 2018 Chevrolet Cobalt. They left photos and a short clip. Confirm whether you can take the booking today between 16:00–18:00.",
                           "lineHeight": 1.5,
                           "fontFamily": "Inter",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
