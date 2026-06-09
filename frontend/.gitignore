@@ -1,42 +1,251 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-.DS_Store
-dist
-dist-ssr
-coverage
-*.local
+############################
+# Environment Files        #
+############################
+.env
+.env.*
+!.env.example
 
-# Editor directories and files
+
+
+############################
+# Dependencies             #
+############################
+node_modules/
+jspm_packages/
+web_modules/
+bower_components/
+
+
+
+############################
+# Build Artifacts          #
+############################
+dist/
+build/
+.dist/
+dist-ssr/
+out-tsc/
+
+
+
+############################
+# Lockfiles                #
+############################
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+# Exclude if you want to track specific lockfile
+!pnpm-lock.yaml
+
+
+
+############################
+# Yarn                     #
+############################
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.yarn-integrity
+
+
+
+############################
+# Editor / IDE             #
+############################
 .vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.vscode/extensions.json
-.idea
+!.vscode/*.code-snippets
+!.vscode/tours
+.vscode-test
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-*.tsbuildinfo
 
-.eslintcache
 
-# Cypress
-/cypress/videos/
-/cypress/screenshots/
+############################
+# Angular                  #
+############################
+.angular
+.angular-cli.json
+.ng
 
-# Vitest
-__screenshots__/
 
-# Vite
+
+############################
+# Next.js                  #
+############################
+.next
+/out/
+.vercel
+next-env.d.ts
+
+
+
+############################
+# Nuxt.js                  #
+############################
+.nuxt
+.output
+
+
+
+############################
+# Sass                     #
+############################
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
+
+
+
+############################
+# Vite                     #
+############################
+.vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 *.timestamp-*-*.mjs
 
+
+
+############################
+# Test / Coverage          #
+############################
 test-results/
+e2e/test-output/
+coverage/
+lib-cov/
+cypress/videos/
+cypress/screenshots/
+__screenshots__/
+.nyc_output
+*.lcov
+
+
+
+############################
+# Cache                    #
+############################
+cache/
+.npm
+.vitepress
+.turbo
+.quasar
+.grunt
+.cache
+.parcel-cache
+.eslintcache
+.stylelintcache
+.node_repl_history
+.docusaurus
+.serverless
+.fusebox
+.dynamodb
+.firebase
+.tern-port
+*.tsbuildinfo
+
+
+
+############################
+# Logs                     #
+############################
+logs/
+*.log
+*.log*
+report.*.json
 playwright-report/
+
+
+
+############################
+# Runtime data             #
+############################
+pids/
+*.pid
+*.pid.lock
+*.seed
+
+
+
+############################
+# Temp folders             #
+############################
+temp/
+tmp/
+.temp
+.tmp
+
+
+
+############################
+# Windows OS               #
+############################
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+*.lnk
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+
+
+############################
+# MacOS                    #
+############################
+.DS_Store
+__MACOSX/
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+
+
+############################
+# Linux OS                 #
+############################
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+nohup.out
+
+
+
+############################
+# Others                   #
+############################
+*.tgz
+
+
+
+############################
+# Generated Assets         #
+############################
