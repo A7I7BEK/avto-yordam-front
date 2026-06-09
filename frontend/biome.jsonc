@@ -1,0 +1,118 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/vue",
+    "ultracite/biome/vitest"
+  ],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "dev"
+  },
+  "files": {
+    "includes": [
+      "**",
+      // Exclude folders
+      "!**/public",
+      "!**/assets",
+      "!**/scripts"
+    ]
+  },
+  "formatter": {
+    "attributePosition": "multiline"
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "all",
+      "attributePosition": "multiline"
+    }
+  },
+  "html": {
+    "experimentalFullSupportEnabled": true,
+    "formatter": {
+      "attributePosition": "multiline",
+      "indentScriptAndStyle": false
+    }
+  },
+  "json": {
+    "formatter": {
+      "indentWidth": 4
+    }
+  },
+  "linter": {
+    "includes": [
+      "**",
+      // Exclude files from linting only (not formatting)
+      "!shared-module/src/i18n/google-sheets/translation-cli.ts"
+    ],
+    "rules": {
+      "style": {
+        "useConsistentTypeDefinitions": "off",
+        "useFilenamingConvention": "off",
+        "noParameterProperties": "off"
+      },
+      "performance": {
+        "noBarrelFile": "off"
+      },
+      "suspicious": {
+        "noConsole": "error"
+      },
+      "complexity": {
+        "noForEach": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useAnchorContent": "off",
+        "useAltText": "off"
+      }
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "useSortedInterfaceMembers": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "**/*.vue"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUndeclaredVariables": "off",
+            "noUnknownPseudoClass": {
+              "level": "error",
+              "options": {
+                "ignore": [
+                  "deep"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "**/*.config.ts",
+        "**/*.config.js"
+      ],
+      "linter": {
+        "rules": {
+          "performance": {
+            "useTopLevelRegex": "off"
+          },
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    }
+  ]
+}
