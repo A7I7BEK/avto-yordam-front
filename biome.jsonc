@@ -1,0 +1,11 @@
+{
+	"$schema": "./frontend/node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["./frontend/biome.jsonc"],
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true,
+		"root": "./frontend",
+		"defaultBranch": "dev"
+	}
+}
