@@ -1,7 +1,4 @@
 {
-	"biome.lsp.bin": {
-		"win32-x64": "frontend/node_modules/.bin/biome.ps1"
-	},
 	"npm.packageManager": "pnpm",
 	"files.autoSave": "off",
 	"editor.formatOnSave": true,
