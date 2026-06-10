@@ -1,9 +1,7 @@
 {
-  "extends": "@tsconfig/node24/tsconfig.json",
-  "include": [
-    "./**/*"
-  ],
-  "compilerOptions": {
-    "strictNullChecks": true
-  }
+    "extends": "@tsconfig/node24/tsconfig.json",
+    "include": ["./**/*"],
+    "compilerOptions": {
+        "strictNullChecks": true
+    }
 }
