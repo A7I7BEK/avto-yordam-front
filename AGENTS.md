@@ -12,6 +12,21 @@ Biome (the underlying engine) provides robust linting and formatting. Most issue
 
 ---
 
+## Folder Structure
+
+| Folder | Purpose |
+|--------|---------|
+| `src/` | All frontend application code lives here |
+| `public/` | Public static resources for the frontend app |
+| `e2e/` | Dedicated end-to-end test directory (Playwright) |
+| `design/` | Offline design files (`.pen`, images, prompts) |
+| `design-to-front/` | Prompt files used to convert designs into frontend code |
+| `uml-diagram/` | UML diagrams saved as SVG files |
+
+> **Note**: `design/`, `design-to-front/`, `uml-diagram/`, and `public/` are excluded from Biome processing. Only `src/` and `e2e/` (and root config files) are linted/formatted.
+
+---
+
 ## Project Biome Overrides
 
 The `biome.jsonc` in this project overrides several Ultracite defaults. **All code must comply with these overrides.**
