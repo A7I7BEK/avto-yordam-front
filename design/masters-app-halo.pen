@@ -19973,14 +19973,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "HLOHE",
+                      "id": "B2Ndw",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -19988,24 +19988,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "hBYJ0",
+                          "id": "Zn0jr",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "b2N4H",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "v1HnS",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "sPBd8",
+                              "id": "I4vwW",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -20016,8 +20016,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "w6jK3",
-                          "name": "nf5b",
+                          "id": "g9BSd",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -20028,7 +20028,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "dXSO8",
+                              "id": "NZxh7",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -22026,14 +22026,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "EyvDI",
+                      "id": "ux8sM",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -22041,24 +22041,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "N04kTr",
+                          "id": "t5TdAK",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "EJdGP",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "xx7DW",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "LhGfx",
+                              "id": "UojRB",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -22069,8 +22069,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "ztdrr",
-                          "name": "nf5b",
+                          "id": "Z5ORB",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -22081,7 +22081,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "xc9XY",
+                              "id": "FsoXk",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -23603,14 +23603,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "h3KnZC",
+                      "id": "GV0lA",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -23618,24 +23618,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "LxdAE",
+                          "id": "BeEWM",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "vzav6",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "ZHR2x",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "FAZRy",
+                              "id": "E50zI",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -23646,8 +23646,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "HrLJn",
-                          "name": "nf5b",
+                          "id": "y9Jfd",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -23658,7 +23658,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "xdagc",
+                              "id": "e0kFRM",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -24850,14 +24850,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "W5baD",
+                      "id": "oaYn6",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -24865,24 +24865,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "uDmGB",
+                          "id": "Wcza4",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "LaDF5",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "lG8lo",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "E95Wi",
+                              "id": "JiMAK",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -24893,8 +24893,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "dspzM",
-                          "name": "nf5b",
+                          "id": "Item0",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -24905,7 +24905,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "Z9Gsbx",
+                              "id": "sC1kW",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -26973,14 +26973,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "T415UV",
+                      "id": "rqwBR",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -26988,24 +26988,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "EYVJQ",
+                          "id": "OObFX",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "fKm5h",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "XRTfS",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "OjQro",
+                              "id": "VaS91",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -27016,8 +27016,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "h6oSaV",
-                          "name": "nf5b",
+                          "id": "gma2Y",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -27028,7 +27028,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "lehrD",
+                              "id": "QMzRV",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -28760,14 +28760,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "D4LAwM",
+                      "id": "cGwn8",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -28775,24 +28775,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "uU1M8",
+                          "id": "z36myk",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "fL9hj",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "wcs6o",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "daCCt",
+                              "id": "woZ0p",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -28803,8 +28803,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "PHRz9",
-                          "name": "nf5b",
+                          "id": "Z2V2IF",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -28815,7 +28815,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "JKWG9",
+                              "id": "GTUMf",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -30481,14 +30481,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "BqusP",
+                      "id": "SIPtu",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -30496,24 +30496,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "AD2FQ",
+                          "id": "Yt2p0",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "Kielr",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "w8QfhL",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "b85uxP",
+                              "id": "Ju2LK",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -30524,8 +30524,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "j0rYJL",
-                          "name": "nf5b",
+                          "id": "g823G",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -30536,7 +30536,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "R75eC",
+                              "id": "LePmv",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -89365,7 +89365,7 @@
                             {
                               "type": "icon",
                               "id": "mxD4B",
-                              "width": 55.52116583030735,
+                              "width": 114.52116583030735,
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
@@ -98037,7 +98037,7 @@
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -98046,16 +98046,16 @@
                         {
                           "type": "group",
                           "id": "EO6U0",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "E04DT",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "INEM7",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -98074,7 +98074,7 @@
                         {
                           "type": "frame",
                           "id": "hw5GF",
-                          "name": "nf5b",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -102037,14 +102037,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "ARjQh",
+                      "id": "bi4k3",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -102052,24 +102052,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "SUzY0",
+                          "id": "pdEGf",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "n55XM",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "NHkYG",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "av7mG",
+                              "id": "DvnwL",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -102080,8 +102080,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "olJPA",
-                          "name": "nf5b",
+                          "id": "y1DbL",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -102092,7 +102092,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "eCRWt",
+                              "id": "P5AbC",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -104061,7 +104061,7 @@
                     },
                     {
                       "type": "frame",
-                      "id": "mRsO1",
+                      "id": "ReSTR",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
@@ -104069,7 +104069,7 @@
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -104077,40 +104077,36 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "s5GEVT",
+                          "id": "u8aBU",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "padding": [
-                            0,
-                            6
-                          ],
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "P6LAOc",
-                              "width": 59.367004486737116,
-                              "height": 16.800528137315705,
+                              "id": "F385OI",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-primary-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "r0U7pX",
-                              "fill": "$--sidebar-accent-foreground",
+                              "id": "kNviK",
+                              "fill": "$--sidebar-primary-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
                               "fontSize": 14,
-                              "fontWeight": "600"
+                              "fontWeight": "500"
                             }
                           ]
                         },
                         {
                           "type": "frame",
-                          "id": "D6G0Z4",
-                          "name": "nf5b",
+                          "id": "E4n7S",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -104121,7 +104117,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "PYkOW",
+                              "id": "Ok0c1",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -105802,14 +105798,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "k9Ryx",
+                      "id": "rGF9t",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -105817,24 +105813,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "qN6oa",
+                          "id": "DZd4W",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "fR7UM",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "kXJLt",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "Y9VyN",
+                              "id": "PpkKX",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -105845,8 +105841,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "dyk6h",
-                          "name": "nf5b",
+                          "id": "y2JfJ",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -105857,7 +105853,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "KEYEd",
+                              "id": "t9P7qk",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -107340,14 +107336,14 @@
                     },
                     {
                       "type": "frame",
-                      "id": "ZIAiF",
+                      "id": "n7Nss",
                       "name": "Nav Invitations",
                       "width": "fill_container",
                       "height": 40,
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
-                        10,
+                        0,
                         12
                       ],
                       "justifyContent": "space_between",
@@ -107355,24 +107351,24 @@
                       "children": [
                         {
                           "type": "group",
-                          "id": "yWT4e",
+                          "id": "GmALS",
+                          "name": "Text",
                           "layout": "horizontal",
                           "gap": 12,
-                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "icon",
-                              "id": "wILUC",
-                              "width": 38.78125,
-                              "height": 16.800528137315705,
+                              "id": "FW0MA",
+                              "width": 19.5427918630051,
+                              "height": 18,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
                             },
                             {
                               "type": "text",
-                              "id": "dEMpm",
+                              "id": "pqLk1",
                               "fill": "$--sidebar-foreground",
                               "content": "Invitations",
                               "fontFamily": "Inter",
@@ -107383,8 +107379,8 @@
                         },
                         {
                           "type": "frame",
-                          "id": "X6wdI",
-                          "name": "nf5b",
+                          "id": "rjBuC",
+                          "name": "label",
                           "width": 20,
                           "height": 20,
                           "fill": "$--primary",
@@ -107395,7 +107391,7 @@
                           "children": [
                             {
                               "type": "text",
-                              "id": "WcP2G",
+                              "id": "deTHk",
                               "fill": "$--primary-foreground",
                               "content": "2",
                               "lineHeight": 0.9,
@@ -117617,7 +117613,7 @@
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 106.19592232657756,
+                  "height": 120.99306107069613,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -117993,7 +117989,7 @@
                   "id": "k6Geb",
                   "name": "body15",
                   "width": "fill_container",
-                  "height": 1311.519640733233,
+                  "height": 1494.2643042230968,
                   "gap": 16,
                   "padding": [
                     0,
@@ -121312,7 +121308,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 130.96837543954126,
+                  "height": 161.70272495160816,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -121754,7 +121750,7 @@
                   "id": "Hy6tZ",
                   "name": "body19",
                   "width": "fill_container",
-                  "height": 1155.7959132539515,
+                  "height": 1427.0265476979419,
                   "gap": 16,
                   "padding": [
                     0,
