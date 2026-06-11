@@ -12827,7 +12827,7 @@
               "id": "kzk61",
               "name": "h1",
               "fill": "$--foreground",
-              "content": "Master · Authentication",
+              "content": "Professional · Authentication",
               "fontFamily": "$--font-primary",
               "fontSize": 28,
               "fontWeight": "600"
@@ -19997,8 +19997,8 @@
                             {
                               "type": "icon",
                               "id": "b2N4H",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -22050,8 +22050,8 @@
                             {
                               "type": "icon",
                               "id": "EJdGP",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -23627,8 +23627,8 @@
                             {
                               "type": "icon",
                               "id": "vzav6",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -24874,8 +24874,8 @@
                             {
                               "type": "icon",
                               "id": "LaDF5",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -26997,8 +26997,8 @@
                             {
                               "type": "icon",
                               "id": "fKm5h",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -28784,8 +28784,8 @@
                             {
                               "type": "icon",
                               "id": "fL9hj",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -30505,8 +30505,8 @@
                             {
                               "type": "icon",
                               "id": "Kielr",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -89365,7 +89365,7 @@
                             {
                               "type": "icon",
                               "id": "mxD4B",
-                              "width": 18,
+                              "width": 29.48936170212766,
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
@@ -98054,8 +98054,8 @@
                             {
                               "type": "icon",
                               "id": "E04DT",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -102061,8 +102061,8 @@
                             {
                               "type": "icon",
                               "id": "n55XM",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -104090,8 +104090,8 @@
                             {
                               "type": "icon",
                               "id": "P6LAOc",
-                              "width": 18,
-                              "height": 18,
+                              "width": 31.260687662145745,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-accent-foreground"
@@ -105826,8 +105826,8 @@
                             {
                               "type": "icon",
                               "id": "fR7UM",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -107364,8 +107364,8 @@
                             {
                               "type": "icon",
                               "id": "wILUC",
-                              "width": 18,
-                              "height": 18,
+                              "width": 25.5,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -117617,7 +117617,7 @@
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 80,
+                  "height": 92.5571801164929,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -117993,7 +117993,7 @@
                   "id": "k6Geb",
                   "name": "body15",
                   "width": "fill_container",
-                  "height": 988,
+                  "height": 1143.0811744386874,
                   "gap": 16,
                   "padding": [
                     0,
@@ -121312,7 +121312,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 80,
+                  "height": 103.8063566355228,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -121754,7 +121754,7 @@
                   "id": "Hy6tZ",
                   "name": "body19",
                   "width": "fill_container",
-                  "height": 706,
+                  "height": 916.0910973084888,
                   "gap": 16,
                   "padding": [
                     0,
