@@ -1,7 +1,7 @@
 # Page Prompt: Step 1 — Personal Info
 
-> **Design Node ID**: `i6kZIt` | **Route**: `/onboarding/professional/personal-info` | **Viewport**: 1440×1000px  
-> **Incoming from**: Auth flow (OTP verify or Sign Up success)  
+> **Design Node ID**: `i6kZIt` | **Route**: `/onboarding/professional/personal-info` | **Viewport**: 1440×1000px
+> **Incoming from**: Auth flow (OTP verify or Sign Up success)
 > **Leads to**: Step 2 (Professional Info)
 
 ---

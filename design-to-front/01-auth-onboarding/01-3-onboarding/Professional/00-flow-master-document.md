@@ -1,9 +1,9 @@
 # Professional Onboarding Flow — Master Document
 
-> **Target**: Vue 3 + TypeScript + Composition API + Vue Router  
-> **Design Source**: `masters-app-halo.pen` → `04-auth-onboarding-layouts` → `Master · Onboarding`  
-> **Output Folder**: `src/views/onboarding/professional/`  
-> **Incoming from**: Professional Auth (OTP or Sign Up success)  
+> **Target**: Vue 3 + TypeScript + Composition API + Vue Router
+> **Design Source**: `masters-app-halo.pen` → `04-auth-onboarding-layouts` → `Master · Onboarding`
+> **Output Folder**: `src/views/onboarding/professional/`
+> **Incoming from**: Professional Auth (OTP or Sign Up success)
 > **Leads to**: Dashboard
 
 ---

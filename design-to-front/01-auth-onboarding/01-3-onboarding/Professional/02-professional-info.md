@@ -1,7 +1,7 @@
 # Page Prompt: Step 2 — Professional Info
 
-> **Design Node ID**: `h7bM2o` | **Route**: `/onboarding/professional/professional-info` | **Viewport**: 1440×1000px  
-> **Incoming from**: Step 1 (Personal Info)  
+> **Design Node ID**: `h7bM2o` | **Route**: `/onboarding/professional/professional-info` | **Viewport**: 1440×1000px
+> **Incoming from**: Step 1 (Personal Info)
 > **Leads to**: Dashboard
 
 ---
