@@ -67133,7 +67133,6 @@
                           "id": "AGtjG",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -67155,12 +67154,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "sWM2b",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -67175,7 +67174,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -70205,7 +70204,6 @@
                           "id": "UWl59",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -70227,12 +70225,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "kEqaC",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -70247,7 +70245,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -71488,7 +71486,6 @@
                           "id": "W4sXBn",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -71510,12 +71507,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "qQw4K",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -71530,7 +71527,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -72745,7 +72742,6 @@
                           "id": "fhqQJ",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -72767,12 +72763,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "E1ZqA1",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -72787,7 +72783,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -74895,7 +74891,6 @@
                           "id": "cjhLi",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -74917,12 +74912,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "Wr3Oh",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -74937,7 +74932,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -76160,6 +76155,7 @@
                               "id": "WQLkk",
                               "name": "sub-active",
                               "width": "fill_container",
+                              "fill": "$--sidebar-accent",
                               "cornerRadius": "$--radius-xs",
                               "gap": 12,
                               "padding": [
@@ -76175,12 +76171,12 @@
                                   "height": 16,
                                   "icon": "user-round-cog",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-foreground"
+                                  "fill": "$--sidebar-accent-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "VowBQ",
-                                  "fill": "$--sidebar-foreground",
+                                  "fill": "$--sidebar-accent-foreground",
                                   "content": "Employees",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
@@ -76366,7 +76362,6 @@
                       "name": "Nav Settings",
                       "width": "fill_container",
                       "height": 40,
-                      "fill": "$--sidebar-accent",
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
@@ -76382,12 +76377,12 @@
                           "height": 18,
                           "icon": "settings",
                           "library": "lucide",
-                          "fill": "$--sidebar-accent-foreground"
+                          "fill": "$--sidebar-foreground"
                         },
                         {
                           "type": "text",
                           "id": "XGKXU",
-                          "fill": "$--sidebar-accent-foreground",
+                          "fill": "$--sidebar-foreground",
                           "content": "Settings",
                           "fontFamily": "Inter",
                           "fontSize": 14,
@@ -77583,7 +77578,6 @@
                           "id": "w45e2o",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -77605,12 +77599,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "c8OMzY",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -77625,7 +77619,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -77648,7 +77642,6 @@
                               "id": "KX6sm",
                               "name": "sub-active",
                               "width": "fill_container",
-                              "fill": "$--sidebar-accent",
                               "cornerRadius": "$--radius-xs",
                               "gap": 12,
                               "padding": [
@@ -77664,12 +77657,12 @@
                                   "height": 16,
                                   "icon": "user-round-cog",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "oC2CG",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Employees",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
@@ -77681,6 +77674,7 @@
                               "type": "frame",
                               "id": "VDCvP",
                               "width": "fill_container",
+                              "fill": "$--sidebar-accent",
                               "cornerRadius": "$--radius-xs",
                               "gap": 12,
                               "padding": [
@@ -77696,12 +77690,12 @@
                                   "height": 16,
                                   "icon": "user-round",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-foreground"
+                                  "fill": "$--sidebar-accent-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "ULZBy",
-                                  "fill": "$--sidebar-foreground",
+                                  "fill": "$--sidebar-accent-foreground",
                                   "content": "Members",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
@@ -81556,7 +81550,6 @@
                           "id": "w7kk8",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -81578,12 +81571,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "MHl9x",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -81598,7 +81591,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -81621,7 +81614,6 @@
                               "id": "w11kI",
                               "name": "sub-active",
                               "width": "fill_container",
-                              "fill": "$--sidebar-accent",
                               "cornerRadius": "$--radius-xs",
                               "gap": 12,
                               "padding": [
@@ -81637,12 +81629,12 @@
                                   "height": 16,
                                   "icon": "user-round-cog",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "Wplbu",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Employees",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
@@ -81654,6 +81646,7 @@
                               "type": "frame",
                               "id": "TC27a",
                               "width": "fill_container",
+                              "fill": "$--sidebar-accent",
                               "cornerRadius": "$--radius-xs",
                               "gap": 12,
                               "padding": [
@@ -81669,16 +81662,16 @@
                                   "height": 16,
                                   "icon": "user-round",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-foreground"
+                                  "fill": "$--sidebar-accent-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "MWkFL",
-                                  "fill": "$--sidebar-foreground",
+                                  "fill": "$--sidebar-accent-foreground",
                                   "content": "Members",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
-                                  "fontWeight": "500"
+                                  "fontWeight": "600"
                                 }
                               ]
                             }
@@ -87371,7 +87364,6 @@
                           "id": "G5xLK4",
                           "name": "Team Header",
                           "width": "fill_container",
-                          "fill": "$--sidebar-accent",
                           "cornerRadius": "$--radius-xs",
                           "padding": [
                             10,
@@ -87393,12 +87385,12 @@
                                   "height": 18,
                                   "icon": "users",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "EmRPN",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Team",
                                   "fontFamily": "Inter",
                                   "fontSize": 14,
@@ -87413,7 +87405,7 @@
                               "height": 14,
                               "icon": "chevron-down",
                               "library": "lucide",
-                              "fill": "$--sidebar-accent-foreground"
+                              "fill": "$--sidebar-foreground"
                             }
                           ]
                         },
@@ -87436,7 +87428,6 @@
                               "id": "bSsQ8",
                               "name": "sub-active",
                               "width": "fill_container",
-                              "fill": "$--sidebar-accent",
                               "cornerRadius": "$--radius-xs",
                               "gap": 12,
                               "padding": [
@@ -87452,12 +87443,12 @@
                                   "height": 16,
                                   "icon": "user-round-cog",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-accent-foreground"
+                                  "fill": "$--sidebar-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "U4nZOl",
-                                  "fill": "$--sidebar-accent-foreground",
+                                  "fill": "$--sidebar-foreground",
                                   "content": "Employees",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
@@ -87469,6 +87460,7 @@
                               "type": "frame",
                               "id": "kyT64",
                               "width": "fill_container",
+                              "fill": "$--sidebar-accent",
                               "cornerRadius": "$--radius-xs",
                               "gap": 12,
                               "padding": [
@@ -87484,16 +87476,16 @@
                                   "height": 16,
                                   "icon": "user-round",
                                   "library": "lucide",
-                                  "fill": "$--sidebar-foreground"
+                                  "fill": "$--sidebar-accent-foreground"
                                 },
                                 {
                                   "type": "text",
                                   "id": "zrxFJ",
-                                  "fill": "$--sidebar-foreground",
+                                  "fill": "$--sidebar-accent-foreground",
                                   "content": "Members",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
-                                  "fontWeight": "500"
+                                  "fontWeight": "600"
                                 }
                               ]
                             }
@@ -114091,7 +114083,7 @@
         {
           "type": "frame",
           "id": "G234zC",
-          "x": 1600,
+          "x": 6382,
           "y": 200,
           "name": "14 — Schedules Month",
           "clip": true,
@@ -117029,7 +117021,7 @@
         {
           "type": "frame",
           "id": "hcpPj",
-          "x": 6160,
+          "x": 1637,
           "y": 200,
           "name": "15 — Order Detail",
           "width": 1698,
@@ -117156,6 +117148,7 @@
                       "name": "Nav Orders",
                       "width": "fill_container",
                       "height": 40,
+                      "fill": "$--sidebar-accent",
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
@@ -117178,12 +117171,12 @@
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
-                              "fill": "$--sidebar-foreground"
+                              "fill": "$--sidebar-accent-foreground"
                             },
                             {
                               "type": "text",
                               "id": "a2RU9H",
-                              "fill": "$--sidebar-foreground",
+                              "fill": "$--sidebar-accent-foreground",
                               "content": "Orders",
                               "fontFamily": "Inter",
                               "fontSize": 14,
@@ -117258,7 +117251,6 @@
                       "name": "Nav Schedule",
                       "width": "fill_container",
                       "height": 40,
-                      "fill": "$--sidebar-accent",
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
@@ -117274,12 +117266,12 @@
                           "height": 18,
                           "icon": "calendar",
                           "library": "lucide",
-                          "fill": "$--sidebar-accent-foreground"
+                          "fill": "$--sidebar-foreground"
                         },
                         {
                           "type": "text",
                           "id": "O10X9",
-                          "fill": "$--sidebar-accent-foreground",
+                          "fill": "$--sidebar-foreground",
                           "content": "Schedules",
                           "fontFamily": "Inter",
                           "fontSize": 14,
@@ -117607,13 +117599,14 @@
               "id": "VyIiF",
               "name": "Main",
               "layout": "vertical",
+              "width": "fill_container",
               "children": [
                 {
                   "type": "frame",
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 120.99306107069613,
+                  "height": 80,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -117989,7 +117982,6 @@
                   "id": "k6Geb",
                   "name": "body15",
                   "width": "fill_container",
-                  "height": 1494.2643042230968,
                   "gap": 16,
                   "padding": [
                     0,
@@ -120109,8 +120101,8 @@
         {
           "type": "frame",
           "id": "tFCWZ",
-          "x": 6160,
-          "y": 2954,
+          "x": 4575,
+          "y": 4218,
           "name": "16 — Countdown Variants",
           "width": 1440,
           "height": 900,
@@ -120724,8 +120716,8 @@
         {
           "type": "frame",
           "id": "a0iSzm",
-          "x": 6160,
-          "y": 1724,
+          "x": 3463,
+          "y": 200,
           "name": "19 — Auto Cancelled Order",
           "width": 1700,
           "height": 1000,
@@ -120851,6 +120843,7 @@
                       "name": "Nav Orders",
                       "width": "fill_container",
                       "height": 40,
+                      "fill": "$--sidebar-accent",
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
@@ -120873,12 +120866,12 @@
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
-                              "fill": "$--sidebar-foreground"
+                              "fill": "$--sidebar-accent-foreground"
                             },
                             {
                               "type": "text",
                               "id": "sedEW",
-                              "fill": "$--sidebar-foreground",
+                              "fill": "$--sidebar-accent-foreground",
                               "content": "Orders",
                               "fontFamily": "Inter",
                               "fontSize": 14,
@@ -120953,7 +120946,6 @@
                       "name": "Nav Schedule",
                       "width": "fill_container",
                       "height": 40,
-                      "fill": "$--sidebar-accent",
                       "cornerRadius": 10,
                       "gap": 12,
                       "padding": [
@@ -120969,12 +120961,12 @@
                           "height": 18,
                           "icon": "calendar",
                           "library": "lucide",
-                          "fill": "$--sidebar-accent-foreground"
+                          "fill": "$--sidebar-foreground"
                         },
                         {
                           "type": "text",
                           "id": "TyMjn",
-                          "fill": "$--sidebar-accent-foreground",
+                          "fill": "$--sidebar-foreground",
                           "content": "Schedules",
                           "fontFamily": "Inter",
                           "fontSize": 14,
@@ -121308,7 +121300,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 161.70272495160816,
+                  "height": 80,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -121750,7 +121742,6 @@
                   "id": "Hy6tZ",
                   "name": "body19",
                   "width": "fill_container",
-                  "height": 1427.0265476979419,
                   "gap": 16,
                   "padding": [
                     0,
@@ -123548,8 +123539,8 @@
         {
           "type": "frame",
           "id": "PX6eu",
-          "x": 3120,
-          "y": 200,
+          "x": 6382,
+          "y": 1179,
           "name": "14A — Schedules Week",
           "clip": true,
           "width": 1440,
@@ -125820,8 +125811,8 @@
         {
           "type": "frame",
           "id": "vobPC",
-          "x": 4640,
-          "y": 200,
+          "x": 6382,
+          "y": 2374,
           "name": "14B — Schedules Day",
           "clip": true,
           "width": 1440,
