@@ -1,7 +1,7 @@
 # Business Authentication Flow — Master Document
 
-> **Target**: Vue 3 + TypeScript + Composition API + Vue Router  
-> **Design Source**: `masters-app-halo.pen` → `04-auth-onboarding-layouts` → `Organization · Authentication`  
+> **Target**: Vue 3 + TypeScript + Composition API + Vue Router
+> **Design Source**: `masters-app-halo.pen` → `04-auth-onboarding-layouts` → `Organization · Authentication`
 > **Output Folder**: `src/views/auth/business/`
 
 ---
