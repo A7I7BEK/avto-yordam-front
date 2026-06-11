@@ -12,6 +12,57 @@ Biome (the underlying engine) provides robust linting and formatting. Most issue
 
 ---
 
+## Project Biome Overrides
+
+The `biome.jsonc` in this project overrides several Ultracite defaults. **All code must comply with these overrides.**
+
+### Formatting Overrides
+
+| Rule | Ultracite Default | Project Override | What it means |
+|------|------------------|-----------------|---------------|
+| `javascript.formatter.quoteStyle` | `"double"` | **`"single"`** | Use single quotes (`'`) in `.ts` / `.vue` |
+| `formatter.attributePosition` (all) | `"auto"` | **`"multiline"`** | Attributes go on separate lines when multiple |
+| `html.formatter.indentScriptAndStyle` | `true` | **`false`** | Do NOT indent `<script>` / `<style>` block contents |
+| `json.formatter.indentWidth` | `2` | **`4`** | JSON files use 4-space indentation |
+
+### Linting Overrides (Rules Turned OFF)
+
+The following Ultracite `"error"` rules are **disabled** in this project:
+
+| Rule | Effect |
+|------|--------|
+| `complexity.noForEach` | ✅ `.forEach()` is **allowed** |
+| `performance.noBarrelFile` | ✅ Barrel files (`index.ts` re-exports) are **allowed** |
+| `style.noParameterProperties` | ✅ TypeScript parameter properties are **allowed** |
+| `style.useConsistentTypeDefinitions` | ✅ Both `type` and `interface` are acceptable |
+| `style.useFilenamingConvention` | ✅ No file naming convention enforced |
+| `a11y.noSvgWithoutTitle` | ✅ SVGs without `<title>` are allowed |
+| `a11y.useAnchorContent` | ✅ Empty anchors are allowed |
+| `a11y.useAltText` | ✅ Images without `alt` are allowed |
+| `assist.source.useSortedInterfaceMembers` | ✅ Interface member auto-sorting is off |
+
+### Linting Overrides (Rules Tightened)
+
+| Rule | Ultracite Default | Project Override | Effect |
+|------|------------------|-----------------|--------|
+| `suspicious.noConsole` | `"off"` | **`"error"`** | ❌ `console.log` is **forbidden** in app code |
+
+### Vue-Specific Overrides
+
+| Rule | Effect |
+|------|--------|
+| `correctness.noUndeclaredVariables` | `"off"` — `vue-tsc` handles this |
+| `correctness.noUnknownPseudoClass` | `"error"` with `:deep` ignored — Vue's `:deep()` combinator is whitelisted |
+
+### Config File Overrides (`*.config.ts`, `*.config.js`)
+
+| Rule | Effect |
+|------|--------|
+| `performance.useTopLevelRegex` | `"off"` — Regex inside functions is fine |
+| `suspicious.noConsole` | `"off"` — `console.log` allowed in config files |
+
+---
+
 ## Core Principles
 
 Write code that is **accessible, performant, type-safe, and maintainable**. Focus on clarity and explicit intent over brevity.
@@ -23,15 +74,17 @@ Write code that is **accessible, performant, type-safe, and maintainable**. Focu
 - Use const assertions (`as const`) for immutable values and literal types
 - Leverage TypeScript's type narrowing instead of type assertions
 - Use meaningful variable names instead of magic numbers - extract constants with descriptive names
+- Both `type` and `interface` are acceptable (Biome rule is off)
 
 ### Modern JavaScript/TypeScript
 
 - Use arrow functions for callbacks and short functions
-- Prefer `for...of` loops over `.forEach()` and indexed `for` loops
+- Both `for...of` and `.forEach()` are acceptable (Biome `noForEach` is off)
 - Use optional chaining (`?.`) and nullish coalescing (`??`) for safer property access
 - Prefer template literals over string concatenation
 - Use destructuring for object and array assignments
 - Use `const` by default, `let` only when reassignment is needed, never `var`
+- Use single quotes (`'`), not double quotes — enforced by Biome formatter
 
 ### Async & Promises
 
@@ -57,7 +110,8 @@ Write code that is **accessible, performant, type-safe, and maintainable**. Focu
 
 ### Error Handling & Debugging
 
-- Remove `console.log`, `debugger`, and `alert` statements from production code
+- ❌ `console.log` is **forbidden** in application code (Biome `noConsole: error`). Remove or use a proper logger.
+- `debugger` and `alert` are also forbidden (enforced by Biome).
 - Throw `Error` objects with descriptive messages, not strings or other values
 - Use `try-catch` blocks meaningfully - don't catch errors just to rethrow them
 - Prefer early returns over nested conditionals for error cases
@@ -82,7 +136,7 @@ Write code that is **accessible, performant, type-safe, and maintainable**. Focu
 - Avoid spread syntax in accumulators within loops
 - Use top-level regex literals instead of creating them in loops
 - Prefer specific imports over namespace imports
-- Avoid barrel files (index files that re-export everything)
+- Barrel files are allowed (Biome `noBarrelFile` is off), but use them judiciously
 - Use proper image components (e.g., Next.js `<Image>`) over `<img>` tags
 
 ### Framework-Specific Guidance
