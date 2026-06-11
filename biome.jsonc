@@ -16,13 +16,11 @@
         "includes": [
             // Exclude folders
             "!**/design",
+            "!**/design-to-front",
             "!**/uml-diagram",
             "!**/public",
             "!**/assets",
-            "!**/scripts",
-
-            // Exclude Generated files
-            "!retrain-module/auto-imports.d.ts"
+            "!**/scripts"
         ]
     },
     "formatter": {
