@@ -1,6 +1,6 @@
 # Page Prompt: Step 1 — Organization Type
 
-> **Design Node ID**: `lyxy1` | **Route**: `/onboarding/business/org-type` | **Viewport**: 1440×1000px  
+> **Design Node ID**: `lyxy1` | **Route**: `/onboarding/business/org-type` | **Viewport**: 1440×1000px
 > **Incoming from**: Business Auth | **Leads to**: Step 2 (Bank Account)
 
 ---

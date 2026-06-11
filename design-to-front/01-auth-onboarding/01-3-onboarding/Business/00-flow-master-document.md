@@ -1,9 +1,9 @@
 # Business Onboarding Flow — Master Document
 
-> **Target**: Vue 3 + TypeScript + Composition API + Vue Router  
-> **Design Source**: `masters-app-halo.pen` → `04-auth-onboarding-layouts` → `Organization · Onboarding`  
-> **Output Folder**: `src/views/onboarding/business/`  
-> **Incoming from**: Business Auth (OTP or Create Workspace success)  
+> **Target**: Vue 3 + TypeScript + Composition API + Vue Router
+> **Design Source**: `masters-app-halo.pen` → `04-auth-onboarding-layouts` → `Organization · Onboarding`
+> **Output Folder**: `src/views/onboarding/business/`
+> **Incoming from**: Business Auth (OTP or Create Workspace success)
 > **Leads to**: Dashboard
 
 ---

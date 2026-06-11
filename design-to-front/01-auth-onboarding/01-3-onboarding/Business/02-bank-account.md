@@ -1,6 +1,6 @@
 # Page Prompt: Step 2 — Bank Account
 
-> **Design Node ID**: `toYVY` | **Route**: `/onboarding/business/bank-account` | **Viewport**: 1440×900px  
+> **Design Node ID**: `toYVY` | **Route**: `/onboarding/business/bank-account` | **Viewport**: 1440×900px
 > **Incoming from**: Step 1 (Organization Type) | **Leads to**: Dashboard
 
 ---
@@ -137,7 +137,7 @@ Top border separator: `padding-top: 8px; border-top: 1px solid #C5C5CB;`
 
 Same as Step 1: space-between.
 
-**Back**: Secondary button → Step 1  
+**Back**: Secondary button → Step 1
 **Continue**: Primary button → Dashboard (saves all data)
 
 ---
