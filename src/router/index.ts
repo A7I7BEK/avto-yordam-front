@@ -1,21 +1,52 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+import {
+  accountSelectionRoutes,
+  businessAuthRoutes,
+  businessOnboardingRoutes,
+  professionalAuthRoutes,
+  professionalOnboardingRoutes,
+} from './auth.routes';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // Redirect root to account type selection
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      redirect: '/auth/account-type',
     },
+
+    // === Auth (no layout) ===
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/auth',
+      children: [
+        ...accountSelectionRoutes,
+        ...businessAuthRoutes,
+        ...professionalAuthRoutes,
+      ],
+    },
+
+    // === Onboarding (no layout) ===
+    ...businessOnboardingRoutes,
+    ...professionalOnboardingRoutes,
+
+    // === Business Workspace (placeholder) ===
+    {
+      path: '/business',
+      redirect: '/auth/account-type',
+    },
+
+    // === Professional Workspace (placeholder) ===
+    {
+      path: '/professional',
+      redirect: '/auth/account-type',
+    },
+
+    // === Utility (no layout) ===
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/utility/NotFound.vue'),
     },
   ],
 });
