@@ -31,8 +31,8 @@ function goNext() {
     inn: form.inn,
     accountNumber: form.accountNumber,
   });
-  // Navigate to dashboard after onboarding
-  router.push({ name: 'pro-dashboard' });
+  // Navigate to business dashboard after onboarding
+  router.push({ name: 'biz-dashboard-overview' });
 }
 </script>
 
