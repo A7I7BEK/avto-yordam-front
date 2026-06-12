@@ -1,0 +1,16 @@
+export const transactionDetail = {
+  id: 'PM-8472913',
+  orderId: '#BK-1247',
+  customerName: 'Akmal Nazarov',
+  customerInitials: 'AN',
+  amount: 850_000,
+  amountFormatted: '850 000 UZS',
+  provider: 'PayMe',
+  providerDot: '#00A0E9',
+  providerBg: '#C9D6F0',
+  status: 'Paid',
+  date: 'Apr 12, 2026 · 14:32',
+  service: 'Brake pads exchange',
+  masterName: 'Bekzod Rakhimov',
+  description: 'Front + rear pad set replacement with pressure check',
+};

@@ -2,12 +2,7 @@
   setup
   lang="ts"
 >
-import {
-  ArrowLeft,
-  Building2,
-  ChevronDown,
-  ShieldCheck,
-} from '@lucide/vue';
+import { ArrowLeft, Building2, ChevronDown, ShieldCheck } from '@lucide/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';

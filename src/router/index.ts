@@ -6,6 +6,7 @@ import {
   professionalAuthRoutes,
   professionalOnboardingRoutes,
 } from './auth.routes';
+import { businessRoutes } from './business.routes';
 import { professionalWorkspaceRoutes } from './professional.routes';
 
 const router = createRouter({
@@ -34,11 +35,8 @@ const router = createRouter({
     // === Professional Workspace (with AppShell layout) ===
     ...professionalWorkspaceRoutes,
 
-    // === Business Workspace (placeholder) ===
-    {
-      path: '/business',
-      redirect: '/auth/account-type',
-    },
+    // === Business Workspace (with AppShell layout) ===
+    ...businessRoutes,
 
     // === Utility (no layout) ===
     {

@@ -59,7 +59,7 @@ function requestExport() {
           <span class="toggle-label">{{ item.label }}</span>
           <span class="toggle-desc">{{ item.desc }}</span>
         </div>
-        <ToggleSwitch v-model="toggles[idx]!.value" />
+        <ToggleSwitch v-model="(toggles[idx] as { value: boolean }).value" />
       </div>
     </div>
 

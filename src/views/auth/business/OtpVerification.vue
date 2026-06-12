@@ -2,12 +2,7 @@
   setup
   lang="ts"
 >
-import {
-  ArrowLeft,
-  Building2,
-  Clock,
-  MessageCircleMore,
-} from '@lucide/vue';
+import { ArrowLeft, Building2, Clock, MessageCircleMore } from '@lucide/vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
