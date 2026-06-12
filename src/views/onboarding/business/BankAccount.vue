@@ -32,7 +32,7 @@ function goNext() {
     accountNumber: form.accountNumber,
   });
   // Navigate to dashboard after onboarding
-  router.push({ name: 'home' });
+  router.push({ name: 'pro-dashboard' });
 }
 </script>
 

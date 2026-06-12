@@ -86,7 +86,7 @@ async function verify() {
     const result = await professionalAuth.verifyOtp({ otpId, code });
     localStorage.setItem('token', result.token);
     if (result.user.isOnboarded) {
-      router.push({ name: 'home' });
+      router.push({ name: 'pro-dashboard' });
     } else {
       router.push({ name: 'professional-onboarding-step1' });
     }

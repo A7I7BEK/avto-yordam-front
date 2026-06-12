@@ -87,7 +87,7 @@ async function verify() {
     const result = await businessAuth.verifyOtp({ otpId, code });
     localStorage.setItem('token', result.token);
     if (result.user.isOnboarded) {
-      router.push({ name: 'home' });
+      router.push({ name: 'pro-dashboard' });
     } else {
       router.push({ name: 'business-onboarding-step1' });
     }

@@ -6,6 +6,7 @@ import {
   professionalAuthRoutes,
   professionalOnboardingRoutes,
 } from './auth.routes';
+import { professionalWorkspaceRoutes } from './professional.routes';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,15 +31,12 @@ const router = createRouter({
     ...businessOnboardingRoutes,
     ...professionalOnboardingRoutes,
 
+    // === Professional Workspace (with AppShell layout) ===
+    ...professionalWorkspaceRoutes,
+
     // === Business Workspace (placeholder) ===
     {
       path: '/business',
-      redirect: '/auth/account-type',
-    },
-
-    // === Professional Workspace (placeholder) ===
-    {
-      path: '/professional',
       redirect: '/auth/account-type',
     },
 

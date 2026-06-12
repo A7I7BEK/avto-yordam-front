@@ -82,7 +82,7 @@ function goNext() {
     workingDays: selectedDays.value,
   });
   // Navigate to dashboard after onboarding
-  router.push({ name: 'home' });
+  router.push({ name: 'pro-dashboard' });
 }
 </script>
 
