@@ -642,3 +642,6 @@ const suggestedRange = computed(() => {
 - It does not have its own route — it's a modal overlay
 - The sidebar **Categories** nav item remains active while the dialog is open
 - After save, the service card on the parent page updates to reflect new values
+
+
+**Screenshot**: `02-pricing-dialog.png`

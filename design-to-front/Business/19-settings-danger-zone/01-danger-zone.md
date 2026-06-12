@@ -52,3 +52,6 @@ export const dangerZone = {
   activeOrders: 7, // shown as warning on delete
 };
 ```
+
+
+**Screenshot**: `01-danger-zone.png`

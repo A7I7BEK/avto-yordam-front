@@ -25,3 +25,6 @@ Modal for rescheduling a confirmed/active order to a new date and time. Opens fr
 
 ## Behavior
 - On confirm: close modal, update order, show toast "Booking rescheduled to Apr 14 · 10:00"
+
+
+**Screenshot**: `06-reschedule-modal.png`

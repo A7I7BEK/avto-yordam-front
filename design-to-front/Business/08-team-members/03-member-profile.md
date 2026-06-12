@@ -31,3 +31,6 @@ export const memberProfile = {
 ## Navigation
 - Remove → opens Remove Confirmation dialog
 - Back → `/business/team/members`
+
+
+**Screenshot**: `03-member-profile.png`

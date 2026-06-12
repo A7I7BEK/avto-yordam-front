@@ -35,3 +35,6 @@ Modules: Orders, Team, Earnings, Transactions, Categories, Reviews, Settings.
 - Edit (if custom) → `/business/roles-permissions/{id}/edit`
 - Duplicate → creates copy
 - Back → `/business/roles-permissions`
+
+
+**Screenshot**: `04-role-detail.png`

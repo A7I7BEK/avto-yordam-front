@@ -157,3 +157,6 @@ defineEmits<{ close: []; dismiss: [id: string] }>();
 - Focus trap inside modal
 - Close on Escape, close on overlay click
 - Return focus to the notification card on close
+
+
+**Screenshot**: `02-notification-detail-modal.png`

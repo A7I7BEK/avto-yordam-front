@@ -50,3 +50,6 @@ export const permissionModules = [
   // ... more modules
 ];
 ```
+
+
+**Screenshot**: `03-assign-permissions.png`

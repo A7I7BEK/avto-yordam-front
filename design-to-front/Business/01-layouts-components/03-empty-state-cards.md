@@ -447,3 +447,6 @@ const noBookings = getEmptyState('no-bookings')!;
 | Button primary text | `#FFFFFF` | `.empty-state-card__button--primary` |
 | Button outline text | `#2A2933` | `.empty-state-card__button--outline` |
 | Gap between elements | `10px` | `.empty-state-card` |
+
+
+**Screenshot**: `03-empty-state-cards.png`

@@ -470,3 +470,6 @@ export const mockBusinessHeader = {
 | Notification bell | Same | Same |
 | Avatar dropdown | Same structure | Same structure |
 | Left border | Full border (all sides) | No left border (abuts sidebar) |
+
+
+**Screenshot**: `02-app-header.png`

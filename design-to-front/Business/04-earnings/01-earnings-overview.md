@@ -397,3 +397,6 @@ export async function getEarnings(dateRange: string) {
   return apiClient.get('/business/earnings', { params: { range: dateRange } });
 }
 ```
+
+
+**Screenshot**: `01-earnings-overview.png`

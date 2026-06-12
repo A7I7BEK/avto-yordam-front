@@ -24,3 +24,6 @@ For Edit mode, permissions are shown as a summary with "Edit permissions" button
 ## Validation
 - Name required (min 2 chars, unique)
 - At least one permission must be assigned (validated on Assign Permissions page)
+
+
+**Screenshot**: `02-create-edit-role.png`

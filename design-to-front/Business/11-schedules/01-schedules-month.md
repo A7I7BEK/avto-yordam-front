@@ -45,3 +45,6 @@ export const monthBookings = [
 - View toggles: Month → Week → Day views
 - Click day → `/business/schedules/day?date=2026-04-12`
 - Click booking chip → `/business/orders/{id}`
+
+
+**Screenshot**: `01-schedules-month.png`

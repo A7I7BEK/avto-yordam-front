@@ -52,3 +52,6 @@ export const appearanceSettings = {
 
 ## Bottom Actions
 - Save changes (primary `#5749F4`) — applies immediately with transition
+
+
+**Screenshot**: `01-appearance-language.png`

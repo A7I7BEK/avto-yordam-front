@@ -57,3 +57,6 @@ export const paymentProviders = [
 ## Bottom Actions
 - Cancel → discard changes
 - Save changes (primary `#5749F4`)
+
+
+**Screenshot**: `01-payment-providers.png`

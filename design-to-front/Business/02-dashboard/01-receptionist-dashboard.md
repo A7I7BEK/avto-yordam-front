@@ -495,3 +495,6 @@ export interface ReceptionistDashboardData {
   schedules: MasterSchedule[];
 }
 ```
+
+
+**Screenshot**: `01-receptionist-dashboard.png`

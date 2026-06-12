@@ -39,3 +39,6 @@ export const members = [
 - "Invite member" → `/business/team/members/invite` (or opens modal)
 - Eye → `/business/team/members/{id}`
 - Trash → opens Remove Confirmation dialog
+
+
+**Screenshot**: `01-team-roster.png`

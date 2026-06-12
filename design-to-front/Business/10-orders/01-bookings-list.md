@@ -44,3 +44,6 @@ export const orders = [
 - Accept → opens Accept Booking Modal
 - Decline → opens Decline Booking Modal
 - "Add walk-in" → create new order form
+
+
+**Screenshot**: `01-bookings-list.png`

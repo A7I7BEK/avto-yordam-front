@@ -779,3 +779,6 @@ export interface CommandCenterDashboardData {
   };
 }
 ```
+
+
+**Screenshot**: `03-command-center-dashboard.png`

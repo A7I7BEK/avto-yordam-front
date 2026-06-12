@@ -33,3 +33,6 @@ const cancelledOrder = {
   ],
 };
 ```
+
+
+**Screenshot**: `03-auto-cancelled-order.png`

@@ -150,3 +150,6 @@ defineEmits<{
 - `aria-labelledby` for the title
 - Focus trap: focus cycles between Cancel and Delete
 - Escape triggers Cancel
+
+
+**Screenshot**: `03-delete-confirmation.png`

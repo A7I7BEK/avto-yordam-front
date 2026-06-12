@@ -560,3 +560,6 @@ export const serviceBreakdown = [
 - KPI row: 6 cards on desktop (≥1280px), 3 per row on tablet (768-1279px), 2 per row on mobile (<768px)
 - Middle and bottom rows: 2 columns on desktop, 1 column on tablet/mobile
 - Table columns: reduce to ORDER + CUSTOMER + STATUS on mobile
+
+
+**Screenshot**: `02-business-overview-dashboard.png`

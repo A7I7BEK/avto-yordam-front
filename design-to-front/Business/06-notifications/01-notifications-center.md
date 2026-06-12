@@ -141,3 +141,6 @@ Notifications.vue
 - Click delete → opens Delete Confirmation dialog (gRz6e, see `03-delete-confirmation.md`)
 - Header "Preferences" → `/business/settings/notifications`
 - Notifications bell in header syncs with this page's unread count
+
+
+**Screenshot**: `01-notifications-center.png`

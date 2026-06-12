@@ -221,3 +221,6 @@ function viewDetail(txId: string | null) {
 - Eye icon → `/business/transactions/{id}` (Transaction Detail page)
 - Order link → `/business/orders/{id}`
 - Breadcrumb: Finance > Transactions
+
+
+**Screenshot**: `01-transactions-list.png`

@@ -41,3 +41,6 @@ export const employees = [
 - Pencil → `/business/team/employees/{id}/edit` (edit)
 - Trash → opens Delete Employee dialog
 - Add button → `/business/team/employees/new`
+
+
+**Screenshot**: `01-employees-list.png`

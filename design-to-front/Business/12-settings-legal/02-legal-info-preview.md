@@ -48,3 +48,6 @@ If pending: amber badge "Under review"
 ## Navigation
 - Edit button → switches to edit mode
 - Settings sidebar → back to settings
+
+
+**Screenshot**: `02-legal-info-preview.png`

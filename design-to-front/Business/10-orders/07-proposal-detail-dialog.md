@@ -25,3 +25,6 @@ Dialog showing a detailed service proposal/quotation for an order. Includes part
 ## Buttons
 - Close (outline)
 - Send to customer (primary) — sends proposal via SMS
+
+
+**Screenshot**: `07-proposal-detail-dialog.png`

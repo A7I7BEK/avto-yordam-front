@@ -39,3 +39,6 @@ export const dayBookings = [
 - Click booking → `/business/orders/{id}`
 - Click empty slot → open quick-create order form
 - Toggle to Week or Month
+
+
+**Screenshot**: `03-schedules-day.png`

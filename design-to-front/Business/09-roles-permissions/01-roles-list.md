@@ -36,3 +36,6 @@ export const roles = [
 - Eye → `/business/roles-permissions/{id}`
 - Pencil → `/business/roles-permissions/{id}/edit`
 - Copy → duplicates role and opens edit form
+
+
+**Screenshot**: `01-roles-list.png`

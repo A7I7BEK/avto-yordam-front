@@ -55,3 +55,6 @@ export const orderDetail = {
 - Decline → opens Decline Booking Modal
 - Reschedule → opens Reschedule Modal
 - Cancel → opens cancellation confirmation
+
+
+**Screenshot**: `02-order-detail.png`

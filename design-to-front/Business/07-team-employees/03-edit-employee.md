@@ -30,3 +30,6 @@ const employee = {
 
 ## Cancel Behavior
 Returns to employee view page (`/business/team/employees/{id}`)
+
+
+**Screenshot**: `03-edit-employee.png`

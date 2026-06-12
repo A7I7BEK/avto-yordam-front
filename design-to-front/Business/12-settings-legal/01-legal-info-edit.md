@@ -54,3 +54,6 @@ export const legalInfo = {
   ],
 };
 ```
+
+
+**Screenshot**: `01-legal-info-edit.png`

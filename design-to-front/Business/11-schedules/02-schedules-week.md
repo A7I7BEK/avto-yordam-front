@@ -30,3 +30,6 @@ Same data as month view, filtered to the selected week.
 ## Navigation
 - Click booking → `/business/orders/{id}`
 - Toggle to Month or Day
+
+
+**Screenshot**: `02-schedules-week.png`

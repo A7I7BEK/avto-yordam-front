@@ -17,3 +17,6 @@ Confirmation dialog when removing a member from the team. Centered modal with wa
 ## Behavior
 - Remove → emit confirm, close, redirect to roster, show toast
 - Cancel → emit cancel, close
+
+
+**Screenshot**: `04-remove-member.png`

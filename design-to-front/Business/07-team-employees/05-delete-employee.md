@@ -17,3 +17,6 @@ Confirmation dialog when deleting an employee. Centered modal with warning icon,
 ## Behavior
 - Delete → emit confirm, close dialog, redirect to list
 - Cancel → emit cancel, close dialog
+
+
+**Screenshot**: `05-delete-employee.png`

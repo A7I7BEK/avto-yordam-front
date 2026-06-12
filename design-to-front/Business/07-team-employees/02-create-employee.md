@@ -35,3 +35,6 @@ All sections in a single card (radius 24px, white bg, border).
 - Phone required (UZ format)
 - Role required
 - Password required if not auto-generated
+
+
+**Screenshot**: `02-create-employee.png`

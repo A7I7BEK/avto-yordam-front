@@ -28,3 +28,6 @@ Modal for declining a booking. Requires a reason. Opens from Bookings List or Or
 
 ## Behavior
 - On decline: close modal, order marked "Declined", toast shown, order removed from new/pending list
+
+
+**Screenshot**: `05-decline-booking-modal.png`

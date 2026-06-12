@@ -29,3 +29,6 @@ Toggle between two modes:
 
 ## Behavior
 - Reset → emit with password data, close, show success toast
+
+
+**Screenshot**: `06-reset-password.png`

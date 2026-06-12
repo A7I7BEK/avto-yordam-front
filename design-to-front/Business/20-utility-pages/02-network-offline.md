@@ -26,3 +26,6 @@ Bottom hint: "Still having issues? Contact support" — Inter 12px, link
 - This page can be triggered by a global network status listener
 - When connection is restored, automatically navigate back or show a "Reconnected!" toast
 - Can also show as a smaller banner: "⚠️ You're offline. Some features may be unavailable." at the top of pages
+
+
+**Screenshot**: `02-network-offline.png`

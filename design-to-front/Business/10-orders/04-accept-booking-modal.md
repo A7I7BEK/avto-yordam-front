@@ -22,3 +22,6 @@ Modal for accepting a pending/new booking. Assigns a master and confirms the boo
 
 ## Behavior
 - On accept: close modal, order status changes to "Confirmed", toast "Booking #BK-1247 accepted"
+
+
+**Screenshot**: `04-accept-booking-modal.png`

@@ -40,3 +40,6 @@ export const employeeProfile = {
 - Edit → `/business/team/employees/{id}/edit`
 - Delete → opens Delete Employee dialog
 - Back → `/business/team/employees`
+
+
+**Screenshot**: `04-view-employee.png`

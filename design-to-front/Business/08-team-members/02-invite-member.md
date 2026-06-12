@@ -23,3 +23,6 @@ Form or modal for inviting a new team member. Breadcrumb: Team > Members > Invit
 
 ## Mock
 On success: show toast "Invitation sent to +998 90 123 4567". Member appears in roster with "Pending" status.
+
+
+**Screenshot**: `02-invite-member.png`

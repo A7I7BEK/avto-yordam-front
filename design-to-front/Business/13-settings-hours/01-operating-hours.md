@@ -63,3 +63,6 @@ export const operatingHours = {
 ## Bottom Actions
 - Cancel → discard changes
 - Save changes (primary `#5749F4`)
+
+
+**Screenshot**: `01-operating-hours.png`

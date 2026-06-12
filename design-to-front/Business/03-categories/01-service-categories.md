@@ -635,3 +635,6 @@ export async function toggleService(serviceId: string, enabled: boolean) {
   return apiClient.patch(`/business/categories/services/${serviceId}/toggle`, { enabled });
 }
 ```
+
+
+**Screenshot**: `01-service-categories.png`

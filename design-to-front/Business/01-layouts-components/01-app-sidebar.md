@@ -624,3 +624,6 @@ Import only the icons you need (tree-shakeable):
 ```typescript
 import { Building2, LayoutDashboard, FileText, Layers, Calendar, Users, Wallet, Receipt, Star, ShieldCheck, Settings, ChevronDown, UserRoundCog, UserRound } from 'lucide-vue-next';
 ```
+
+
+**Screenshot**: `01-app-sidebar.png`

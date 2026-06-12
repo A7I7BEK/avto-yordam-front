@@ -277,3 +277,6 @@ TransactionDetail.vue
 - Order link → `/business/orders/{id}`
 - Sidebar **Transactions** nav item remains **active**
 - Accessed from eye icon on Transactions List page
+
+
+**Screenshot**: `02-transaction-detail.png`
