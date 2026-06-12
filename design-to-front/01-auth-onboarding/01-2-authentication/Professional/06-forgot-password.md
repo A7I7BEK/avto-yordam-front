@@ -141,7 +141,7 @@ src/views/auth/professional/ForgotPassword.vue
 ```typescript
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { UserRound, KeyRound, Mail, ArrowLeft } from 'lucide-vue-next';
+import { UserRound, KeyRound, Mail, ArrowLeft } from '@lucide/vue';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();

@@ -164,7 +164,7 @@ src/views/auth/professional/EmailSignUp.vue
 ```typescript
 import { ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { UserRound, ArrowLeft, Check } from 'lucide-vue-next';
+import { UserRound, ArrowLeft, Check } from '@lucide/vue';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();

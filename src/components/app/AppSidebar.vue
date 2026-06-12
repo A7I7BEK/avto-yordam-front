@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Layers, LayoutDashboard, Mail, Settings, Star } from 'lucide-vue-next';
+import { Layers, LayoutDashboard, Mail, Settings, Star } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProfessionalAppStore } from '@/stores/professionalApp';

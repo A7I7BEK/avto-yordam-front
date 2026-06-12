@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { BadgeCheck, Plus } from 'lucide-vue-next';
+import { BadgeCheck, Plus } from '@lucide/vue';
 import { ref } from 'vue';
 
 const primaryEmail = ref('aziz.karimov@masters.uz');

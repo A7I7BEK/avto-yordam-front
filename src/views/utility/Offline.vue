@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { WifiOff } from 'lucide-vue-next';
+import { WifiOff } from '@lucide/vue';
 </script>
 
 <template>

@@ -9,7 +9,7 @@ import {
   Building2,
   Check,
   UserRound,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ProgressBar from '@/components/onboarding/ProgressBar.vue';

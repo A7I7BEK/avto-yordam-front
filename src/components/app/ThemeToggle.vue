@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Moon, Sun } from 'lucide-vue-next';
+import { Moon, Sun } from '@lucide/vue';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 
 const store = useProfessionalAppStore();

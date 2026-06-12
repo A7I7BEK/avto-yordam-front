@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { TrendingUp } from 'lucide-vue-next';
+import { TrendingUp } from '@lucide/vue';
 import type { Component } from 'vue';
 
 defineProps<{

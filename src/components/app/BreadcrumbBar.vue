@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ChevronRight } from 'lucide-vue-next';
+import { ChevronRight } from '@lucide/vue';
 
 defineProps<{
   items: string[];

@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Check, UserRound } from 'lucide-vue-next';
+import { Check, UserRound } from '@lucide/vue';
 
 defineProps<{
   currentStep: number;

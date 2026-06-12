@@ -12,7 +12,7 @@ import {
   UserRound,
   Wallet,
   Wrench,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

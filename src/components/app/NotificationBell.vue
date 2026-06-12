@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Bell } from 'lucide-vue-next';
+import { Bell } from '@lucide/vue';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 
 const store = useProfessionalAppStore();

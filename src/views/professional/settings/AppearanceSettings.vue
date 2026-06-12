@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Check, Monitor, Moon, Sun } from 'lucide-vue-next';
+import { Check, Monitor, Moon, Sun } from '@lucide/vue';
 import { ref } from 'vue';
 
 const selectedTheme = ref<'light' | 'dark' | 'system'>('light');

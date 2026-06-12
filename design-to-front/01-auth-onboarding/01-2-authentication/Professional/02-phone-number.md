@@ -137,7 +137,7 @@ src/views/auth/professional/PhoneNumber.vue
 ```typescript
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { UserRound, ArrowLeft, ChevronDown, ShieldCheck } from 'lucide-vue-next';
+import { UserRound, ArrowLeft, ChevronDown, ShieldCheck } from '@lucide/vue';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();

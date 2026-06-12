@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Check } from 'lucide-vue-next';
+import { Check } from '@lucide/vue';
 import { ref } from 'vue';
 
 interface NotificationEvent {

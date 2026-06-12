@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowRight, Check, ChevronDown, UserRound } from 'lucide-vue-next';
+import { ArrowRight, Check, ChevronDown, UserRound } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';

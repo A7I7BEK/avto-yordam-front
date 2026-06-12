@@ -175,7 +175,7 @@ src/views/auth/professional/SetNewPassword.vue
 ```typescript
 import { ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { UserRound, Lock, ArrowLeft, Check, Circle } from 'lucide-vue-next';
+import { UserRound, Lock, ArrowLeft, Check, Circle } from '@lucide/vue';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();

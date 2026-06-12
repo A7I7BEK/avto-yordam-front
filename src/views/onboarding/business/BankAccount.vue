@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, ArrowRight, Building2, ShieldAlert } from 'lucide-vue-next';
+import { ArrowLeft, ArrowRight, Building2, ShieldAlert } from '@lucide/vue';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import ProgressBar from '@/components/onboarding/ProgressBar.vue';

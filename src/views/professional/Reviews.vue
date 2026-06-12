@@ -9,7 +9,7 @@ import {
   Flag,
   Star,
   ThumbsUp,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { ref } from 'vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 

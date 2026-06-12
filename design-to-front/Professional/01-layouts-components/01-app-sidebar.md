@@ -197,7 +197,7 @@ Or simpler: extract the first path segment after `/professional/` and match.
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { LayoutDashboard, Layers, Mail, Star, Settings } from 'lucide-vue-next';
+import { LayoutDashboard, Layers, Mail, Star, Settings } from '@lucide/vue';
 import SidebarNavItem from './SidebarNavItem.vue';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 

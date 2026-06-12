@@ -331,7 +331,7 @@ defineEmits<{
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Sun, Bell, ChevronDown } from 'lucide-vue-next';
+import { Sun, Bell, ChevronDown } from '@lucide/vue';
 import { useBusinessAppStore } from '@/stores/businessApp';
 import LanguageSwitcher from './LanguageSwitcher.vue';
 import ThemeToggle from './ThemeToggle.vue';

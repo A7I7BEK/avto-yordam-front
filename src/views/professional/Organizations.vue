@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ChevronRight, Crown, Wrench } from 'lucide-vue-next';
+import { ChevronRight, Crown, Wrench } from '@lucide/vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 
 const organizations = [

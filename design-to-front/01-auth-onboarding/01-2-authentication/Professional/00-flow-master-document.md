@@ -263,7 +263,7 @@ Use `useRoute()` and `useRouter()` for navigation. Pass data via `router.push({ 
 
 ```json
 {
-  "lucide-vue-next": "latest",
+  "@lucide/vue": "latest",
   "vue-router": "latest"
 }
 ```

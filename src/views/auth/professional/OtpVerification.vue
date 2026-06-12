@@ -7,7 +7,7 @@ import {
   MessageCircleMore,
   Timer,
   UserRound,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';

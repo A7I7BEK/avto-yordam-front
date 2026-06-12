@@ -8,7 +8,7 @@ import {
   ChevronRight,
   Clock3,
   Hourglass,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { ref } from 'vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import { useProfessionalAppStore } from '@/stores/professionalApp';

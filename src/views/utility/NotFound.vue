@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { FileQuestion } from 'lucide-vue-next';
+import { FileQuestion } from '@lucide/vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Search } from 'lucide-vue-next';
+import { Search } from '@lucide/vue';
 import { ref } from 'vue';
 
 const allLanguages = [

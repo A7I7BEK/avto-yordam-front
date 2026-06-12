@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowRight, Building2, Check, UserRound } from 'lucide-vue-next';
+import { ArrowRight, Building2, Check, UserRound } from '@lucide/vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

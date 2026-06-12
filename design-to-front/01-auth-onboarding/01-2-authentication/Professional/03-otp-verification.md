@@ -156,7 +156,7 @@ src/views/auth/professional/OtpVerification.vue
 ```typescript
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { UserRound, ArrowLeft, MessageCircleMore, Timer } from 'lucide-vue-next';
+import { UserRound, ArrowLeft, MessageCircleMore, Timer } from '@lucide/vue';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();

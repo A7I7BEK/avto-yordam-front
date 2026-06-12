@@ -208,7 +208,7 @@ import {
   Receipt,
   CreditCard,
   KeyRound,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import type { Component } from 'vue';
 
 export interface EmptyStateConfig {
@@ -353,7 +353,7 @@ When displaying multiple empty state cards (e.g., on a gallery page), arrange th
 
 ```vue
 <script setup lang="ts">
-import { CalendarDays } from 'lucide-vue-next';
+import { CalendarDays } from '@lucide/vue';
 import EmptyStateCard from '@/components/app/EmptyStateCard.vue';
 
 function handleAddWalkIn() {

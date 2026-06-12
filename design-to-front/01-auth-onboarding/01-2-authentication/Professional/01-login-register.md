@@ -244,7 +244,7 @@ src/views/auth/professional/LoginRegister.vue
 
 ```typescript
 import { useRouter } from 'vue-router';
-import { UserRound, ArrowLeft, Phone, Mail } from 'lucide-vue-next';
+import { UserRound, ArrowLeft, Phone, Mail } from '@lucide/vue';
 // import { GoogleLogo, AppleLogo } from '@phosphor-icons/vue'; // or inline SVG
 
 const router = useRouter();

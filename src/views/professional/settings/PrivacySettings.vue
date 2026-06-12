@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Download, Shield, TriangleAlert } from 'lucide-vue-next';
+import { Download, Shield, TriangleAlert } from '@lucide/vue';
 import { ref } from 'vue';
 import ToggleSwitch from '@/components/app/ToggleSwitch.vue';
 

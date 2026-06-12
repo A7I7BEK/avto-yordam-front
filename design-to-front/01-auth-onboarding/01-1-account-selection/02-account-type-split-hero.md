@@ -458,7 +458,7 @@ src/views/auth/AccountTypeSplitHero.vue
 
 ### 6.4 Dependencies
 
-- **Lucide Vue Next** (`lucide-vue-next`): Icons used:
+- **Lucide Vue Next** (`@lucide/vue`): Icons used:
   - `Wrench`, `Sparkles`, `CalendarCheck`, `Wallet`, `ShieldCheck` — left panel
   - `UserPlus`, `UserRound`, `Building2`, `CircleCheck` — right panel
 - **Vue Router**: `useRouter` for navigation
@@ -529,7 +529,7 @@ background: linear-gradient(225deg, #6B5EF9 0%, #5749F4 52%, #342B9E 100%);
 12. [ ] Professional card uses `#5749F4` accent; Business card uses `#2A2933` accent
 13. [ ] Implement footer: "Already have an account? Sign in"
 14. [ ] Wire up all button/link clicks to router
-15. [ ] Install `lucide-vue-next` if needed
+15. [ ] Install `@lucide/vue` if needed
 16. [ ] Ensure scoped styles, semantic HTML, accessibility
 17. [ ] Run `pnpm dlx ultracite fix`
 18. [ ] Test at 1440×900 viewport

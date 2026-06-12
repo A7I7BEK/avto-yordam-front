@@ -415,7 +415,7 @@ import {
   ChevronDown,
   UserRoundCog,
   UserRound,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import SidebarNavItem from './SidebarNavItem.vue';
 
 // -- Route-based active detection --
@@ -615,14 +615,14 @@ export const teamSubItems = [
 
 ## 13. Icon Import Strategy
 
-Use `lucide-vue-next` for all icons. Install with:
+Use `@lucide/vue` for all icons. Install with:
 ```bash
-pnpm add lucide-vue-next
+pnpm add @lucide/vue
 ```
 
 Import only the icons you need (tree-shakeable):
 ```typescript
-import { Building2, LayoutDashboard, FileText, Layers, Calendar, Users, Wallet, Receipt, Star, ShieldCheck, Settings, ChevronDown, UserRoundCog, UserRound } from 'lucide-vue-next';
+import { Building2, LayoutDashboard, FileText, Layers, Calendar, Users, Wallet, Receipt, Star, ShieldCheck, Settings, ChevronDown, UserRoundCog, UserRound } from '@lucide/vue';
 ```
 
 

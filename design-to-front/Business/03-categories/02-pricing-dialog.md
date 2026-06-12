@@ -274,7 +274,7 @@ defineEmits<{
 ```vue
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
-import { X, Info } from 'lucide-vue-next';
+import { X, Info } from '@lucide/vue';
 
 const props = defineProps<{ /* ... */ }>();
 const emit = defineEmits<{ close: []; save: [data: { price: number; duration: number; notes: string }] }>();

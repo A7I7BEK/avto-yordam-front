@@ -434,15 +434,15 @@ export const mockProfessionalUser = {
 
 ## 9. Icon Strategy
 
-All icons use **Lucide Vue Next** (`lucide-vue-next`):
+All icons use **Lucide Vue Next** (`@lucide/vue`):
 
 ```bash
-pnpm add lucide-vue-next
+pnpm add @lucide/vue
 ```
 
 Import only what's needed (tree-shakeable):
 ```typescript
-import { Building2, LayoutDashboard, FileText, Layers, Calendar, Users, Wallet, Receipt, Star, ShieldCheck, Settings, ChevronDown, UserRoundCog, UserRound, Sun, Bell, Search, SlidersHorizontal, ArrowUpDown, TrendingUp, Clock, CircleCheck, Banknote, Smartphone, Download, Eye, Pencil, Trash2, X, Info, AlertTriangle, CheckCheck, UserPlus, UserMinus, Lock, WifiOff, FileQuestion } from 'lucide-vue-next';
+import { Building2, LayoutDashboard, FileText, Layers, Calendar, Users, Wallet, Receipt, Star, ShieldCheck, Settings, ChevronDown, UserRoundCog, UserRound, Sun, Bell, Search, SlidersHorizontal, ArrowUpDown, TrendingUp, Clock, CircleCheck, Banknote, Smartphone, Download, Eye, Pencil, Trash2, X, Info, AlertTriangle, CheckCheck, UserPlus, UserMinus, Lock, WifiOff, FileQuestion } from '@lucide/vue';
 ```
 
 ---

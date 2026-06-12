@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Bell, ChevronRight, Palette, Shield, User } from 'lucide-vue-next';
+import { Bell, ChevronRight, Palette, Shield, User } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';

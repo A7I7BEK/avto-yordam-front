@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { BadgeCheck, Pencil } from 'lucide-vue-next';
+import { BadgeCheck, Pencil } from '@lucide/vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();

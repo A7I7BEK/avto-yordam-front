@@ -15,7 +15,7 @@ import {
   TrendingUp,
   Wallet,
   Zap,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import KpiCard from '@/components/app/KpiCard.vue';
 import StatusBadge from '@/components/app/StatusBadge.vue';

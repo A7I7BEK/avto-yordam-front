@@ -281,7 +281,7 @@ src/views/auth/AccountTypeCenteredCards.vue
 
 ### 7.4 Dependencies
 
-- **Lucide Vue Next** (`lucide-vue-next`): For icons — `UserRound`, `Building2`, `Check`, `ArrowRight`
+- **Lucide Vue Next** (`@lucide/vue`): For icons — `UserRound`, `Building2`, `Check`, `ArrowRight`
 - **Vue Router**: For navigation (`useRouter`)
 
 ### 7.5 CSS Approach
@@ -350,7 +350,7 @@ Use **scoped styles** in the SFC. Define CSS custom properties from the design s
 8. [ ] Business card: same structure with different icon, colors, and content
 9. [ ] Implement footer with "Already have an account? Sign in"
 10. [ ] Wire up CTA button clicks to router navigation
-11. [ ] Install `lucide-vue-next` if not already installed
+11. [ ] Install `@lucide/vue` if not already installed
 12. [ ] Ensure scoped styles, semantic HTML, and accessibility
 13. [ ] Run `pnpm dlx ultracite fix` to format/lint
 14. [ ] Test that the page renders correctly at 1440×900 viewport

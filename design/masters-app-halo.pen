@@ -19997,8 +19997,8 @@
                             {
                               "type": "icon",
                               "id": "v1HnS",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -22050,8 +22050,8 @@
                             {
                               "type": "icon",
                               "id": "xx7DW",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -23627,8 +23627,8 @@
                             {
                               "type": "icon",
                               "id": "ZHR2x",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -24874,8 +24874,8 @@
                             {
                               "type": "icon",
                               "id": "lG8lo",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -26997,8 +26997,8 @@
                             {
                               "type": "icon",
                               "id": "XRTfS",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -28784,8 +28784,8 @@
                             {
                               "type": "icon",
                               "id": "wcs6o",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -30505,8 +30505,8 @@
                             {
                               "type": "icon",
                               "id": "w8QfhL",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -89357,7 +89357,7 @@
                             {
                               "type": "icon",
                               "id": "mxD4B",
-                              "width": 114.52116583030735,
+                              "width": 173.52116583030735,
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
@@ -98046,8 +98046,8 @@
                             {
                               "type": "icon",
                               "id": "INEM7",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -102053,8 +102053,8 @@
                             {
                               "type": "icon",
                               "id": "NHkYG",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -104078,8 +104078,8 @@
                             {
                               "type": "icon",
                               "id": "F385OI",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-primary-foreground"
@@ -105814,8 +105814,8 @@
                             {
                               "type": "icon",
                               "id": "kXJLt",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -107352,8 +107352,8 @@
                             {
                               "type": "icon",
                               "id": "FW0MA",
-                              "width": 19.5427918630051,
-                              "height": 18,
+                              "width": 28.104378198516205,
+                              "height": 17.513513513513516,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -117606,7 +117606,7 @@
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 80,
+                  "height": 85.3526366626086,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -121300,7 +121300,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 80,
+                  "height": 116.39846329426624,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -134146,7 +134146,7 @@
                                       "type": "text",
                                       "id": "C2anv",
                                       "fill": "$--foreground",
-                                      "content": "₴ 48.2M",
+                                      "content": "$ 48.2M",
                                       "fontFamily": "$--font-primary",
                                       "fontSize": 24,
                                       "fontWeight": "700"
