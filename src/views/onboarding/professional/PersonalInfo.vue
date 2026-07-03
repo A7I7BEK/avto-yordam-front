@@ -34,7 +34,7 @@ function toggleLanguage(lang: string) {
 }
 
 function goBack() {
-  router.push({ name: 'professional-auth' });
+  router.push({ name: 'auth-register' });
 }
 
 function goNext() {

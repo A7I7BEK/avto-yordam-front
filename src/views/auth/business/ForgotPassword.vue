@@ -37,8 +37,8 @@ async function sendResetLink() {
 
 function goBackToSignIn() {
   router.push({
-    name: 'business-auth-signin',
-    query: { tab: 'signin' },
+    name: 'auth-login',
+    query: { type: 'business' },
   });
 }
 </script>

@@ -2,24 +2,16 @@
   setup
   lang="ts"
 >
-import { Building2, ChevronDown, Eye, EyeOff, UserRound } from '@lucide/vue';
-import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ChevronDown, Eye, EyeOff, UserRound } from '@lucide/vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import AuthCard from '@/components/auth/AuthCard.vue';
 import AuthPageLayout from '@/components/auth/AuthPageLayout.vue';
-import BackButton from '@/components/auth/BackButton.vue';
 import TabSwitcher from '@/components/auth/TabSwitcher.vue';
-import { businessAuth } from '@/services/auth/businessAuthService';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();
-const route = useRoute();
-
-const accountType = computed(
-  () => (route.query.type as string) || 'professional',
-);
-const isBusiness = computed(() => accountType.value === 'business');
 
 const contactMethod = ref<'email' | 'phone'>('email');
 const email = ref('');
@@ -36,27 +28,18 @@ const contactTabs = [
   { label: 'Tel. number', value: 'phone' },
 ];
 
-const brandIcon = computed(() => (isBusiness.value ? Building2 : UserRound));
-const brandIconBg = computed(() => (isBusiness.value ? '#2A2933' : '#5749F4'));
-const brandLabel = computed(() =>
-  isBusiness.value ? 'Business' : 'Professional',
-);
-
-function goBack() {
-  router.push({ name: 'account-type' });
-}
+const brandIcon = UserRound;
+const brandIconBg = '#5749F4';
+const brandLabel = 'Professional';
 
 function goToRegister() {
-  router.push({ name: 'auth-register', query: { type: accountType.value } });
+  router.push({ name: 'auth-register' });
 }
 
 function goToForgotPassword() {
-  const routeName = isBusiness.value
-    ? 'business-auth-forgot'
-    : 'professional-auth-forgot';
   const queryEmail = contactMethod.value === 'email' ? email.value : '';
   router.push({
-    name: routeName,
+    name: 'auth-forgot-password',
     query: queryEmail ? { email: queryEmail } : {},
   });
 }
@@ -74,28 +57,23 @@ async function signIn() {
   errorMessage.value = '';
 
   try {
-    const auth = isBusiness.value ? businessAuth : professionalAuth;
     let result: { token: string; user: { isOnboarded: boolean } };
 
     if (contactMethod.value === 'email') {
-      result = await auth.signIn({
+      result = await professionalAuth.signIn({
         email: email.value,
         password: password.value,
       });
     } else {
       const fullPhone = `${countryCode.value} ${phoneNumber.value}`;
-      result = await auth.signInWithPhone({
+      result = await professionalAuth.signInWithPhone({
         phone: fullPhone,
         password: password.value,
       });
     }
 
     localStorage.setItem('token', result.token);
-    router.push(
-      isBusiness.value
-        ? { name: 'business-dashboard' }
-        : { name: 'pro-dashboard' },
-    );
+    router.push({ name: 'pro-dashboard' });
   } catch {
     errorMessage.value = 'Invalid credentials. Please try again.';
   } finally {
@@ -117,8 +95,6 @@ async function signIn() {
       padding="36px"
       gap="22px"
     >
-      <BackButton @click="goBack" />
-
       <div
         v-if="stubMessage"
         class="stub-message"
@@ -128,9 +104,7 @@ async function signIn() {
 
       <div class="header-text">
         <h1 class="title">Welcome back</h1>
-        <p class="subtitle">
-          {{ isBusiness ? 'Manage your team, schedule, and bookings' : 'Your craft, your hours — start earning today' }}
-        </p>
+        <p class="subtitle">Your craft, your hours — start earning today</p>
       </div>
 
       <TabSwitcher

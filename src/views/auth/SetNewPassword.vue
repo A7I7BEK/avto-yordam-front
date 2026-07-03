@@ -2,16 +2,20 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Building2, Check, Circle, Lock } from '@lucide/vue';
+import { ArrowLeft, Check, Circle, Lock, UserRound } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import AuthCard from '@/components/auth/AuthCard.vue';
 import AuthPageLayout from '@/components/auth/AuthPageLayout.vue';
-import { businessAuth } from '@/services/auth/businessAuthService';
+import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();
 const route = useRoute();
+
+const brandIcon = UserRound;
+const brandIconBg = '#5749F4';
+const brandLabel = 'Professional';
 
 const resetToken = (route.query.resetToken as string) || 'mock-reset-token';
 const newPassword = ref('');
@@ -28,10 +32,6 @@ const requirements = computed(() => [
   {
     label: 'Contains an uppercase letter',
     met: HAS_UPPERCASE.test(newPassword.value),
-  },
-  {
-    label: 'Different from your last 3 passwords',
-    met: false,
   },
 ]);
 
@@ -53,14 +53,11 @@ async function setNewPassword() {
   isLoading.value = true;
   errorMessage.value = '';
   try {
-    await businessAuth.resetPassword({
+    await professionalAuth.resetPassword({
       token: resetToken,
       newPassword: newPassword.value,
     });
-    router.push({
-      name: 'auth-login',
-      query: { type: 'business' },
-    });
+    router.push({ name: 'auth-login' });
   } catch {
     errorMessage.value = 'Failed to reset password. Please try again.';
   } finally {
@@ -69,19 +66,16 @@ async function setNewPassword() {
 }
 
 function goBackToSignIn() {
-  router.push({
-    name: 'auth-login',
-    query: { type: 'business' },
-  });
+  router.push({ name: 'auth-login' });
 }
 </script>
 
 <template>
   <AuthPageLayout>
     <AuthBrand
-      :icon="Building2"
-      icon-bg="#2A2933"
-      label="Business"
+      :icon="brandIcon"
+      :icon-bg="brandIconBg"
+      :label="brandLabel"
     />
 
     <AuthCard
@@ -89,7 +83,6 @@ function goBackToSignIn() {
       padding="36px"
       gap="22px"
     >
-      <!-- Lock Icon -->
       <div class="icon-circle">
         <Lock
           :size="28"
@@ -100,8 +93,8 @@ function goBackToSignIn() {
       <div class="header-text">
         <h1 class="title">Set a new password</h1>
         <p class="subtitle">
-          Choose a strong password for admin@yourgarage.uz. This protects your
-          workspace, team, and customer data.
+          Choose a strong password to keep your master profile and earnings
+          safe.
         </p>
       </div>
 
@@ -125,7 +118,6 @@ function goBackToSignIn() {
         >
       </div>
 
-      <!-- Requirements -->
       <div class="requirements">
         <div
           v-for="req in requirements"
@@ -162,7 +154,6 @@ function goBackToSignIn() {
         {{ isLoading ? 'Setting...' : 'Set new password' }}
       </button>
 
-      <!-- Back to sign in -->
       <button
         class="back-link"
         type="button"
@@ -186,7 +177,6 @@ function goBackToSignIn() {
   width: 64px;
   height: 64px;
   background: #f5f5f5;
-  border: 1px solid #c5c5cb;
   border-radius: 999px;
 }
 
@@ -250,7 +240,7 @@ function goBackToSignIn() {
 .requirements {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
 }
 
@@ -258,13 +248,21 @@ function goBackToSignIn() {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-
-.requirement-row span {
   font-family: Inter, sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   color: #616167;
+}
+
+.error-text {
+  width: 100%;
+  padding: 10px 16px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #cc3314;
+  text-align: center;
+  background: #ffbfb2;
+  border-radius: 12px;
 }
 
 .btn {
@@ -283,6 +281,10 @@ function goBackToSignIn() {
   transition: opacity 0.15s;
 }
 
+.btn:hover {
+  opacity: 0.9;
+}
+
 .btn:disabled {
   cursor: not-allowed;
   opacity: 0.6;
@@ -297,7 +299,6 @@ function goBackToSignIn() {
   display: flex;
   gap: 6px;
   align-items: center;
-  justify-content: center;
   padding: 0;
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -309,13 +310,6 @@ function goBackToSignIn() {
 }
 
 .back-link:hover {
-  text-decoration: underline;
-}
-
-.error-text {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #cc3314;
-  text-align: center;
+  opacity: 0.8;
 }
 </style>

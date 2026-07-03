@@ -15,7 +15,6 @@ import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import AuthCard from '@/components/auth/AuthCard.vue';
 import AuthPageLayout from '@/components/auth/AuthPageLayout.vue';
-import BackButton from '@/components/auth/BackButton.vue';
 import TabSwitcher from '@/components/auth/TabSwitcher.vue';
 import { businessAuth } from '@/services/auth/businessAuthService';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
@@ -81,12 +80,8 @@ const canSubmit = computed(() => {
   return nameOk && contactOk && passwordOk && agreedToTerms.value;
 });
 
-function goBack() {
-  router.push({ name: 'auth-login', query: { type: accountType.value } });
-}
-
 function goToLogin() {
-  router.push({ name: 'auth-login', query: { type: accountType.value } });
+  router.push({ name: 'auth-login' });
 }
 
 async function signUp() {
@@ -157,8 +152,6 @@ async function signUp() {
       padding="32px"
       gap="18px"
     >
-      <BackButton @click="goBack" />
-
       <TabSwitcher
         :tabs="accountTypeTabs"
         :active-tab="accountType"

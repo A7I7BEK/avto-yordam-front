@@ -26,6 +26,16 @@ export const unifiedAuthRoutes: RouteRecordRaw[] = [
     name: 'auth-verify',
     component: () => import('@/views/auth/OtpVerification.vue'),
   },
+  {
+    path: '/auth/forgot-password',
+    name: 'auth-forgot-password',
+    component: () => import('@/views/auth/ForgotPassword.vue'),
+  },
+  {
+    path: '/auth/reset-password',
+    name: 'auth-reset-password',
+    component: () => import('@/views/auth/SetNewPassword.vue'),
+  },
 ];
 
 export const businessAuthRoutes: RouteRecordRaw[] = [

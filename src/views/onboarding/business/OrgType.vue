@@ -66,7 +66,7 @@ function selectType(value: OrganizationType) {
 }
 
 function goBack() {
-  router.push({ name: 'business-auth' });
+  router.push({ name: 'auth-register' });
 }
 
 function goNext() {

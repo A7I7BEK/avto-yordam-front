@@ -2,8 +2,8 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Check, Circle, Lock, UserRound } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { ArrowLeft, KeyRound, Mail, UserRound } from '@lucide/vue';
+import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import AuthCard from '@/components/auth/AuthCard.vue';
@@ -13,131 +13,74 @@ import { professionalAuth } from '@/services/auth/professionalAuthService';
 const router = useRouter();
 const route = useRoute();
 
-const resetToken = (route.query.resetToken as string) || 'mock-reset-token';
-const newPassword = ref('');
-const confirmPassword = ref('');
+const brandIcon = UserRound;
+const brandIconBg = '#5749F4';
+const brandLabel = 'Professional';
+
+const email = ref((route.query.email as string) || '');
 const isLoading = ref(false);
 const errorMessage = ref('');
 
-const HAS_NUMBER = /\d/;
-const HAS_UPPERCASE = /[A-Z]/;
-
-const requirements = computed(() => [
-  { label: 'At least 8 characters', met: newPassword.value.length >= 8 },
-  { label: 'Contains a number', met: HAS_NUMBER.test(newPassword.value) },
-  {
-    label: 'Contains an uppercase letter',
-    met: HAS_UPPERCASE.test(newPassword.value),
-  },
-]);
-
-const allRequirementsMet = computed(() =>
-  requirements.value.every((r) => r.met),
-);
-const passwordsMatch = computed(
-  () =>
-    newPassword.value === confirmPassword.value && newPassword.value.length > 0,
-);
-const canSubmit = computed(
-  () => allRequirementsMet.value && passwordsMatch.value,
-);
-
-async function setNewPassword() {
-  if (!canSubmit.value) {
-    return;
-  }
+async function sendResetLink() {
   isLoading.value = true;
   errorMessage.value = '';
   try {
-    await professionalAuth.resetPassword({
-      token: resetToken,
-      newPassword: newPassword.value,
+    const result = await professionalAuth.forgotPassword({
+      email: email.value,
     });
     router.push({
-      name: 'auth-login',
-      query: { type: 'professional' },
+      name: 'auth-reset-password',
+      query: { resetToken: result.resetToken },
     });
   } catch {
-    errorMessage.value = 'Failed to reset password. Please try again.';
+    errorMessage.value = 'Failed to send reset link. Try again.';
   } finally {
     isLoading.value = false;
   }
 }
 
 function goBackToSignIn() {
-  router.push({
-    name: 'auth-login',
-    query: { type: 'professional' },
-  });
+  router.push({ name: 'auth-login' });
 }
 </script>
 
 <template>
   <AuthPageLayout>
     <AuthBrand
-      :icon="UserRound"
-      icon-bg="#5749F4"
-      label="Professional"
+      :icon="brandIcon"
+      :icon-bg="brandIconBg"
+      :label="brandLabel"
     />
 
     <AuthCard
       width="460px"
-      padding="36px"
-      gap="22px"
+      padding="40px"
+      gap="24px"
     >
       <div class="icon-circle">
-        <Lock
+        <KeyRound
           :size="28"
           color="#5749F4"
         />
       </div>
 
       <div class="header-text">
-        <h1 class="title">Set a new password</h1>
+        <h1 class="title">Forgot your password?</h1>
         <p class="subtitle">
-          Choose a strong password to keep your master profile and earnings
-          safe.
+          {{ isBusiness
+              ? 'Enter your admin email and we\'ll send a reset link to recover access to your workspace.'
+              : 'Happens to the best of us. Enter your email and we\'ll send a reset link.' }}
         </p>
       </div>
 
       <div class="field-group">
-        <label class="field-label">New password</label>
+        <label class="field-label">Email</label>
         <input
-          v-model="newPassword"
+          v-model="email"
           class="field-input"
-          type="password"
-          placeholder="Enter new password"
+          type="email"
+          placeholder="aziz.karimov@masters.uz"
         >
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Confirm new password</label>
-        <input
-          v-model="confirmPassword"
-          class="field-input"
-          type="password"
-          placeholder="Confirm new password"
-        >
-      </div>
-
-      <div class="requirements">
-        <div
-          v-for="req in requirements"
-          :key="req.label"
-          class="requirement-row"
-        >
-          <Check
-            v-if="req.met"
-            :size="14"
-            color="#003300"
-          />
-          <Circle
-            v-else
-            :size="14"
-            color="#616167"
-          />
-          <span>{{ req.label }}</span>
-        </div>
       </div>
 
       <div
@@ -150,11 +93,21 @@ function goBackToSignIn() {
       <button
         class="btn btn-primary"
         type="button"
-        :disabled="!canSubmit || isLoading"
-        @click="setNewPassword"
+        :disabled="isLoading"
+        @click="sendResetLink"
       >
-        {{ isLoading ? 'Setting...' : 'Set new password' }}
+        {{ isLoading ? 'Sending...' : 'Send reset link' }}
       </button>
+
+      <div class="hint-box">
+        <Mail
+          :size="14"
+          color="#616167"
+        />
+        <span>
+          Check your spam folder if you don't see it within a minute.
+        </span>
+      </div>
 
       <button
         class="back-link"
@@ -239,26 +192,6 @@ function goBackToSignIn() {
   color: #939399;
 }
 
-.requirements {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-}
-
-.requirement-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.requirement-row span {
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: #616167;
-}
-
 .btn {
   display: flex;
   gap: 6px;
@@ -275,6 +208,10 @@ function goBackToSignIn() {
   transition: opacity 0.15s;
 }
 
+.btn:hover {
+  opacity: 0.9;
+}
+
 .btn:disabled {
   cursor: not-allowed;
   opacity: 0.6;
@@ -285,11 +222,36 @@ function goBackToSignIn() {
   background: #5749f4;
 }
 
+.error-text {
+  width: 100%;
+  padding: 10px 16px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #cc3314;
+  text-align: center;
+  background: #ffbfb2;
+  border-radius: 12px;
+}
+
+.hint-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #616167;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
 .back-link {
   display: flex;
   gap: 6px;
   align-items: center;
-  justify-content: center;
   padding: 0;
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -301,13 +263,6 @@ function goBackToSignIn() {
 }
 
 .back-link:hover {
-  text-decoration: underline;
-}
-
-.error-text {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #cc3314;
-  text-align: center;
+  opacity: 0.8;
 }
 </style>
