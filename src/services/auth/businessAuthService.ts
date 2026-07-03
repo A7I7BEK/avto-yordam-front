@@ -4,7 +4,13 @@ import type {
   ForgotPasswordResponse,
   LoginWithPhoneRequest,
   LoginWithPhoneResponse,
+  RegisterInitRequest,
+  RegisterInitResponse,
+  ResendOtpRequest,
+  ResendOtpResponse,
   ResetPasswordRequest,
+  SignInResponse,
+  SignInWithPhoneRequest,
   VerifyOtpRequest,
   VerifyOtpResponse,
 } from '@/types/auth';
@@ -37,6 +43,13 @@ export const businessAuth = {
     throw new Error('API not implemented');
   },
 
+  async signInWithPhone(req: SignInWithPhoneRequest): Promise<SignInResponse> {
+    if (isMockMode()) {
+      return await mockBusinessAuthService.signInWithPhone(req);
+    }
+    throw new Error('API not implemented');
+  },
+
   async signUp(req: {
     orgName: string;
     adminEmail: string;
@@ -60,6 +73,20 @@ export const businessAuth = {
   async resetPassword(req: ResetPasswordRequest): Promise<void> {
     if (isMockMode()) {
       return await mockBusinessAuthService.resetPassword(req);
+    }
+    throw new Error('API not implemented');
+  },
+
+  async registerInit(req: RegisterInitRequest): Promise<RegisterInitResponse> {
+    if (isMockMode()) {
+      return await mockBusinessAuthService.registerInit(req);
+    }
+    throw new Error('API not implemented');
+  },
+
+  async resendOtp(req: ResendOtpRequest): Promise<ResendOtpResponse> {
+    if (isMockMode()) {
+      return await mockBusinessAuthService.resendOtp(req);
     }
     throw new Error('API not implemented');
   },

@@ -3,9 +3,14 @@ import type {
   ForgotPasswordResponse,
   LoginWithPhoneRequest,
   LoginWithPhoneResponse,
+  RegisterInitRequest,
+  RegisterInitResponse,
+  ResendOtpRequest,
+  ResendOtpResponse,
   ResetPasswordRequest,
   SignInRequest,
   SignInResponse,
+  SignInWithPhoneRequest,
   SignUpRequest,
   SignUpResponse,
   VerifyOtpRequest,
@@ -52,6 +57,20 @@ export const mockAuthService = {
     };
   },
 
+  async signInWithPhone(_req: SignInWithPhoneRequest): Promise<SignInResponse> {
+    await delay();
+    return {
+      token: 'mock-token-professional',
+      user: {
+        id: 'pro-001',
+        fullName: 'Aziz Ismoilov',
+        email: 'aziz.karimov@masters.uz',
+        phone: _req.phone,
+        isOnboarded: false,
+      },
+    };
+  },
+
   async signUp(_req: SignUpRequest): Promise<SignUpResponse> {
     await delay();
     return {
@@ -75,5 +94,15 @@ export const mockAuthService = {
 
   async resetPassword(_req: ResetPasswordRequest): Promise<void> {
     await delay();
+  },
+
+  async registerInit(_req: RegisterInitRequest): Promise<RegisterInitResponse> {
+    await delay();
+    return { otpId: 'mock-otp-id-register' };
+  },
+
+  async resendOtp(_req: ResendOtpRequest): Promise<ResendOtpResponse> {
+    await delay();
+    return { otpId: 'mock-otp-id-resend' };
   },
 };

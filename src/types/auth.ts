@@ -54,6 +54,11 @@ export interface SignInRequest {
   password: string;
 }
 
+export interface SignInWithPhoneRequest {
+  phone: string;
+  password: string;
+}
+
 export interface SignInResponse {
   token: string;
   user: AuthUser;
@@ -81,4 +86,25 @@ export interface ForgotPasswordResponse {
 export interface ResetPasswordRequest {
   token: string;
   newPassword: string;
+}
+
+export interface RegisterInitRequest {
+  fullName?: string;
+  orgName?: string;
+  contact: string;
+  contactType: 'email' | 'phone';
+  password: string;
+}
+
+export interface RegisterInitResponse {
+  otpId: string;
+}
+
+export interface ResendOtpRequest {
+  contact: string;
+  contactType: 'email' | 'phone';
+}
+
+export interface ResendOtpResponse {
+  otpId: string;
 }

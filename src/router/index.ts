@@ -5,6 +5,7 @@ import {
   businessOnboardingRoutes,
   professionalAuthRoutes,
   professionalOnboardingRoutes,
+  unifiedAuthRoutes,
 } from './auth.routes';
 import { businessRoutes } from './business.routes';
 import { professionalWorkspaceRoutes } from './professional.routes';
@@ -12,10 +13,10 @@ import { professionalWorkspaceRoutes } from './professional.routes';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // Redirect root to account type selection
+    // Redirect root to unified login
     {
       path: '/',
-      redirect: '/auth/account-type',
+      redirect: '/auth/login',
     },
 
     // === Auth (no layout) ===
@@ -23,6 +24,7 @@ const router = createRouter({
       path: '/auth',
       children: [
         ...accountSelectionRoutes,
+        ...unifiedAuthRoutes,
         ...businessAuthRoutes,
         ...professionalAuthRoutes,
       ],

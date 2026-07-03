@@ -9,6 +9,25 @@ export const accountSelectionRoutes: RouteRecordRaw[] = [
   },
 ];
 
+// === Unified Auth Routes (new) ===
+export const unifiedAuthRoutes: RouteRecordRaw[] = [
+  {
+    path: '/auth/login',
+    name: 'auth-login',
+    component: () => import('@/views/auth/Login.vue'),
+  },
+  {
+    path: '/auth/register',
+    name: 'auth-register',
+    component: () => import('@/views/auth/Register.vue'),
+  },
+  {
+    path: '/auth/verify',
+    name: 'auth-verify',
+    component: () => import('@/views/auth/OtpVerification.vue'),
+  },
+];
+
 export const businessAuthRoutes: RouteRecordRaw[] = [
   {
     path: '/auth/business',

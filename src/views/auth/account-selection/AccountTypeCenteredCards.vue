@@ -8,11 +8,11 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 function goToProfessional() {
-  router.push({ name: 'professional-auth' });
+  router.push({ name: 'auth-login', query: { type: 'professional' } });
 }
 
 function goToBusiness() {
-  router.push({ name: 'business-auth' });
+  router.push({ name: 'auth-login', query: { type: 'business' } });
 }
 </script>
 

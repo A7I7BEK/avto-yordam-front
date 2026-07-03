@@ -3,7 +3,13 @@ import type {
   ForgotPasswordResponse,
   LoginWithPhoneRequest,
   LoginWithPhoneResponse,
+  RegisterInitRequest,
+  RegisterInitResponse,
+  ResendOtpRequest,
+  ResendOtpResponse,
   ResetPasswordRequest,
+  SignInResponse,
+  SignInWithPhoneRequest,
   VerifyOtpRequest,
   VerifyOtpResponse,
 } from '@/types/auth';
@@ -51,6 +57,20 @@ export const mockBusinessAuthService = {
     };
   },
 
+  async signInWithPhone(_req: SignInWithPhoneRequest): Promise<SignInResponse> {
+    await delay();
+    return {
+      token: 'mock-token-business',
+      user: {
+        id: 'biz-001',
+        fullName: 'Rustam Karimov',
+        email: 'admin@yourgarage.uz',
+        phone: _req.phone,
+        isOnboarded: false,
+      },
+    };
+  },
+
   async signUp(_req: {
     orgName: string;
     adminEmail: string;
@@ -78,5 +98,15 @@ export const mockBusinessAuthService = {
 
   async resetPassword(_req: ResetPasswordRequest): Promise<void> {
     await delay();
+  },
+
+  async registerInit(_req: RegisterInitRequest): Promise<RegisterInitResponse> {
+    await delay();
+    return { otpId: 'mock-biz-otp-id-register' };
+  },
+
+  async resendOtp(_req: ResendOtpRequest): Promise<ResendOtpResponse> {
+    await delay();
+    return { otpId: 'mock-biz-otp-id-resend' };
   },
 };

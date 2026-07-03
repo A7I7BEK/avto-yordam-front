@@ -4,9 +4,14 @@ import type {
   ForgotPasswordResponse,
   LoginWithPhoneRequest,
   LoginWithPhoneResponse,
+  RegisterInitRequest,
+  RegisterInitResponse,
+  ResendOtpRequest,
+  ResendOtpResponse,
   ResetPasswordRequest,
   SignInRequest,
   SignInResponse,
+  SignInWithPhoneRequest,
   SignUpRequest,
   SignUpResponse,
   VerifyOtpRequest,
@@ -38,6 +43,13 @@ export const professionalAuth = {
     throw new Error('API not implemented');
   },
 
+  async signInWithPhone(req: SignInWithPhoneRequest): Promise<SignInResponse> {
+    if (isMockMode()) {
+      return await mockAuthService.signInWithPhone(req);
+    }
+    throw new Error('API not implemented');
+  },
+
   async signUp(req: SignUpRequest): Promise<SignUpResponse> {
     if (isMockMode()) {
       return await mockAuthService.signUp(req);
@@ -57,6 +69,20 @@ export const professionalAuth = {
   async resetPassword(req: ResetPasswordRequest): Promise<void> {
     if (isMockMode()) {
       return await mockAuthService.resetPassword(req);
+    }
+    throw new Error('API not implemented');
+  },
+
+  async registerInit(req: RegisterInitRequest): Promise<RegisterInitResponse> {
+    if (isMockMode()) {
+      return await mockAuthService.registerInit(req);
+    }
+    throw new Error('API not implemented');
+  },
+
+  async resendOtp(req: ResendOtpRequest): Promise<ResendOtpResponse> {
+    if (isMockMode()) {
+      return await mockAuthService.resendOtp(req);
     }
     throw new Error('API not implemented');
   },
