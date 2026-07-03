@@ -57,7 +57,10 @@ async function signIn() {
   errorMessage.value = '';
 
   try {
-    let result: { token: string; user: { type?: string; isOnboarded: boolean } };
+    let result: {
+      token: string;
+      user: { type?: string; isOnboarded: boolean };
+    };
 
     if (contactMethod.value === 'email') {
       result = await professionalAuth.signIn({
@@ -115,7 +118,7 @@ async function signIn() {
       <TabSwitcher
         :tabs="contactTabs"
         :active-tab="contactMethod"
-        @switch="(v: string) => contactMethod = v as 'email' | 'phone'"
+        @switch="(v: string) => { contactMethod = v as 'email' | 'phone' }"
       />
 
       <!-- Email input -->
