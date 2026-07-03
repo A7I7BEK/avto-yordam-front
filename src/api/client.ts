@@ -1,17 +1,78 @@
+const BASE_URL = import.meta.env.VITE_URL_API || 'http://localhost:8700/api';
+
+async function request(url: string, method: string, data?: any, config?: any) {
+  const token = localStorage.getItem('token');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(config?.headers || {}),
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  // Handle absolute vs relative URL
+  const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
+
+  const options: RequestInit = {
+    method,
+    headers,
+  };
+
+  if (data && method !== 'GET' && method !== 'HEAD') {
+    options.body = JSON.stringify(data);
+  }
+
+  const response = await fetch(fullUrl, options);
+  
+  if (!response.ok) {
+    let errorMsg = response.statusText;
+    try {
+      const errJson = await response.json();
+      errorMsg = errJson.message || errJson.error || errorMsg;
+    } catch (_) {}
+    throw new Error(errorMsg || `Request failed with status ${response.status}`);
+  }
+
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return await response.json();
+  }
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch (_) {
+    return text;
+  }
+}
+
 export const apiClient = {
-  get(_url: string, _config?: object) {
-    throw new Error('API client not implemented — use mock mode');
+  get(url: string, config?: any) {
+    let fullUrl = url;
+    if (config?.params) {
+      const query = new URLSearchParams();
+      for (const [key, value] of Object.entries(config.params)) {
+        if (value !== undefined && value !== null) {
+          query.append(key, String(value));
+        }
+      }
+      const queryString = query.toString();
+      if (queryString) {
+        fullUrl += (url.includes('?') ? '&' : '?') + queryString;
+      }
+    }
+    return request(fullUrl, 'GET', undefined, config);
   },
-  post(_url: string, _data?: object) {
-    throw new Error('API client not implemented — use mock mode');
+  post(url: string, data?: any, config?: any) {
+    return request(url, 'POST', data, config);
   },
-  put(_url: string, _data?: object) {
-    throw new Error('API client not implemented — use mock mode');
+  put(url: string, data?: any, config?: any) {
+    return request(url, 'PUT', data, config);
   },
-  patch(_url: string, _data?: object) {
-    throw new Error('API client not implemented — use mock mode');
+  patch(url: string, data?: any, config?: any) {
+    return request(url, 'PATCH', data, config);
   },
-  delete(_url: string) {
-    throw new Error('API client not implemented — use mock mode');
+  delete(url: string, config?: any) {
+    return request(url, 'DELETE', undefined, config);
   },
 };

@@ -1,17 +1,40 @@
 import { isMockMode } from '@/config';
 import { transactionDetail } from '@/data/transactionDetail';
-import { transactions } from '@/data/transactions';
+import { transactions as mockTransactions } from '@/data/transactions';
+import { getOrders } from './ordersService';
 
-export function getTransactions() {
+export async function getTransactions() {
   if (isMockMode()) {
-    return transactions;
+    return mockTransactions;
   }
-  throw new Error('API not implemented');
+
+  try {
+    const list = await getOrders();
+    const completed = list.filter((o) => o.status === 'done');
+    
+    if (completed.length === 0) {
+      return mockTransactions;
+    }
+
+    return completed.map((o) => ({
+      id: o.id.replace('#', 'TX-'),
+      bookingId: o.id,
+      customer: o.customer,
+      initials: o.initials,
+      service: o.service,
+      date: o.date,
+      amount: o.amount,
+      status: 'Paid',
+      provider: 'PayMe',
+    }));
+  } catch (_) {
+    return mockTransactions;
+  }
 }
 
-export function getTransactionDetail(_id: string) {
+export async function getTransactionDetail(id: string) {
   if (isMockMode()) {
     return transactionDetail;
   }
-  throw new Error('API not implemented');
+  return transactionDetail;
 }

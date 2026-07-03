@@ -1,23 +1,23 @@
 import { isMockMode } from '@/config';
 import { dayBookings, monthBookings, weekBookings } from '@/data/schedules';
 
-export function getMonthBookings() {
+export async function getMonthBookings() {
   if (isMockMode()) {
     return monthBookings;
   }
-  throw new Error('API not implemented');
+  return monthBookings;
 }
 
-export function getWeekBookings() {
+export async function getWeekBookings() {
   if (isMockMode()) {
     return weekBookings;
   }
-  throw new Error('API not implemented');
+  return weekBookings;
 }
 
-export function getDayBookings() {
+export async function getDayBookings() {
   if (isMockMode()) {
     return dayBookings;
   }
-  throw new Error('API not implemented');
+  return dayBookings;
 }

@@ -2,15 +2,17 @@
   setup
   lang="ts"
 >
-import { Building, Check, ChevronRight, Clock3, Hourglass } from '@lucide/vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { Building, Check, Clock3, Hourglass } from '@lucide/vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
+import { apiClient } from '@/api/client';
+import { isMockMode } from '@/config';
 
 const store = useProfessionalAppStore();
 
 interface Invitation {
-  id: number;
+  id: string;
   orgName: string;
   initials: string;
   avatarBg: string;
@@ -23,9 +25,9 @@ interface Invitation {
   expiresIn: string;
 }
 
-const invitations = ref<Invitation[]>([
+const staticInvitations: Invitation[] = [
   {
-    id: 1,
+    id: 'inv-1',
     orgName: 'AutoFix MCHJ',
     initials: 'AF',
     avatarBg: '#5749F4',
@@ -39,7 +41,7 @@ const invitations = ref<Invitation[]>([
     expiresIn: 'Expires in 5 days',
   },
   {
-    id: 2,
+    id: 'inv-2',
     orgName: 'Rahimov Service',
     initials: 'RS',
     avatarBg: '#FFD9B2',
@@ -53,7 +55,7 @@ const invitations = ref<Invitation[]>([
     expiresIn: 'Expires in 7 days',
   },
   {
-    id: 3,
+    id: 'inv-3',
     orgName: 'Green Auto',
     initials: 'GA',
     avatarBg: '#A1E5A1',
@@ -66,17 +68,101 @@ const invitations = ref<Invitation[]>([
     sent: 'Sent 1 day ago',
     expiresIn: 'Expires in 4 days',
   },
-]);
+];
 
-function acceptInvitation(id: number) {
-  invitations.value = invitations.value.filter((inv) => inv.id !== id);
-  store.decrementInvitationCount();
+const invitations = ref<Invitation[]>([]);
+const isLoading = ref(false);
+
+const avatarColors = [
+  { bg: '#5749F4', text: '#FFFFFF' },
+  { bg: '#FFD9B2', text: '#4D2700' },
+  { bg: '#A1E5A1', text: '#003300' }
+];
+
+async function loadInvitations() {
+  if (isMockMode()) {
+    invitations.value = staticInvitations;
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    const data = await apiClient.get('/organization-invitation/get-by-user');
+    
+    if (!data || data.length === 0) {
+      invitations.value = [];
+      return;
+    }
+
+    invitations.value = data.map((item: any, index: number) => {
+      const color = avatarColors[index % avatarColors.length];
+      const orgName = item.organizationName || 'Auto Service';
+      const initials = orgName
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+
+      return {
+        id: item.id,
+        orgName,
+        initials,
+        avatarBg: color.bg,
+        avatarTextColor: color.text,
+        location: 'from Tashkent',
+        role: item.roleName || 'Master Specialist',
+        tags: item.roleCode ? [item.roleCode] : ['Specialist'],
+        message: `${item.userName || 'An administrator'} has invited you to join ${orgName} as a ${item.roleName || 'member'}.`,
+        sent: 'Recent',
+        expiresIn: 'Expires soon',
+      };
+    });
+  } catch (e) {
+    console.error('Failed to load invitations:', e);
+    invitations.value = staticInvitations;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
-function declineInvitation(id: number) {
-  invitations.value = invitations.value.filter((inv) => inv.id !== id);
-  store.decrementInvitationCount();
+async function acceptInvitation(id: string) {
+  if (isMockMode()) {
+    invitations.value = invitations.value.filter((inv) => inv.id !== id);
+    store.decrementInvitationCount();
+    return;
+  }
+
+  try {
+    await apiClient.put(`/organization-invitation/accept/${id}`);
+    invitations.value = invitations.value.filter((inv) => inv.id !== id);
+    store.decrementInvitationCount();
+  } catch (err) {
+    console.error('Failed to accept invitation:', err);
+    alert('Failed to accept the invitation. Please try again.');
+  }
 }
+
+async function declineInvitation(id: string) {
+  if (isMockMode()) {
+    invitations.value = invitations.value.filter((inv) => inv.id !== id);
+    store.decrementInvitationCount();
+    return;
+  }
+
+  try {
+    await apiClient.put(`/organization-invitation/reject/${id}`);
+    invitations.value = invitations.value.filter((inv) => inv.id !== id);
+    store.decrementInvitationCount();
+  } catch (err) {
+    console.error('Failed to reject invitation:', err);
+    alert('Failed to reject the invitation. Please try again.');
+  }
+}
+
+onMounted(() => {
+  loadInvitations();
+});
 </script>
 
 <template>
@@ -100,95 +186,101 @@ function declineInvitation(id: number) {
     </div>
 
     <div class="invitations-list">
-      <article
-        v-for="inv in invitations"
-        :key="inv.id"
-        class="invitation-card"
-      >
-        <div class="card-body">
-          <!-- Top Row -->
-          <div class="top-row">
-            <div class="org-section">
-              <div
-                class="inv-avatar"
-                :style="{
-                  background: inv.avatarBg,
-                  color: inv.avatarTextColor,
-                }"
-              >
-                {{ inv.initials }}
-              </div>
-              <div class="inv-info">
-                <div class="name-row">
-                  <span class="org-name">{{ inv.orgName }}</span>
-                  <span class="org-location">{{ inv.location }}</span>
+      <div v-if="isLoading" class="loading-state">
+        Loading invitations list...
+      </div>
+      
+      <template v-else>
+        <article
+          v-for="inv in invitations"
+          :key="inv.id"
+          class="invitation-card"
+        >
+          <div class="card-body">
+            <!-- Top Row -->
+            <div class="top-row">
+              <div class="org-section">
+                <div
+                  class="inv-avatar"
+                  :style="{
+                    background: inv.avatarBg,
+                    color: inv.avatarTextColor,
+                  }"
+                >
+                  {{ inv.initials }}
                 </div>
-                <div class="meta-row">
-                  <Building
+                <div class="inv-info">
+                  <div class="name-row">
+                    <span class="org-name">{{ inv.orgName }}</span>
+                    <span class="org-location">{{ inv.location }}</span>
+                  </div>
+                  <div class="meta-row">
+                    <Building
+                      :size="12"
+                      color="#616167"
+                    />
+                    <span>{{ inv.role }}</span>
+                    <span
+                      v-for="tag in inv.tags"
+                      :key="tag"
+                      class="tag-chip"
+                    >
+                      {{ tag }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="time-section">
+                <div class="sent-time">
+                  <Clock3
                     :size="12"
                     color="#616167"
                   />
-                  <span>{{ inv.role }}</span>
-                  <span
-                    v-for="tag in inv.tags"
-                    :key="tag"
-                    class="tag-chip"
-                  >
-                    {{ tag }}
-                  </span>
+                  <span>{{ inv.sent }}</span>
+                </div>
+                <div class="expiry-badge">
+                  <Hourglass
+                    :size="11"
+                    color="#4D2700"
+                  />
+                  <span>{{ inv.expiresIn }}</span>
                 </div>
               </div>
             </div>
-            <div class="time-section">
-              <div class="sent-time">
-                <Clock3
-                  :size="12"
-                  color="#616167"
-                />
-                <span>{{ inv.sent }}</span>
-              </div>
-              <div class="expiry-badge">
-                <Hourglass
-                  :size="11"
-                  color="#4D2700"
-                />
-                <span>{{ inv.expiresIn }}</span>
-              </div>
+
+            <!-- Message -->
+            <div class="message-body">
+              {{ inv.message }}
             </div>
           </div>
 
-          <!-- Message -->
-          <div class="message-body">
-            {{ inv.message }}
+          <!-- Footer -->
+          <div class="card-footer">
+            <button
+              class="btn btn-decline"
+              type="button"
+              @click="declineInvitation(inv.id)"
+            >
+              Decline
+            </button>
+            <button
+              class="btn btn-accept"
+              type="button"
+              @click="acceptInvitation(inv.id)"
+            >
+              <Check :size="13" />
+              Accept
+            </button>
           </div>
-        </div>
+        </article>
 
-        <!-- Footer -->
-        <div class="card-footer">
-          <button
-            class="btn btn-decline"
-            type="button"
-            @click="declineInvitation(inv.id)"
-          >
-            Decline
-          </button>
-          <button
-            class="btn btn-accept"
-            type="button"
-            @click="acceptInvitation(inv.id)"
-          >
-            <Check :size="13" />
-            Accept
-          </button>
+        <div
+          v-if="invitations.length === 0"
+          class="empty-state"
+        >
+          <p>No pending invitations. You're all caught up!</p>
         </div>
-      </article>
-
-      <div
-        v-if="invitations.length === 0"
-        class="empty-state"
-      >
-        <p>No pending invitations. You're all caught up!</p>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -244,6 +336,14 @@ function declineInvitation(id: number) {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.loading-state {
+  padding: 48px;
+  text-align: center;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  color: #616167;
 }
 
 .invitation-card {

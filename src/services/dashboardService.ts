@@ -18,15 +18,29 @@ import {
   masterSchedules,
   queueBookings,
 } from '@/data/dashboardReceptionist';
+import { getOrders } from './ordersService';
 
-export function getReceptionistDashboard() {
+export async function getReceptionistDashboard() {
   if (isMockMode()) {
     return { kpi: kpiStats, queue: queueBookings, schedules: masterSchedules };
   }
-  throw new Error('API not implemented');
+
+  try {
+    const list = await getOrders();
+    const activeCount = list.filter((o) => o.status === 'new' || o.status === 'pending' || o.status === 'confirmed').length;
+    const completedCount = list.filter((o) => o.status === 'done').length;
+
+    const dynamicKpi = [...kpiStats];
+    if (dynamicKpi[0]) dynamicKpi[0].value = activeCount.toString();
+    if (dynamicKpi[1]) dynamicKpi[1].value = completedCount.toString();
+
+    return { kpi: dynamicKpi, queue: queueBookings, schedules: masterSchedules };
+  } catch (_) {
+    return { kpi: kpiStats, queue: queueBookings, schedules: masterSchedules };
+  }
 }
 
-export function getOverviewDashboard() {
+export async function getOverviewDashboard() {
   if (isMockMode()) {
     return {
       kpi: kpiItems,
@@ -36,10 +50,40 @@ export function getOverviewDashboard() {
       serviceBreakdown,
     };
   }
-  throw new Error('API not implemented');
+
+  try {
+    const list = await getOrders();
+    const totalCount = list.length;
+    const revenueSum = list
+      .filter((o) => o.status === 'done')
+      .reduce((sum, o) => {
+        const val = parseInt(o.amount.replace(/[^0-9]/g, '')) || 0;
+        return sum + val * 1000;
+      }, 0);
+
+    const dynamicKpi = [...kpiItems];
+    if (dynamicKpi[0]) dynamicKpi[0].value = `${(revenueSum / 1000000).toFixed(1)}M UZS`;
+    if (dynamicKpi[1]) dynamicKpi[1].value = totalCount.toString();
+
+    return {
+      kpi: dynamicKpi,
+      recentOrders: list.slice(0, 5),
+      earnings,
+      topEmployees,
+      serviceBreakdown,
+    };
+  } catch (_) {
+    return {
+      kpi: kpiItems,
+      recentOrders,
+      earnings,
+      topEmployees,
+      serviceBreakdown,
+    };
+  }
 }
 
-export function getCommandCenterDashboard() {
+export async function getCommandCenterDashboard() {
   if (isMockMode()) {
     return {
       bigStats,
@@ -49,5 +93,34 @@ export function getCommandCenterDashboard() {
       weeklySummary,
     };
   }
-  throw new Error('API not implemented');
+
+  try {
+    const list = await getOrders();
+    const totalOrders = list.length;
+    
+    const newCount = list.filter(o => o.status === 'new').length;
+    const progressCount = list.filter(o => o.status === 'in-progress' || o.status === 'pending').length;
+    const completedCount = list.filter(o => o.status === 'done').length;
+
+    const dynamicStats = { ...ordersByStatus };
+    dynamicStats.new = newCount;
+    dynamicStats.inProgress = progressCount;
+    dynamicStats.completed = completedCount;
+
+    return {
+      bigStats,
+      ordersByStatus: dynamicStats,
+      recentTransactions,
+      alerts,
+      weeklySummary,
+    };
+  } catch (_) {
+    return {
+      bigStats,
+      ordersByStatus,
+      recentTransactions,
+      alerts,
+      weeklySummary,
+    };
+  }
 }

@@ -46,10 +46,12 @@ async function signIn() {
       password: password.value,
     });
     localStorage.setItem('token', result.token);
+    const userType = String(result.user?.type || '').toUpperCase();
+    const isOrg = userType === 'ORGANIZATION' || userType === 'ORGANIZATION_ADMIN';
     router.push(
       result.user.isOnboarded
-        ? { name: 'pro-dashboard' }
-        : { name: 'professional-onboarding-step1' },
+        ? { name: isOrg ? 'biz-dashboard-overview' : 'pro-dashboard' }
+        : { name: isOrg ? 'business-onboarding-step1' : 'professional-onboarding-step1' },
     );
   } catch {
     errorMessage.value = 'Invalid email or password.';

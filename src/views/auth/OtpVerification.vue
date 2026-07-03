@@ -103,11 +103,13 @@ async function verify() {
     localStorage.setItem('token', result.token);
 
     if (isLogin.value) {
+      const userType = String(result.user?.type || '').toUpperCase();
+      const isOrg = userType === 'ORGANIZATION' || userType === 'ORGANIZATION_ADMIN' || isBusiness.value;
       router.push(
         result.user.isOnboarded
-          ? { name: isBusiness.value ? 'business-dashboard' : 'pro-dashboard' }
+          ? { name: isOrg ? 'biz-dashboard-overview' : 'pro-dashboard' }
           : {
-              name: isBusiness.value
+              name: isOrg
                 ? 'business-onboarding-step1'
                 : 'professional-onboarding-step1',
             },

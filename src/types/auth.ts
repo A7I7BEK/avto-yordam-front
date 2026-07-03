@@ -21,6 +21,7 @@ export interface AuthUser {
   phone: string;
   avatar?: string;
   isOnboarded: boolean;
+  type?: string;
 }
 
 export interface BusinessAuthUser {

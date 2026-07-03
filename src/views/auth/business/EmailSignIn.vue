@@ -48,7 +48,7 @@ async function signIn() {
     localStorage.setItem('token', result.token);
     router.push(
       result.user.isOnboarded
-        ? { name: 'pro-dashboard' }
+        ? { name: 'biz-dashboard-overview' }
         : { name: 'business-onboarding-step1' },
     );
   } catch {

@@ -2,12 +2,19 @@
   setup
   lang="ts"
 >
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { ChevronRight, Crown, Wrench } from '@lucide/vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
+import { apiClient } from '@/api/client';
+import { isMockMode } from '@/config';
 
-const organizations = [
+const router = useRouter();
+
+const staticOrganizations = [
   {
     id: 'af',
+    organizationId: 'af-org-uuid',
     name: 'AutoFix Toshkent',
     initials: 'AF',
     gradient: 'linear-gradient(135deg, #5749F4 0%, #1B1356 100%)',
@@ -23,6 +30,7 @@ const organizations = [
   },
   {
     id: 'rs',
+    organizationId: 'rs-org-uuid',
     name: 'Rapid Service',
     initials: 'RS',
     gradient: 'linear-gradient(135deg, #0F766E 0%, #053330 100%)',
@@ -38,6 +46,7 @@ const organizations = [
   },
   {
     id: 'da',
+    organizationId: 'da-org-uuid',
     name: 'Detailing Auto',
     initials: 'DA',
     gradient: 'linear-gradient(135deg, #B45309 0%, #4A1E02 100%)',
@@ -52,6 +61,104 @@ const organizations = [
     orgId: 'DA-MCHJ-0271',
   },
 ];
+
+const organizations = ref<any[]>([]);
+const isLoading = ref(false);
+
+const gradients = [
+  {
+    gradient: 'linear-gradient(135deg, #5749F4 0%, #1B1356 100%)',
+    border: '#7A6FFF',
+    shadowColor: 'rgba(87,73,244,0.29)'
+  },
+  {
+    gradient: 'linear-gradient(135deg, #0F766E 0%, #053330 100%)',
+    border: '#14B8A6',
+    shadowColor: 'rgba(15,118,110,0.29)'
+  },
+  {
+    gradient: 'linear-gradient(135deg, #B45309 0%, #4A1E02 100%)',
+    border: '#F59E0B',
+    shadowColor: 'rgba(180,83,9,0.29)'
+  }
+];
+
+async function loadOrganizations() {
+  if (isMockMode()) {
+    organizations.value = staticOrganizations;
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    const data = await apiClient.get('/organization-member/get-by-user');
+    
+    if (!data || data.length === 0) {
+      organizations.value = staticOrganizations;
+      return;
+    }
+
+    organizations.value = data.map((item: any, index: number) => {
+      const g = gradients[index % gradients.length];
+      const name = item.organizationName || 'Auto Service';
+      const initials = name
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+
+      const roleName = item.role?.name || 'Master';
+      const isOwner =
+        String(item.role?.code || '').toUpperCase() === 'OWNER' ||
+        String(item.role?.code || '').toUpperCase() === 'ORGANIZATION_ADMIN';
+
+      return {
+        id: item.id,
+        organizationId: item.organizationId,
+        name,
+        initials,
+        gradient: g.gradient,
+        border: g.border,
+        shadowColor: g.shadowColor,
+        location: 'Tashkent',
+        legalType: 'MCHJ',
+        specialization: 'General Repair',
+        role: roleName,
+        isOwner,
+        memberSince: 'Active',
+        orgId: `#ORG-${item.organizationId.slice(0, 4).toUpperCase()}`,
+      };
+    });
+  } catch (e) {
+    console.error(e);
+    organizations.value = staticOrganizations;
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+async function enterOrganization(organizationId: string) {
+  if (isMockMode()) {
+    router.push({ name: 'biz-dashboard-overview' });
+    return;
+  }
+
+  try {
+    const result = await apiClient.post(`/user/change-organization/${organizationId}`);
+    if (result && result.accessToken) {
+      localStorage.setItem('token', result.accessToken);
+      router.push({ name: 'biz-dashboard-overview' });
+    }
+  } catch (err) {
+    console.error('Failed to change organization:', err);
+    alert('Failed to switch to organization workspace. Please try again.');
+  }
+}
+
+onMounted(() => {
+  loadOrganizations();
+});
 
 function getInitialsColor(gradient: string) {
   if (gradient.includes('#5749F4')) {
@@ -74,7 +181,11 @@ function getInitialsColor(gradient: string) {
     </div>
 
     <div class="org-list">
+      <div v-if="isLoading" class="loading-state">
+        Loading organization assignments...
+      </div>
       <article
+        v-else
         v-for="org in organizations"
         :key="org.id"
         class="org-card"
@@ -119,14 +230,25 @@ function getInitialsColor(gradient: string) {
         </div>
 
         <div class="card-footer">
-          <div class="stat-col">
-            <span class="stat-label">MEMBER SINCE</span>
-            <span class="stat-value">{{ org.memberSince }}</span>
+          <div class="stats-row">
+            <div class="stat-col">
+              <span class="stat-label">MEMBER SINCE</span>
+              <span class="stat-value">{{ org.memberSince }}</span>
+            </div>
+            <div class="stat-col">
+              <span class="stat-label">ORG ID</span>
+              <span class="stat-value">{{ org.orgId }}</span>
+            </div>
           </div>
-          <div class="stat-col">
-            <span class="stat-label">ORG ID</span>
-            <span class="stat-value">{{ org.orgId }}</span>
-          </div>
+          
+          <button
+            class="enter-btn"
+            type="button"
+            @click.stop="enterOrganization(org.organizationId || org.id)"
+          >
+            <span>Enter Workspace</span>
+            <ChevronRight :size="16" />
+          </button>
         </div>
       </article>
     </div>
@@ -168,6 +290,14 @@ function getInitialsColor(gradient: string) {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.loading-state {
+  padding: 40px;
+  text-align: center;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  color: #616167;
 }
 
 .org-card {
@@ -273,6 +403,13 @@ function getInitialsColor(gradient: string) {
   position: relative;
   z-index: 1;
   display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.stats-row {
+  display: flex;
   gap: 48px;
 }
 
@@ -296,5 +433,26 @@ function getInitialsColor(gradient: string) {
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
+}
+
+.enter-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2a2933;
+  cursor: pointer;
+  background: #ffffff;
+  border: none;
+  border-radius: 999px;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.enter-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
 }
 </style>

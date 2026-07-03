@@ -57,7 +57,7 @@ async function signIn() {
   errorMessage.value = '';
 
   try {
-    let result: { token: string; user: { isOnboarded: boolean } };
+    let result: { token: string; user: { type?: string; isOnboarded: boolean } };
 
     if (contactMethod.value === 'email') {
       result = await professionalAuth.signIn({
@@ -73,7 +73,12 @@ async function signIn() {
     }
 
     localStorage.setItem('token', result.token);
-    router.push({ name: 'pro-dashboard' });
+    const userType = String(result.user?.type || '').toUpperCase();
+    if (userType === 'ORGANIZATION' || userType === 'ORGANIZATION_ADMIN') {
+      router.push({ name: 'biz-dashboard-overview' });
+    } else {
+      router.push({ name: 'pro-dashboard' });
+    }
   } catch {
     errorMessage.value = 'Invalid credentials. Please try again.';
   } finally {

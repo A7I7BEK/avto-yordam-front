@@ -1,16 +1,48 @@
+import { apiClient } from '@/api/client';
 import { isMockMode } from '@/config';
-import { orders } from '@/data/orders';
+import { orders as rawOrders } from '@/data/orders';
 
-export function getOrders() {
+export async function getOrders() {
   if (isMockMode()) {
-    return orders;
+    return rawOrders;
   }
-  throw new Error('API not implemented');
+
+  try {
+    let backendOrders: any[] = [];
+    try {
+      backendOrders = await apiClient.get('/order/get-by-master');
+    } catch (_) {
+      try {
+        const pageData = await apiClient.get('/order/page', { params: { size: 50 } });
+        backendOrders = pageData.content || [];
+      } catch (_) {
+        backendOrders = [];
+      }
+    }
+
+    if (!backendOrders || backendOrders.length === 0) {
+      return rawOrders;
+    }
+
+    return backendOrders.map((o: any) => ({
+      id: `#BK-${o.id.slice(0, 4).toUpperCase()}`,
+      customer: o.carDescription || 'Client',
+      initials: 'C',
+      service: o.problemDescription || 'General Repair',
+      date: o.createdDate ? new Date(o.createdDate).toLocaleString() : 'Just now',
+      master: o.masterId ? 'Master' : '—',
+      amount: `${(o.estimatedPrice || 200000) / 1000}K UZS`,
+      status: String(o.status || 'new').toLowerCase(),
+    }));
+  } catch (_) {
+    return rawOrders;
+  }
 }
 
-export function getOrder(id: string) {
+export async function getOrder(id: string) {
   if (isMockMode()) {
-    return orders.find((o) => o.id === id) || null;
+    return rawOrders.find((o) => o.id === id) || null;
   }
-  throw new Error('API not implemented');
+  const all = await getOrders();
+  return all.find((o) => o.id === id) || null;
 }
