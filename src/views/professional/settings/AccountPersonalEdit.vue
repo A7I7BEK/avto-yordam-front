@@ -138,7 +138,11 @@ function saveChanges() {
 .section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
 }
 
 .section-header {

@@ -2,8 +2,8 @@
   setup
   lang="ts"
 >
-import { ref } from 'vue';
 import {
+  BadgeCheck,
   Check,
   Clock,
   Mail,
@@ -11,8 +11,8 @@ import {
   RefreshCw,
   Send,
   Shield,
-  BadgeCheck,
 } from '@lucide/vue';
+import { ref } from 'vue';
 
 // State
 const currentPhone = ref('+998 90 123 45 67');
@@ -40,11 +40,12 @@ function handleSendLink() {
 
 <template>
   <div class="settings-container">
-    
     <!-- Phone Section -->
     <section class="settings-card">
       <h2 class="card-title">Phone number</h2>
-      <p class="card-description">Used for SMS alerts about new jobs and incoming customer calls.</p>
+      <p class="card-description">
+        Used for SMS alerts about new jobs and incoming customer calls.
+      </p>
 
       <!-- Current Phone Row -->
       <div class="current-info-box">
@@ -53,7 +54,10 @@ function handleSendLink() {
           <span class="info-value">{{ currentPhone }}</span>
         </div>
         <div class="badge badge-verified">
-          <BadgeCheck :size="16" class="badge-icon" />
+          <BadgeCheck
+            :size="16"
+            class="badge-icon"
+          />
           <span>Verified</span>
         </div>
       </div>
@@ -67,9 +71,12 @@ function handleSendLink() {
             type="text"
             class="styled-input"
             placeholder="+998 _ _  _ _ _  _ _  _ _"
-          />
+          >
         </div>
-        <button class="action-btn" type="button">
+        <button
+          class="action-btn"
+          type="button"
+        >
           <MessageSquare :size="16" />
           <span>Send code</span>
         </button>
@@ -80,13 +87,17 @@ function handleSendLink() {
         <div class="alert-left-bar" />
         <div class="alert-content">
           <div class="alert-header">
-            <Shield :size="18" class="alert-icon" />
+            <Shield
+              :size="18"
+              class="alert-icon"
+            />
             <h3 class="alert-title">SMS verification required</h3>
           </div>
           <p class="alert-description">
-            We sent a 6-digit code to +998 90 ••• 45 67. Your number is not saved until this code is confirmed.
+            We sent a 6-digit code to +998 90 ••• 45 67. Your number is not
+            saved until this code is confirmed.
           </p>
-          
+
           <!-- OTP inputs -->
           <div class="otp-container">
             <input
@@ -96,12 +107,16 @@ function handleSendLink() {
               type="text"
               maxlength="1"
               class="otp-box"
-            />
+            >
           </div>
 
           <div class="alert-footer">
             <span class="timer-text">Resend code in {{ otpTimeLeft }}</span>
-            <button class="confirm-btn" type="button" @click="handleConfirmNumber">
+            <button
+              class="confirm-btn"
+              type="button"
+              @click="handleConfirmNumber"
+            >
               <Check :size="16" />
               <span>Confirm number</span>
             </button>
@@ -113,7 +128,9 @@ function handleSendLink() {
     <!-- Email Section -->
     <section class="settings-card">
       <h2 class="card-title">Email address</h2>
-      <p class="card-description">Used for receipts, security alerts and password recovery.</p>
+      <p class="card-description">
+        Used for receipts, security alerts and password recovery.
+      </p>
 
       <!-- Current Email Row -->
       <div class="current-info-box">
@@ -122,7 +139,10 @@ function handleSendLink() {
           <span class="info-value">{{ currentEmail }}</span>
         </div>
         <div class="badge badge-verified">
-          <BadgeCheck :size="16" class="badge-icon" />
+          <BadgeCheck
+            :size="16"
+            class="badge-icon"
+          />
           <span>Verified</span>
         </div>
       </div>
@@ -136,9 +156,13 @@ function handleSendLink() {
             type="email"
             class="styled-input"
             placeholder="you@example.com"
-          />
+          >
         </div>
-        <button class="action-btn" type="button" @click="handleSendLink">
+        <button
+          class="action-btn"
+          type="button"
+          @click="handleSendLink"
+        >
           <Send :size="14" />
           <span>Send link</span>
         </button>
@@ -149,23 +173,37 @@ function handleSendLink() {
         <div class="alert-left-bar" />
         <div class="alert-content">
           <div class="alert-header">
-            <Mail :size="18" class="alert-icon" />
+            <Mail
+              :size="18"
+              class="alert-icon"
+            />
             <h3 class="alert-title">Confirmation link sent</h3>
             <div class="badge badge-awaiting">
-              <Clock :size="12" class="badge-icon" />
+              <Clock
+                :size="12"
+                class="badge-icon"
+              />
               <span>Awaiting confirmation</span>
             </div>
           </div>
           <p class="alert-description">
-            We emailed a confirmation link to a.ismoilov@workmail.uz. The new address only becomes active after you open that link.
+            We emailed a confirmation link to a.ismoilov@workmail.uz. The new
+            address only becomes active after you open that link.
           </p>
 
           <div class="alert-actions">
-            <button class="resend-email-btn" type="button" @click="handleResendOtp">
+            <button
+              class="resend-email-btn"
+              type="button"
+              @click="handleResendOtp"
+            >
               <RefreshCw :size="12" />
               <span>Resend email</span>
             </button>
-            <button class="change-address-btn" type="button">
+            <button
+              class="change-address-btn"
+              type="button"
+            >
               Change address
             </button>
           </div>
@@ -174,10 +212,11 @@ function handleSendLink() {
 
       <div class="info-footer-row">
         <span class="info-dot">i</span>
-        <span class="info-footer-text">The new email becomes active only once verified.</span>
+        <span class="info-footer-text"
+          >The new email becomes active only once verified.</span
+        >
       </div>
     </section>
-
   </div>
 </template>
 
@@ -192,10 +231,10 @@ function handleSendLink() {
 .settings-card {
   display: flex;
   flex-direction: column;
-  padding: 28px;
+  padding: 24px;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
 }
 
 .card-title {
@@ -219,10 +258,10 @@ function handleSendLink() {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
+  margin-bottom: 20px;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  margin-bottom: 20px;
 }
 
 .info-label-group {
@@ -250,8 +289,8 @@ function handleSendLink() {
 /* Badges */
 .badge {
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   padding: 6px 14px;
   font-family: Inter, sans-serif;
   font-size: 12px;
@@ -265,10 +304,10 @@ function handleSendLink() {
 }
 
 .badge-awaiting {
-  color: #9a3412;
-  background: #ffedd5;
   padding: 4px 10px;
   font-size: 11px;
+  color: #9a3412;
+  background: #ffedd5;
 }
 
 .badge-icon {
@@ -285,9 +324,9 @@ function handleSendLink() {
 
 .input-field-group {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
 }
 
 .input-label {
@@ -303,10 +342,10 @@ function handleSendLink() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   color: #111827;
+  outline: none;
   background: #f9fafb;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  outline: none;
   transition: border 0.15s;
 }
 
@@ -316,18 +355,18 @@ function handleSendLink() {
 
 .action-btn {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   height: 46px;
   padding: 0 20px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
+  cursor: pointer;
   background: #5749f4;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
   transition: opacity 0.15s;
 }
 
@@ -340,16 +379,16 @@ function handleSendLink() {
   position: relative;
   display: flex;
   padding: 20px;
-  border-radius: 12px;
-  overflow: hidden;
   margin-bottom: 8px;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
 .alert-left-bar {
   position: absolute;
   top: 0;
-  left: 0;
   bottom: 0;
+  left: 0;
   width: 4px;
 }
 
@@ -363,8 +402,8 @@ function handleSendLink() {
 
 .alert-header {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 }
 
 .alert-title {
@@ -383,8 +422,8 @@ function handleSendLink() {
 
 /* Warning State */
 .alert-warning {
-  background: #fffbeb;
   color: #78350f;
+  background: #fffbeb;
   border: 1px solid #fde68a;
 }
 
@@ -398,8 +437,8 @@ function handleSendLink() {
 
 /* Info State */
 .alert-info {
-  background: #eff6ff;
   color: #1e3a8a;
+  background: #eff6ff;
   border: 1px solid #bfdbfe;
 }
 
@@ -426,10 +465,10 @@ function handleSendLink() {
   font-weight: 700;
   color: #111827;
   text-align: center;
+  outline: none;
   background: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  outline: none;
 }
 
 .otp-box:focus {
@@ -452,17 +491,17 @@ function handleSendLink() {
 
 .confirm-btn {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   padding: 10px 22px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
+  cursor: pointer;
   background: #5749f4;
   border: none;
   border-radius: 999px;
-  cursor: pointer;
 }
 
 .alert-actions {
@@ -474,17 +513,17 @@ function handleSendLink() {
 
 .resend-email-btn {
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   padding: 8px 16px;
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: #374151;
+  cursor: pointer;
   background: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  cursor: pointer;
 }
 
 .change-address-btn {
@@ -492,16 +531,16 @@ function handleSendLink() {
   font-size: 12px;
   font-weight: 600;
   color: #4b5563;
+  cursor: pointer;
   background: none;
   border: none;
-  cursor: pointer;
 }
 
 /* Info Footer Row */
 .info-footer-row {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   margin-top: 16px;
 }
 

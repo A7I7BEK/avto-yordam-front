@@ -78,6 +78,10 @@ function toggleLanguage(lang: string) {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
 }
 
 .section-title {
