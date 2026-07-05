@@ -3,14 +3,14 @@
   lang="ts"
 >
 import {
-  BadgeCheck,
   Check,
   Clock,
   Mail,
   MessageSquare,
   RefreshCw,
   Send,
-  Shield,
+  ShieldAlert,
+  ShieldCheck,
 } from '@lucide/vue';
 import { ref } from 'vue';
 
@@ -54,8 +54,8 @@ function handleSendLink() {
           <span class="info-value">{{ currentPhone }}</span>
         </div>
         <div class="badge badge-verified">
-          <BadgeCheck
-            :size="16"
+          <ShieldCheck
+            :size="12"
             class="badge-icon"
           />
           <span>Verified</span>
@@ -87,8 +87,8 @@ function handleSendLink() {
         <div class="alert-left-bar" />
         <div class="alert-content">
           <div class="alert-header">
-            <Shield
-              :size="18"
+            <ShieldAlert
+              :size="16"
               class="alert-icon"
             />
             <h3 class="alert-title">SMS verification required</h3>
@@ -139,8 +139,8 @@ function handleSendLink() {
           <span class="info-value">{{ currentEmail }}</span>
         </div>
         <div class="badge badge-verified">
-          <BadgeCheck
-            :size="16"
+          <ShieldCheck
+            :size="12"
             class="badge-icon"
           />
           <span>Verified</span>
@@ -238,18 +238,18 @@ function handleSendLink() {
 }
 
 .card-title {
-  margin: 0 0 6px 0;
+  margin: 0 0 3px 0;
   font-family: Inter, sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2a2933;
 }
 
 .card-description {
-  margin: 0 0 20px 0;
+  margin: 0 0 14px 0;
   font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #6b7280;
+  font-size: 12px;
+  color: #616167;
 }
 
 /* Info Box */
@@ -257,33 +257,31 @@ function handleSendLink() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  margin-bottom: 20px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: #f5f5f5;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
 }
 
 .info-label-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .info-label {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: #616167;
 }
 
 .info-value {
   font-family: Inter, sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: #2a2933;
 }
 
 /* Badges */
@@ -291,23 +289,23 @@ function handleSendLink() {
   display: flex;
   gap: 6px;
   align-items: center;
-  padding: 6px 14px;
+  padding: 6px 10px;
   font-family: Inter, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   border-radius: 999px;
 }
 
 .badge-verified {
-  color: #166534;
-  background: #dcfce7;
+  color: #003300;
+  background: #a1e5a1;
 }
 
 .badge-awaiting {
   padding: 4px 10px;
   font-size: 11px;
-  color: #9a3412;
-  background: #ffedd5;
+  color: #4d2700;
+  background: #ffd9b2;
 }
 
 .badge-icon {
@@ -317,9 +315,9 @@ function handleSendLink() {
 /* Inputs */
 .input-row {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .input-field-group {
@@ -331,21 +329,21 @@ function handleSendLink() {
 
 .input-label {
   font-family: Inter, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
-  color: #374151;
+  color: #616167;
 }
 
 .styled-input {
   width: 100%;
-  padding: 12px 18px;
+  padding: 10px 14px;
   font-family: Inter, sans-serif;
-  font-size: 14px;
-  color: #111827;
+  font-size: 13px;
+  color: #2a2933;
   outline: none;
-  background: #f9fafb;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  background: #f5f5f5;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
   transition: border 0.15s;
 }
 
@@ -355,41 +353,30 @@ function handleSendLink() {
 
 .action-btn {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  height: 46px;
-  padding: 0 20px;
+  justify-content: center;
+  padding: 10px 16px;
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
   background: #5749f4;
   border: none;
-  border-radius: 8px;
-  transition: opacity 0.15s;
-}
-
-.action-btn:hover {
-  opacity: 0.9;
+  border-radius: 999px;
 }
 
 /* Alert Boxes */
 .alert-box {
-  position: relative;
   display: flex;
-  padding: 20px;
-  margin-bottom: 8px;
-  overflow: hidden;
-  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 0;
+  border-radius: 6px;
 }
 
 .alert-left-bar {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 4px;
+  display: none;
 }
 
 .alert-content {
@@ -397,7 +384,6 @@ function handleSendLink() {
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  margin-left: 8px;
 }
 
 .alert-header {
@@ -409,70 +395,63 @@ function handleSendLink() {
 .alert-title {
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .alert-description {
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 /* Warning State */
 .alert-warning {
-  color: #78350f;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-}
-
-.alert-warning .alert-left-bar {
-  background: #f59e0b;
+  color: #4d2700;
+  background: #ffd9b2;
+  border-left: 3px solid #4d2700;
 }
 
 .alert-warning .alert-icon {
-  color: #d97706;
+  color: #4d2700;
 }
 
 /* Info State */
 .alert-info {
-  color: #1e3a8a;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-}
-
-.alert-info .alert-left-bar {
-  background: #3b82f6;
+  color: #001133;
+  background: #c9d6f0;
+  border-left: 3px solid #001133;
 }
 
 .alert-info .alert-icon {
-  color: #2563eb;
+  color: #001133;
 }
 
 /* OTP boxes */
 .otp-container {
   display: flex;
-  gap: 12px;
-  margin: 8px 0;
+  gap: 8px;
+  margin: 4px 0;
 }
 
 .otp-box {
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 44px;
   font-family: Inter, sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2a2933;
   text-align: center;
   outline: none;
   background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
 }
 
 .otp-box:focus {
   border-color: #5749f4;
+  border-width: 1.5px;
 }
 
 /* Alert footer and buttons */
@@ -480,22 +459,22 @@ function handleSendLink() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 .timer-text {
   font-family: Inter, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .confirm-btn {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  padding: 10px 22px;
+  padding: 10px 16px;
   font-family: Inter, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
@@ -506,31 +485,31 @@ function handleSendLink() {
 
 .alert-actions {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .resend-email-btn {
   display: flex;
   gap: 6px;
   align-items: center;
-  padding: 8px 16px;
+  padding: 10px 16px;
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: #2a2933;
   cursor: pointer;
   background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border: 1px solid #c5c5cb;
+  border-radius: 999px;
 }
 
 .change-address-btn {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  color: #4b5563;
+  font-weight: 500;
+  color: #616167;
   cursor: pointer;
   background: none;
   border: none;
@@ -546,21 +525,22 @@ function handleSendLink() {
 
 .info-dot {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   font-family: Inter, sans-serif;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  color: #6b7280;
-  border: 1px solid #9ca3af;
+  color: #ffffff;
+  background: #616167;
   border-radius: 999px;
 }
 
 .info-footer-text {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #6b7280;
+  color: #616167;
 }
 </style>
