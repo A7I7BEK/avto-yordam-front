@@ -116,7 +116,10 @@ function breadcrumbItems() {
     <div class="settings-content">
       <BreadcrumbBar :items="breadcrumbItems()" />
 
-      <div class="page-header">
+      <div
+        v-if="section === 'account'"
+        class="page-header"
+      >
         <h1 class="page-title">Settings</h1>
         <p class="page-subtitle">Manage your account and preferences</p>
       </div>
