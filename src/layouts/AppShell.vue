@@ -38,11 +38,6 @@ import AppSidebar from '@/components/app/AppSidebar.vue';
   min-width: 0;
 }
 
-.app-shell__header {
-  flex-shrink: 0;
-  height: 80px;
-}
-
 .app-shell__content {
   flex: 1;
   overflow-y: auto;
