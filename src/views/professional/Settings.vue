@@ -94,64 +94,62 @@ function breadcrumbItems() {
 
 <template>
   <div class="settings-page">
-    <BreadcrumbBar :items="breadcrumbItems()" />
+    <!-- Sub Navigation -->
+    <nav class="sub-nav">
+      <button
+        v-for="item in subNavItems"
+        :key="item.key"
+        class="nav-item"
+        :class="{ active: section === item.key }"
+        type="button"
+        @click="navigateToSection(item.key)"
+      >
+        <component
+          :is="item.icon"
+          :size="16"
+        />
+        <span>{{ item.label }}</span>
+      </button>
+    </nav>
 
-    <div class="page-header">
-      <h1 class="page-title">Settings</h1>
-      <p class="page-subtitle">Manage your account and preferences</p>
-    </div>
+    <!-- Content -->
+    <div class="settings-content">
+      <BreadcrumbBar :items="breadcrumbItems()" />
 
-    <div class="settings-layout">
-      <!-- Sub Navigation -->
-      <nav class="sub-nav">
-        <button
-          v-for="item in subNavItems"
-          :key="item.key"
-          class="nav-item"
-          :class="{ active: section === item.key }"
-          type="button"
-          @click="navigateToSection(item.key)"
-        >
-          <component
-            :is="item.icon"
-            :size="16"
-          />
-          <span>{{ item.label }}</span>
-        </button>
-      </nav>
-
-      <!-- Content -->
-      <div class="settings-content">
-        <!-- Account Section -->
-        <template v-if="section === 'account'">
-          <!-- Account Tabs -->
-          <div class="account-tabs">
-            <button
-              v-for="t in accountTabs"
-              :key="t.key"
-              class="tab-btn"
-              :class="{ active: tab === t.key }"
-              type="button"
-              @click="switchAccountTab(t.key)"
-            >
-              {{ t.label }}
-            </button>
-          </div>
-
-          <AccountPersonalPreview
-            v-if="tab === 'personal' && mode === 'preview'"
-          />
-          <AccountPersonalEdit
-            v-else-if="tab === 'personal' && mode === 'edit'"
-          />
-          <AccountPhoneEmail v-else-if="tab === 'phone-email'" />
-          <AccountLanguages v-else-if="tab === 'languages'" />
-        </template>
-
-        <NotificationsSettings v-else-if="section === 'notifications'" />
-        <AppearanceSettings v-else-if="section === 'appearance'" />
-        <PrivacySettings v-else-if="section === 'privacy'" />
+      <div class="page-header">
+        <h1 class="page-title">Settings</h1>
+        <p class="page-subtitle">Manage your account and preferences</p>
       </div>
+
+      <!-- Account Section -->
+      <template v-if="section === 'account'">
+        <!-- Account Tabs -->
+        <div class="account-tabs">
+          <button
+            v-for="t in accountTabs"
+            :key="t.key"
+            class="tab-btn"
+            :class="{ active: tab === t.key }"
+            type="button"
+            @click="switchAccountTab(t.key)"
+          >
+            {{ t.label }}
+          </button>
+        </div>
+
+        <AccountPersonalPreview
+          v-if="tab === 'personal' && mode === 'preview'"
+        />
+        <AccountPersonalEdit
+          v-else-if="tab === 'personal' && mode === 'edit'"
+        />
+        <AccountPhoneEmail v-else-if="tab === 'phone-email'" />
+        <AccountLanguages v-else-if="tab === 'languages'" />
+      </template>
+
+      <NotificationsSettings v-else-if="section === 'notifications'" />
+      <AppearanceSettings v-else-if="section === 'appearance'" />
+      <PrivacySettings v-else-if="section === 'privacy'" />
     </div>
   </div>
 </template>
@@ -159,17 +157,14 @@ function breadcrumbItems() {
 <style scoped>
 .settings-page {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
   height: 100%;
-  padding: 24px;
-  overflow-y: auto;
 }
 
 .page-header {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  margin-bottom: 4px;
 }
 
 .page-title {
@@ -185,12 +180,6 @@ function breadcrumbItems() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   color: #616167;
-}
-
-.settings-layout {
-  display: flex;
-  flex: 1;
-  gap: 24px;
 }
 
 .sub-nav {
@@ -233,6 +222,8 @@ function breadcrumbItems() {
   flex-direction: column;
   gap: 16px;
   min-width: 0;
+  padding: 24px 32px;
+  overflow-y: auto;
 }
 
 .account-tabs {
