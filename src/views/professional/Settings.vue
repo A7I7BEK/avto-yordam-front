@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Bell, ChevronRight, Palette, Shield, User } from '@lucide/vue';
+import { Bell, Palette, Shield, UserRound } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
@@ -35,24 +35,21 @@ const tab = computed(() => (route.query.tab as string) || 'personal');
 const mode = computed(() => (route.query.mode as string) || 'preview');
 
 const subNavItems = [
-  { key: 'account', icon: User, label: 'Account', group: 'PERSONAL' },
+  { key: 'account', icon: UserRound, label: 'Account' },
   {
     key: 'notifications',
     icon: Bell,
     label: 'Notifications',
-    group: 'PERSONAL',
   },
   {
     key: 'appearance',
     icon: Palette,
     label: 'Appearance & language',
-    group: 'PREFERENCES',
   },
   {
     key: 'privacy',
     icon: Shield,
     label: 'Privacy & data',
-    group: 'PREFERENCES',
   },
 ];
 
@@ -107,24 +104,20 @@ function breadcrumbItems() {
     <div class="settings-layout">
       <!-- Sub Navigation -->
       <nav class="sub-nav">
-        <template
+        <button
           v-for="item in subNavItems"
           :key="item.key"
+          class="nav-item"
+          :class="{ active: section === item.key }"
+          type="button"
+          @click="navigateToSection(item.key)"
         >
-          <span class="nav-group-label">{{ item.group }}</span>
-          <button
-            class="nav-item"
-            :class="{ active: section === item.key }"
-            type="button"
-            @click="navigateToSection(item.key)"
-          >
-            <component
-              :is="item.icon"
-              :size="16"
-            />
-            <span>{{ item.label }}</span>
-          </button>
-        </template>
+          <component
+            :is="item.icon"
+            :size="16"
+          />
+          <span>{{ item.label }}</span>
+        </button>
       </nav>
 
       <!-- Content -->
@@ -205,16 +198,10 @@ function breadcrumbItems() {
   flex-shrink: 0;
   flex-direction: column;
   gap: 2px;
-  width: 200px;
-}
-
-.nav-group-label {
-  padding: 12px 12px 4px;
-  font-family: Inter, sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  color: #616167;
-  letter-spacing: 0.5px;
+  width: 240px;
+  padding: 24px 16px;
+  background: #ffffff;
+  border-right: 1px solid #c5c5cb;
 }
 
 .nav-item {
