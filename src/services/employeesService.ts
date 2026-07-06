@@ -9,7 +9,9 @@ async function getMyOrgId(): Promise<string | null> {
     if (members && members.length > 0) {
       return members[0].organizationId;
     }
-  } catch (_) {}
+  } catch {
+    /* no org members yet */
+  }
   return null;
 }
 
@@ -41,7 +43,7 @@ export async function getEmployees(): Promise<Employee[]> {
       status: 'Active' as const,
       avatarColor: '#5749F4',
     }));
-  } catch (_) {
+  } catch {
     return [];
   }
 }

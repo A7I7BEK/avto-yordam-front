@@ -48,7 +48,7 @@ export async function getReceptionistDashboard() {
       queue: queueBookings,
       schedules: masterSchedules,
     };
-  } catch (_) {
+  } catch {
     return { kpi: kpiStats, queue: queueBookings, schedules: masterSchedules };
   }
 }
@@ -70,7 +70,7 @@ export async function getOverviewDashboard() {
     const revenueSum = list
       .filter((o) => o.status === 'done')
       .reduce((sum, o) => {
-        const val = Number.parseInt(o.amount.replace(/[^0-9]/g, '')) || 0;
+        const val = Number.parseInt(o.amount.replace(/[^0-9]/g, ''), 10) || 0;
         return sum + val * 1000;
       }, 0);
 
@@ -89,7 +89,7 @@ export async function getOverviewDashboard() {
       topEmployees,
       serviceBreakdown,
     };
-  } catch (_) {
+  } catch {
     return {
       kpi: kpiItems,
       recentOrders,
@@ -113,7 +113,7 @@ export async function getCommandCenterDashboard() {
 
   try {
     const list = await getOrders();
-    const totalOrders = list.length;
+    const _totalOrders = list.length;
 
     const newCount = list.filter((o) => o.status === 'new').length;
     const progressCount = list.filter(
@@ -133,7 +133,7 @@ export async function getCommandCenterDashboard() {
       alerts,
       weeklySummary,
     };
-  } catch (_) {
+  } catch {
     return {
       bigStats,
       ordersByStatus,

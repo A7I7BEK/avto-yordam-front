@@ -1,21 +1,21 @@
 import { isMockMode } from '@/config';
 import { dayBookings, monthBookings, weekBookings } from '@/data/schedules';
 
-export async function getMonthBookings() {
+export function getMonthBookings() {
   if (isMockMode()) {
     return monthBookings;
   }
   return monthBookings;
 }
 
-export async function getWeekBookings() {
+export function getWeekBookings() {
   if (isMockMode()) {
     return weekBookings;
   }
   return weekBookings;
 }
 
-export async function getDayBookings() {
+export function getDayBookings() {
   if (isMockMode()) {
     return dayBookings;
   }

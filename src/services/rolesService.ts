@@ -18,7 +18,7 @@ export async function getRoles(): Promise<Role[]> {
       type: 'built-in' as const,
       iconColor: '#5749F4',
     }));
-  } catch (_) {
+  } catch {
     try {
       const backendRoles = await apiClient.get('/role');
       return backendRoles.map((r: any) => ({
@@ -29,7 +29,7 @@ export async function getRoles(): Promise<Role[]> {
         type: 'built-in' as const,
         iconColor: '#5749F4',
       }));
-    } catch (e) {
+    } catch {
       return [];
     }
   }

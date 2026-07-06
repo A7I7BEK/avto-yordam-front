@@ -8,7 +8,7 @@ async function request(url: string, method: string, data?: any, config?: any) {
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   // Handle absolute vs relative URL
@@ -30,20 +30,22 @@ async function request(url: string, method: string, data?: any, config?: any) {
     try {
       const errJson = await response.json();
       errorMsg = errJson.message || errJson.error || errorMsg;
-    } catch (_) {}
+    } catch {
+      /* ignore JSON parse failure */
+    }
     throw new Error(
       errorMsg || `Request failed with status ${response.status}`,
     );
   }
 
   const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
+  if (contentType?.includes('application/json')) {
     return await response.json();
   }
   const text = await response.text();
   try {
     return JSON.parse(text);
-  } catch (_) {
+  } catch {
     return text;
   }
 }

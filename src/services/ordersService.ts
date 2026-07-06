@@ -11,13 +11,13 @@ export async function getOrders() {
     let backendOrders: any[] = [];
     try {
       backendOrders = await apiClient.get('/order/get-by-master');
-    } catch (_) {
+    } catch {
       try {
         const pageData = await apiClient.get('/order/page', {
           params: { size: 50 },
         });
         backendOrders = pageData.content || [];
-      } catch (_) {
+      } catch {
         backendOrders = [];
       }
     }
@@ -38,7 +38,7 @@ export async function getOrders() {
       amount: `${(o.estimatedPrice || 200_000) / 1000}K UZS`,
       status: String(o.status || 'new').toLowerCase(),
     }));
-  } catch (_) {
+  } catch {
     return rawOrders;
   }
 }

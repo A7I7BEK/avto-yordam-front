@@ -17,7 +17,9 @@ async function getMyOrgId(): Promise<string | null> {
     if (members && members.length > 0) {
       return members[0].organizationId;
     }
-  } catch (_) {}
+  } catch {
+    /* no org members yet */
+  }
   return null;
 }
 
@@ -39,16 +41,16 @@ export async function getSettingsLegal() {
       inn: org.inn || legalInfo.inn,
       director: 'Director Full Name',
     };
-  } catch (_) {
+  } catch {
     return legalInfo;
   }
 }
 
-export async function getSettingsHours() {
+export function getSettingsHours() {
   return operatingHours;
 }
 
-export async function getSettingsPhotos() {
+export function getSettingsPhotos() {
   return photos;
 }
 
@@ -71,23 +73,23 @@ export async function getSettingsBankInfo() {
       inn: org.inn || bankInfo.inn,
       account: org.bankAccount || bankInfo.account,
     };
-  } catch (_) {
+  } catch {
     return bankInfo;
   }
 }
 
-export async function getSettingsPayment() {
+export function getSettingsPayment() {
   return paymentProviders;
 }
 
-export async function getSettingsNotifications() {
+export function getSettingsNotifications() {
   return notificationPreferences;
 }
 
-export async function getSettingsAppearance() {
+export function getSettingsAppearance() {
   return appearanceSettings;
 }
 
-export async function getSettingsDangerZone() {
+export function getSettingsDangerZone() {
   return dangerZoneData;
 }

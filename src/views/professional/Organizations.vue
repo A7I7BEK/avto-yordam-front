@@ -130,8 +130,7 @@ async function loadOrganizations() {
         orgId: `#ORG-${item.organizationId.slice(0, 4).toUpperCase()}`,
       };
     });
-  } catch (e) {
-    console.error(e);
+  } catch {
     organizations.value = staticOrganizations;
   } finally {
     isLoading.value = false;
@@ -148,13 +147,12 @@ async function enterOrganization(organizationId: string) {
     const result = await apiClient.post(
       `/user/change-organization/${organizationId}`,
     );
-    if (result && result.accessToken) {
+    if (result?.accessToken) {
       localStorage.setItem('token', result.accessToken);
       router.push({ name: 'biz-dashboard-overview' });
     }
-  } catch (err) {
-    console.error('Failed to change organization:', err);
-    alert('Failed to switch to organization workspace. Please try again.');
+  } catch {
+    // TODO: Show error notification to user
   }
 }
 

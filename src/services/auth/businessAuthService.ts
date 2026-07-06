@@ -17,6 +17,25 @@ import type {
 } from '@/types/auth';
 import { mockBusinessAuthService } from './businessMock';
 
+async function createDefaultOrganization(
+  orgName: string,
+  cleanPhone: string,
+  ownerId: string,
+) {
+  try {
+    await apiClient.post('/organization', {
+      name: orgName || 'My Auto Service',
+      type: 'MCHJ',
+      address: 'Tashkent, Uzbekistan',
+      phone: cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`,
+      ownerId,
+      inn: '123456789',
+    });
+  } catch {
+    /* organization may already exist */
+  }
+}
+
 export const businessAuth = {
   async loginWithPhone(
     req: LoginWithPhoneRequest,
@@ -62,16 +81,11 @@ export const businessAuth = {
       const userRes = await apiClient.get('/user/me');
 
       // Create organization automatically on registration
-      try {
-        await apiClient.post('/organization', {
-          name: regDetails.orgName || 'My Auto Service',
-          type: 'MCHJ',
-          address: 'Tashkent, Uzbekistan',
-          phone: cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`,
-          ownerId: userRes.id,
-          inn: '123456789',
-        });
-      } catch (_) {}
+      await createDefaultOrganization(
+        regDetails.orgName || 'My Auto Service',
+        cleanPhone,
+        userRes.id,
+      );
 
       return {
         token: result.accessToken,
@@ -103,7 +117,7 @@ export const businessAuth = {
           type: userRes.type || result.type,
         },
       };
-    } catch (_) {
+    } catch {
       return {
         token: 'mock-token-business',
         user: {
