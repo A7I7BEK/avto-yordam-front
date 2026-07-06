@@ -13,7 +13,9 @@ export async function getOrders() {
       backendOrders = await apiClient.get('/order/get-by-master');
     } catch (_) {
       try {
-        const pageData = await apiClient.get('/order/page', { params: { size: 50 } });
+        const pageData = await apiClient.get('/order/page', {
+          params: { size: 50 },
+        });
         backendOrders = pageData.content || [];
       } catch (_) {
         backendOrders = [];
@@ -29,9 +31,11 @@ export async function getOrders() {
       customer: o.carDescription || 'Client',
       initials: 'C',
       service: o.problemDescription || 'General Repair',
-      date: o.createdDate ? new Date(o.createdDate).toLocaleString() : 'Just now',
+      date: o.createdDate
+        ? new Date(o.createdDate).toLocaleString()
+        : 'Just now',
       master: o.masterId ? 'Master' : '—',
-      amount: `${(o.estimatedPrice || 200000) / 1000}K UZS`,
+      amount: `${(o.estimatedPrice || 200_000) / 1000}K UZS`,
       status: String(o.status || 'new').toLowerCase(),
     }));
   } catch (_) {

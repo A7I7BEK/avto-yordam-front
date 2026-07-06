@@ -81,11 +81,16 @@ async function verify() {
     const result = await professionalAuth.verifyOtp({ otpId, code });
     localStorage.setItem('token', result.token);
     const userType = String(result.user?.type || '').toUpperCase();
-    const isOrg = userType === 'ORGANIZATION' || userType === 'ORGANIZATION_ADMIN';
+    const isOrg =
+      userType === 'ORGANIZATION' || userType === 'ORGANIZATION_ADMIN';
     if (result.user.isOnboarded) {
       router.push({ name: isOrg ? 'biz-dashboard-overview' : 'pro-dashboard' });
     } else {
-      router.push({ name: isOrg ? 'business-onboarding-step1' : 'professional-onboarding-step1' });
+      router.push({
+        name: isOrg
+          ? 'business-onboarding-step1'
+          : 'professional-onboarding-step1',
+      });
     }
   } catch {
     errorMessage.value = 'Invalid code. Please try again.';

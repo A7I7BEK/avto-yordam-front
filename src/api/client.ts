@@ -24,14 +24,16 @@ async function request(url: string, method: string, data?: any, config?: any) {
   }
 
   const response = await fetch(fullUrl, options);
-  
+
   if (!response.ok) {
     let errorMsg = response.statusText;
     try {
       const errJson = await response.json();
       errorMsg = errJson.message || errJson.error || errorMsg;
     } catch (_) {}
-    throw new Error(errorMsg || `Request failed with status ${response.status}`);
+    throw new Error(
+      errorMsg || `Request failed with status ${response.status}`,
+    );
   }
 
   const contentType = response.headers.get('content-type');

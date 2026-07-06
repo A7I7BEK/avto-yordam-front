@@ -22,11 +22,15 @@ async function getMyOrgId(): Promise<string | null> {
 }
 
 export async function getSettingsLegal() {
-  if (isMockMode()) return legalInfo;
-  
+  if (isMockMode()) {
+    return legalInfo;
+  }
+
   try {
     const orgId = await getMyOrgId();
-    if (!orgId) return legalInfo;
+    if (!orgId) {
+      return legalInfo;
+    }
 
     const org = await apiClient.get(`/organization/${orgId}`);
     return {
@@ -49,11 +53,15 @@ export async function getSettingsPhotos() {
 }
 
 export async function getSettingsBankInfo() {
-  if (isMockMode()) return bankInfo;
+  if (isMockMode()) {
+    return bankInfo;
+  }
 
   try {
     const orgId = await getMyOrgId();
-    if (!orgId) return bankInfo;
+    if (!orgId) {
+      return bankInfo;
+    }
 
     const org = await apiClient.get(`/organization/${orgId}`);
     return {

@@ -27,14 +27,27 @@ export async function getReceptionistDashboard() {
 
   try {
     const list = await getOrders();
-    const activeCount = list.filter((o) => o.status === 'new' || o.status === 'pending' || o.status === 'confirmed').length;
+    const activeCount = list.filter(
+      (o) =>
+        o.status === 'new' ||
+        o.status === 'pending' ||
+        o.status === 'confirmed',
+    ).length;
     const completedCount = list.filter((o) => o.status === 'done').length;
 
     const dynamicKpi = [...kpiStats];
-    if (dynamicKpi[0]) dynamicKpi[0].value = activeCount.toString();
-    if (dynamicKpi[1]) dynamicKpi[1].value = completedCount.toString();
+    if (dynamicKpi[0]) {
+      dynamicKpi[0].value = activeCount.toString();
+    }
+    if (dynamicKpi[1]) {
+      dynamicKpi[1].value = completedCount.toString();
+    }
 
-    return { kpi: dynamicKpi, queue: queueBookings, schedules: masterSchedules };
+    return {
+      kpi: dynamicKpi,
+      queue: queueBookings,
+      schedules: masterSchedules,
+    };
   } catch (_) {
     return { kpi: kpiStats, queue: queueBookings, schedules: masterSchedules };
   }
@@ -57,13 +70,17 @@ export async function getOverviewDashboard() {
     const revenueSum = list
       .filter((o) => o.status === 'done')
       .reduce((sum, o) => {
-        const val = parseInt(o.amount.replace(/[^0-9]/g, '')) || 0;
+        const val = Number.parseInt(o.amount.replace(/[^0-9]/g, '')) || 0;
         return sum + val * 1000;
       }, 0);
 
     const dynamicKpi = [...kpiItems];
-    if (dynamicKpi[0]) dynamicKpi[0].value = `${(revenueSum / 1000000).toFixed(1)}M UZS`;
-    if (dynamicKpi[1]) dynamicKpi[1].value = totalCount.toString();
+    if (dynamicKpi[0]) {
+      dynamicKpi[0].value = `${(revenueSum / 1_000_000).toFixed(1)}M UZS`;
+    }
+    if (dynamicKpi[1]) {
+      dynamicKpi[1].value = totalCount.toString();
+    }
 
     return {
       kpi: dynamicKpi,
@@ -97,10 +114,12 @@ export async function getCommandCenterDashboard() {
   try {
     const list = await getOrders();
     const totalOrders = list.length;
-    
-    const newCount = list.filter(o => o.status === 'new').length;
-    const progressCount = list.filter(o => o.status === 'in-progress' || o.status === 'pending').length;
-    const completedCount = list.filter(o => o.status === 'done').length;
+
+    const newCount = list.filter((o) => o.status === 'new').length;
+    const progressCount = list.filter(
+      (o) => o.status === 'in-progress' || o.status === 'pending',
+    ).length;
+    const completedCount = list.filter((o) => o.status === 'done').length;
 
     const dynamicStats = { ...ordersByStatus };
     dynamicStats.new = newCount;

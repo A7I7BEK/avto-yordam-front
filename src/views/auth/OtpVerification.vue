@@ -104,7 +104,10 @@ async function verify() {
 
     if (isLogin.value) {
       const userType = String(result.user?.type || '').toUpperCase();
-      const isOrg = userType === 'ORGANIZATION' || userType === 'ORGANIZATION_ADMIN' || isBusiness.value;
+      const isOrg =
+        userType === 'ORGANIZATION' ||
+        userType === 'ORGANIZATION_ADMIN' ||
+        isBusiness.value;
       router.push(
         result.user.isOnboarded
           ? { name: isOrg ? 'biz-dashboard-overview' : 'pro-dashboard' }

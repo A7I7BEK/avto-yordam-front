@@ -2,9 +2,9 @@
   setup
   lang="ts"
 >
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { ChevronDown, LogOut, User } from '@lucide/vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 
 const store = useProfessionalAppStore();
@@ -48,7 +48,10 @@ function handleLogout() {
 </script>
 
 <template>
-  <div class="dropdown-container" ref="dropdownRef">
+  <div
+    class="dropdown-container"
+    ref="dropdownRef"
+  >
     <button
       class="avatar-dropdown"
       type="button"
@@ -67,14 +70,31 @@ function handleLogout() {
     </button>
 
     <transition name="fade-slide">
-      <div v-if="isOpen" class="dropdown-menu">
-        <button class="menu-item" type="button" @click="goToProfile">
-          <User :size="16" class="menu-icon" />
+      <div
+        v-if="isOpen"
+        class="dropdown-menu"
+      >
+        <button
+          class="menu-item"
+          type="button"
+          @click="goToProfile"
+        >
+          <User
+            :size="16"
+            class="menu-icon"
+          />
           <span>Profile Settings</span>
         </button>
         <div class="menu-divider" />
-        <button class="menu-item menu-item--danger" type="button" @click="handleLogout">
-          <LogOut :size="16" class="menu-icon" />
+        <button
+          class="menu-item menu-item--danger"
+          type="button"
+          @click="handleLogout"
+        >
+          <LogOut
+            :size="16"
+            class="menu-icon"
+          />
           <span>Log out</span>
         </button>
       </div>
@@ -143,8 +163,8 @@ function handleLogout() {
 
 .menu-item {
   display: flex;
-  align-items: center;
   gap: 10px;
+  align-items: center;
   width: 100%;
   padding: 10px 16px;
   font-family: Inter, sans-serif;
@@ -155,7 +175,9 @@ function handleLogout() {
   cursor: pointer;
   background: none;
   border: none;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .menu-item:hover {
@@ -192,7 +214,9 @@ function handleLogout() {
 /* Transitions */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
 .fade-slide-enter-from,

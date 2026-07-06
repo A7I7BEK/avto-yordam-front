@@ -2,12 +2,12 @@
   setup
   lang="ts"
 >
-import { ref, onMounted } from 'vue';
 import { Building, Check, Clock3, Hourglass } from '@lucide/vue';
-import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
-import { useProfessionalAppStore } from '@/stores/professionalApp';
+import { onMounted, ref } from 'vue';
 import { apiClient } from '@/api/client';
+import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import { isMockMode } from '@/config';
+import { useProfessionalAppStore } from '@/stores/professionalApp';
 
 const store = useProfessionalAppStore();
 
@@ -76,7 +76,7 @@ const isLoading = ref(false);
 const avatarColors = [
   { bg: '#5749F4', text: '#FFFFFF' },
   { bg: '#FFD9B2', text: '#4D2700' },
-  { bg: '#A1E5A1', text: '#003300' }
+  { bg: '#A1E5A1', text: '#003300' },
 ];
 
 async function loadInvitations() {
@@ -88,7 +88,7 @@ async function loadInvitations() {
   isLoading.value = true;
   try {
     const data = await apiClient.get('/organization-invitation/get-by-user');
-    
+
     if (!data || data.length === 0) {
       invitations.value = [];
       return;
@@ -186,10 +186,13 @@ onMounted(() => {
     </div>
 
     <div class="invitations-list">
-      <div v-if="isLoading" class="loading-state">
+      <div
+        v-if="isLoading"
+        class="loading-state"
+      >
         Loading invitations list...
       </div>
-      
+
       <template v-else>
         <article
           v-for="inv in invitations"
@@ -340,10 +343,10 @@ onMounted(() => {
 
 .loading-state {
   padding: 48px;
-  text-align: center;
   font-family: Inter, sans-serif;
   font-size: 14px;
   color: #616167;
+  text-align: center;
 }
 
 .invitation-card {

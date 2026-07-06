@@ -49,7 +49,8 @@ export const businessAuth = {
 
       const result = await apiClient.post('/user/register', {
         phone: regDetails.contactType === 'phone' ? cleanPhone : undefined,
-        email: regDetails.contactType === 'email' ? regDetails.contact : undefined,
+        email:
+          regDetails.contactType === 'email' ? regDetails.contact : undefined,
         password: regDetails.password,
         fullName: regDetails.orgName || 'Business Owner',
         otp: req.code,
@@ -83,37 +84,36 @@ export const businessAuth = {
           type: userRes.type || result.type,
         },
       };
-    } else {
-      try {
-        const result = await apiClient.post('/user/login', {
-          login: req.otpId,
-          password: 'password',
-        });
-        localStorage.setItem('token', result.accessToken);
-        const userRes = await apiClient.get('/user/me');
-        return {
-          token: result.accessToken,
-          user: {
-            id: userRes.id,
-            fullName: userRes.fullName || 'Business Owner',
-            email: userRes.email || '',
-            phone: userRes.phone || '',
-            isOnboarded: true,
-            type: userRes.type || result.type,
-          },
-        };
-      } catch (_) {
-        return {
-          token: 'mock-token-business',
-          user: {
-            id: 'biz-001',
-            fullName: 'Auto Fix Admin',
-            email: 'admin@autofix.uz',
-            phone: req.otpId,
-            isOnboarded: true,
-          },
-        };
-      }
+    }
+    try {
+      const result = await apiClient.post('/user/login', {
+        login: req.otpId,
+        password: 'password',
+      });
+      localStorage.setItem('token', result.accessToken);
+      const userRes = await apiClient.get('/user/me');
+      return {
+        token: result.accessToken,
+        user: {
+          id: userRes.id,
+          fullName: userRes.fullName || 'Business Owner',
+          email: userRes.email || '',
+          phone: userRes.phone || '',
+          isOnboarded: true,
+          type: userRes.type || result.type,
+        },
+      };
+    } catch (_) {
+      return {
+        token: 'mock-token-business',
+        user: {
+          id: 'biz-001',
+          fullName: 'Auto Fix Admin',
+          email: 'admin@autofix.uz',
+          phone: req.otpId,
+          isOnboarded: true,
+        },
+      };
     }
   },
 

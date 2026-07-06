@@ -11,7 +11,7 @@ export async function getTransactions() {
   try {
     const list = await getOrders();
     const completed = list.filter((o) => o.status === 'done');
-    
+
     if (completed.length === 0) {
       return mockTransactions;
     }
