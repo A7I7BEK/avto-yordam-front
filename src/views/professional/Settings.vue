@@ -79,6 +79,9 @@ function switchAccountTab(key: string) {
 
 function breadcrumbItems() {
   const items = ['Workspace', 'Settings'];
+  if (section.value === 'account') {
+    items.push('Account');
+  }
   if (section.value === 'notifications') {
     items.push('Notifications');
   }
@@ -120,7 +123,7 @@ function breadcrumbItems() {
         v-if="section === 'account'"
         class="page-header"
       >
-        <h1 class="page-title">Settings</h1>
+        <h1 class="page-title">Account</h1>
         <p class="page-subtitle">Manage your account and preferences</p>
       </div>
 
