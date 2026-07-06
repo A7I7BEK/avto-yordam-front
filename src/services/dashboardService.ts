@@ -35,12 +35,12 @@ export async function getReceptionistDashboard() {
     ).length;
     const completedCount = list.filter((o) => o.status === 'done').length;
 
-    const dynamicKpi = [...kpiStats];
-    if (dynamicKpi[0]) {
-      dynamicKpi[0].value = activeCount.toString();
+    const dynamicKpi = { ...kpiStats };
+    if (dynamicKpi.todayBookings !== undefined) {
+      dynamicKpi.todayBookings = activeCount;
     }
-    if (dynamicKpi[1]) {
-      dynamicKpi[1].value = completedCount.toString();
+    if (dynamicKpi.pending !== undefined) {
+      dynamicKpi.pending = completedCount;
     }
 
     return {
@@ -121,10 +121,12 @@ export async function getCommandCenterDashboard() {
     ).length;
     const completedCount = list.filter((o) => o.status === 'done').length;
 
-    const dynamicStats = { ...ordersByStatus };
-    dynamicStats.new = newCount;
-    dynamicStats.inProgress = progressCount;
-    dynamicStats.completed = completedCount;
+    const dynamicStats = {
+      ...ordersByStatus,
+      new: newCount,
+      inProgress: progressCount,
+      completed: completedCount,
+    };
 
     return {
       bigStats,

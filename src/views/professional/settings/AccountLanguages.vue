@@ -41,7 +41,7 @@ function addEntry() {
   entries.value.push({
     id: nextId++,
     language: '',
-    proficiency: proficiencyOptions[0],
+    proficiency: proficiencyOptions[0] ?? 'Native or bilingual',
   });
 }
 

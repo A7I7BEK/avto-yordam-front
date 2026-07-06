@@ -67,9 +67,8 @@ function goBackToSignIn() {
       <div class="header-text">
         <h1 class="title">Forgot your password?</h1>
         <p class="subtitle">
-          {{ isBusiness
-              ? 'Enter your admin email and we\'ll send a reset link to recover access to your workspace.'
-              : 'Happens to the best of us. Enter your email and we\'ll send a reset link.' }}
+          Happens to the best of us. Enter your email and we'll send a reset
+          link.
         </p>
       </div>
 

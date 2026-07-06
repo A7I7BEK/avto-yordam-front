@@ -36,10 +36,19 @@ export async function getSettingsLegal() {
 
     const org = await apiClient.get(`/organization/${orgId}`);
     return {
-      name: org.name || legalInfo.name,
-      address: org.address || legalInfo.address,
+      orgName: org.name || legalInfo.orgName,
+      legalForm: org.legalForm || legalInfo.legalForm,
       inn: org.inn || legalInfo.inn,
-      director: 'Director Full Name',
+      regDate: org.regDate || legalInfo.regDate,
+      taxRegime: org.taxRegime || legalInfo.taxRegime,
+      legalAddress: org.address || legalInfo.legalAddress,
+      actualAddress: org.actualAddress || legalInfo.actualAddress,
+      sameAsLegal: org.sameAsLegal ?? legalInfo.sameAsLegal,
+      bankName: org.bankName || legalInfo.bankName,
+      accountNumber: org.accountNumber || legalInfo.accountNumber,
+      mfo: org.mfo || legalInfo.mfo,
+      okonkh: org.okonkh || legalInfo.okonkh,
+      documents: org.documents || [...legalInfo.documents],
     };
   } catch {
     return legalInfo;
@@ -67,11 +76,12 @@ export async function getSettingsBankInfo() {
 
     const org = await apiClient.get(`/organization/${orgId}`);
     return {
-      holder: org.name || bankInfo.holder,
+      accountHolder: org.name || bankInfo.accountHolder,
       bank: org.bankName || bankInfo.bank,
       mfo: org.mfo || bankInfo.mfo,
       inn: org.inn || bankInfo.inn,
-      account: org.bankAccount || bankInfo.account,
+      accountNumber: org.bankAccount || bankInfo.accountNumber,
+      currency: org.currency || bankInfo.currency,
     };
   } catch {
     return bankInfo;

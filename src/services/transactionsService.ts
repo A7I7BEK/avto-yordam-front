@@ -18,14 +18,16 @@ export async function getTransactions() {
 
     return completed.map((o) => ({
       id: o.id.replace('#', 'TX-'),
-      bookingId: o.id,
-      customer: o.customer,
-      initials: o.initials,
-      service: o.service,
-      date: o.date,
+      orderId: o.id,
+      customerName: o.customer,
+      customerInitials: o.initials,
+      avatarColor: '#5749F4',
       amount: o.amount,
-      status: 'Paid',
       provider: 'PayMe',
+      providerDot: '#00A0E9',
+      providerBg: '#C9D6F0',
+      status: 'Paid',
+      date: o.date,
     }));
   } catch {
     return mockTransactions;
