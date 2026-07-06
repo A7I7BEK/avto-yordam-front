@@ -35,10 +35,6 @@ import BusinessSidebar from '@/components/business/BusinessSidebar.vue';
   flex-direction: column;
   min-width: 0;
 }
-.app-shell__header {
-  flex-shrink: 0;
-  height: 80px;
-}
 .app-shell__content {
   flex: 1;
   overflow-y: auto;

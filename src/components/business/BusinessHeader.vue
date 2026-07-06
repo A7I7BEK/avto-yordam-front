@@ -38,11 +38,8 @@ const store = useBusinessAppStore();
   align-items: center;
   justify-content: space-between;
   height: 80px;
-  padding: 0 32px;
+  padding: 0 24px;
   background: #ffffff;
-  border: 1px solid #d9d9db;
-  border-top: none;
-  border-right: none;
   border-bottom: 1px solid #d9d9db;
 }
 
