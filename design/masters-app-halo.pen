@@ -19997,8 +19997,8 @@
                             {
                               "type": "icon",
                               "id": "v1HnS",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -20439,28 +20439,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "Fflfu",
-                              "name": "s47snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "NCh0y",
-                                  "fill": "$--muted-foreground",
-                                  "content": "PERSONAL",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "g9B8i6",
@@ -22050,8 +22028,8 @@
                             {
                               "type": "icon",
                               "id": "xx7DW",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -22492,28 +22470,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "M4Pm2U",
-                              "name": "s48snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "w3L6Sd",
-                                  "fill": "$--muted-foreground",
-                                  "content": "PERSONAL",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "Ftf2O",
@@ -23627,8 +23583,8 @@
                             {
                               "type": "icon",
                               "id": "ZHR2x",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -24069,28 +24025,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "We7HG",
-                              "name": "s49snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "yKfNk",
-                                  "fill": "$--muted-foreground",
-                                  "content": "PERSONAL",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "F05XK3",
@@ -24874,8 +24808,8 @@
                             {
                               "type": "icon",
                               "id": "lG8lo",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -25316,28 +25250,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "kzmvP",
-                              "name": "s44snT1",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "mgaFY",
-                                  "fill": "$--muted-foreground",
-                                  "content": "PERSONAL",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "pmxLx",
@@ -26997,8 +26909,8 @@
                             {
                               "type": "icon",
                               "id": "XRTfS",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -27439,29 +27351,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "bTUnq",
-                              "name": "s44snT1",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "vR8Rb",
-                                  "name": "PERSONAL",
-                                  "fill": "$--muted-foreground",
-                                  "content": "Settings",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "M1mdp",
@@ -28784,8 +28673,8 @@
                             {
                               "type": "icon",
                               "id": "wcs6o",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -29226,28 +29115,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "G7xYj",
-                              "name": "s44snT1",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "gxpDI",
-                                  "fill": "$--muted-foreground",
-                                  "content": "PERSONAL",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "jauOH",
@@ -30505,8 +30372,8 @@
                             {
                               "type": "icon",
                               "id": "w8QfhL",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -30947,28 +30814,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "XfB1S",
-                              "name": "s44snT1",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "zzWGi",
-                                  "fill": "$--muted-foreground",
-                                  "content": "PERSONAL",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "FId60",
@@ -32876,28 +32721,6 @@
                           "children": [
                             {
                               "type": "frame",
-                              "id": "uhmDv",
-                              "name": "s46snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "uo1qT",
-                                  "fill": "$--muted-foreground",
-                                  "content": "ORGANIZATION",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "gaZ6t",
                               "name": "se1",
                               "width": "fill_container",
@@ -34570,15 +34393,6 @@
                         16
                       ],
                       "children": [
-                        {
-                          "type": "text",
-                          "id": "y6WKGH",
-                          "fill": "$--muted-foreground",
-                          "content": "ORGANIZATION",
-                          "fontFamily": "Inter",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        },
                         {
                           "type": "frame",
                           "id": "j6F6UL",
@@ -36701,16 +36515,6 @@
                       ],
                       "children": [
                         {
-                          "type": "text",
-                          "id": "Aefls",
-                          "fill": "$--muted-foreground",
-                          "content": "ORGANIZATION",
-                          "fontFamily": "Inter",
-                          "fontSize": 11,
-                          "fontWeight": "600",
-                          "letterSpacing": 0.5
-                        },
-                        {
                           "type": "frame",
                           "id": "zVEvA",
                           "name": "sb1",
@@ -38359,28 +38163,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "xJIDD",
-                              "name": "s45snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "d58Lat",
-                                  "fill": "$--muted-foreground",
-                                  "content": "ORGANIZATION",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "eWVJI",
@@ -41160,28 +40942,6 @@
                           "children": [
                             {
                               "type": "frame",
-                              "id": "qvzDh",
-                              "name": "s45snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "q8CquD",
-                                  "fill": "$--muted-foreground",
-                                  "content": "ORGANIZATION",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "Dhmh8",
                               "name": "sd1",
                               "width": "fill_container",
@@ -43734,28 +43494,6 @@
                           "children": [
                             {
                               "type": "frame",
-                              "id": "UnW57",
-                              "name": "s45snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "KgOxC",
-                                  "fill": "$--muted-foreground",
-                                  "content": "ORGANIZATION",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "q0c3fH",
                               "name": "sd1",
                               "width": "fill_container",
@@ -45324,28 +45062,6 @@
                           "children": [
                             {
                               "type": "frame",
-                              "id": "GTBHA",
-                              "name": "s45snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "JX5MW",
-                                  "fill": "$--muted-foreground",
-                                  "content": "ORGANIZATION",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "uB6cC",
                               "name": "sd1",
                               "width": "fill_container",
@@ -46804,28 +46520,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "qQ14X",
-                              "name": "s46snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "h0hgEP",
-                                  "fill": "$--muted-foreground",
-                                  "content": "ORGANIZATION",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "Y6ppvA",
@@ -48789,28 +48483,6 @@
                           "layout": "vertical",
                           "gap": 2,
                           "children": [
-                            {
-                              "type": "frame",
-                              "id": "F4wV6",
-                              "name": "s45snT",
-                              "width": "fill_container",
-                              "padding": [
-                                4,
-                                12
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Y5Nkt4",
-                                  "fill": "$--muted-foreground",
-                                  "content": "ORGANIZATION",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 10,
-                                  "fontWeight": "600",
-                                  "letterSpacing": 0.5
-                                }
-                              ]
-                            },
                             {
                               "type": "frame",
                               "id": "J26su0",
@@ -89357,7 +89029,7 @@
                             {
                               "type": "icon",
                               "id": "mxD4B",
-                              "width": 232.52116583030735,
+                              "width": 291.5211658303074,
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
@@ -98046,8 +97718,8 @@
                             {
                               "type": "icon",
                               "id": "INEM7",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -102053,8 +101725,8 @@
                             {
                               "type": "icon",
                               "id": "NHkYG",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -104078,8 +103750,8 @@
                             {
                               "type": "icon",
                               "id": "F385OI",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-primary-foreground"
@@ -105814,8 +105486,8 @@
                             {
                               "type": "icon",
                               "id": "kXJLt",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -107352,8 +107024,8 @@
                             {
                               "type": "icon",
                               "id": "FW0MA",
-                              "width": 43.7586644805638,
-                              "height": 16.800528137315705,
+                              "width": 77.64650740958216,
+                              "height": 15.955573461871378,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -117606,7 +117278,7 @@
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 91.25052742089547,
+                  "height": 97.7765151015346,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -121300,7 +120972,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 179.2431451841068,
+                  "height": 303.68012223744137,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
