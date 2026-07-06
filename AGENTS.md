@@ -1,5 +1,11 @@
 # Ultracite Code Standards
 
+> **⚠️ AI AGENTS — CRITICAL**: All code you generate MUST comply with the rules
+> defined in `biome.jsonc`. The Biome overrides section below documents every
+> project-specific deviation from Ultracite defaults. **Review it before writing
+> any code.** Violations cause CI/lint failures (`pnpm check` must pass).
+> When in doubt, run `pnpm fix` after making changes.
+
 This project uses **Ultracite**, a zero-config preset that enforces strict code quality standards through automated formatting and linting.
 
 ## Quick Reference
