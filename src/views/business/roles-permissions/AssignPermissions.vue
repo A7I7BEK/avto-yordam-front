@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { BriefcaseBusiness, Check } from '@lucide/vue';
+import { ArrowLeft, BriefcaseBusiness, Check } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {
@@ -74,6 +74,15 @@ function allowedCount(cat: PermissionCategory): number {
     </div>
 
     <template v-else-if="role">
+      <button
+        type="button"
+        class="back-link"
+        @click="router.go(-1)"
+      >
+        <ArrowLeft :size="14" />
+        Back
+      </button>
+
       <!-- Header -->
       <div class="page-header">
         <div class="page-header__left">
@@ -161,6 +170,25 @@ function allowedCount(cat: PermissionCategory): number {
   font-family: Inter, sans-serif;
   font-size: 14px;
   color: var(--muted-foreground);
+}
+
+.back-link {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  width: fit-content;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.back-link:hover {
+  color: var(--foreground);
 }
 
 /* Header */
