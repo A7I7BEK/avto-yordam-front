@@ -100,32 +100,31 @@ function allowedCount(cat: PermissionCategory): number {
       </div>
 
       <!-- Info card -->
-      <div class="info-card">
-        <div class="info-card__grid">
-          <div class="info-section">
-            <span class="info-label">DESCRIPTION</span>
-            <span class="info-value">{{ role.description }}</span>
-          </div>
-
-          <div class="info-section">
-            <span class="info-label">MEMBERS</span>
-            <span class="info-value info-value--lg"
-              >{{ role.memberCount }}</span
-            >
-          </div>
-
-          <div class="info-section">
-            <span class="info-label">CREATED</span>
-            <span class="info-value">{{ role.createdDate }}</span>
-            <span class="info-sub">by {{ role.createdBy }}</span>
-          </div>
-
-          <div class="info-section">
-            <span class="info-label">LAST EDITED</span>
-            <span class="info-value">{{ role.lastEditedDate }}</span>
-            <span class="info-sub">by {{ role.lastEditedBy }}</span>
-          </div>
-        </div>
+      <div class="info-table-wrapper">
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th class="info-th">DESCRIPTION</th>
+              <th class="info-th">MEMBERS</th>
+              <th class="info-th">CREATED</th>
+              <th class="info-th">LAST EDITED</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="info-td">{{ role.description }}</td>
+              <td class="info-td info-td--lg">{{ role.memberCount }}</td>
+              <td class="info-td">
+                {{ role.createdDate }}<br>
+                <span class="info-sub">by {{ role.createdBy }}</span>
+              </td>
+              <td class="info-td">
+                {{ role.lastEditedDate }}<br>
+                <span class="info-sub">by {{ role.lastEditedBy }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Permissions header -->
@@ -307,41 +306,44 @@ function allowedCount(cat: PermissionCategory): number {
   border: 1px solid var(--border);
 }
 
-/* Info card */
-.info-card {
-  padding: 24px;
-  background: var(--background);
+/* Info table */
+.info-table-wrapper {
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
 }
 
-.info-card__grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
+.info-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  background: var(--background);
 }
 
-.info-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.info-table thead {
+  background: var(--accent);
 }
 
-.info-label {
+.info-th {
+  padding: 14px 24px;
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 600;
   color: var(--muted-foreground);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
 }
 
-.info-value {
+.info-td {
+  padding: 14px 24px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
+  vertical-align: middle;
   color: var(--foreground);
 }
 
-.info-value--lg {
+.info-td--lg {
   font-size: 16px;
   font-weight: 700;
 }
