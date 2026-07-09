@@ -88,7 +88,10 @@ function allowedCount(cat: PermissionCategory): number {
         <div class="page-header__left">
           <div class="title-row">
             <h1 class="page-title">Assign permissions</h1>
-            <span class="role-badge">
+            <span
+              class="role-badge"
+              :style="{ background: role.color, borderColor: role.color, color: '#ffffff' }"
+            >
               <BriefcaseBusiness :size="11" />
               {{ role.name }}
             </span>
@@ -227,9 +230,6 @@ function allowedCount(cat: PermissionCategory): number {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: var(--foreground);
-  background: var(--accent);
-  border: 1px solid var(--border);
   border-radius: var(--radius-pill);
 }
 
