@@ -420,7 +420,7 @@ function allowedCount(cat: PermissionCategory): number {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 24px 14px 24px;
+  padding: 24px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -456,6 +456,9 @@ function allowedCount(cat: PermissionCategory): number {
   vertical-align: middle;
 }
 
+.perm-table tbody tr:first-child td {
+  padding-top: 24px;
+}
 .perm-table tbody tr:last-child td {
   padding-bottom: 24px;
 }

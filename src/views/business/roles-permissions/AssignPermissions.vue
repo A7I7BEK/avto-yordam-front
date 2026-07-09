@@ -58,6 +58,10 @@ async function handleSave() {
     saving.value = false;
   }
 }
+
+function allowedCount(cat: PermissionCategory): number {
+  return cat.permissions.filter((p) => p.allowed).length;
+}
 </script>
 
 <template>
@@ -102,24 +106,37 @@ async function handleSave() {
         :key="cat.id"
         class="perm-card"
       >
-        <h2 class="perm-card__title">{{ cat.name }}</h2>
-
-        <div
-          v-for="perm in cat.permissions"
-          :key="perm.id"
-          class="perm-row"
-        >
-          <span class="perm-row__label">{{ perm.label }}</span>
-          <button
-            type="button"
-            class="toggle"
-            :class="{ 'toggle--on': perm.allowed }"
-            :aria-label="perm.label"
-            @click="togglePermission(cat.id, perm.id)"
-          >
-            <span class="toggle__thumb" />
-          </button>
+        <div class="perm-card__header">
+          <h2 class="perm-card__title">{{ cat.name }}</h2>
+          <span class="perm-card__badge">
+            <Check :size="12" />
+            {{ allowedCount(cat) }}
+            of {{ cat.permissions.length }} allowed
+          </span>
         </div>
+
+        <table class="perm-table">
+          <tbody>
+            <tr
+              v-for="perm in cat.permissions"
+              :key="perm.id"
+              :class="{ 'perm-row--muted': !perm.allowed }"
+            >
+              <td class="perm-cell__label">{{ perm.label }}</td>
+              <td class="perm-cell__toggle">
+                <button
+                  type="button"
+                  class="toggle"
+                  :class="{ 'toggle--on': perm.allowed }"
+                  :aria-label="perm.label"
+                  @click="togglePermission(cat.id, perm.id)"
+                >
+                  <span class="toggle__thumb" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </template>
 
@@ -230,33 +247,74 @@ async function handleSave() {
 .perm-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px;
+  gap: 0;
+  padding: 0;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
 }
 
+.perm-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
 .perm-card__title {
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--foreground);
 }
 
-/* Permission rows */
-.perm-row {
-  display: flex;
+.perm-card__badge {
+  display: inline-flex;
+  gap: 6px;
   align-items: center;
-  justify-content: space-between;
+  padding: 4px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
 }
 
-.perm-row__label {
+/* Permission table */
+.perm-table {
+  width: 100%;
+  padding: 14px 24px 24px 24px;
+  border-collapse: collapse;
+}
+
+.perm-table td {
+  padding: 6px 24px;
+  vertical-align: middle;
+}
+
+.perm-table tbody tr:first-child td {
+  padding-top: 24px;
+}
+.perm-table tbody tr:last-child td {
+  padding-bottom: 24px;
+}
+
+.perm-cell__label {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
   color: var(--foreground);
+}
+
+.perm-row--muted .perm-cell__label {
+  color: var(--muted-foreground);
+}
+
+.perm-cell__toggle {
+  text-align: right;
 }
 
 /* Toggle Switch */
