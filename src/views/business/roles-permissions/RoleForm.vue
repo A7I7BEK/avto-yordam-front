@@ -225,8 +225,8 @@ function selectColor(color: string) {
   flex-direction: column;
   gap: 18px;
   max-width: 784px;
-  height: 100%;
   padding: 24px 32px;
+  margin: auto;
 }
 
 .back-link {

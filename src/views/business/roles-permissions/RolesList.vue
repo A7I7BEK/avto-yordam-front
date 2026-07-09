@@ -159,7 +159,6 @@ function handleDelete(role: Role) {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  height: 100%;
   padding: 24px 32px;
 }
 

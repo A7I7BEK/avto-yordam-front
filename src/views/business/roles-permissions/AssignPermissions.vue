@@ -137,9 +137,7 @@ async function handleSave() {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
   padding: 24px 32px;
-  overflow-y: auto;
 }
 
 .loading-text {
