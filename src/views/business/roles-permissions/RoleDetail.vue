@@ -2,21 +2,28 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Copy, Edit3, ShieldCheck, UserPlus } from '@lucide/vue';
+import { ArrowLeft, Check, KeyRound, Minus, Pencil } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getRole } from '@/services/rolesService';
-import type { Role } from '@/types/business';
+import { getRole, getRolePermissions } from '@/services/rolesService';
+import type { PermissionCategory, Role } from '@/types/business';
 
 const route = useRoute();
 const router = useRouter();
+
 const role = ref<Role | null>(null);
+const permissions = ref<PermissionCategory[]>([]);
 const loading = ref(true);
 
 onMounted(async () => {
   try {
     const id = route.params.id as string;
-    role.value = await getRole(id);
+    const [roleData, permData] = await Promise.all([
+      getRole(id),
+      getRolePermissions(id),
+    ]);
+    role.value = roleData;
+    permissions.value = permData;
   } finally {
     loading.value = false;
   }
@@ -27,89 +34,56 @@ function goBack() {
 }
 
 function editRole() {
-  if (role.value) {
-    router.push(`/business/roles-permissions/${role.value.id}/edit`);
+  if (!role.value) {
+    return;
   }
+  router.push(`/business/roles-permissions/${role.value.id}/edit`);
 }
 
 function assignPermissions() {
-  if (role.value) {
-    router.push(`/business/roles-permissions/${role.value.id}/permissions`);
+  if (!role.value) {
+    return;
   }
+  router.push(`/business/roles-permissions/${role.value.id}/permissions`);
 }
 
-function duplicateRole() {
-  // Duplicate logic
+function allowedCount(cat: PermissionCategory): number {
+  return cat.permissions.filter((p) => p.allowed).length;
 }
-
-const permissionsList = [
-  {
-    category: 'Orders',
-    items: ['View orders', 'Create orders', 'Edit orders', 'Delete orders'],
-  },
-  {
-    category: 'Team',
-    items: ['View team', 'Invite members', 'Manage members'],
-  },
-  { category: 'Settings', items: ['View settings', 'Edit settings'] },
-  { category: 'Earnings', items: ['View earnings', 'Export reports'] },
-];
 </script>
 
 <template>
-  <div class="detail-page">
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-      <button
-        type="button"
-        class="breadcrumb-back"
-        @click="goBack"
-      >
-        <ArrowLeft :size="16" />
-      </button>
-      <span class="breadcrumb-item">Roles & Permissions</span>
-      <span class="breadcrumb-sep">/</span>
-      <span class="breadcrumb-item breadcrumb-item--current"
-        >{{ role?.name || '...' }}</span
-      >
-    </div>
-
-    <div
-      v-if="loading"
-      class="loading-state"
+  <div class="page">
+    <button
+      type="button"
+      class="back-link"
+      @click="goBack"
     >
-      Loading...
+      <ArrowLeft :size="14" />
+      Back to roles
+    </button>
+
+    <div v-if="loading">
+      <p class="loading-text">Loading role…</p>
     </div>
 
-    <div
-      v-else-if="!role"
-      class="loading-state"
-    >
-      Role not found.
-    </div>
-
-    <template v-else>
+    <template v-else-if="role">
       <!-- Header -->
       <div class="detail-header">
         <div class="detail-header__left">
-          <div
-            class="role-icon"
-            :style="{ background: role.iconColor }"
-          >
-            <ShieldCheck
-              :size="24"
-              color="#ffffff"
-            />
-          </div>
-          <div>
-            <h1 class="detail-title">{{ role.name }}</h1>
+          <div class="role-title-row">
             <span
-              class="type-badge"
-              :class="role.type === 'built-in' ? 'type-badge--built-in' : 'type-badge--custom'"
-            >
-              {{ role.type === 'built-in' ? 'Built-in' : 'Custom' }}
-            </span>
+              class="role-color-dot"
+              :style="{ background: role.color }"
+            />
+            <h1 class="detail-title">{{ role.name }}</h1>
           </div>
+          <p class="detail-meta">
+            {{ role.memberCount }}
+            members &middot; {{ role.enabledPermissionCount }} permissions
+            enabled &middot; Last edited {{ role.lastEditedDate }} by
+            {{ role.lastEditedBy }}
+          </p>
         </div>
         <div class="detail-header__actions">
           <button
@@ -117,164 +91,194 @@ const permissionsList = [
             class="btn btn--outline"
             @click="editRole"
           >
-            <Edit3 :size="16" />
-            Edit
+            <Pencil :size="14" />
+            Edit role
           </button>
           <button
             type="button"
             class="btn btn--primary"
             @click="assignPermissions"
           >
-            <UserPlus :size="16" />
-            Assign Permissions
-          </button>
-          <button
-            type="button"
-            class="btn btn--outline"
-            @click="duplicateRole"
-          >
-            <Copy :size="16" />
-            Duplicate
+            <KeyRound :size="14" />
+            Assign permissions
           </button>
         </div>
       </div>
 
-      <!-- Role info -->
-      <div class="info-grid">
-        <div class="info-card">
-          <span class="info-card__label">Description</span>
-          <span class="info-card__value">{{ role.description }}</span>
-        </div>
-        <div class="info-card">
-          <span class="info-card__label">Type</span>
-          <span
-            class="type-badge"
-            :class="role.type === 'built-in' ? 'type-badge--built-in' : 'type-badge--custom'"
-          >
-            {{ role.type === 'built-in' ? 'Built-in' : 'Custom' }}
-          </span>
-        </div>
-        <div class="info-card">
-          <span class="info-card__label">Members</span>
-          <span class="info-card__value"
-            >{{ role.members }}
-            {{ role.members === 1 ? 'member' : 'members' }}</span
-          >
-        </div>
-      </div>
+      <!-- Info card -->
+      <div class="info-card">
+        <div class="info-card__grid">
+          <div class="info-section">
+            <span class="info-label">DESCRIPTION</span>
+            <span class="info-value">{{ role.description }}</span>
+          </div>
 
-      <!-- Permissions -->
-      <div class="section-card">
-        <h2 class="section-title">Permissions</h2>
-        <div class="section-body">
-          <div
-            v-for="permGroup in permissionsList"
-            :key="permGroup.category"
-            class="perm-group"
-          >
-            <h3 class="perm-group__title">{{ permGroup.category }}</h3>
-            <ul class="perm-list">
-              <li
-                v-for="item in permGroup.items"
-                :key="item"
-                class="perm-item"
-              >
-                {{ item }}
-              </li>
-            </ul>
+          <div class="info-section">
+            <span class="info-label">MEMBERS</span>
+            <span class="info-value info-value--lg"
+              >{{ role.memberCount }}</span
+            >
+          </div>
+
+          <div class="info-section">
+            <span class="info-label">CREATED</span>
+            <span class="info-value">{{ role.createdDate }}</span>
+            <span class="info-sub">by {{ role.createdBy }}</span>
+          </div>
+
+          <div class="info-section">
+            <span class="info-label">LAST EDITED</span>
+            <span class="info-value">{{ role.lastEditedDate }}</span>
+            <span class="info-sub">by {{ role.lastEditedBy }}</span>
           </div>
         </div>
       </div>
+
+      <!-- Permissions header -->
+      <div class="perms-header">
+        <div>
+          <h2 class="perms-title">Permissions</h2>
+          <p class="perms-subtitle">
+            Read-only summary of what this role can do.
+          </p>
+        </div>
+        <div class="perms-legends">
+          <span class="legend legend--allowed">
+            <Check :size="12" />
+            Allowed
+          </span>
+          <span class="legend legend--not-allowed">
+            <Minus :size="12" />
+            Not allowed
+          </span>
+        </div>
+      </div>
+
+      <!-- Permission cards -->
+      <div
+        v-for="cat in permissions"
+        :key="cat.id"
+        class="perm-card"
+      >
+        <div class="perm-card__header">
+          <h3 class="perm-card__title">{{ cat.name }}</h3>
+          <span class="perm-card__badge">
+            <Check :size="12" />
+            {{ allowedCount(cat) }}
+            of {{ cat.permissions.length }} allowed
+          </span>
+        </div>
+
+        <div
+          v-for="perm in cat.permissions"
+          :key="perm.id"
+          class="perm-row"
+          :class="{ 'perm-row--muted': !perm.allowed }"
+        >
+          <span class="perm-row__label">{{ perm.label }}</span>
+          <span
+            class="perm-row__tag"
+            :class="perm.allowed ? 'perm-row__tag--allowed' : 'perm-row__tag--denied'"
+          >
+            <Check
+              v-if="perm.allowed"
+              :size="12"
+            />
+            <Minus
+              v-else
+              :size="12"
+            />
+            {{ perm.allowed ? 'Allowed' : 'Not allowed' }}
+          </span>
+        </div>
+      </div>
     </template>
+
+    <div
+      v-else
+      class="loading-text"
+    >
+      Role not found
+    </div>
   </div>
 </template>
 
 <style scoped>
-.detail-page {
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
   padding: 24px 32px;
+  overflow-y: auto;
 }
 
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 0;
+.loading-text {
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #939399;
+  color: var(--muted-foreground);
 }
 
-.breadcrumb {
-  display: flex;
-  gap: 8px;
+.back-link {
+  display: inline-flex;
+  gap: 6px;
   align-items: center;
-  margin-bottom: 20px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #939399;
-}
-
-.breadcrumb-back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: fit-content;
   padding: 0;
-  color: #616167;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
   cursor: pointer;
-  background: #f5f5f5;
+  background: none;
   border: none;
-  border-radius: 6px;
-  transition: background 0.15s;
 }
 
-.breadcrumb-back:hover {
-  background: #e8e8e8;
+.back-link:hover {
+  color: var(--foreground);
 }
 
-.breadcrumb-item {
-  color: #939399;
-}
-
-.breadcrumb-item--current {
-  font-weight: 600;
-  color: #2a2933;
-}
-
-.breadcrumb-sep {
-  color: #d9d9db;
-}
-
+/* Header */
 .detail-header {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
 }
 
 .detail-header__left {
   display: flex;
-  gap: 14px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.role-title-row {
+  display: flex;
+  gap: 10px;
   align-items: center;
 }
 
-.role-icon {
-  display: flex;
+.role-color-dot {
   flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
 
 .detail-title {
-  margin: 0 0 4px;
+  margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: #2a2933;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.detail-meta {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  color: var(--muted-foreground);
 }
 
 .detail-header__actions {
@@ -282,142 +286,209 @@ const permissionsList = [
   gap: 8px;
 }
 
+/* Buttons */
 .btn {
   display: inline-flex;
   gap: 6px;
   align-items: center;
-  padding: 9px 18px;
+  padding: 8px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
   border: none;
-  border-radius: 999px;
-  transition: all 0.15s;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.9;
 }
 
 .btn--primary {
-  color: #ffffff;
-  background: #5749f4;
-}
-
-.btn--primary:hover {
-  background: #4639d4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .btn--outline {
-  color: #616167;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
 }
 
-.btn--outline:hover {
-  background: #f5f5f5;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
+/* Info card */
 .info-card {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 16px;
-  border: 1px solid #d9d9db;
-  border-radius: 10px;
+  padding: 24px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
 }
 
-.info-card__label {
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: #939399;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.info-card__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
 }
 
-.info-card__value {
-  font-family: Inter, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #2a2933;
-}
-
-.type-badge {
-  display: inline-flex;
-  padding: 3px 10px;
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 999px;
-}
-
-.type-badge--built-in {
-  color: #1e40af;
-  background: #dbeafe;
-}
-
-.type-badge--custom {
-  color: #5749f4;
-  background: #eef0ff;
-}
-
-.section-card {
-  overflow: hidden;
-  border: 1px solid #d9d9db;
-  border-radius: 10px;
-}
-
-.section-title {
-  padding: 16px 20px;
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: #2a2933;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.section-body {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-}
-
-.perm-group {
+.info-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.perm-group__title {
+.info-label {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.info-value {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.info-value--lg {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.info-sub {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* Permissions header */
+.perms-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.perms-title {
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
-.perm-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.perm-item {
-  padding: 4px 10px;
+.perms-subtitle {
+  margin: 4px 0 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
-  background: #f5f5f5;
-  border-radius: 6px;
+  color: var(--muted-foreground);
+}
+
+.perms-legends {
+  display: flex;
+  gap: 12px;
+}
+
+.legend {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 2px 8px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+.legend--allowed {
+  color: var(--muted-foreground);
+  background: var(--accent);
+}
+
+.legend--not-allowed {
+  color: var(--muted-foreground);
+  background: var(--accent);
+  border: 1px solid var(--border);
+}
+
+/* Permission cards */
+.perm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+.perm-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.perm-card__title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.perm-card__badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+/* Permission rows */
+.perm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.perm-row__label {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.perm-row--muted .perm-row__label {
+  color: var(--muted-foreground);
+}
+
+.perm-row__tag {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 2px 8px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+.perm-row__tag--allowed {
+  color: var(--muted-foreground);
+  background: var(--accent);
+}
+
+.perm-row__tag--denied {
+  color: var(--muted-foreground);
+  background: var(--accent);
+  border: 1px solid var(--border);
 }
 </style>

@@ -30,15 +30,6 @@ export interface TeamMember {
   avatarColor: string;
 }
 
-export interface Role {
-  id: string;
-  name: string;
-  description: string;
-  members: number;
-  type: RoleType;
-  iconColor: string;
-}
-
 export interface Order {
   id: string;
   customer: string;
@@ -48,4 +39,31 @@ export interface Order {
   master: string;
   amount: string;
   status: string;
+}
+
+export interface RolePermission {
+  id: string;
+  label: string;
+  allowed: boolean;
+}
+
+export interface PermissionCategory {
+  id: string;
+  name: string;
+  permissions: RolePermission[];
+}
+
+export interface Role {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  isSystem: boolean;
+  memberCount: number;
+  enabledPermissionCount: number;
+  totalPermissionCount: number;
+  createdDate: string;
+  createdBy: string;
+  lastEditedDate: string;
+  lastEditedBy: string;
 }
