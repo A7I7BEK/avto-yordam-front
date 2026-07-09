@@ -75,15 +75,9 @@ function allowedCount(cat: PermissionCategory): number {
             <span
               class="role-color-dot"
               :style="{ background: role.color }"
-            />
+            ></span>
             <h1 class="detail-title">{{ role.name }}</h1>
           </div>
-          <p class="detail-meta">
-            {{ role.memberCount }}
-            members &middot; {{ role.enabledPermissionCount }} permissions
-            enabled &middot; Last edited {{ role.lastEditedDate }} by
-            {{ role.lastEditedBy }}
-          </p>
         </div>
         <div class="detail-header__actions">
           <button
@@ -169,28 +163,33 @@ function allowedCount(cat: PermissionCategory): number {
           </span>
         </div>
 
-        <div
-          v-for="perm in cat.permissions"
-          :key="perm.id"
-          class="perm-row"
-          :class="{ 'perm-row--muted': !perm.allowed }"
-        >
-          <span class="perm-row__label">{{ perm.label }}</span>
-          <span
-            class="perm-row__tag"
-            :class="perm.allowed ? 'perm-row__tag--allowed' : 'perm-row__tag--denied'"
-          >
-            <Check
-              v-if="perm.allowed"
-              :size="12"
-            />
-            <Minus
-              v-else
-              :size="12"
-            />
-            {{ perm.allowed ? 'Allowed' : 'Not allowed' }}
-          </span>
-        </div>
+        <table class="perm-table">
+          <tbody>
+            <tr
+              v-for="perm in cat.permissions"
+              :key="perm.id"
+              :class="{ 'perm-row--muted': !perm.allowed }"
+            >
+              <td class="perm-cell__label">{{ perm.label }}</td>
+              <td class="perm-cell__tag">
+                <span
+                  class="perm-row__tag"
+                  :class="perm.allowed ? 'perm-row__tag--allowed' : 'perm-row__tag--denied'"
+                >
+                  <Check
+                    v-if="perm.allowed"
+                    :size="12"
+                  />
+                  <Minus
+                    v-else
+                    :size="12"
+                  />
+                  {{ perm.allowed ? 'Allowed' : 'Not allowed' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </template>
 
@@ -270,13 +269,6 @@ function allowedCount(cat: PermissionCategory): number {
   font-size: 24px;
   font-weight: 700;
   color: var(--foreground);
-}
-
-.detail-meta {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  color: var(--muted-foreground);
 }
 
 .detail-header__actions {
@@ -401,8 +393,8 @@ function allowedCount(cat: PermissionCategory): number {
 }
 
 .legend--allowed {
-  color: var(--muted-foreground);
-  background: var(--accent);
+  color: #003300;
+  background: #a1e5a1;
 }
 
 .legend--not-allowed {
@@ -415,8 +407,8 @@ function allowedCount(cat: PermissionCategory): number {
 .perm-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 24px;
+  gap: 0;
+  padding: 0;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -426,12 +418,14 @@ function allowedCount(cat: PermissionCategory): number {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 24px 24px 14px 24px;
+  border-bottom: 1px solid var(--border);
 }
 
 .perm-card__title {
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--foreground);
 }
@@ -449,23 +443,34 @@ function allowedCount(cat: PermissionCategory): number {
   border-radius: var(--radius-pill);
 }
 
-/* Permission rows */
-.perm-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 0;
+.perm-table {
+  width: 100%;
+  padding: 14px 24px 24px 24px;
+  border-collapse: collapse;
 }
 
-.perm-row__label {
+.perm-table td {
+  padding: 6px 24px;
+  vertical-align: middle;
+}
+
+.perm-table tbody tr:last-child td {
+  padding-bottom: 24px;
+}
+
+.perm-cell__label {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
   color: var(--foreground);
 }
 
-.perm-row--muted .perm-row__label {
+.perm-row--muted .perm-cell__label {
   color: var(--muted-foreground);
+}
+
+.perm-cell__tag {
+  text-align: right;
 }
 
 .perm-row__tag {
@@ -480,8 +485,8 @@ function allowedCount(cat: PermissionCategory): number {
 }
 
 .perm-row__tag--allowed {
-  color: var(--muted-foreground);
-  background: var(--accent);
+  color: #003300;
+  background: #a1e5a1;
 }
 
 .perm-row__tag--denied {
