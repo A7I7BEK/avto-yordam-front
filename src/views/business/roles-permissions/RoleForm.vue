@@ -162,7 +162,7 @@ function selectColor(color: string) {
           placeholder="Briefly describe what this role can do."
           rows="3"
           :class="{ 'form-input--error': errors.description }"
-        />
+        ></textarea>
         <span
           v-if="errors.description"
           class="form-error"
@@ -183,7 +183,7 @@ function selectColor(color: string) {
             :style="{ background: swatch }"
             :aria-label="`Color ${swatch}`"
             @click="selectColor(swatch)"
-          />
+          ></button>
         </div>
       </div>
 
