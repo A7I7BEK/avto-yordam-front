@@ -371,12 +371,13 @@ function handleDelete(role: Role) {
 }
 
 .roles-table th {
-  padding: 14px 18px;
+  padding: 18px;
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 600;
   color: var(--muted-foreground);
   text-align: left;
+  border-bottom: 1px solid var(--border);
 }
 
 .roles-table td {
