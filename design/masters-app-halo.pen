@@ -19997,8 +19997,8 @@
                             {
                               "type": "icon",
                               "id": "v1HnS",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -22028,8 +22028,8 @@
                             {
                               "type": "icon",
                               "id": "xx7DW",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -23583,8 +23583,8 @@
                             {
                               "type": "icon",
                               "id": "ZHR2x",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -24808,8 +24808,8 @@
                             {
                               "type": "icon",
                               "id": "lG8lo",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -26909,8 +26909,8 @@
                             {
                               "type": "icon",
                               "id": "XRTfS",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -28673,8 +28673,8 @@
                             {
                               "type": "icon",
                               "id": "wcs6o",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -30372,8 +30372,8 @@
                             {
                               "type": "icon",
                               "id": "w8QfhL",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -78113,6 +78113,7 @@
                   "type": "frame",
                   "id": "e5U04U",
                   "name": "tbl27",
+                  "clip": true,
                   "width": "fill_container",
                   "fill": "$--card",
                   "cornerRadius": 16,
@@ -80546,6 +80547,7 @@
                       "id": "tX7F4",
                       "name": "Table Footer",
                       "width": "fill_container",
+                      "fill": "$--muted",
                       "padding": [
                         12,
                         16
@@ -80573,8 +80575,10 @@
                               "type": "frame",
                               "id": "s3WtaL",
                               "name": "Prev",
+                              "opacity": 0.4,
                               "width": 28,
                               "height": 28,
+                              "fill": "$--card",
                               "cornerRadius": 8,
                               "stroke": "$--border",
                               "strokeWidth": 1,
@@ -80621,6 +80625,7 @@
                               "name": "Page 2",
                               "width": 28,
                               "height": 28,
+                              "fill": "$--card",
                               "cornerRadius": 8,
                               "stroke": "$--border",
                               "strokeWidth": 1,
@@ -80645,6 +80650,7 @@
                               "name": "Next",
                               "width": 28,
                               "height": 28,
+                              "fill": "$--card",
                               "cornerRadius": 8,
                               "stroke": "$--border",
                               "strokeWidth": 1,
@@ -88936,7 +88942,7 @@
                             {
                               "type": "icon",
                               "id": "mxD4B",
-                              "width": 409.5211658303074,
+                              "width": 468.5211658303073,
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
@@ -97625,8 +97631,8 @@
                             {
                               "type": "icon",
                               "id": "INEM7",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -101632,8 +101638,8 @@
                             {
                               "type": "icon",
                               "id": "NHkYG",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -103657,8 +103663,8 @@
                             {
                               "type": "icon",
                               "id": "F385OI",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-primary-foreground"
@@ -105393,8 +105399,8 @@
                             {
                               "type": "icon",
                               "id": "kXJLt",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -106931,8 +106937,8 @@
                             {
                               "type": "icon",
                               "id": "FW0MA",
-                              "width": 245.6465074095822,
-                              "height": 15.285885166926233,
+                              "width": 329.6465074095822,
+                              "height": 15.15842724039799,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -117185,7 +117191,7 @@
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 113.13610110143027,
+                  "height": 122.24335511914596,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -120879,7 +120885,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 1030.6017270165844,
+                  "height": 1478.1565624765124,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
