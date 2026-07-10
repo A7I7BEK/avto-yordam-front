@@ -19997,8 +19997,8 @@
                             {
                               "type": "icon",
                               "id": "v1HnS",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -22028,8 +22028,8 @@
                             {
                               "type": "icon",
                               "id": "xx7DW",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -23583,8 +23583,8 @@
                             {
                               "type": "icon",
                               "id": "ZHR2x",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -24808,8 +24808,8 @@
                             {
                               "type": "icon",
                               "id": "lG8lo",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -26909,8 +26909,8 @@
                             {
                               "type": "icon",
                               "id": "XRTfS",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -28673,8 +28673,8 @@
                             {
                               "type": "icon",
                               "id": "wcs6o",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -30372,8 +30372,8 @@
                             {
                               "type": "icon",
                               "id": "w8QfhL",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -67915,72 +67915,6 @@
                                       "fill": "$--muted-foreground"
                                     }
                                   ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "xouRZ",
-                                  "cornerRadius": 999,
-                                  "stroke": "$--border",
-                                  "strokeWidth": 1,
-                                  "strokeAlignment": "inner",
-                                  "padding": 8,
-                                  "justifyContent": "center",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon",
-                                      "id": "tKlVG",
-                                      "width": 16,
-                                      "height": 16,
-                                      "icon": "pencil",
-                                      "library": "lucide",
-                                      "fill": "$--muted-foreground"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "AHICE",
-                                  "cornerRadius": 999,
-                                  "stroke": "$--border",
-                                  "strokeWidth": 1,
-                                  "strokeAlignment": "inner",
-                                  "padding": 8,
-                                  "justifyContent": "center",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon",
-                                      "id": "Oi9e4",
-                                      "width": 16,
-                                      "height": 16,
-                                      "icon": "key-round",
-                                      "library": "lucide",
-                                      "fill": "$--muted-foreground"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "Tnygn",
-                                  "cornerRadius": 999,
-                                  "stroke": "$--border",
-                                  "strokeWidth": 1,
-                                  "strokeAlignment": "inner",
-                                  "padding": 8,
-                                  "justifyContent": "center",
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "icon",
-                                      "id": "SjkfA",
-                                      "width": 16,
-                                      "height": 16,
-                                      "icon": "trash-2",
-                                      "library": "lucide",
-                                      "fill": "$--destructive"
-                                    }
-                                  ]
                                 }
                               ]
                             }
@@ -68811,22 +68745,24 @@
                             },
                             {
                               "type": "frame",
-                              "id": "zxSLW",
+                              "id": "zWb0S",
                               "width": 150,
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "id": "Z3DDVc",
+                                  "id": "r31rpR",
                                   "type": "ref",
-                                  "ref": "2bkgE",
+                                  "ref": "qHX3A",
                                   "padding": [
                                     4,
                                     10
                                   ],
+                                  "fill": "$--color-error",
                                   "descendants": {
                                     "1qRIv": {
-                                      "content": "Invited",
-                                      "fontSize": 12
+                                      "content": "Inactive",
+                                      "fontSize": 12,
+                                      "fill": "$--color-error-foreground"
                                     }
                                   }
                                 }
@@ -69305,7 +69241,7 @@
                                   "fill": "$--color-error",
                                   "descendants": {
                                     "1qRIv": {
-                                      "content": "Suspended",
+                                      "content": "Inactive",
                                       "fontSize": 12,
                                       "fill": "$--color-error-foreground"
                                     }
@@ -78414,7 +78350,7 @@
                                   "name": "tr1a",
                                   "width": 34,
                                   "height": 34,
-                                  "fill": "$--primary",
+                                  "fill": "$--secondary",
                                   "cornerRadius": 999,
                                   "justifyContent": "center",
                                   "alignItems": "center",
@@ -78422,7 +78358,7 @@
                                     {
                                       "type": "text",
                                       "id": "cPxnJ",
-                                      "fill": "$--primary-foreground",
+                                      "fill": "$--secondary-foreground",
                                       "content": "AI",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
@@ -78469,8 +78405,11 @@
                                   "type": "frame",
                                   "id": "vHoQh",
                                   "name": "tr1rb",
-                                  "fill": "$--primary",
+                                  "fill": "$--accent",
                                   "cornerRadius": 999,
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "padding": [
                                     3,
                                     8
@@ -78479,8 +78418,8 @@
                                     {
                                       "type": "text",
                                       "id": "X4KLm",
-                                      "fill": "$--primary-foreground",
-                                      "content": "Owner",
+                                      "fill": "$--foreground",
+                                      "content": "Manager",
                                       "fontFamily": "Inter",
                                       "fontSize": 10,
                                       "fontWeight": "700"
@@ -78776,8 +78715,11 @@
                                   "type": "frame",
                                   "id": "LFB3y",
                                   "name": "tr2rb",
-                                  "fill": "$--color-info",
+                                  "fill": "$--accent",
                                   "cornerRadius": 999,
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "padding": [
                                     3,
                                     8
@@ -78786,7 +78728,7 @@
                                     {
                                       "type": "text",
                                       "id": "vJLjG",
-                                      "fill": "$--color-info-foreground",
+                                      "fill": "$--foreground",
                                       "content": "Manager",
                                       "fontFamily": "Inter",
                                       "fontSize": 10,
@@ -79792,7 +79734,7 @@
                                       "id": "Ji88A",
                                       "width": 10,
                                       "height": 10,
-                                      "icon": "clock",
+                                      "icon": "clock-4",
                                       "library": "lucide",
                                       "fill": "$--color-warning-foreground"
                                     },
@@ -79800,7 +79742,7 @@
                                       "type": "text",
                                       "id": "fbOs9",
                                       "fill": "$--color-warning-foreground",
-                                      "content": "Pending",
+                                      "content": "Invited",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
                                       "fontWeight": "600"
@@ -80203,8 +80145,11 @@
                                   "type": "frame",
                                   "id": "Rp3Nm",
                                   "name": "tr7rb",
-                                  "fill": "$--color-warning",
+                                  "fill": "$--accent",
                                   "cornerRadius": 999,
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "padding": [
                                     3,
                                     8
@@ -80213,7 +80158,7 @@
                                     {
                                       "type": "text",
                                       "id": "lRI6f",
-                                      "fill": "$--color-warning-foreground",
+                                      "fill": "$--foreground",
                                       "content": "Receptionist",
                                       "fontFamily": "Inter",
                                       "fontSize": 10,
@@ -80301,7 +80246,7 @@
                                       "id": "pa7L0",
                                       "width": 10,
                                       "height": 10,
-                                      "icon": "clock",
+                                      "icon": "clock-4",
                                       "library": "lucide",
                                       "fill": "$--color-warning-foreground"
                                     },
@@ -80309,7 +80254,7 @@
                                       "type": "text",
                                       "id": "N8ft7",
                                       "fill": "$--color-warning-foreground",
-                                      "content": "Pending",
+                                      "content": "Invited",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
                                       "fontWeight": "600"
@@ -80456,8 +80401,11 @@
                                   "type": "frame",
                                   "id": "Cs7uv",
                                   "name": "tr8rb",
-                                  "fill": "$--color-warning",
+                                  "fill": "$--accent",
                                   "cornerRadius": 999,
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "padding": [
                                     3,
                                     8
@@ -80466,7 +80414,7 @@
                                     {
                                       "type": "text",
                                       "id": "Ykrok",
-                                      "fill": "$--color-warning-foreground",
+                                      "fill": "$--foreground",
                                       "content": "Receptionist",
                                       "fontFamily": "Inter",
                                       "fontSize": 10,
@@ -89029,7 +88977,7 @@
                             {
                               "type": "icon",
                               "id": "mxD4B",
-                              "width": 291.5211658303074,
+                              "width": 350.5211658303074,
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
@@ -97718,8 +97666,8 @@
                             {
                               "type": "icon",
                               "id": "INEM7",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -101725,8 +101673,8 @@
                             {
                               "type": "icon",
                               "id": "NHkYG",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -103750,8 +103698,8 @@
                             {
                               "type": "icon",
                               "id": "F385OI",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-primary-foreground"
@@ -105486,8 +105434,8 @@
                             {
                               "type": "icon",
                               "id": "kXJLt",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -107024,8 +106972,8 @@
                             {
                               "type": "icon",
                               "id": "FW0MA",
-                              "width": 77.64650740958216,
-                              "height": 15.955573461871378,
+                              "width": 161.64650740958217,
+                              "height": 15.519399168071441,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -117278,7 +117226,7 @@
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 97.7765151015346,
+                  "height": 105.03087443428896,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -120972,7 +120920,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 303.68012223744137,
+                  "height": 613.5363360818178,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
