@@ -19,10 +19,14 @@ export async function getMembers(): Promise<TeamMember[]> {
   }
 
   const orgId = await getMyOrgId();
-  if (!orgId) return [];
+  if (!orgId) {
+    return [];
+  }
 
   try {
-    const members = await apiClient.get(`/organization-member/get-by-organization-id/${orgId}`);
+    const members = await apiClient.get(
+      `/organization-member/get-by-organization-id/${orgId}`,
+    );
     return members.map((m: any) => ({
       id: m.id,
       name: m.userName || 'Unknown Member',

@@ -1,3 +1,5 @@
+import router from '@/router';
+
 const BASE_URL = import.meta.env.VITE_URL_API || 'http://localhost:8700/api';
 
 async function request(url: string, method: string, data?: any, config?: any) {
@@ -24,14 +26,28 @@ async function request(url: string, method: string, data?: any, config?: any) {
   }
 
   const response = await fetch(fullUrl, options);
-  
+
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      const path =
+        router.currentRoute.value?.path || window.location.pathname || '';
+      const isRegisterPage =
+        path.includes('register') || path.includes('signup');
+      const isLoginPage = path.includes('login') || path.includes('signin');
+      if (!(isRegisterPage || isLoginPage)) {
+        router.push('/auth/login');
+      }
+    }
+
     let errorMsg = response.statusText;
     try {
       const errJson = await response.json();
       errorMsg = errJson.message || errJson.error || errorMsg;
     } catch (_) {}
-    throw new Error(errorMsg || `Request failed with status ${response.status}`);
+    throw new Error(
+      errorMsg || `Request failed with status ${response.status}`,
+    );
   }
 
   const contentType = response.headers.get('content-type');

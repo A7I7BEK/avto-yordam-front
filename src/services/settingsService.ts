@@ -22,18 +22,32 @@ async function getMyOrgId(): Promise<string | null> {
 }
 
 export async function getSettingsLegal() {
-  if (isMockMode()) return legalInfo;
-  
+  if (isMockMode()) {
+    return legalInfo;
+  }
+
   try {
     const orgId = await getMyOrgId();
-    if (!orgId) return legalInfo;
+    if (!orgId) {
+      return legalInfo;
+    }
 
     const org = await apiClient.get(`/organization/${orgId}`);
     return {
-      name: org.name || legalInfo.name,
-      address: org.address || legalInfo.address,
+      orgName: org.name || legalInfo.orgName,
+      legalForm: org.legalForm || legalInfo.legalForm,
       inn: org.inn || legalInfo.inn,
-      director: 'Director Full Name',
+      regDate: org.regDate || legalInfo.regDate,
+      taxRegime: org.taxRegime || legalInfo.taxRegime,
+      legalAddress: org.address || legalInfo.legalAddress,
+      actualAddress: org.actualAddress || legalInfo.actualAddress,
+      sameAsLegal:
+        org.sameAsLegal === undefined ? legalInfo.sameAsLegal : org.sameAsLegal,
+      bankName: org.bankName || legalInfo.bankName,
+      accountNumber: org.bankAccount || legalInfo.accountNumber,
+      mfo: org.mfo || legalInfo.mfo,
+      okonkh: org.okonkh || legalInfo.okonkh,
+      documents: org.documents || legalInfo.documents,
     };
   } catch (_) {
     return legalInfo;
@@ -49,19 +63,24 @@ export async function getSettingsPhotos() {
 }
 
 export async function getSettingsBankInfo() {
-  if (isMockMode()) return bankInfo;
+  if (isMockMode()) {
+    return bankInfo;
+  }
 
   try {
     const orgId = await getMyOrgId();
-    if (!orgId) return bankInfo;
+    if (!orgId) {
+      return bankInfo;
+    }
 
     const org = await apiClient.get(`/organization/${orgId}`);
     return {
-      holder: org.name || bankInfo.holder,
+      accountHolder: org.name || bankInfo.accountHolder,
       bank: org.bankName || bankInfo.bank,
       mfo: org.mfo || bankInfo.mfo,
       inn: org.inn || bankInfo.inn,
-      account: org.bankAccount || bankInfo.account,
+      accountNumber: org.bankAccount || bankInfo.accountNumber,
+      currency: 'UZS',
     };
   } catch (_) {
     return bankInfo;

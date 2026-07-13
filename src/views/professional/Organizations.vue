@@ -2,11 +2,11 @@
   setup
   lang="ts"
 >
-import { ref, onMounted } from 'vue';
+import { Building2, ChevronRight, Crown, Wrench } from '@lucide/vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ChevronRight, Crown, Wrench } from '@lucide/vue';
-import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import { apiClient } from '@/api/client';
+import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import { isMockMode } from '@/config';
 
 const router = useRouter();
@@ -69,18 +69,18 @@ const gradients = [
   {
     gradient: 'linear-gradient(135deg, #5749F4 0%, #1B1356 100%)',
     border: '#7A6FFF',
-    shadowColor: 'rgba(87,73,244,0.29)'
+    shadowColor: 'rgba(87,73,244,0.29)',
   },
   {
     gradient: 'linear-gradient(135deg, #0F766E 0%, #053330 100%)',
     border: '#14B8A6',
-    shadowColor: 'rgba(15,118,110,0.29)'
+    shadowColor: 'rgba(15,118,110,0.29)',
   },
   {
     gradient: 'linear-gradient(135deg, #B45309 0%, #4A1E02 100%)',
     border: '#F59E0B',
-    shadowColor: 'rgba(180,83,9,0.29)'
-  }
+    shadowColor: 'rgba(180,83,9,0.29)',
+  },
 ];
 
 async function loadOrganizations() {
@@ -92,14 +92,18 @@ async function loadOrganizations() {
   isLoading.value = true;
   try {
     const data = await apiClient.get('/organization-member/get-by-user');
-    
+
     if (!data || data.length === 0) {
-      organizations.value = staticOrganizations;
+      organizations.value = [];
       return;
     }
 
     organizations.value = data.map((item: any, index: number) => {
-      const g = gradients[index % gradients.length];
+      const g = gradients[index % gradients.length] || {
+        gradient: 'linear-gradient(135deg, #5749F4 0%, #1B1356 100%)',
+        border: '#7A6FFF',
+        shadowColor: 'rgba(87,73,244,0.29)',
+      };
       const name = item.organizationName || 'Auto Service';
       const initials = name
         .split(' ')
@@ -130,9 +134,8 @@ async function loadOrganizations() {
         orgId: `#ORG-${item.organizationId.slice(0, 4).toUpperCase()}`,
       };
     });
-  } catch (e) {
-    console.error(e);
-    organizations.value = staticOrganizations;
+  } catch {
+    organizations.value = [];
   } finally {
     isLoading.value = false;
   }
@@ -145,13 +148,14 @@ async function enterOrganization(organizationId: string) {
   }
 
   try {
-    const result = await apiClient.post(`/user/change-organization/${organizationId}`);
+    const result = await apiClient.post(
+      `/user/change-organization/${organizationId}`,
+    );
     if (result && result.accessToken) {
       localStorage.setItem('token', result.accessToken);
       router.push({ name: 'biz-dashboard-overview' });
     }
-  } catch (err) {
-    console.error('Failed to change organization:', err);
+  } catch {
     alert('Failed to switch to organization workspace. Please try again.');
   }
 }
@@ -181,8 +185,24 @@ function getInitialsColor(gradient: string) {
     </div>
 
     <div class="org-list">
-      <div v-if="isLoading" class="loading-state">
+      <div
+        v-if="isLoading"
+        class="loading-state"
+      >
         Loading organization assignments...
+      </div>
+      <div
+        v-else-if="organizations.length === 0"
+        class="empty-state"
+      >
+        <Building2
+          class="empty-icon"
+          :size="48"
+        />
+        <h3 class="empty-title">No Organizations Found</h3>
+        <p class="empty-subtitle">
+          You are not a member of any organization workspaces yet.
+        </p>
       </div>
       <article
         v-else
@@ -240,7 +260,7 @@ function getInitialsColor(gradient: string) {
               <span class="stat-value">{{ org.orgId }}</span>
             </div>
           </div>
-          
+
           <button
             class="enter-btn"
             type="button"
@@ -294,10 +314,10 @@ function getInitialsColor(gradient: string) {
 
 .loading-state {
   padding: 40px;
-  text-align: center;
   font-family: Inter, sans-serif;
   font-size: 14px;
   color: #616167;
+  text-align: center;
 }
 
 .org-card {
@@ -437,8 +457,8 @@ function getInitialsColor(gradient: string) {
 
 .enter-btn {
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   padding: 8px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
@@ -448,11 +468,45 @@ function getInitialsColor(gradient: string) {
   background: #ffffff;
   border: none;
   border-radius: 999px;
-  transition: transform 0.15s, background 0.15s;
+  transition:
+    transform 0.15s,
+    background 0.15s;
 }
 
 .enter-btn:hover {
   background: #f5f5f5;
   transform: translateY(-1px);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px dashed #c5c5cb;
+  border-radius: 20px;
+}
+
+.empty-icon {
+  margin-bottom: 16px;
+  color: #939399;
+}
+
+.empty-title {
+  margin: 0 0 6px 0;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2a2933;
+}
+
+.empty-subtitle {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  color: #616167;
 }
 </style>

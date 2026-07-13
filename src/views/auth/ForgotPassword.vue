@@ -2,8 +2,8 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, KeyRound, Mail, UserRound } from '@lucide/vue';
-import { ref } from 'vue';
+import { ArrowLeft, Building2, KeyRound, Mail, UserRound } from '@lucide/vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import AuthCard from '@/components/auth/AuthCard.vue';
@@ -13,9 +13,12 @@ import { professionalAuth } from '@/services/auth/professionalAuthService';
 const router = useRouter();
 const route = useRoute();
 
-const brandIcon = UserRound;
-const brandIconBg = '#5749F4';
-const brandLabel = 'Professional';
+const isBusiness = computed(() => route.query.type === 'business');
+const brandIcon = computed(() => (isBusiness.value ? Building2 : UserRound));
+const brandIconBg = computed(() => (isBusiness.value ? '#2A2933' : '#5749F4'));
+const brandLabel = computed(() =>
+  isBusiness.value ? 'Business' : 'Professional',
+);
 
 const email = ref((route.query.email as string) || '');
 const isLoading = ref(false);
@@ -40,7 +43,7 @@ async function sendResetLink() {
 }
 
 function goBackToSignIn() {
-  router.push({ name: 'auth-login' });
+  router.push({ name: 'auth-login', query: { type: route.query.type } });
 }
 </script>
 

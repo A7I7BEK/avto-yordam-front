@@ -27,10 +27,8 @@ const accountType = ref<'professional' | 'business'>(
 );
 const contactMethod = ref<'email' | 'phone'>('email');
 
-// Professional fields
+// Name field for both
 const fullName = ref('');
-// Business fields
-const orgName = ref('');
 
 // Contact fields
 const email = ref('');
@@ -65,9 +63,7 @@ const brandLabel = computed(() =>
 );
 
 const canSubmit = computed(() => {
-  const nameOk = isBusiness.value
-    ? orgName.value.trim().length > 0
-    : fullName.value.trim().length > 0;
+  const nameOk = fullName.value.trim().length > 0;
 
   const contactOk =
     contactMethod.value === 'email'
@@ -102,7 +98,7 @@ async function signUp() {
 
     if (isBusiness.value) {
       const result = await businessAuth.registerInit({
-        orgName: orgName.value,
+        orgName: fullName.value,
         contact,
         contactType,
         password: password.value,
@@ -169,20 +165,10 @@ async function signUp() {
         </p>
       </div>
 
-      <!-- Name field: Professional = Full name, Business = Organization name -->
+      <!-- Name field: Full name -->
       <div class="field-group">
-        <label class="field-label">
-          {{ isBusiness ? 'Organization name' : 'Full name' }}
-        </label>
+        <label class="field-label"> Full name </label>
         <input
-          v-if="isBusiness"
-          v-model="orgName"
-          class="field-input"
-          type="text"
-          placeholder="e.g. AutoMaster Garage"
-        >
-        <input
-          v-else
           v-model="fullName"
           class="field-input"
           type="text"

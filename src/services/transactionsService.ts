@@ -11,21 +11,23 @@ export async function getTransactions() {
   try {
     const list = await getOrders();
     const completed = list.filter((o) => o.status === 'done');
-    
+
     if (completed.length === 0) {
       return mockTransactions;
     }
 
     return completed.map((o) => ({
       id: o.id.replace('#', 'TX-'),
-      bookingId: o.id,
-      customer: o.customer,
-      initials: o.initials,
-      service: o.service,
-      date: o.date,
+      orderId: o.id,
+      customerName: o.customer,
+      customerInitials: o.initials,
+      avatarColor: '#5749F4',
       amount: o.amount,
-      status: 'Paid',
       provider: 'PayMe',
+      providerDot: '#00A0E9',
+      providerBg: '#C9D6F0',
+      status: 'Paid',
+      date: o.date,
     }));
   } catch (_) {
     return mockTransactions;

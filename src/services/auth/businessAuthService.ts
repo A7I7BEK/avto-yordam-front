@@ -49,28 +49,17 @@ export const businessAuth = {
 
       const result = await apiClient.post('/user/register', {
         phone: regDetails.contactType === 'phone' ? cleanPhone : undefined,
-        email: regDetails.contactType === 'email' ? regDetails.contact : undefined,
+        email:
+          regDetails.contactType === 'email' ? regDetails.contact : undefined,
         password: regDetails.password,
         fullName: regDetails.orgName || 'Business Owner',
         otp: req.code,
-        type: 'ORGANIZATION_ADMIN',
+        type: 'ORGANIZATION',
       });
 
       localStorage.setItem('token', result.accessToken);
       sessionStorage.removeItem('reg_details');
       const userRes = await apiClient.get('/user/me');
-
-      // Create organization automatically on registration
-      try {
-        await apiClient.post('/organization', {
-          name: regDetails.orgName || 'My Auto Service',
-          type: 'MCHJ',
-          address: 'Tashkent, Uzbekistan',
-          phone: cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`,
-          ownerId: userRes.id,
-          inn: '123456789',
-        });
-      } catch (_) {}
 
       return {
         token: result.accessToken,
@@ -83,37 +72,36 @@ export const businessAuth = {
           type: userRes.type || result.type,
         },
       };
-    } else {
-      try {
-        const result = await apiClient.post('/user/login', {
-          login: req.otpId,
-          password: 'password',
-        });
-        localStorage.setItem('token', result.accessToken);
-        const userRes = await apiClient.get('/user/me');
-        return {
-          token: result.accessToken,
-          user: {
-            id: userRes.id,
-            fullName: userRes.fullName || 'Business Owner',
-            email: userRes.email || '',
-            phone: userRes.phone || '',
-            isOnboarded: true,
-            type: userRes.type || result.type,
-          },
-        };
-      } catch (_) {
-        return {
-          token: 'mock-token-business',
-          user: {
-            id: 'biz-001',
-            fullName: 'Auto Fix Admin',
-            email: 'admin@autofix.uz',
-            phone: req.otpId,
-            isOnboarded: true,
-          },
-        };
-      }
+    }
+    try {
+      const result = await apiClient.post('/user/login', {
+        login: req.otpId,
+        password: 'password',
+      });
+      localStorage.setItem('token', result.accessToken);
+      const userRes = await apiClient.get('/user/me');
+      return {
+        token: result.accessToken,
+        user: {
+          id: userRes.id,
+          fullName: userRes.fullName || 'Business Owner',
+          email: userRes.email || '',
+          phone: userRes.phone || '',
+          isOnboarded: true,
+          type: userRes.type || result.type,
+        },
+      };
+    } catch (_) {
+      return {
+        token: 'mock-token-business',
+        user: {
+          id: 'biz-001',
+          fullName: 'Auto Fix Admin',
+          email: 'admin@autofix.uz',
+          phone: req.otpId,
+          isOnboarded: true,
+        },
+      };
     }
   },
 
@@ -184,7 +172,7 @@ export const businessAuth = {
       fullName: req.orgName,
       email: req.adminEmail,
       password: req.password,
-      type: 'ORGANIZATION_ADMIN',
+      type: 'ORGANIZATION',
     });
     localStorage.setItem('token', result.accessToken);
     const userRes = await apiClient.get('/user/me');

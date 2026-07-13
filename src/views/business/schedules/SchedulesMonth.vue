@@ -3,11 +3,21 @@
   lang="ts"
 >
 import { ChevronDown, ChevronLeft, ChevronRight } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { masterColors, monthBookings } from '@/data/schedules';
+import { masterColors } from '@/data/schedules';
+import { getMonthBookings } from '@/services/schedulesService';
 
 const router = useRouter();
+const bookings = ref<any[]>([]);
+
+async function loadBookings() {
+  bookings.value = await getMonthBookings();
+}
+
+onMounted(() => {
+  loadBookings();
+});
 
 const now = new Date(2026, 3, 1);
 const currentYear = ref(now.getFullYear());
@@ -22,7 +32,7 @@ function selectMaster(m: string) {
   masterDropdownOpen.value = false;
 }
 
-const viewMode = ref<'month' | 'week' | 'day'>('month');
+const viewMode = ref<'month' | 'week' | 'day' | 'slots'>('month');
 
 const monthNames = [
   'January',
@@ -128,11 +138,11 @@ function dateStr(date: Date): string {
 
 function getBookingsForDate(date: Date) {
   const ds = dateStr(date);
-  let bookings = monthBookings.filter((b) => b.date === ds);
+  let res = bookings.value.filter((b) => b.date === ds);
   if (selectedMaster.value !== 'All masters') {
-    bookings = bookings.filter((b) => b.master === selectedMaster.value);
+    res = res.filter((b) => b.master === selectedMaster.value);
   }
-  return bookings;
+  return res;
 }
 
 function clickDay(date: Date) {
@@ -143,13 +153,15 @@ function clickBooking(orderId: string) {
   router.push(`/business/orders/${encodeURIComponent(orderId)}`);
 }
 
-function switchView(view: 'month' | 'week' | 'day') {
+function switchView(view: 'month' | 'week' | 'day' | 'slots') {
   if (view === 'month') {
     router.push('/business/schedules');
   } else if (view === 'week') {
     router.push('/business/schedules/week');
-  } else {
+  } else if (view === 'day') {
     router.push('/business/schedules/day');
+  } else {
+    router.push('/business/schedules/slots');
   }
 }
 </script>
@@ -191,6 +203,14 @@ function switchView(view: 'month' | 'week' | 'day') {
             @click="switchView('day')"
           >
             Day
+          </button>
+          <button
+            type="button"
+            class="view-toggle__btn"
+            :class="{ active: viewMode === 'slots' }"
+            @click="switchView('slots')"
+          >
+            Slots
           </button>
         </div>
 

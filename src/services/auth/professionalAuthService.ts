@@ -49,14 +49,15 @@ export const professionalAuth = {
     if (regDetailsStr) {
       const regDetails = JSON.parse(regDetailsStr);
       const cleanPhone = regDetails.contact.replace(/[^0-9+]/g, '');
-      
+
       const result = await apiClient.post('/user/register', {
         phone: regDetails.contactType === 'phone' ? cleanPhone : undefined,
-        email: regDetails.contactType === 'email' ? regDetails.contact : undefined,
+        email:
+          regDetails.contactType === 'email' ? regDetails.contact : undefined,
         password: regDetails.password,
         fullName: regDetails.fullName || 'User',
         otp: req.code,
-        type: 'MASTER',
+        type: 'PROFESSIONAL',
       });
 
       localStorage.setItem('token', result.accessToken);
@@ -74,37 +75,36 @@ export const professionalAuth = {
           type: userRes.type || result.type,
         },
       };
-    } else {
-      try {
-        const result = await apiClient.post('/user/login', {
-          login: req.otpId,
-          password: 'password',
-        });
-        localStorage.setItem('token', result.accessToken);
-        const userRes = await apiClient.get('/user/me');
-        return {
-          token: result.accessToken,
-          user: {
-            id: userRes.id,
-            fullName: userRes.fullName || 'Professional User',
-            email: userRes.email || '',
-            phone: userRes.phone || '',
-            isOnboarded: true,
-            type: userRes.type || result.type,
-          },
-        };
-      } catch (_) {
-        return {
-          token: 'mock-token-professional',
-          user: {
-            id: 'pro-001',
-            fullName: 'Aziz Ismoilov',
-            email: 'aziz.karimov@masters.uz',
-            phone: req.otpId,
-            isOnboarded: true,
-          },
-        };
-      }
+    }
+    try {
+      const result = await apiClient.post('/user/login', {
+        login: req.otpId,
+        password: 'password',
+      });
+      localStorage.setItem('token', result.accessToken);
+      const userRes = await apiClient.get('/user/me');
+      return {
+        token: result.accessToken,
+        user: {
+          id: userRes.id,
+          fullName: userRes.fullName || 'Professional User',
+          email: userRes.email || '',
+          phone: userRes.phone || '',
+          isOnboarded: true,
+          type: userRes.type || result.type,
+        },
+      };
+    } catch (_) {
+      return {
+        token: 'mock-token-professional',
+        user: {
+          id: 'pro-001',
+          fullName: 'Aziz Ismoilov',
+          email: 'aziz.karimov@masters.uz',
+          phone: req.otpId,
+          isOnboarded: true,
+        },
+      };
     }
   },
 
@@ -168,7 +168,7 @@ export const professionalAuth = {
       fullName: req.fullName,
       email: req.email,
       password: req.password,
-      type: 'MASTER',
+      type: 'PROFESSIONAL',
     });
     localStorage.setItem('token', result.accessToken);
     const userRes = await apiClient.get('/user/me');

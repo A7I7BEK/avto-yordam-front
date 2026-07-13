@@ -69,7 +69,7 @@ const isMemberActive = computed(() =>
       <SidebarNavItem
         :to="'/business/categories'"
         :icon="Grid3X3"
-        label="Categories"
+        label="Services"
         :is-active="isActive('/business/categories')"
       />
 

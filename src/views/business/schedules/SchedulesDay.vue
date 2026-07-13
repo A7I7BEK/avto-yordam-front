@@ -3,19 +3,29 @@
   lang="ts"
 >
 import { ArrowLeft, ChevronLeft, ChevronRight } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { dayBookings, masterColors } from '@/data/schedules';
+import { masterColors } from '@/data/schedules';
+import { getDayBookings } from '@/services/schedulesService';
 
 const router = useRouter();
 const route = useRoute();
+const bookings = ref<any[]>([]);
+
+async function loadBookings() {
+  bookings.value = await getDayBookings();
+}
+
+onMounted(() => {
+  loadBookings();
+});
 
 const queryDate = route.query.date as string | undefined;
 
 const today = new Date(2026, 3, 12);
 const currentDate = ref(queryDate ? new Date(queryDate) : today);
 
-const viewMode = ref<'month' | 'week' | 'day'>('day');
+const viewMode = ref<'month' | 'week' | 'day' | 'slots'>('day');
 
 function pad(n: number): string {
   return n.toString().padStart(2, '0');
@@ -96,20 +106,23 @@ function bookingHeight(start: string, end: string): string {
 }
 
 function getBookings() {
-  return dayBookings;
+  const ds = dateStr(currentDate.value);
+  return bookings.value.filter((b) => b.date === ds);
 }
 
 function clickBooking(orderId: string) {
   router.push(`/business/orders/${encodeURIComponent(orderId)}`);
 }
 
-function switchView(view: 'month' | 'week' | 'day') {
+function switchView(view: 'month' | 'week' | 'day' | 'slots') {
   if (view === 'month') {
     router.push('/business/schedules');
   } else if (view === 'week') {
     router.push('/business/schedules/week');
-  } else {
+  } else if (view === 'day') {
     router.push('/business/schedules/day');
+  } else {
+    router.push('/business/schedules/slots');
   }
 }
 
@@ -120,14 +133,21 @@ const statusMap: Record<string, { label: string; class: string }> = {
   cancelled: { label: 'Cancelled', class: 'status--cancelled' },
 };
 
-function getStatus(orderId: string): string {
-  const statuses: Record<string, string> = {
-    '#BK-1247': 'confirmed',
-    '#BK-1246': 'progress',
-    '#BK-1245': 'done',
-    '#BK-1244': 'confirmed',
-  };
-  return statuses[orderId] ?? 'confirmed';
+function getStatus(status?: string): string {
+  if (!status) {
+    return 'confirmed';
+  }
+  const s = status.toLowerCase();
+  if (s === 'in_progress') {
+    return 'progress';
+  }
+  if (s === 'completed' || s === 'done') {
+    return 'done';
+  }
+  if (s === 'cancelled' || s === 'rejected') {
+    return 'cancelled';
+  }
+  return 'confirmed';
 }
 </script>
 
@@ -178,6 +198,14 @@ function getStatus(orderId: string): string {
             @click="switchView('day')"
           >
             Day
+          </button>
+          <button
+            type="button"
+            class="view-toggle__btn"
+            :class="{ active: viewMode === 'slots' }"
+            @click="switchView('slots')"
+          >
+            Slots
           </button>
         </div>
 
@@ -252,9 +280,9 @@ function getStatus(orderId: string): string {
               >
               <span
                 class="day-booking__status"
-                :class="statusMap[getStatus(bk.orderId)]?.class ?? ''"
+                :class="statusMap[getStatus(bk.status)]?.class ?? ''"
               >
-                {{ statusMap[getStatus(bk.orderId)]?.label ?? getStatus(bk.orderId) }}
+                {{ statusMap[getStatus(bk.status)]?.label ?? getStatus(bk.status) }}
               </span>
             </div>
             <div class="day-booking__customer">{{ bk.customer }}</div>

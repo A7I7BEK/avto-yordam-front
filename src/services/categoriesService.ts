@@ -18,14 +18,16 @@ export async function getCategories() {
       enabled: true,
       category: 'Engine',
       notes: '',
-      suggestedPriceLow: Math.round((svc.basePrice || 100000) * 0.8),
-      suggestedPriceHigh: Math.round((svc.basePrice || 100000) * 1.2),
+      suggestedPriceLow: Math.round((svc.basePrice || 100_000) * 0.8),
+      suggestedPriceHigh: Math.round((svc.basePrice || 100_000) * 1.2),
       suggestedDurationLow: Math.round((svc.durationMinutes || 60) * 0.8),
       suggestedDurationHigh: Math.round((svc.durationMinutes || 60) * 1.2),
     }));
 
     const categories = categoryTree.map((cat) => {
-      const count = formattedServices.filter((s: any) => s.category === cat.name).length;
+      const count = formattedServices.filter(
+        (s: any) => s.category === cat.name,
+      ).length;
       return { ...cat, count };
     });
 

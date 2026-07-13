@@ -3,16 +3,26 @@
   lang="ts"
 >
 import { ChevronDown, ChevronLeft, ChevronRight } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { masterColors, weekBookings } from '@/data/schedules';
+import { masterColors } from '@/data/schedules';
+import { getWeekBookings } from '@/services/schedulesService';
 
 const router = useRouter();
+const bookings = ref<any[]>([]);
+
+async function loadBookings() {
+  bookings.value = await getWeekBookings();
+}
+
+onMounted(() => {
+  loadBookings();
+});
 
 const today = new Date(2026, 3, 12);
 const currentDate = ref(new Date(today));
 
-const viewMode = ref<'month' | 'week' | 'day'>('week');
+const viewMode = ref<'month' | 'week' | 'day' | 'slots'>('week');
 
 const masters = ['All masters', 'Aziz K.', 'Bekzod R.', 'Jasur T.'];
 const selectedMaster = ref('All masters');
@@ -95,24 +105,26 @@ function goToToday() {
 
 function getBookingsForDay(date: Date) {
   const ds = dateStr(date);
-  let bookings = weekBookings.filter((b) => b.date === ds);
+  let res = bookings.value.filter((b) => b.date === ds);
   if (selectedMaster.value !== 'All masters') {
-    bookings = bookings.filter((b) => b.master === selectedMaster.value);
+    res = res.filter((b) => b.master === selectedMaster.value);
   }
-  return bookings;
+  return res;
 }
 
 function clickBooking(orderId: string) {
   router.push(`/business/orders/${encodeURIComponent(orderId)}`);
 }
 
-function switchView(view: 'month' | 'week' | 'day') {
+function switchView(view: 'month' | 'week' | 'day' | 'slots') {
   if (view === 'month') {
     router.push('/business/schedules');
   } else if (view === 'week') {
     router.push('/business/schedules/week');
-  } else {
+  } else if (view === 'day') {
     router.push('/business/schedules/day');
+  } else {
+    router.push('/business/schedules/slots');
   }
 }
 
@@ -174,6 +186,14 @@ function bookingHeight(start: string, end: string): string {
             @click="switchView('day')"
           >
             Day
+          </button>
+          <button
+            type="button"
+            class="view-toggle__btn"
+            :class="{ active: viewMode === 'slots' }"
+            @click="switchView('slots')"
+          >
+            Slots
           </button>
         </div>
 
