@@ -95,7 +95,10 @@ async function loadInvitations() {
     }
 
     invitations.value = data.map((item: any, index: number) => {
-      const color = avatarColors[index % avatarColors.length];
+      const color = avatarColors[index % avatarColors.length] || {
+        bg: '#5749F4',
+        text: '#FFFFFF',
+      };
       const orgName = item.organizationName || 'Auto Service';
       const initials = orgName
         .split(' ')

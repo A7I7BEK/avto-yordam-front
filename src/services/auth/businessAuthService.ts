@@ -17,25 +17,6 @@ import type {
 } from '@/types/auth';
 import { mockBusinessAuthService } from './businessMock';
 
-async function createDefaultOrganization(
-  orgName: string,
-  cleanPhone: string,
-  ownerId: string,
-) {
-  try {
-    await apiClient.post('/organization', {
-      name: orgName || 'My Auto Service',
-      type: 'MCHJ',
-      address: 'Tashkent, Uzbekistan',
-      phone: cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`,
-      ownerId,
-      inn: '123456789',
-    });
-  } catch {
-    /* organization may already exist */
-  }
-}
-
 export const businessAuth = {
   async loginWithPhone(
     req: LoginWithPhoneRequest,
@@ -73,19 +54,12 @@ export const businessAuth = {
         password: regDetails.password,
         fullName: regDetails.orgName || 'Business Owner',
         otp: req.code,
-        type: 'ORGANIZATION_ADMIN',
+        type: 'ORGANIZATION',
       });
 
       localStorage.setItem('token', result.accessToken);
       sessionStorage.removeItem('reg_details');
       const userRes = await apiClient.get('/user/me');
-
-      // Create organization automatically on registration
-      await createDefaultOrganization(
-        regDetails.orgName || 'My Auto Service',
-        cleanPhone,
-        userRes.id,
-      );
 
       return {
         token: result.accessToken,
@@ -117,7 +91,7 @@ export const businessAuth = {
           type: userRes.type || result.type,
         },
       };
-    } catch {
+    } catch (_) {
       return {
         token: 'mock-token-business',
         user: {
@@ -198,7 +172,7 @@ export const businessAuth = {
       fullName: req.orgName,
       email: req.adminEmail,
       password: req.password,
-      type: 'ORGANIZATION_ADMIN',
+      type: 'ORGANIZATION',
     });
     localStorage.setItem('token', result.accessToken);
     const userRes = await apiClient.get('/user/me');

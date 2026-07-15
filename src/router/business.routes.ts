@@ -70,6 +70,12 @@ export const businessRoutes: RouteRecordRaw[] = [
         name: 'biz-schedules-day',
         component: () => import('@/views/business/schedules/SchedulesDay.vue'),
       },
+      {
+        path: 'schedules/slots',
+        name: 'biz-schedules-slots',
+        component: () =>
+          import('@/views/business/schedules/SchedulesSlots.vue'),
+      },
 
       // === Team / Employees ===
       {
@@ -181,52 +187,28 @@ export const businessRoutes: RouteRecordRaw[] = [
       // === Settings ===
       {
         path: 'settings',
-        redirect: '/business/settings/legal',
-      },
-      {
-        path: 'settings/legal',
-        name: 'biz-settings-legal',
-        component: () => import('@/views/business/settings/SettingsLegal.vue'),
-      },
-      {
-        path: 'settings/hours',
-        name: 'biz-settings-hours',
-        component: () => import('@/views/business/settings/SettingsHours.vue'),
-      },
-      {
-        path: 'settings/photos',
-        name: 'biz-settings-photos',
-        component: () => import('@/views/business/settings/SettingsPhotos.vue'),
-      },
-      {
-        path: 'settings/bank-info',
-        name: 'biz-settings-bank-info',
-        component: () =>
-          import('@/views/business/settings/SettingsBankInfo.vue'),
-      },
-      {
-        path: 'settings/payment',
-        name: 'biz-settings-payment',
-        component: () =>
-          import('@/views/business/settings/SettingsPayment.vue'),
+        name: 'biz-settings',
+        component: () => import('@/views/business/Settings.vue'),
       },
       {
         path: 'settings/notifications',
         name: 'biz-settings-notifications',
-        component: () =>
-          import('@/views/business/settings/SettingsNotifications.vue'),
+        component: () => import('@/views/business/Settings.vue'),
       },
       {
         path: 'settings/appearance',
         name: 'biz-settings-appearance',
-        component: () =>
-          import('@/views/business/settings/SettingsAppearance.vue'),
+        component: () => import('@/views/business/Settings.vue'),
       },
       {
-        path: 'settings/danger-zone',
-        name: 'biz-settings-danger-zone',
-        component: () =>
-          import('@/views/business/settings/SettingsDangerZone.vue'),
+        path: 'settings/privacy',
+        name: 'biz-settings-privacy',
+        component: () => import('@/views/business/Settings.vue'),
+      },
+      {
+        path: 'settings/organization',
+        name: 'biz-settings-organization',
+        component: () => import('@/views/business/Settings.vue'),
       },
     ],
   },

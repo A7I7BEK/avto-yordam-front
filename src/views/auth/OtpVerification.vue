@@ -5,6 +5,7 @@
 import { ArrowLeft, Mail, MessageCircleMore, Phone, Timer } from '@lucide/vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { apiClient } from '@/api/client';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import AuthCard from '@/components/auth/AuthCard.vue';
 import AuthPageLayout from '@/components/auth/AuthPageLayout.vue';
@@ -118,8 +119,23 @@ async function verify() {
             },
       );
     } else {
-      // After registration OTP, go to onboarding
-      router.push({ name: onboardingRoute });
+      // After registration OTP
+      if (accountType === 'business') {
+        try {
+          const orgMembers = await apiClient.get(
+            '/organization-member/get-by-user',
+          );
+          if (orgMembers && orgMembers.length > 0) {
+            router.push({ name: 'biz-dashboard-overview' });
+          } else {
+            router.push({ name: 'create-organization' });
+          }
+        } catch (_) {
+          router.push({ name: 'create-organization' });
+        }
+      } else {
+        router.push({ name: onboardingRoute });
+      }
     }
   } catch {
     errorMessage.value = 'Invalid code. Please try again.';

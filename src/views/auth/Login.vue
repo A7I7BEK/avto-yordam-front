@@ -2,9 +2,9 @@
   setup
   lang="ts"
 >
-import { ChevronDown, Eye, EyeOff, UserRound } from '@lucide/vue';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { Building2, ChevronDown, Eye, EyeOff, UserRound } from '@lucide/vue';
+import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import AuthCard from '@/components/auth/AuthCard.vue';
 import AuthPageLayout from '@/components/auth/AuthPageLayout.vue';
@@ -12,6 +12,7 @@ import TabSwitcher from '@/components/auth/TabSwitcher.vue';
 import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();
+const route = useRoute();
 
 const contactMethod = ref<'email' | 'phone'>('email');
 const email = ref('');
@@ -28,12 +29,18 @@ const contactTabs = [
   { label: 'Tel. number', value: 'phone' },
 ];
 
-const brandIcon = UserRound;
-const brandIconBg = '#5749F4';
-const brandLabel = 'Professional';
+const isBusiness = computed(() => route.query.type === 'business');
+const brandIcon = computed(() => (isBusiness.value ? Building2 : UserRound));
+const brandIconBg = computed(() => (isBusiness.value ? '#2A2933' : '#5749F4'));
+const brandLabel = computed(() =>
+  isBusiness.value ? 'Business' : 'Professional',
+);
 
 function goToRegister() {
-  router.push({ name: 'auth-register' });
+  router.push({
+    name: 'auth-register',
+    query: { type: isBusiness.value ? 'business' : 'professional' },
+  });
 }
 
 function goToForgotPassword() {

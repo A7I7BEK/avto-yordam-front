@@ -7,11 +7,13 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getOrders } from '@/services/ordersService';
 import type { Order } from '@/types/business';
+import OrdersKanban from './OrdersKanban.vue';
 
 const router = useRouter();
 const orders = ref<Order[]>([]);
 const activeTab = ref('all');
 const searchQuery = ref('');
+const viewMode = ref<'list' | 'board'>('list');
 
 async function loadOrders() {
   orders.value = await getOrders();
@@ -93,120 +95,150 @@ function goToAddWalkIn() {
         </h1>
         <p class="page-subtitle">Manage and track all bookings</p>
       </div>
-      <button
-        type="button"
-        class="btn btn--outline"
-        @click="goToAddWalkIn"
+      <div
+        class="header-actions-group"
+        style="display: flex; align-items: center; gap: 12px;"
       >
-        <UserPlus :size="16" />
-        Add walk-in
-      </button>
-    </div>
-
-    <!-- Tabs & Search -->
-    <div class="toolbar">
-      <div class="tabs">
-        <button
-          v-for="tab in tabs"
-          :key="tab.key"
-          type="button"
-          class="tab"
-          :class="{ active: activeTab === tab.key }"
-          @click="activeTab = tab.key"
-        >
-          {{ tab.label }}
-          <span
-            v-if="tab.count > 0"
-            class="tab-count"
-            :class="{ 'tab-count--purple': tab.key === 'new' }"
-            >{{ tab.count }}</span
+        <!-- View toggle -->
+        <div class="view-toggle">
+          <button
+            type="button"
+            class="view-toggle__btn"
+            :class="{ active: viewMode === 'list' }"
+            @click="viewMode = 'list'"
           >
+            List
+          </button>
+          <button
+            type="button"
+            class="view-toggle__btn"
+            :class="{ active: viewMode === 'board' }"
+            @click="viewMode = 'board'"
+          >
+            Board
+          </button>
+        </div>
+        <button
+          v-if="viewMode === 'list'"
+          type="button"
+          class="btn btn--outline"
+          @click="goToAddWalkIn"
+        >
+          <UserPlus :size="16" />
+          Add walk-in
         </button>
       </div>
-      <div class="search-wrapper">
-        <Search
-          :size="16"
-          class="search-icon"
-        />
-        <input
-          v-model="searchQuery"
-          type="text"
-          class="search-input"
-          placeholder="Search orders..."
-        >
-      </div>
     </div>
 
-    <!-- Table -->
-    <div class="table-wrapper">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Service</th>
-            <th>Date / Time</th>
-            <th>Master</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th class="th-actions">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="order in filteredOrders"
-            :key="order.id"
-            class="table-row"
+    <template v-if="viewMode === 'list'">
+      <!-- Tabs & Search -->
+      <div class="toolbar">
+        <div class="tabs">
+          <button
+            v-for="tab in tabs"
+            :key="tab.key"
+            type="button"
+            class="tab"
+            :class="{ active: activeTab === tab.key }"
+            @click="activeTab = tab.key"
           >
-            <td>
-              <button
-                type="button"
-                class="link-order"
-                @click="viewOrder(order.id)"
-              >
-                {{ order.id }}
-              </button>
-            </td>
-            <td>
-              <div class="customer-cell">
-                <div class="avatar-sm">{{ order.initials }}</div>
-                <span>{{ order.customer }}</span>
-              </div>
-            </td>
-            <td>{{ order.service }}</td>
-            <td>{{ order.date }}</td>
-            <td>{{ order.master }}</td>
-            <td class="amount">{{ order.amount }}</td>
-            <td>
-              <span
-                class="status-badge"
-                :class="statusMap[order.status]?.class"
-              >
-                {{ statusMap[order.status]?.label || order.status }}
-              </span>
-            </td>
-            <td class="actions-cell">
-              <button
-                type="button"
-                class="btn-icon"
-                title="View order"
-                @click="viewOrder(order.id)"
-              >
-                <Eye :size="16" />
-              </button>
-            </td>
-          </tr>
-          <tr v-if="filteredOrders.length === 0">
-            <td
-              colspan="8"
-              class="empty-cell"
+            {{ tab.label }}
+            <span
+              v-if="tab.count > 0"
+              class="tab-count"
+              :class="{ 'tab-count--purple': tab.key === 'new' }"
+              >{{ tab.count }}</span
             >
-              No orders found
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          </button>
+        </div>
+        <div class="search-wrapper">
+          <Search
+            :size="16"
+            class="search-icon"
+          />
+          <input
+            v-model="searchQuery"
+            type="text"
+            class="search-input"
+            placeholder="Search orders..."
+          >
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Service</th>
+              <th>Date / Time</th>
+              <th>Master</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th class="th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="order in filteredOrders"
+              :key="order.id"
+              class="table-row"
+            >
+              <td>
+                <button
+                  type="button"
+                  class="link-order"
+                  @click="viewOrder(order.id)"
+                >
+                  {{ order.id }}
+                </button>
+              </td>
+              <td>
+                <div class="customer-cell">
+                  <div class="avatar-sm">{{ order.initials }}</div>
+                  <span>{{ order.customer }}</span>
+                </div>
+              </td>
+              <td>{{ order.service }}</td>
+              <td>{{ order.date }}</td>
+              <td>{{ order.master }}</td>
+              <td class="amount">{{ order.amount }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  :class="statusMap[order.status]?.class"
+                >
+                  {{ statusMap[order.status]?.label || order.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button
+                  type="button"
+                  class="btn-icon"
+                  title="View order"
+                  @click="viewOrder(order.id)"
+                >
+                  <Eye :size="16" />
+                </button>
+              </td>
+            </tr>
+            <tr v-if="filteredOrders.length === 0">
+              <td
+                colspan="8"
+                class="empty-cell"
+              >
+                No orders found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
+    <template v-else>
+      <OrdersKanban />
+    </template>
   </div>
 </template>
 
@@ -529,5 +561,35 @@ function goToAddWalkIn() {
   font-size: 14px;
   color: #939399;
   text-align: center;
+}
+
+/* View toggle pills */
+.view-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.view-toggle__btn {
+  padding: 6px 16px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: all 0.15s;
+}
+
+.view-toggle__btn:hover {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+.view-toggle__btn.active {
+  color: #ffffff;
+  background: #5749f4;
+  border-color: #5749f4;
 }
 </style>

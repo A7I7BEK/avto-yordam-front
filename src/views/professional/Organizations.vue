@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ChevronRight, Crown, Wrench } from '@lucide/vue';
+import { Building2, ChevronRight, Crown, Wrench } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { apiClient } from '@/api/client';
@@ -94,12 +94,16 @@ async function loadOrganizations() {
     const data = await apiClient.get('/organization-member/get-by-user');
 
     if (!data || data.length === 0) {
-      organizations.value = staticOrganizations;
+      organizations.value = [];
       return;
     }
 
     organizations.value = data.map((item: any, index: number) => {
-      const g = gradients[index % gradients.length];
+      const g = gradients[index % gradients.length] || {
+        gradient: 'linear-gradient(135deg, #5749F4 0%, #1B1356 100%)',
+        border: '#7A6FFF',
+        shadowColor: 'rgba(87,73,244,0.29)',
+      };
       const name = item.organizationName || 'Auto Service';
       const initials = name
         .split(' ')
@@ -118,9 +122,9 @@ async function loadOrganizations() {
         organizationId: item.organizationId,
         name,
         initials,
-        gradient: g?.gradient ?? '',
-        border: g?.border ?? '',
-        shadowColor: g?.shadowColor ?? '',
+        gradient: g.gradient,
+        border: g.border,
+        shadowColor: g.shadowColor,
         location: 'Tashkent',
         legalType: 'MCHJ',
         specialization: 'General Repair',
@@ -131,7 +135,7 @@ async function loadOrganizations() {
       };
     });
   } catch {
-    organizations.value = staticOrganizations;
+    organizations.value = [];
   } finally {
     isLoading.value = false;
   }
@@ -147,12 +151,12 @@ async function enterOrganization(organizationId: string) {
     const result = await apiClient.post(
       `/user/change-organization/${organizationId}`,
     );
-    if (result?.accessToken) {
+    if (result && result.accessToken) {
       localStorage.setItem('token', result.accessToken);
       router.push({ name: 'biz-dashboard-overview' });
     }
   } catch {
-    // TODO: Show error notification to user
+    alert('Failed to switch to organization workspace. Please try again.');
   }
 }
 
@@ -186,6 +190,19 @@ function getInitialsColor(gradient: string) {
         class="loading-state"
       >
         Loading organization assignments...
+      </div>
+      <div
+        v-else-if="organizations.length === 0"
+        class="empty-state"
+      >
+        <Building2
+          class="empty-icon"
+          :size="48"
+        />
+        <h3 class="empty-title">No Organizations Found</h3>
+        <p class="empty-subtitle">
+          You are not a member of any organization workspaces yet.
+        </p>
       </div>
       <article
         v-else
@@ -459,5 +476,37 @@ function getInitialsColor(gradient: string) {
 .enter-btn:hover {
   background: #f5f5f5;
   transform: translateY(-1px);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px dashed #c5c5cb;
+  border-radius: 20px;
+}
+
+.empty-icon {
+  margin-bottom: 16px;
+  color: #939399;
+}
+
+.empty-title {
+  margin: 0 0 6px 0;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2a2933;
+}
+
+.empty-subtitle {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  color: #616167;
 }
 </style>

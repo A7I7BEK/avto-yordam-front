@@ -74,6 +74,11 @@ export const businessAuthRoutes: RouteRecordRaw[] = [
     name: 'business-auth-reset',
     component: () => import('@/views/auth/business/SetNewPassword.vue'),
   },
+  {
+    path: '/auth/business/create-organization',
+    name: 'create-organization',
+    component: () => import('@/views/auth/business/CreateOrganization.vue'),
+  },
 ];
 
 export const professionalAuthRoutes: RouteRecordRaw[] = [

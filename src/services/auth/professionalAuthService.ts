@@ -57,7 +57,7 @@ export const professionalAuth = {
         password: regDetails.password,
         fullName: regDetails.fullName || 'User',
         otp: req.code,
-        type: 'MASTER',
+        type: 'PROFESSIONAL',
       });
 
       localStorage.setItem('token', result.accessToken);
@@ -94,7 +94,7 @@ export const professionalAuth = {
           type: userRes.type || result.type,
         },
       };
-    } catch {
+    } catch (_) {
       return {
         token: 'mock-token-professional',
         user: {
@@ -168,7 +168,7 @@ export const professionalAuth = {
       fullName: req.fullName,
       email: req.email,
       password: req.password,
-      type: 'MASTER',
+      type: 'PROFESSIONAL',
     });
     localStorage.setItem('token', result.accessToken);
     const userRes = await apiClient.get('/user/me');

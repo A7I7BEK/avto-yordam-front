@@ -17,9 +17,7 @@ async function getMyOrgId(): Promise<string | null> {
     if (members && members.length > 0) {
       return members[0].organizationId;
     }
-  } catch {
-    /* no org members yet */
-  }
+  } catch (_) {}
   return null;
 }
 
@@ -43,23 +41,24 @@ export async function getSettingsLegal() {
       taxRegime: org.taxRegime || legalInfo.taxRegime,
       legalAddress: org.address || legalInfo.legalAddress,
       actualAddress: org.actualAddress || legalInfo.actualAddress,
-      sameAsLegal: org.sameAsLegal ?? legalInfo.sameAsLegal,
+      sameAsLegal:
+        org.sameAsLegal === undefined ? legalInfo.sameAsLegal : org.sameAsLegal,
       bankName: org.bankName || legalInfo.bankName,
-      accountNumber: org.accountNumber || legalInfo.accountNumber,
+      accountNumber: org.bankAccount || legalInfo.accountNumber,
       mfo: org.mfo || legalInfo.mfo,
       okonkh: org.okonkh || legalInfo.okonkh,
-      documents: org.documents || [...legalInfo.documents],
+      documents: org.documents || legalInfo.documents,
     };
-  } catch {
+  } catch (_) {
     return legalInfo;
   }
 }
 
-export function getSettingsHours() {
+export async function getSettingsHours() {
   return operatingHours;
 }
 
-export function getSettingsPhotos() {
+export async function getSettingsPhotos() {
   return photos;
 }
 
@@ -81,25 +80,25 @@ export async function getSettingsBankInfo() {
       mfo: org.mfo || bankInfo.mfo,
       inn: org.inn || bankInfo.inn,
       accountNumber: org.bankAccount || bankInfo.accountNumber,
-      currency: org.currency || bankInfo.currency,
+      currency: 'UZS',
     };
-  } catch {
+  } catch (_) {
     return bankInfo;
   }
 }
 
-export function getSettingsPayment() {
+export async function getSettingsPayment() {
   return paymentProviders;
 }
 
-export function getSettingsNotifications() {
+export async function getSettingsNotifications() {
   return notificationPreferences;
 }
 
-export function getSettingsAppearance() {
+export async function getSettingsAppearance() {
   return appearanceSettings;
 }
 
-export function getSettingsDangerZone() {
+export async function getSettingsDangerZone() {
   return dangerZoneData;
 }

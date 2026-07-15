@@ -35,20 +35,20 @@ export async function getReceptionistDashboard() {
     ).length;
     const completedCount = list.filter((o) => o.status === 'done').length;
 
-    const dynamicKpi = { ...kpiStats };
-    if (dynamicKpi.todayBookings !== undefined) {
-      dynamicKpi.todayBookings = activeCount;
-    }
-    if (dynamicKpi.pending !== undefined) {
-      dynamicKpi.pending = completedCount;
-    }
+    const dynamicKpi = {
+      ...kpiStats,
+      todayBookings: list.length,
+      pending: list.filter((o) => o.status === 'new' || o.status === 'pending')
+        .length,
+      confirmedToday: list.filter((o) => o.status === 'confirmed').length,
+    };
 
     return {
       kpi: dynamicKpi,
       queue: queueBookings,
       schedules: masterSchedules,
     };
-  } catch {
+  } catch (_) {
     return { kpi: kpiStats, queue: queueBookings, schedules: masterSchedules };
   }
 }
@@ -70,7 +70,7 @@ export async function getOverviewDashboard() {
     const revenueSum = list
       .filter((o) => o.status === 'done')
       .reduce((sum, o) => {
-        const val = Number.parseInt(o.amount.replace(/[^0-9]/g, ''), 10) || 0;
+        const val = Number.parseInt(o.amount.replace(/[^0-9]/g, '')) || 0;
         return sum + val * 1000;
       }, 0);
 
@@ -89,7 +89,7 @@ export async function getOverviewDashboard() {
       topEmployees,
       serviceBreakdown,
     };
-  } catch {
+  } catch (_) {
     return {
       kpi: kpiItems,
       recentOrders,
@@ -113,7 +113,7 @@ export async function getCommandCenterDashboard() {
 
   try {
     const list = await getOrders();
-    const _totalOrders = list.length;
+    const totalOrders = list.length;
 
     const newCount = list.filter((o) => o.status === 'new').length;
     const progressCount = list.filter(
@@ -122,10 +122,24 @@ export async function getCommandCenterDashboard() {
     const completedCount = list.filter((o) => o.status === 'done').length;
 
     const dynamicStats = {
-      ...ordersByStatus,
-      new: newCount,
-      inProgress: progressCount,
-      completed: completedCount,
+      total: totalOrders,
+      statuses: ordersByStatus.statuses.map((statusObj) => {
+        let count = statusObj.count;
+        if (statusObj.label === 'Completed') {
+          count = completedCount;
+        } else if (statusObj.label === 'Active') {
+          count = list.filter(
+            (o) => o.status === 'in-progress' || o.status === 'confirmed',
+          ).length;
+        } else if (statusObj.label === 'Incoming') {
+          count = newCount;
+        } else if (statusObj.label === 'Pending') {
+          count = list.filter((o) => o.status === 'pending').length;
+        } else if (statusObj.label === 'Cancelled') {
+          count = list.filter((o) => o.status === 'cancelled').length;
+        }
+        return { ...statusObj, count };
+      }),
     };
 
     return {
@@ -135,7 +149,7 @@ export async function getCommandCenterDashboard() {
       alerts,
       weeklySummary,
     };
-  } catch {
+  } catch (_) {
     return {
       bigStats,
       ordersByStatus,

@@ -7,7 +7,7 @@ import {
 } from '@/data/earnings';
 import { getOrders } from './ordersService';
 
-export async function getEarnings(_dateRange: string) {
+export async function getEarnings(dateRange: string) {
   if (isMockMode()) {
     return {
       kpi: kpiCards,
@@ -21,7 +21,7 @@ export async function getEarnings(_dateRange: string) {
     const list = await getOrders();
     const completedOrders = list.filter((o) => o.status === 'done');
     const revenueSum = completedOrders.reduce((sum, o) => {
-      const val = Number.parseInt(o.amount.replace(/[^0-9]/g, ''), 10) || 0;
+      const val = Number.parseInt(o.amount.replace(/[^0-9]/g, '')) || 0;
       return sum + val * 1000;
     }, 0);
 
@@ -47,7 +47,7 @@ export async function getEarnings(_dateRange: string) {
       categories: categoryBreakdown,
       masters: topMasters,
     };
-  } catch {
+  } catch (_) {
     return {
       kpi: kpiCards,
       weekly: weeklyRevenue,
