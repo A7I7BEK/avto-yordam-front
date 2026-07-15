@@ -29,12 +29,12 @@ export async function getTransactions() {
       status: 'Paid',
       date: o.date,
     }));
-  } catch (_) {
+  } catch {
     return mockTransactions;
   }
 }
 
-export async function getTransactionDetail(id: string) {
+export function getTransactionDetail(_id: string) {
   if (isMockMode()) {
     return transactionDetail;
   }

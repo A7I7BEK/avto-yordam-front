@@ -169,9 +169,10 @@ const isMemberActive = computed(() =>
 
 .sidebar__header {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
-  padding: 24px;
+  height: 80px;
+  padding: 0 28px;
   border-bottom: 1px solid #d9d9db;
 }
 

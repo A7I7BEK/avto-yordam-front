@@ -21,7 +21,7 @@ export async function getNotifications() {
       category: n.category || 'Bookings',
       unread: n.isRead === false,
     }));
-  } catch (_) {
+  } catch {
     return rawNotifications;
   }
 }

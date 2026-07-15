@@ -2,19 +2,98 @@
   setup
   lang="ts"
 >
-import { Copy, Eye, Pencil, Plus, ShieldCheck } from '@lucide/vue';
-import { ref } from 'vue';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Pencil,
+  Plus,
+  Trash2,
+} from '@lucide/vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { getRoles } from '@/services/rolesService';
+import { deleteRole, getRoles } from '@/services/rolesService';
 import type { Role } from '@/types/business';
 
 const router = useRouter();
-const roles = ref<Role[]>([]);
 
-async function loadRoles() {
-  roles.value = await getRoles();
+const roles = ref<Role[]>([]);
+const loading = ref(true);
+const currentPage = ref(1);
+const pageSize = 5;
+
+onMounted(async () => {
+  try {
+    loading.value = true;
+    roles.value = await getRoles();
+  } finally {
+    loading.value = false;
+  }
+});
+
+const totalPages = computed(() => Math.ceil(roles.value.length / pageSize));
+
+const paginatedRoles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return roles.value.slice(start, end);
+});
+
+const showingStart = computed(() => {
+  if (roles.value.length === 0) {
+    return 0;
+  }
+  return (currentPage.value - 1) * pageSize + 1;
+});
+
+const showingEnd = computed(() =>
+  Math.min(currentPage.value * pageSize, roles.value.length),
+);
+
+function goToPage(page: number) {
+  if (page < 1 || page > totalPages.value) {
+    return;
+  }
+  currentPage.value = page;
 }
-loadRoles();
+
+function goToPrev() {
+  goToPage(currentPage.value - 1);
+}
+
+function goToNext() {
+  goToPage(currentPage.value + 1);
+}
+
+const visiblePages = computed(() => {
+  const pages: number[] = [];
+  const total = totalPages.value;
+  const current = currentPage.value;
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  pages.push(1);
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+
+  if (start > 2) {
+    pages.push(-1);
+  }
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  if (end < total - 1) {
+    pages.push(-1);
+  }
+  pages.push(total);
+
+  return pages;
+});
 
 function viewRole(id: string) {
   router.push(`/business/roles-permissions/${id}`);
@@ -24,271 +103,471 @@ function editRole(id: string) {
   router.push(`/business/roles-permissions/${id}/edit`);
 }
 
-function createRole() {
-  router.push('/business/roles-permissions/new');
-}
-
-function duplicateRole(_id: string) {
-  // Duplicate logic
+function handleDelete(role: Role) {
+  if (role.isSystem) {
+    return;
+  }
+  deleteRole(role.id);
+  roles.value = roles.value.filter((r) => r.id !== role.id);
+  if (paginatedRoles.value.length === 0 && currentPage.value > 1) {
+    currentPage.value--;
+  }
 }
 </script>
 
 <template>
-  <div class="roles-page">
-    <!-- Header -->
-    <div class="header-row">
-      <div class="header-row__left">
-        <h1 class="page-title">Roles & Permissions</h1>
-        <p class="page-subtitle">
-          Manage roles and control access for your team
+  <div class="page">
+    <div class="page__breadcrumb">
+      <span class="page__breadcrumb-text">Roles &amp; permissions</span>
+    </div>
+
+    <div class="page__header">
+      <div>
+        <h1 class="page__title">Roles</h1>
+        <p class="page__subtitle">
+          Create roles and decide what each one can do.
         </p>
       </div>
       <button
         type="button"
         class="btn btn--primary"
-        @click="createRole"
+        @click="router.push('/business/roles-permissions/new')"
       >
         <Plus :size="16" />
         Create role
       </button>
     </div>
 
-    <!-- Role Cards -->
-    <div class="roles-grid">
+    <div class="table-card">
       <div
-        v-for="role in roles"
-        :key="role.id"
-        class="role-card"
+        v-if="loading"
+        class="table-card__loading"
       >
-        <div class="role-card__top">
-          <div
-            class="role-icon"
-            :style="{ background: role.iconColor }"
-          >
-            <ShieldCheck
-              :size="22"
-              color="#ffffff"
-            />
-          </div>
-          <div class="role-card__info">
-            <h3 class="role-name">{{ role.name }}</h3>
-            <p class="role-desc">{{ role.description }}</p>
-          </div>
-        </div>
-        <div class="role-card__meta">
-          <span class="member-badge">
-            {{ role.members }} {{ role.members === 1 ? 'member' : 'members' }}
-          </span>
-          <span
-            class="type-badge"
-            :class="role.type === 'built-in' ? 'type-badge--built-in' : 'type-badge--custom'"
-          >
-            {{ role.type === 'built-in' ? 'Built-in' : 'Custom' }}
-          </span>
-        </div>
-        <div class="role-card__actions">
-          <button
-            type="button"
-            class="btn-icon"
-            title="View role"
-            @click="viewRole(role.id)"
-          >
-            <Eye :size="16" />
-          </button>
-          <button
-            v-if="role.type === 'custom'"
-            type="button"
-            class="btn-icon"
-            title="Edit role"
-            @click="editRole(role.id)"
-          >
-            <Pencil :size="16" />
-          </button>
-          <button
-            type="button"
-            class="btn-icon"
-            title="Duplicate role"
-            @click="duplicateRole(role.id)"
-          >
-            <Copy :size="16" />
-          </button>
-        </div>
+        Loading roles…
       </div>
+
+      <template v-else>
+        <table class="roles-table">
+          <thead>
+            <tr>
+              <th class="col--role">Role</th>
+              <th class="col--members">Members</th>
+              <th class="col--permissions">Permissions</th>
+              <th class="col--edited">Last edited</th>
+              <th class="col--actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="role in paginatedRoles"
+              :key="role.id"
+            >
+              <td class="col--role">
+                <div class="role-info">
+                  <span
+                    class="role-dot"
+                    :style="{ background: role.color }"
+                  />
+                  <div class="role-text">
+                    <span class="role-name">{{ role.name }}</span>
+                    <span class="role-desc">{{ role.description }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="col--members">{{ role.memberCount }}</td>
+              <td class="col--permissions">
+                {{ role.isSystem ? 'All permissions' : `${role.enabledPermissionCount} enabled` }}
+              </td>
+              <td class="col--edited">
+                <span class="edited-date">{{ role.lastEditedDate }}</span>
+                <span class="edited-by">by {{ role.lastEditedBy }}</span>
+              </td>
+              <td class="col--actions">
+                <div class="action-btns">
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    title="View"
+                    @click="viewRole(role.id)"
+                  >
+                    <Eye :size="16" />
+                  </button>
+                  <button
+                    v-if="!role.isSystem"
+                    type="button"
+                    class="icon-btn"
+                    title="Edit"
+                    @click="editRole(role.id)"
+                  >
+                    <Pencil :size="16" />
+                  </button>
+                  <button
+                    v-if="!role.isSystem"
+                    type="button"
+                    class="icon-btn icon-btn--danger"
+                    title="Delete"
+                    @click="handleDelete(role)"
+                  >
+                    <Trash2 :size="16" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="paginatedRoles.length === 0">
+              <td
+                colspan="5"
+                class="table-empty"
+              >
+                No roles found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="table-footer">
+          <span class="table-footer__text">
+            Showing {{ showingStart }}–{{ showingEnd }}
+            of {{ roles.length }} roles
+          </span>
+          <div class="pagination">
+            <button
+              type="button"
+              class="page-btn"
+              :disabled="currentPage === 1"
+              aria-label="Previous page"
+              @click="goToPrev"
+            >
+              <ChevronLeft :size="14" />
+            </button>
+            <template
+              v-for="page in visiblePages"
+              :key="page"
+            >
+              <span
+                v-if="page === -1"
+                class="page-btn page-btn--ellipsis"
+                >…</span
+              >
+              <button
+                v-else
+                type="button"
+                class="page-btn"
+                :class="{ 'page-btn--active': page === currentPage }"
+                @click="goToPage(page)"
+              >
+                {{ page }}
+              </button>
+            </template>
+            <button
+              type="button"
+              class="page-btn"
+              :disabled="currentPage === totalPages"
+              aria-label="Next page"
+              @click="goToNext"
+            >
+              <ChevronRight :size="14" />
+            </button>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <style scoped>
-.roles-page {
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   padding: 24px 32px;
 }
 
-.header-row {
+.page__breadcrumb {
   display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.page__breadcrumb-text {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.page__header {
+  display: flex;
+  gap: 16px;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
 }
 
-.header-row__left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.page-title {
+.page__title {
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: #2a2933;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--foreground);
 }
 
-.page-subtitle {
-  margin: 0;
+.page__subtitle {
+  margin: 4px 0 0;
   font-family: Inter, sans-serif;
-  font-size: 14px;
-  color: #616167;
+  font-size: 13px;
+  color: var(--muted-foreground);
 }
 
+/* Buttons */
 .btn {
   display: inline-flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  padding: 10px 20px;
+  padding: 8px 16px;
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
   border: none;
-  border-radius: 999px;
-  transition: background 0.15s;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.9;
 }
 
 .btn--primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
-.btn--primary:hover {
-  background: #4639d4;
+/* Table card */
+.table-card {
+  overflow: hidden;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
 }
 
-.roles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+.table-card__loading {
+  padding: 40px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  color: var(--muted-foreground);
+  text-align: center;
 }
 
-.role-card {
+/* Real table */
+.roles-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.roles-table thead tr {
+  background: var(--accent);
+}
+
+.roles-table th {
+  padding: 18px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.roles-table td {
+  padding: 14px 18px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+}
+
+.roles-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.col--role {
+  width: 36%;
+}
+
+.col--members {
+  width: 11%;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.col--permissions {
+  width: 17%;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.col--edited {
+  width: 24%;
+}
+
+.col--actions {
+  width: 12%;
+}
+
+.table-empty {
+  padding: 32px 18px !important;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+/* Role info */
+.role-info {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 20px;
-  border: 1px solid #d9d9db;
-  border-radius: 10px;
-  transition: box-shadow 0.15s;
+  gap: 10px;
+  align-items: flex-start;
 }
 
-.role-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.role-card__top {
-  display: flex;
-  gap: 14px;
-}
-
-.role-icon {
-  display: flex;
+.role-dot {
   flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 10px;
+  height: 10px;
+  margin-top: 4px;
+  border-radius: 50%;
 }
 
-.role-card__info {
+.role-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  min-width: 0;
 }
 
 .role-name {
-  margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .role-desc {
-  margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #616167;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
 }
 
-.role-card__meta {
-  display: flex;
-  gap: 8px;
-}
-
-.member-badge {
-  display: inline-flex;
-  padding: 3px 10px;
+.edited-date {
+  display: block;
   font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: #616167;
-  background: #f5f5f5;
-  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
 }
 
-.type-badge {
-  display: inline-flex;
-  padding: 3px 10px;
+.edited-by {
+  display: block;
   font-family: Inter, sans-serif;
   font-size: 11px;
-  font-weight: 600;
-  border-radius: 999px;
+  font-weight: 400;
+  color: var(--muted-foreground);
 }
 
-.type-badge--built-in {
-  color: #1e40af;
-  background: #dbeafe;
-}
-
-.type-badge--custom {
-  color: #5749f4;
-  background: #eef0ff;
-}
-
-.role-card__actions {
+/* Action buttons */
+.action-btns {
   display: flex;
-  gap: 4px;
-  padding-top: 8px;
-  border-top: 1px solid #f0f0f0;
+  gap: 6px;
+  align-items: center;
 }
 
-.btn-icon {
+.icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
-  padding: 0;
-  color: #939399;
+  color: var(--foreground);
   cursor: pointer;
-  background: none;
-  border: none;
-  border-radius: 6px;
-  transition: all 0.15s;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: opacity 0.15s;
 }
 
-.btn-icon:hover {
-  color: #2a2933;
-  background: #f5f5f5;
+.icon-btn:hover {
+  opacity: 0.8;
+}
+
+.icon-btn--danger {
+  color: var(--destructive);
+}
+
+/* Footer */
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: var(--accent);
+  border-top: 1px solid var(--border);
+}
+
+.table-footer__text {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.page-btn:hover:not(:disabled):not(.page-btn--active) {
+  background: var(--accent);
+}
+
+.page-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.page-btn--active {
+  font-weight: 600;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.page-btn--ellipsis {
+  cursor: default;
+  background: none;
+  border: none;
 }
 </style>

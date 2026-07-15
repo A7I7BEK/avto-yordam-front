@@ -32,7 +32,7 @@ export async function getCategories() {
     });
 
     return { categories, services: formattedServices };
-  } catch (_) {
+  } catch {
     return { categories: categoryTree, services: allServices };
   }
 }

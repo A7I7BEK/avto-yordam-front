@@ -2,351 +2,370 @@
   setup
   lang="ts"
 >
-import { Search } from '@lucide/vue';
-import { computed, onMounted, ref } from 'vue';
-import { apiClient } from '@/api/client';
-import { isMockMode } from '@/config';
+import { ChevronDown, Globe, Plus, Trash2 } from '@lucide/vue';
+import { ref } from 'vue';
 
-const allLanguages = ref<{ id: string; value: string; label: string }[]>([]);
-const searchQuery = ref('');
+const languageOptions = [
+  { value: 'uzbek', label: 'Uzbek' },
+  { value: 'russian', label: 'Russian' },
+  { value: 'english', label: 'English' },
+  { value: 'german', label: 'German' },
+  { value: 'tajik', label: 'Tajik' },
+  { value: 'turkish', label: 'Turkish' },
+  { value: 'french', label: 'French' },
+  { value: 'korean', label: 'Korean' },
+];
 
-const filteredLanguages = computed(() => {
-  if (!searchQuery.value) {
-    return allLanguages.value;
-  }
-  const q = searchQuery.value.toLowerCase();
-  return allLanguages.value.filter(
-    (l) =>
-      l.label.toLowerCase().includes(q) || l.value.toLowerCase().includes(q),
-  );
-});
+const proficiencyOptions = [
+  'Native or bilingual',
+  'Professional working',
+  'Limited working',
+  'Elementary',
+];
 
-const initialLanguages = ref<string[]>([]);
-const selectedLanguages = ref<string[]>([]);
-const isLoading = ref(false);
-const isSaving = ref(false);
-const errorMessage = ref('');
-const successMessage = ref('');
-
-interface LanguageBackend {
-  id: string;
-  code?: string;
-  name?: string;
+interface LanguageEntry {
+  id: number;
+  language: string;
+  proficiency: string;
 }
 
-interface MasterInfoLanguagesType {
-  master?: {
-    languages?: (string | LanguageBackend)[];
-  };
+let nextId = 4;
+
+const entries = ref<LanguageEntry[]>([
+  { id: 1, language: 'uzbek', proficiency: 'Native or bilingual' },
+  { id: 2, language: 'russian', proficiency: 'Native or bilingual' },
+  { id: 3, language: 'english', proficiency: 'Professional working' },
+]);
+
+function addEntry() {
+  entries.value.push({
+    id: nextId++,
+    language: '',
+    proficiency: proficiencyOptions[0] ?? 'Native or bilingual',
+  });
 }
 
-function toggleLanguage(langValue: string) {
-  const idx = selectedLanguages.value.indexOf(langValue);
-  if (idx >= 0) {
-    selectedLanguages.value.splice(idx, 1);
-  } else {
-    selectedLanguages.value.push(langValue);
-  }
+function removeEntry(id: number) {
+  entries.value = entries.value.filter((e) => e.id !== id);
 }
 
-async function loadData() {
-  if (isMockMode()) {
-    allLanguages.value = [
-      { id: 'uzbek', value: 'uzbek', label: 'Uzbek' },
-      { id: 'russian', value: 'russian', label: 'Russian' },
-      { id: 'english', value: 'english', label: 'English' },
-      { id: 'german', value: 'german', label: 'German' },
-      { id: 'tajik', value: 'tajik', label: 'Tajik' },
-    ];
-    initialLanguages.value = ['uzbek', 'russian'];
-    selectedLanguages.value = ['uzbek', 'russian'];
-    return;
-  }
-
-  isLoading.value = true;
-  try {
-    // 1. Fetch available languages from backend
-    let langsRes: LanguageBackend[] = [];
-    try {
-      langsRes = (await apiClient.get('/language')) as LanguageBackend[];
-    } catch {
-      try {
-        langsRes = (await apiClient.get('/languages')) as LanguageBackend[];
-      } catch {
-        langsRes = [];
-      }
-    }
-
-    if (Array.isArray(langsRes) && langsRes.length > 0) {
-      allLanguages.value = langsRes.map((l) => ({
-        id: l.id,
-        value: l.code || l.name?.toLowerCase() || '',
-        label: l.name || '',
-      }));
-    }
-
-    // 2. Fetch master info to get the user's selected languages
-    const masterRes = await apiClient.get('/master-info/get-own');
-    const masterInfo = (
-      Array.isArray(masterRes) ? masterRes[0] : masterRes
-    ) as MasterInfoLanguagesType;
-    const userRes = masterInfo?.master;
-    if (userRes && Array.isArray(userRes.languages)) {
-      const selected = userRes.languages.map((l) => {
-        if (typeof l === 'string') {
-          return l;
-        }
-        return l.code || l.name?.toLowerCase() || '';
-      });
-      initialLanguages.value = selected;
-      selectedLanguages.value = [...selected];
-    }
-  } catch {
-    // Silent error handler, fallback to defaults
-  } finally {
-    isLoading.value = false;
-  }
+function saveChanges() {
+  // Mock save
 }
-
-async function saveChanges() {
-  if (isMockMode()) {
-    successMessage.value = 'Languages saved successfully (Mock Mode).';
-    return;
-  }
-
-  isSaving.value = true;
-  errorMessage.value = '';
-  successMessage.value = '';
-  try {
-    const added = selectedLanguages.value.filter(
-      (v) => !initialLanguages.value.includes(v),
-    );
-    const removed = initialLanguages.value.filter(
-      (v) => !selectedLanguages.value.includes(v),
-    );
-
-    const promises: Promise<unknown>[] = [];
-
-    for (const val of added) {
-      const lang = allLanguages.value.find((l) => l.value === val);
-      if (lang?.id) {
-        promises.push(apiClient.post(`/user/add-language/${lang.id}`));
-      }
-    }
-
-    for (const val of removed) {
-      const lang = allLanguages.value.find((l) => l.value === val);
-      if (lang?.id) {
-        promises.push(apiClient.post(`/user/remove-language/${lang.id}`));
-      }
-    }
-
-    await Promise.all(promises);
-    initialLanguages.value = [...selectedLanguages.value];
-    successMessage.value = 'Languages updated successfully.';
-  } catch (err: unknown) {
-    const errorVal = err as Record<string, unknown> | null;
-    errorMessage.value =
-      String(errorVal?.message || '') ||
-      'Failed to update language settings. Please try again.';
-  } finally {
-    isSaving.value = false;
-  }
-}
-
-onMounted(() => {
-  loadData();
-});
 </script>
 
 <template>
-  <div class="section">
-    <div class="section-title">Languages you speak</div>
-    <p class="section-desc">Clients and organizations will see these.</p>
-
-    <div
-      v-if="isLoading"
-      class="loading-state"
-    >
-      Loading languages...
-    </div>
-    <template v-else>
-      <!-- Feedback Banners -->
-      <div
-        v-if="errorMessage"
-        class="error-banner"
-      >
-        {{ errorMessage }}
-      </div>
-      <div
-        v-if="successMessage"
-        class="success-banner"
-      >
-        {{ successMessage }}
-      </div>
-
-      <!-- Selected Chips -->
-      <div class="chips-grid">
-        <button
-          v-for="lang in filteredLanguages"
-          :key="lang.value"
-          class="chip"
-          :class="{
-            selected: selectedLanguages.includes(lang.value),
-          }"
-          type="button"
-          :disabled="isSaving"
-          @click="toggleLanguage(lang.value)"
+  <div class="card">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-title-group">
+        <span class="header-title">Languages</span>
+        <span class="header-desc"
+          >Add every language you speak and how well. Shown to customers on your
+          public profile.</span
         >
-          {{ lang.label }}
-        </button>
       </div>
-
-      <!-- Add Language -->
-      <div class="search-input">
-        <Search
-          :size="14"
+      <div class="badge-count">
+        <Globe
+          :size="12"
           color="#616167"
         />
-        <input
-          v-model="searchQuery"
-          class="search-field"
-          type="text"
-          placeholder="Search languages..."
-          :disabled="isSaving"
-        >
+        <span>{{ entries.length }} added</span>
       </div>
+    </div>
 
-      <div class="form-footer">
+    <div class="divider" />
+
+    <!-- Language List -->
+    <div class="lang-list">
+      <div
+        v-for="entry in entries"
+        :key="entry.id"
+        class="lang-row"
+      >
+        <div class="lang-field">
+          <span class="field-label">Language</span>
+          <div class="select-wrapper">
+            <select
+              v-model="entry.language"
+              class="select-pill"
+            >
+              <option
+                value=""
+                disabled
+              >
+                Select language
+              </option>
+              <option
+                v-for="opt in languageOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+            <ChevronDown
+              :size="14"
+              color="#616167"
+              class="select-chevron"
+            />
+          </div>
+        </div>
+        <div class="lang-field">
+          <span class="field-label">Proficiency</span>
+          <div class="select-wrapper">
+            <select
+              v-model="entry.proficiency"
+              class="select-pill"
+            >
+              <option
+                v-for="opt in proficiencyOptions"
+                :key="opt"
+                :value="opt"
+              >
+                {{ opt }}
+              </option>
+            </select>
+            <ChevronDown
+              :size="14"
+              color="#616167"
+              class="select-chevron"
+            />
+          </div>
+        </div>
         <button
-          class="btn btn-save"
+          class="btn-delete"
           type="button"
-          :disabled="isSaving"
-          @click="saveChanges"
+          @click="removeEntry(entry.id)"
         >
-          {{ isSaving ? 'Saving...' : 'Save changes' }}
+          <Trash2 :size="15" />
         </button>
       </div>
-    </template>
+    </div>
+
+    <!-- Add another language -->
+    <button
+      class="btn-add"
+      type="button"
+      @click="addEntry"
+    >
+      <Plus
+        :size="15"
+        color="#5749f4"
+      />
+      <span>Add another language</span>
+    </button>
+
+    <div class="divider" />
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <button
+        class="btn-cancel"
+        type="button"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn-save"
+        type="button"
+        @click="saveChanges"
+      >
+        Save changes
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.section {
+.card {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
 }
 
-.section-title {
+/* Header */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-title {
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #2a2933;
 }
 
-.section-desc {
-  margin: 0;
+.header-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
   color: #616167;
 }
 
-.chips-grid {
+.badge-count {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 12px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #616167;
+  background: #f5f5f5;
+  border-radius: 999px;
 }
 
-.chip {
-  padding: 6px 14px;
+/* Divider */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: #c5c5cb;
+}
+
+/* Language List */
+.lang-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lang-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 14px;
+  background: #f5f5f5;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
+}
+
+.lang-field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #616167;
+}
+
+/* Select wrapper */
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select-pill {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 36px 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  font-weight: 500;
   color: #2a2933;
+  appearance: none;
   cursor: pointer;
-  background: transparent;
+  outline: none;
+  background: #ffffff;
   border: 1px solid #c5c5cb;
-  border-radius: 999px;
-  transition: all 0.15s;
+  border-radius: 6px;
 }
 
-.chip.selected {
-  color: #ffffff;
-  background: #5749f4;
+.select-pill:focus {
   border-color: #5749f4;
 }
 
-.search-input {
+.select-chevron {
+  position: absolute;
+  right: 14px;
+  pointer-events: none;
+}
+
+/* Delete button */
+.btn-delete {
   display: flex;
-  gap: 8px;
+  flex-shrink: 0;
   align-items: center;
-  padding: 10px 16px;
-  background: #f5f5f5;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: #cc3314;
+  cursor: pointer;
+  background: #ffffff;
   border: 1px solid #c5c5cb;
   border-radius: 999px;
 }
 
-.search-field {
-  flex: 1;
+.btn-delete:hover {
+  background: #fff5f5;
+}
+
+/* Add button */
+.btn-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #2a2933;
-  outline: none;
-  background: transparent;
-  border: none;
+  font-weight: 600;
+  color: #5749f4;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
 }
 
-.search-field::placeholder {
-  color: #616167;
+.btn-add:hover {
+  background: #f5f5ff;
 }
 
-.form-footer {
+/* Footer */
+.card-footer {
   display: flex;
+  gap: 8px;
   justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.btn-cancel {
+  padding: 10px 16px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #616167;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #c5c5cb;
+  border-radius: 999px;
 }
 
 .btn-save {
-  padding: 10px 20px;
+  padding: 10px 16px;
   font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: #ffffff;
   cursor: pointer;
   background: #5749f4;
   border: none;
   border-radius: 999px;
-}
-
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  font-family: Inter, sans-serif;
-  font-size: 14px;
-  color: #616167;
-}
-
-.error-banner {
-  padding: 12px 16px;
-  margin-bottom: 12px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 8px;
-}
-
-.success-banner {
-  padding: 12px 16px;
-  margin-bottom: 12px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #155724;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  border-radius: 8px;
 }
 </style>

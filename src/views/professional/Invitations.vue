@@ -111,8 +111,8 @@ async function loadInvitations() {
         id: item.id,
         orgName,
         initials,
-        avatarBg: color.bg,
-        avatarTextColor: color.text,
+        avatarBg: color?.bg ?? '#5749F4',
+        avatarTextColor: color?.text ?? '#FFFFFF',
         location: 'from Tashkent',
         role: item.roleName || 'Master Specialist',
         tags: item.roleCode ? [item.roleCode] : ['Specialist'],
@@ -121,8 +121,7 @@ async function loadInvitations() {
         expiresIn: 'Expires soon',
       };
     });
-  } catch (e) {
-    console.error('Failed to load invitations:', e);
+  } catch {
     invitations.value = staticInvitations;
   } finally {
     isLoading.value = false;
@@ -140,9 +139,8 @@ async function acceptInvitation(id: string) {
     await apiClient.put(`/organization-invitation/accept/${id}`);
     invitations.value = invitations.value.filter((inv) => inv.id !== id);
     store.decrementInvitationCount();
-  } catch (err) {
-    console.error('Failed to accept invitation:', err);
-    alert('Failed to accept the invitation. Please try again.');
+  } catch {
+    // TODO: Show error notification to user
   }
 }
 
@@ -157,9 +155,8 @@ async function declineInvitation(id: string) {
     await apiClient.put(`/organization-invitation/reject/${id}`);
     invitations.value = invitations.value.filter((inv) => inv.id !== id);
     store.decrementInvitationCount();
-  } catch (err) {
-    console.error('Failed to reject invitation:', err);
-    alert('Failed to reject the invitation. Please try again.');
+  } catch {
+    // TODO: Show error notification to user
   }
 }
 

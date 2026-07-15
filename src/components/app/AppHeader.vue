@@ -44,8 +44,7 @@ const store = useProfessionalAppStore();
   height: 80px;
   padding: 0 24px;
   background: #ffffff;
-  border: 1px solid #d9d9db;
-  border-left: none;
+  border-bottom: 1px solid #d9d9db;
 }
 
 .header-left {

@@ -2,317 +2,379 @@
   setup
   lang="ts"
 >
-import { ArrowLeft } from '@lucide/vue';
-import { computed, onMounted, ref } from 'vue';
+import { ArrowLeft, BriefcaseBusiness, Check } from '@lucide/vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getRole } from '@/services/rolesService';
-import type { Role } from '@/types/business';
+import {
+  getRole,
+  getRolePermissions,
+  saveRolePermissions,
+} from '@/services/rolesService';
+import type { PermissionCategory, Role } from '@/types/business';
 
 const route = useRoute();
 const router = useRouter();
+
 const role = ref<Role | null>(null);
+const categories = ref<PermissionCategory[]>([]);
 const loading = ref(true);
-
-const permissionCategories = [
-  {
-    name: 'Orders',
-    permissions: [
-      { key: 'orders.view', label: 'View orders', checked: false },
-      { key: 'orders.create', label: 'Create orders', checked: false },
-      { key: 'orders.edit', label: 'Edit orders', checked: false },
-      { key: 'orders.delete', label: 'Delete orders', checked: false },
-    ],
-  },
-  {
-    name: 'Team',
-    permissions: [
-      { key: 'team.view', label: 'View team', checked: false },
-      { key: 'team.invite', label: 'Invite members', checked: false },
-      { key: 'team.manage', label: 'Manage members', checked: false },
-    ],
-  },
-  {
-    name: 'Settings',
-    permissions: [
-      { key: 'settings.view', label: 'View settings', checked: false },
-      { key: 'settings.edit', label: 'Edit settings', checked: false },
-    ],
-  },
-  {
-    name: 'Earnings',
-    permissions: [
-      { key: 'earnings.view', label: 'View earnings', checked: false },
-      { key: 'earnings.export', label: 'Export reports', checked: false },
-    ],
-  },
-  {
-    name: 'Reviews',
-    permissions: [
-      { key: 'reviews.view', label: 'View reviews', checked: false },
-      { key: 'reviews.respond', label: 'Respond to reviews', checked: false },
-    ],
-  },
-  {
-    name: 'Transactions',
-    permissions: [
-      { key: 'transactions.view', label: 'View transactions', checked: false },
-      {
-        key: 'transactions.export',
-        label: 'Export transactions',
-        checked: false,
-      },
-    ],
-  },
-];
-
-const roleName = computed(() => role.value?.name || '...');
+const saving = ref(false);
 
 onMounted(async () => {
   try {
     const id = route.params.id as string;
-    role.value = await getRole(id);
+    const [roleData, permData] = await Promise.all([
+      getRole(id),
+      getRolePermissions(id),
+    ]);
+    role.value = roleData;
+    categories.value = permData;
   } finally {
     loading.value = false;
   }
 });
 
-function save() {
-  // Save permissions logic
-  router.push(`/business/roles-permissions/${route.params.id}`);
+function togglePermission(catId: string, permId: string) {
+  const cat = categories.value.find((c) => c.id === catId);
+  if (!cat) {
+    return;
+  }
+  const perm = cat.permissions.find((p) => p.id === permId);
+  if (!perm) {
+    return;
+  }
+  perm.allowed = !perm.allowed;
 }
 
-function cancel() {
-  router.push(`/business/roles-permissions/${route.params.id}`);
+async function handleSave() {
+  if (!role.value) {
+    return;
+  }
+  saving.value = true;
+  try {
+    await saveRolePermissions(role.value.id, categories.value);
+    router.push(`/business/roles-permissions/${role.value.id}`);
+  } finally {
+    saving.value = false;
+  }
+}
+
+function allowedCount(cat: PermissionCategory): number {
+  return cat.permissions.filter((p) => p.allowed).length;
 }
 </script>
 
 <template>
-  <div class="assign-page">
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-      <button
-        type="button"
-        class="breadcrumb-back"
-        @click="cancel"
-      >
-        <ArrowLeft :size="16" />
-      </button>
-      <span class="breadcrumb-item">Roles & Permissions</span>
-      <span class="breadcrumb-sep">/</span>
-      <span class="breadcrumb-item">{{ roleName }}</span>
-      <span class="breadcrumb-sep">/</span>
-      <span class="breadcrumb-item breadcrumb-item--current">Permissions</span>
-    </div>
-
+  <div class="page">
     <div
       v-if="loading"
-      class="loading-state"
+      class="loading-text"
     >
-      Loading...
+      Loading permissions…
     </div>
 
-    <template v-else>
-      <h1 class="page-title">Assign permissions — {{ roleName }}</h1>
+    <template v-else-if="role">
+      <button
+        type="button"
+        class="back-link"
+        @click="router.go(-1)"
+      >
+        <ArrowLeft :size="14" />
+        Back
+      </button>
 
-      <div class="form-card">
-        <div
-          v-for="category in permissionCategories"
-          :key="category.name"
-          class="perm-category"
-        >
-          <h3 class="perm-category__title">{{ category.name }}</h3>
-          <div class="perm-category__items">
-            <label
-              v-for="perm in category.permissions"
-              :key="perm.key"
-              class="perm-checkbox"
+      <!-- Header -->
+      <div class="page-header">
+        <div class="page-header__left">
+          <div class="title-row">
+            <h1 class="page-title">Assign permissions</h1>
+            <span
+              class="role-badge"
+              :style="{ background: role.color, borderColor: role.color, color: '#ffffff' }"
             >
-              <input
-                v-model="perm.checked"
-                type="checkbox"
-                class="checkbox"
-              >
-              <span class="checkbox-label">{{ perm.label }}</span>
-            </label>
+              <BriefcaseBusiness :size="11" />
+              {{ role.name }}
+            </span>
           </div>
+          <p class="page-subtitle">
+            Choose what teammates with this role can do. Changes apply to all
+            members assigned to this role.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="btn btn--primary"
+          :disabled="saving"
+          @click="handleSave"
+        >
+          <Check :size="16" />
+          {{ saving ? 'Saving…' : 'Save' }}
+        </button>
+      </div>
+
+      <!-- Permission category cards -->
+      <div
+        v-for="cat in categories"
+        :key="cat.id"
+        class="perm-card"
+      >
+        <div class="perm-card__header">
+          <h2 class="perm-card__title">{{ cat.name }}</h2>
+          <span class="perm-card__badge">
+            <Check :size="12" />
+            {{ allowedCount(cat) }}
+            of {{ cat.permissions.length }} allowed
+          </span>
         </div>
 
-        <div class="form-actions">
-          <button
-            type="button"
-            class="btn btn--outline"
-            @click="cancel"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn--primary"
-            @click="save"
-          >
-            Save
-          </button>
-        </div>
+        <table class="perm-table">
+          <tbody>
+            <tr
+              v-for="perm in cat.permissions"
+              :key="perm.id"
+              :class="{ 'perm-row--muted': !perm.allowed }"
+            >
+              <td class="perm-cell__label">{{ perm.label }}</td>
+              <td class="perm-cell__toggle">
+                <button
+                  type="button"
+                  class="toggle"
+                  :class="{ 'toggle--on': perm.allowed }"
+                  :aria-label="perm.label"
+                  @click="togglePermission(cat.id, perm.id)"
+                >
+                  <span class="toggle__thumb" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </template>
+
+    <div
+      v-else
+      class="loading-text"
+    >
+      Role not found
+    </div>
   </div>
 </template>
 
 <style scoped>
-.assign-page {
-  max-width: 640px;
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   padding: 24px 32px;
 }
 
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 0;
+.loading-text {
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #939399;
+  color: var(--muted-foreground);
 }
 
-.breadcrumb {
-  display: flex;
-  gap: 8px;
+.back-link {
+  display: inline-flex;
+  gap: 6px;
   align-items: center;
-  margin-bottom: 20px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #939399;
-}
-
-.breadcrumb-back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: fit-content;
   padding: 0;
-  color: #616167;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
   cursor: pointer;
-  background: #f5f5f5;
+  background: none;
   border: none;
-  border-radius: 6px;
-  transition: background 0.15s;
 }
 
-.breadcrumb-back:hover {
-  background: #e8e8e8;
+.back-link:hover {
+  color: var(--foreground);
 }
 
-.breadcrumb-item {
-  color: #939399;
+/* Header */
+.page-header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
-.breadcrumb-item--current {
-  font-weight: 600;
-  color: #2a2933;
+.page-header__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.breadcrumb-sep {
-  color: #d9d9db;
+.title-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .page-title {
-  margin: 0 0 24px;
-  font-family: Inter, sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: #2a2933;
-}
-
-.form-card {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-  border: 1px solid #d9d9db;
-  border-radius: 10px;
-}
-
-.perm-category {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.perm-category__title {
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: #2a2933;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--foreground);
 }
 
-.perm-category__items {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-left: 4px;
-}
-
-.perm-checkbox {
-  display: flex;
-  gap: 10px;
+.role-badge {
+  display: inline-flex;
+  gap: 6px;
   align-items: center;
-  cursor: pointer;
+  padding: 4px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
 }
 
-.checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: #5749f4;
-  cursor: pointer;
-}
-
-.checkbox-label {
+.page-subtitle {
+  margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
-  cursor: pointer;
+  font-weight: 400;
+  color: var(--muted-foreground);
 }
 
-.form-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
-}
-
+/* Buttons */
 .btn {
   display: inline-flex;
   gap: 8px;
   align-items: center;
-  padding: 10px 20px;
+  padding: 12px 20px;
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
-  border: none;
-  border-radius: 999px;
-  transition: background 0.15s;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-pill);
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .btn--primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
-.btn--primary:hover {
-  background: #4639d4;
+/* Permission cards */
+.perm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
 }
 
-.btn--outline {
-  color: #616167;
+.perm-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.perm-card__title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.perm-card__badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+/* Permission table */
+.perm-table {
+  width: 100%;
+  padding: 14px 24px 24px 24px;
+  border-collapse: collapse;
+}
+
+.perm-table td {
+  padding: 6px 24px;
+  vertical-align: middle;
+}
+
+.perm-table tbody tr:first-child td {
+  padding-top: 24px;
+}
+.perm-table tbody tr:last-child td {
+  padding-bottom: 24px;
+}
+
+.perm-cell__label {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.perm-row--muted .perm-cell__label {
+  color: var(--muted-foreground);
+}
+
+.perm-cell__toggle {
+  text-align: right;
+}
+
+/* Toggle Switch */
+.toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 22px;
+  padding: 0;
+  cursor: pointer;
+  background: var(--border);
+  border: none;
+  border-radius: var(--radius-pill);
+  transition: background 0.2s;
+}
+
+.toggle--on {
+  background: var(--primary);
+}
+
+.toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
   background: #ffffff;
-  border: 1px solid #d9d9db;
+  border-radius: 50%;
+  transition: transform 0.2s;
 }
 
-.btn--outline:hover {
-  background: #f5f5f5;
+.toggle--on .toggle__thumb {
+  transform: translateX(18px);
 }
 </style>

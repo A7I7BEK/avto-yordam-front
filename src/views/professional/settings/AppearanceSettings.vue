@@ -4,6 +4,9 @@
 >
 import { Check, Monitor, Moon, Sun } from '@lucide/vue';
 import { ref } from 'vue';
+import flagEn from '@/assets/flags/flag-en.png';
+import flagRu from '@/assets/flags/flag-ru.png';
+import flagUz from '@/assets/flags/flag-uz.png';
 
 const selectedTheme = ref<'light' | 'dark' | 'system'>('light');
 const selectedLanguage = ref('english');
@@ -40,19 +43,19 @@ const languages = [
     key: 'english',
     name: 'English',
     code: 'EN',
-    flag: ['#012169', '#FFFFFF', '#C8102E'],
+    flagImage: flagEn,
   },
   {
     key: 'uzbek',
     name: 'Uzbek',
     code: 'UZ',
-    flag: ['#0099B5', '#FFFFFF', '#1EB53A'],
+    flagImage: flagUz,
   },
   {
     key: 'russian',
     name: 'Russian',
     code: 'RU',
-    flag: ['#FFFFFF', '#0039A6', '#D52B1E'],
+    flagImage: flagRu,
   },
 ];
 </script>
@@ -148,14 +151,11 @@ const languages = [
         @click="selectedLanguage = lang.key"
         @keydown.enter="selectedLanguage = lang.key"
       >
-        <div class="flag-stripes">
-          <div
-            v-for="(color, idx) in lang.flag"
-            :key="idx"
-            class="flag-stripe"
-            :style="{ background: color }"
-          />
-        </div>
+        <img
+          :src="lang.flagImage"
+          :alt="`${lang.name} flag`"
+          class="flag-image"
+        >
         <div class="lang-info">
           <span class="lang-name">{{ lang.name }}</span>
           <span class="lang-code">{{ lang.code }}</span>
@@ -348,18 +348,11 @@ const languages = [
   border: 2px solid #5749f4;
 }
 
-.flag-stripes {
-  display: flex;
+.flag-image {
   flex-shrink: 0;
-  flex-direction: column;
-  width: 28px;
-  height: 20px;
-  overflow: hidden;
-  border-radius: 6px;
-}
-
-.flag-stripe {
-  flex: 1;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 .lang-info {

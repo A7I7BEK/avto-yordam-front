@@ -115,22 +115,6 @@ function toggleChannel(
         </div>
       </div>
     </div>
-
-    <!-- Footer -->
-    <div class="footer-actions">
-      <button
-        class="btn btn-reset"
-        type="button"
-      >
-        Reset to defaults
-      </button>
-      <button
-        class="btn btn-save"
-        type="button"
-      >
-        Save changes
-      </button>
-    </div>
   </div>
 </template>
 
@@ -233,21 +217,11 @@ function toggleChannel(
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 84px;
-  height: 28px;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-}
-
-.cell-checkbox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 18px;
   height: 18px;
   padding: 0;
   margin: 0 auto;
+  cursor: pointer;
   background: #ffffff;
   border: 1px solid #c5c5cb;
   border-radius: 4px;
@@ -256,35 +230,5 @@ function toggleChannel(
 .cell-checkbox.checked {
   background: #5749f4;
   border-color: #5749f4;
-}
-
-.footer-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-
-.btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  border-radius: 999px;
-}
-
-.btn-reset {
-  color: #2a2933;
-  background: transparent;
-  border: 1px solid #c5c5cb;
-}
-
-.btn-save {
-  color: #ffffff;
-  background: #5749f4;
 }
 </style>

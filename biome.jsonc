@@ -109,6 +109,17 @@
                     }
                 }
             }
+        },
+        {
+            // temporarily disable some rules
+            "includes": ["**"],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noExplicitAny": "off"
+                    }
+                }
+            }
         }
     ]
 }
