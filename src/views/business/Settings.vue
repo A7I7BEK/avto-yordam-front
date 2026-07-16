@@ -5,113 +5,107 @@
 import {
   Bell,
   Building2,
-  ChevronRight,
+  CreditCard,
+  Image,
+  Landmark,
   Palette,
-  Shield,
-  User,
+  Timer,
+  TriangleAlert,
 } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
-import AccountLanguages from '@/views/professional/settings/AccountLanguages.vue';
-import AccountPersonalEdit from '@/views/professional/settings/AccountPersonalEdit.vue';
-import AccountPersonalPreview from '@/views/professional/settings/AccountPersonalPreview.vue';
-import AccountPhoneEmail from '@/views/professional/settings/AccountPhoneEmail.vue';
-import AppearanceSettings from '@/views/professional/settings/AppearanceSettings.vue';
-import NotificationsSettings from '@/views/professional/settings/NotificationsSettings.vue';
-import PrivacySettings from '@/views/professional/settings/PrivacySettings.vue';
+import SettingsAppearance from './settings/SettingsAppearance.vue';
+import SettingsBankInfo from './settings/SettingsBankInfo.vue';
+import SettingsDangerZone from './settings/SettingsDangerZone.vue';
+import SettingsHours from './settings/SettingsHours.vue';
 import SettingsLegal from './settings/SettingsLegal.vue';
+import SettingsNotifications from './settings/SettingsNotifications.vue';
+import SettingsPayment from './settings/SettingsPayment.vue';
+import SettingsPhotos from './settings/SettingsPhotos.vue';
 
 const route = useRoute();
 const router = useRouter();
 
 const section = computed(() => {
   const path = route.path;
+  if (path.includes('/settings/legal')) {
+    return 'legal';
+  }
+  if (path.includes('/settings/hours')) {
+    return 'hours';
+  }
+  if (path.includes('/settings/photos')) {
+    return 'photos';
+  }
+  if (path.includes('/settings/bank-info')) {
+    return 'bank-info';
+  }
+  if (path.includes('/settings/payment')) {
+    return 'payment';
+  }
   if (path.includes('/settings/notifications')) {
     return 'notifications';
   }
   if (path.includes('/settings/appearance')) {
     return 'appearance';
   }
-  if (path.includes('/settings/privacy')) {
-    return 'privacy';
+  if (path.includes('/settings/danger-zone')) {
+    return 'danger-zone';
   }
-  if (path.includes('/settings/organization')) {
-    return 'organization';
-  }
-  return 'account';
+  return 'legal';
 });
 
-const tab = computed(() => (route.query.tab as string) || 'personal');
-const mode = computed(() => (route.query.mode as string) || 'preview');
-
 const subNavItems = [
-  { key: 'account', icon: User, label: 'Account', group: 'PERSONAL' },
-  {
-    key: 'notifications',
-    icon: Bell,
-    label: 'Notifications',
-    group: 'PERSONAL',
-  },
-  {
-    key: 'appearance',
-    icon: Palette,
-    label: 'Appearance & language',
-    group: 'PREFERENCES',
-  },
-  {
-    key: 'privacy',
-    icon: Shield,
-    label: 'Privacy & data',
-    group: 'PREFERENCES',
-  },
-  {
-    key: 'organization',
-    icon: Building2,
-    label: 'Organization',
-    group: 'BUSINESS',
-  },
-];
-
-const accountTabs = [
-  { key: 'personal', label: 'Personal info' },
-  { key: 'phone-email', label: 'Phone & email' },
-  { key: 'languages', label: 'Languages' },
+  { key: 'legal', icon: Building2, label: 'Legal info' },
+  { key: 'hours', icon: Timer, label: 'Operating hours' },
+  { key: 'photos', icon: Image, label: 'Photos' },
+  { key: 'bank-info', icon: Landmark, label: 'Bank info' },
+  { key: 'payment', icon: CreditCard, label: 'Payment providers' },
+  { key: 'notifications', icon: Bell, label: 'Notification policy' },
+  { key: 'appearance', icon: Palette, label: 'Appearance & language' },
+  { key: 'danger-zone', icon: TriangleAlert, label: 'Danger zone' },
 ];
 
 function navigateToSection(key: string) {
   const base = '/business/settings';
-  if (key === 'account') {
-    router.push(`${base}?tab=${tab.value}`);
+  if (key === 'legal') {
+    router.push(`${base}/legal`);
+  } else if (key === 'hours') {
+    router.push(`${base}/hours`);
+  } else if (key === 'photos') {
+    router.push(`${base}/photos`);
+  } else if (key === 'bank-info') {
+    router.push(`${base}/bank-info`);
+  } else if (key === 'payment') {
+    router.push(`${base}/payment`);
   } else if (key === 'notifications') {
     router.push(`${base}/notifications`);
   } else if (key === 'appearance') {
     router.push(`${base}/appearance`);
-  } else if (key === 'privacy') {
-    router.push(`${base}/privacy`);
-  } else if (key === 'organization') {
-    router.push(`${base}/organization`);
+  } else if (key === 'danger-zone') {
+    router.push(`${base}/danger-zone`);
   }
-}
-
-function switchAccountTab(key: string) {
-  const base = '/business/settings';
-  router.push(`${base}?tab=${key}`);
 }
 
 function breadcrumbItems() {
   const items = ['Workspace', 'Settings'];
-  if (section.value === 'notifications') {
-    items.push('Notifications');
-  }
-  if (section.value === 'appearance') {
+  if (section.value === 'legal') {
+    items.push('Legal info');
+  } else if (section.value === 'hours') {
+    items.push('Operating hours');
+  } else if (section.value === 'photos') {
+    items.push('Photos');
+  } else if (section.value === 'bank-info') {
+    items.push('Bank info');
+  } else if (section.value === 'payment') {
+    items.push('Payment providers');
+  } else if (section.value === 'notifications') {
+    items.push('Notification policy');
+  } else if (section.value === 'appearance') {
     items.push('Appearance & language');
-  }
-  if (section.value === 'privacy') {
-    items.push('Privacy & data');
-  }
-  if (section.value === 'organization') {
-    items.push('Organization settings');
+  } else if (section.value === 'danger-zone') {
+    items.push('Danger zone');
   }
   return items;
 }
@@ -119,69 +113,39 @@ function breadcrumbItems() {
 
 <template>
   <div class="settings-page">
-    <BreadcrumbBar :items="breadcrumbItems()" />
+    <!-- Sub Navigation -->
+    <nav class="sub-nav">
+      <button
+        v-for="item in subNavItems"
+        :key="item.key"
+        class="nav-item"
+        :class="{
+          active: section === item.key,
+          'nav-item-danger': item.key === 'danger-zone',
+        }"
+        type="button"
+        @click="navigateToSection(item.key)"
+      >
+        <component
+          :is="item.icon"
+          :size="16"
+        />
+        <span>{{ item.label }}</span>
+      </button>
+    </nav>
 
-    <div class="page-header">
-      <h1 class="page-title">Settings</h1>
-      <p class="page-subtitle">Manage your account and preferences</p>
-    </div>
+    <!-- Content -->
+    <div class="settings-content">
+      <BreadcrumbBar :items="breadcrumbItems()" />
 
-    <div class="settings-layout">
-      <!-- Sub Navigation -->
-      <nav class="sub-nav">
-        <template
-          v-for="item in subNavItems"
-          :key="item.key"
-        >
-          <span class="nav-group-label">{{ item.group }}</span>
-          <button
-            class="nav-item"
-            :class="{ active: section === item.key }"
-            type="button"
-            @click="navigateToSection(item.key)"
-          >
-            <component
-              :is="item.icon"
-              :size="16"
-            />
-            <span>{{ item.label }}</span>
-          </button>
-        </template>
-      </nav>
-
-      <!-- Content -->
-      <div class="settings-content">
-        <!-- Account Section -->
-        <template v-if="section === 'account'">
-          <!-- Account Tabs -->
-          <div class="account-tabs">
-            <button
-              v-for="t in accountTabs"
-              :key="t.key"
-              class="tab-btn"
-              :class="{ active: tab === t.key }"
-              type="button"
-              @click="switchAccountTab(t.key)"
-            >
-              {{ t.label }}
-            </button>
-          </div>
-
-          <AccountPersonalPreview
-            v-if="tab === 'personal' && mode === 'preview'"
-          />
-          <AccountPersonalEdit
-            v-else-if="tab === 'personal' && mode === 'edit'"
-          />
-          <AccountPhoneEmail v-else-if="tab === 'phone-email'" />
-          <AccountLanguages v-else-if="tab === 'languages'" />
-        </template>
-
-        <NotificationsSettings v-else-if="section === 'notifications'" />
-        <AppearanceSettings v-else-if="section === 'appearance'" />
-        <PrivacySettings v-else-if="section === 'privacy'" />
-        <SettingsLegal v-else-if="section === 'organization'" />
-      </div>
+      <SettingsLegal v-if="section === 'legal'" />
+      <SettingsHours v-else-if="section === 'hours'" />
+      <SettingsPhotos v-else-if="section === 'photos'" />
+      <SettingsBankInfo v-else-if="section === 'bank-info'" />
+      <SettingsPayment v-else-if="section === 'payment'" />
+      <SettingsNotifications v-else-if="section === 'notifications'" />
+      <SettingsAppearance v-else-if="section === 'appearance'" />
+      <SettingsDangerZone v-else-if="section === 'danger-zone'" />
     </div>
   </div>
 </template>
@@ -189,38 +153,7 @@ function breadcrumbItems() {
 <style scoped>
 .settings-page {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
   height: 100%;
-  padding: 24px;
-  overflow-y: auto;
-}
-
-.page-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.page-title {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: #2a2933;
-}
-
-.page-subtitle {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #616167;
-}
-
-.settings-layout {
-  display: flex;
-  flex: 1;
-  gap: 24px;
 }
 
 .sub-nav {
@@ -228,16 +161,10 @@ function breadcrumbItems() {
   flex-shrink: 0;
   flex-direction: column;
   gap: 2px;
-  width: 200px;
-}
-
-.nav-group-label {
-  padding: 12px 12px 4px;
-  font-family: Inter, sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  color: #616167;
-  letter-spacing: 0.5px;
+  width: 240px;
+  padding: 24px 16px;
+  background: #ffffff;
+  border-right: 1px solid #c5c5cb;
 }
 
 .nav-item {
@@ -263,36 +190,21 @@ function breadcrumbItems() {
   background: #f5f5f5;
 }
 
+.nav-item-danger {
+  color: #cc3314;
+}
+
+.nav-item-danger.active {
+  background: #f5f5f5;
+}
+
 .settings-content {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 16px;
   min-width: 0;
-}
-
-.account-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid #c5c5cb;
-}
-
-.tab-btn {
-  padding: 10px 16px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: #616167;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-}
-
-.tab-btn.active {
-  font-weight: 600;
-  color: #5749f4;
-  border-bottom-color: #5749f4;
+  padding: 24px 32px;
+  overflow-y: auto;
 }
 </style>

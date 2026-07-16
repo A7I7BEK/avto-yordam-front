@@ -187,7 +187,31 @@ export const businessRoutes: RouteRecordRaw[] = [
       // === Settings ===
       {
         path: 'settings',
-        name: 'biz-settings',
+        redirect: '/business/settings/legal',
+      },
+      {
+        path: 'settings/legal',
+        name: 'biz-settings-legal',
+        component: () => import('@/views/business/Settings.vue'),
+      },
+      {
+        path: 'settings/hours',
+        name: 'biz-settings-hours',
+        component: () => import('@/views/business/Settings.vue'),
+      },
+      {
+        path: 'settings/photos',
+        name: 'biz-settings-photos',
+        component: () => import('@/views/business/Settings.vue'),
+      },
+      {
+        path: 'settings/bank-info',
+        name: 'biz-settings-bank-info',
+        component: () => import('@/views/business/Settings.vue'),
+      },
+      {
+        path: 'settings/payment',
+        name: 'biz-settings-payment',
         component: () => import('@/views/business/Settings.vue'),
       },
       {
@@ -201,13 +225,8 @@ export const businessRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/business/Settings.vue'),
       },
       {
-        path: 'settings/privacy',
-        name: 'biz-settings-privacy',
-        component: () => import('@/views/business/Settings.vue'),
-      },
-      {
-        path: 'settings/organization',
-        name: 'biz-settings-organization',
+        path: 'settings/danger-zone',
+        name: 'biz-settings-danger-zone',
         component: () => import('@/views/business/Settings.vue'),
       },
     ],
