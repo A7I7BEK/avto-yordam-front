@@ -229,7 +229,7 @@ const languages = [
 }
 
 .theme-card.selected {
-  border: 2px solid #5749f4;
+  border-color: #5749f4;
 }
 
 .theme-preview {
@@ -345,7 +345,7 @@ const languages = [
 }
 
 .language-item.selected {
-  border: 2px solid #5749f4;
+  border-color: #5749f4;
 }
 
 .flag-image {
