@@ -34,19 +34,17 @@ export async function getSettingsLegal() {
 
     const org = await apiClient.get(`/organization/${orgId}`);
     return {
-      orgName: org.name || legalInfo.orgName,
-      legalForm: org.legalForm || legalInfo.legalForm,
-      inn: org.inn || legalInfo.inn,
-      regDate: org.regDate || legalInfo.regDate,
-      taxRegime: org.taxRegime || legalInfo.taxRegime,
-      legalAddress: org.address || legalInfo.legalAddress,
-      actualAddress: org.actualAddress || legalInfo.actualAddress,
-      sameAsLegal:
-        org.sameAsLegal === undefined ? legalInfo.sameAsLegal : org.sameAsLegal,
-      bankName: org.bankName || legalInfo.bankName,
-      accountNumber: org.bankAccount || legalInfo.accountNumber,
-      mfo: org.mfo || legalInfo.mfo,
-      okonkh: org.okonkh || legalInfo.okonkh,
+      orgType: org.orgType || legalInfo.orgType,
+      legalEntityName: org.name || legalInfo.legalEntityName,
+      stateRegNumber: org.stateRegNumber || legalInfo.stateRegNumber,
+      taxId: org.taxId || legalInfo.taxId,
+      vatStatus: org.vatStatus || legalInfo.vatStatus,
+      foundingDate: org.foundingDate || legalInfo.foundingDate,
+      country: org.country || legalInfo.country,
+      region: org.region || legalInfo.region,
+      city: org.city || legalInfo.city,
+      postalCode: org.postalCode || legalInfo.postalCode,
+      street: org.street || legalInfo.street,
       documents: org.documents || legalInfo.documents,
     };
   } catch (_) {

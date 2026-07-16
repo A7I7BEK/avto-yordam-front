@@ -2,50 +2,131 @@
   setup
   lang="ts"
 >
-import { Eye, EyeOff, Trash2, Upload } from '@lucide/vue';
+import {
+  Building2,
+  Check,
+  Download,
+  FileText,
+  Pencil,
+  Trash2,
+  Upload,
+} from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { getSettingsLegal } from '@/services/settingsService';
 
-const previewMode = ref(false);
-const form = ref({
-  orgName: '',
-  legalForm: '',
-  inn: '',
-  regDate: '',
-  taxRegime: '',
-  legalAddress: '',
-  actualAddress: '',
-  sameAsLegal: false,
-  bankName: '',
-  accountNumber: '',
-  mfo: '',
-  documents: [] as { name: string; size: string }[],
+interface LegalDocument {
+  id: string;
+  name: string;
+  fileName: string;
+  size: string;
+  uploadedAt: string;
+  verified: boolean;
+}
+
+interface LegalInfoData {
+  orgType: string;
+  legalEntityName: string;
+  stateRegNumber: string;
+  taxId: string;
+  vatStatus: string;
+  foundingDate: string;
+  country: string;
+  region: string;
+  city: string;
+  postalCode: string;
+  street: string;
+  documents: LegalDocument[];
+}
+
+const isEditing = ref(false);
+const data = ref<LegalInfoData | null>(null);
+const form = ref<LegalInfoData>({
+  orgType: 'mchj',
+  legalEntityName: '',
+  stateRegNumber: '',
+  taxId: '',
+  vatStatus: '',
+  foundingDate: '',
+  country: '',
+  region: '',
+  city: '',
+  postalCode: '',
+  street: '',
+  documents: [],
 });
 
-const legalForms = ['MCHJ', 'OOO', 'XK', 'AK', 'Other'];
+const orgTypeOptions = [
+  {
+    value: 'mchj',
+    title: 'Limited Liability Company',
+    subtitle:
+      'MChJ \u2014 the most common form for small and mid-size service businesses. Liability limited to capital contribution.',
+    badge: 'MCHJ',
+  },
+  {
+    value: 'ytt',
+    title: 'Individual Entrepreneur',
+    subtitle:
+      'YTT (Yakka Tartibdagi Tadbirkor) \u2014 sole-trader format with simplified tax and direct personal liability.',
+    badge: 'YTT',
+  },
+  {
+    value: 'self-employed',
+    title: 'Solo Master',
+    subtitle:
+      'For one-person setups working without a formal company. Lowest paperwork, fastest start.',
+    badge: 'Self-employed',
+  },
+];
 
 onMounted(async () => {
-  const data = await getSettingsLegal();
-  if (data) {
+  const result = await getSettingsLegal();
+  data.value = result;
+  if (result) {
     form.value = {
-      orgName: data.orgName,
-      legalForm: data.legalForm,
-      inn: data.inn,
-      regDate: data.regDate,
-      taxRegime: data.taxRegime,
-      legalAddress: data.legalAddress,
-      actualAddress: data.actualAddress,
-      sameAsLegal: data.sameAsLegal,
-      bankName: data.bankName,
-      accountNumber: data.accountNumber,
-      mfo: data.mfo,
-      documents: [...data.documents],
+      orgType: result.orgType,
+      legalEntityName: result.legalEntityName,
+      stateRegNumber: result.stateRegNumber,
+      taxId: result.taxId,
+      vatStatus: result.vatStatus,
+      foundingDate: result.foundingDate,
+      country: result.country,
+      region: result.region,
+      city: result.city,
+      postalCode: result.postalCode,
+      street: result.street,
+      documents: [...result.documents],
     };
   }
 });
 
+function startEditing() {
+  isEditing.value = true;
+}
+
+function cancelEditing() {
+  isEditing.value = false;
+  if (data.value) {
+    form.value = {
+      orgType: data.value.orgType,
+      legalEntityName: data.value.legalEntityName,
+      stateRegNumber: data.value.stateRegNumber,
+      taxId: data.value.taxId,
+      vatStatus: data.value.vatStatus,
+      foundingDate: data.value.foundingDate,
+      country: data.value.country,
+      region: data.value.region,
+      city: data.value.city,
+      postalCode: data.value.postalCode,
+      street: data.value.street,
+      documents: [...data.value.documents],
+    };
+  }
+}
+
 function save() {
-  // Save logic
+  data.value = { ...form.value };
+  isEditing.value = false;
 }
 
 function removeDocument(index: number) {
@@ -54,209 +135,367 @@ function removeDocument(index: number) {
 </script>
 
 <template>
-  <div class="settings-page">
-    <!-- Header -->
+  <div class="legal-info-page">
     <div class="header-row">
-      <div class="header-row__left">
-        <h1 class="page-title">Legal information</h1>
+      <div class="header-text">
+        <h1 class="page-title">Legal info</h1>
         <p class="page-subtitle">
-          Manage your organization's legal and registration details
+          The registered legal entity used on contracts, invoices, and official
+          documents.
         </p>
       </div>
-      <button
-        type="button"
-        class="btn btn--outline"
-        @click="previewMode = !previewMode"
+      <div
+        class="header-actions"
+        v-if="!isEditing"
       >
-        <component
-          :is="previewMode ? EyeOff : Eye"
-          :size="16"
-        />
-        {{ previewMode ? 'Edit' : 'Preview' }}
-      </button>
-    </div>
-
-    <!-- Business Details -->
-    <div class="form-card">
-      <h2 class="form-card__title">Business Details</h2>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Organization name</label>
-          <input
-            v-model="form.orgName"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-        <div class="form-group">
-          <label class="form-label">Legal form</label>
-          <select
-            v-model="form.legalForm"
-            class="form-input"
-            :disabled="previewMode"
-          >
-            <option
-              v-for="lf in legalForms"
-              :key="lf"
-              :value="lf"
-            >
-              {{ lf }}
-            </option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">INN</label>
-          <input
-            v-model="form.inn"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-        <div class="form-group">
-          <label class="form-label">Registration date</label>
-          <input
-            v-model="form.regDate"
-            type="date"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-        <div class="form-group">
-          <label class="form-label">Tax regime</label>
-          <input
-            v-model="form.taxRegime"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-      </div>
-    </div>
-
-    <!-- Address -->
-    <div class="form-card">
-      <h2 class="form-card__title">Address</h2>
-      <div class="form-grid">
-        <div class="form-group form-group--full">
-          <label class="form-label">Legal address</label>
-          <input
-            v-model="form.legalAddress"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-        <div class="form-group form-group--full">
-          <label class="form-checkbox">
-            <input
-              v-model="form.sameAsLegal"
-              type="checkbox"
-              class="checkbox"
-              :disabled="previewMode"
-            >
-            <span>Actual address matches legal address</span>
-          </label>
-        </div>
-        <div
-          v-if="!form.sameAsLegal"
-          class="form-group form-group--full"
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="startEditing"
         >
-          <label class="form-label">Actual address</label>
-          <input
-            v-model="form.actualAddress"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
+          <Pencil :size="13"></Pencil>
+          Edit
+        </button>
       </div>
-    </div>
-
-    <!-- Bank Details -->
-    <div class="form-card">
-      <h2 class="form-card__title">Bank Details</h2>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Bank name</label>
-          <input
-            v-model="form.bankName"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-        <div class="form-group">
-          <label class="form-label">Account number</label>
-          <input
-            v-model="form.accountNumber"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-        <div class="form-group">
-          <label class="form-label">MFO</label>
-          <input
-            v-model="form.mfo"
-            type="text"
-            class="form-input"
-            :readonly="previewMode"
-          >
-        </div>
-      </div>
-    </div>
-
-    <!-- Documents -->
-    <div class="form-card">
-      <h2 class="form-card__title">Documents</h2>
-      <div class="documents-list">
-        <div
-          v-for="(doc, index) in form.documents"
-          :key="index"
-          class="doc-item"
+      <div
+        class="header-actions"
+        v-else
+      >
+        <button
+          type="button"
+          class="btn btn-outline"
+          @click="cancelEditing"
         >
-          <div class="doc-item__info">
-            <span class="doc-item__name">{{ doc.name }}</span>
-            <span class="doc-item__size">{{ doc.size }}</span>
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="save"
+        >
+          <Check :size="14"></Check>
+          Save changes
+        </button>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Organization type</h2>
+        <p class="section-desc">
+          Changing this affects tax handling, invoices and the documents you
+          must provide. Pick the legal structure that matches your registration.
+        </p>
+      </div>
+      <div
+        v-if="!isEditing"
+        class="org-type-wrapper"
+      >
+        <div class="org-type-card org-type-card-selected">
+          <div class="org-type-card-header">
+            <div class="org-type-icon-box">
+              <Building2 :size="20"></Building2>
+            </div>
+            <span class="org-type-badge-pill"
+              >{{ orgTypeOptions.find((o) => o.value === form.orgType)?.badge }}</span
+            >
           </div>
-          <button
-            v-if="!previewMode"
-            type="button"
-            class="btn-icon"
-            title="Remove document"
-            @click="removeDocument(index)"
-          >
-            <Trash2 :size="16" />
-          </button>
+          <h3 class="org-type-title">
+            {{ orgTypeOptions.find((o) => o.value === form.orgType)?.title }}
+          </h3>
+          <p class="org-type-desc">
+            {{ orgTypeOptions.find((o) => o.value === form.orgType)?.subtitle }}
+          </p>
+          <div class="org-type-status">
+            <div class="status-badge status-badge-active">
+              <Check :size="14"></Check>
+              Active
+            </div>
+          </div>
         </div>
+      </div>
+      <div
+        v-else
+        class="org-type-wrapper"
+      >
         <div
-          v-if="!previewMode"
-          class="doc-upload"
+          v-for="option in orgTypeOptions"
+          :key="option.value"
+          class="org-type-card"
+          :class="form.orgType === option.value ? 'org-type-card-selected' : ''"
+          role="button"
+          tabindex="0"
+          @click="form.orgType = option.value"
+          @keydown.enter="form.orgType = option.value"
         >
-          <Upload :size="20" />
-          <span>Upload document</span>
+          <div class="org-type-card-header">
+            <span class="org-type-badge">{{ option.badge }}</span>
+            <div
+              v-if="form.orgType === option.value"
+              class="org-type-check"
+            >
+              <Check :size="16"></Check>
+            </div>
+          </div>
+          <h3 class="org-type-title">{{ option.title }}</h3>
+          <p class="org-type-desc">{{ option.subtitle }}</p>
+          <div class="org-type-status">
+            <div
+              v-if="form.orgType === option.value"
+              class="status-badge status-badge-selected"
+            >
+              <Check :size="14"></Check>
+              Selected
+            </div>
+            <div
+              v-else
+              class="status-badge status-badge-select"
+            >
+              Select
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Actions -->
+    <div class="section-card">
+      <h2 class="section-title">Legal entity</h2>
+      <div class="field-group">
+        <label class="field-label">Registered legal entity name</label>
+        <div
+          v-if="!isEditing"
+          class="field-value field-value-full"
+        >
+          {{ form.legalEntityName }}
+        </div>
+        <input
+          v-else
+          v-model="form.legalEntityName"
+          type="text"
+          class="field-input field-input-full"
+        >
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">State registration number</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.stateRegNumber }}
+          </div>
+          <input
+            v-else
+            v-model="form.stateRegNumber"
+            type="text"
+            class="field-input"
+          >
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tax ID (INN)</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.taxId }}
+          </div>
+          <input
+            v-else
+            v-model="form.taxId"
+            type="text"
+            class="field-input"
+          >
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">VAT status</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.vatStatus }}
+          </div>
+          <input
+            v-else
+            v-model="form.vatStatus"
+            type="text"
+            class="field-input"
+          >
+        </div>
+        <div class="field-group">
+          <label class="field-label">Founding date</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.foundingDate }}
+          </div>
+          <input
+            v-else
+            v-model="form.foundingDate"
+            type="text"
+            class="field-input"
+            placeholder="e.g. 12 March 2019"
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2 class="section-title">Registered legal address</h2>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Country</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.country }}
+          </div>
+          <input
+            v-else
+            v-model="form.country"
+            type="text"
+            class="field-input"
+          >
+        </div>
+        <div class="field-group">
+          <label class="field-label">Region</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.region }}
+          </div>
+          <input
+            v-else
+            v-model="form.region"
+            type="text"
+            class="field-input"
+          >
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">City</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.city }}
+          </div>
+          <input
+            v-else
+            v-model="form.city"
+            type="text"
+            class="field-input"
+          >
+        </div>
+        <div class="field-group">
+          <label class="field-label">Postal code</label>
+          <div
+            v-if="!isEditing"
+            class="field-value"
+          >
+            {{ form.postalCode }}
+          </div>
+          <input
+            v-else
+            v-model="form.postalCode"
+            type="text"
+            class="field-input"
+          >
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Street</label>
+        <div
+          v-if="!isEditing"
+          class="field-value field-value-full"
+        >
+          {{ form.street }}
+        </div>
+        <input
+          v-else
+          v-model="form.street"
+          type="text"
+          class="field-input field-input-full"
+        >
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header section-header-row">
+        <h2 class="section-title">Legal documents</h2>
+        <button
+          v-if="isEditing"
+          type="button"
+          class="btn btn-primary btn-sm"
+        >
+          <Upload :size="14"></Upload>
+          Upload document
+        </button>
+      </div>
+      <div
+        v-for="(doc, index) in form.documents"
+        :key="doc.id"
+        class="doc-row"
+      >
+        <FileText
+          :size="18"
+          class="doc-icon"
+        ></FileText>
+        <div class="doc-info">
+          <span class="doc-name">{{ doc.name }}</span>
+          <span class="doc-meta"
+            >{{ doc.fileName }}
+            &middot; {{ doc.size }} &middot; Uploaded {{ doc.uploadedAt }}</span
+          >
+        </div>
+        <div
+          class="doc-badge"
+          :class="doc.verified ? 'badge-verified' : 'badge-pending'"
+        >
+          {{ doc.verified ? 'Verified' : 'Pending' }}
+        </div>
+        <button
+          v-if="!isEditing"
+          type="button"
+          class="btn-download-pill"
+        >
+          <Download :size="12"></Download>
+          Download
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn-icon btn-icon-danger"
+          title="Remove document"
+          @click="removeDocument(index)"
+        >
+          <Trash2 :size="16"></Trash2>
+        </button>
+      </div>
+    </div>
+
     <div
-      v-if="!previewMode"
-      class="form-actions"
+      v-if="isEditing"
+      class="edit-actions"
     >
       <button
         type="button"
-        class="btn btn--outline"
+        class="btn btn-outline"
+        @click="cancelEditing"
       >
         Cancel
       </button>
       <button
         type="button"
-        class="btn btn--primary"
+        class="btn btn-primary"
         @click="save"
       >
+        <Check :size="14"></Check>
         Save changes
       </button>
     </div>
@@ -264,228 +503,321 @@ function removeDocument(index: number) {
 </template>
 
 <style scoped>
-.settings-page {
-  max-width: 800px;
-  padding: 24px 32px;
+.legal-info-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-
 .header-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
 }
-
-.header-row__left {
+.header-text {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
+.header-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
 .page-title {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
   color: #2a2933;
 }
-
 .page-subtitle {
+  max-width: 720px;
   margin: 0;
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: #616167;
 }
-
 .btn {
   display: inline-flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  padding: 10px 20px;
+  padding: 8px 14px;
   font-family: Inter, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   border: none;
   border-radius: 999px;
-  transition: background 0.15s;
 }
-
-.btn--primary {
-  color: #ffffff;
+.btn-primary {
+  color: #fff;
   background: #5749f4;
 }
-
-.btn--primary:hover {
-  background: #4639d4;
-}
-
-.btn--outline {
+.btn-outline {
   color: #616167;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  background: transparent;
+  border: 1px solid #c5c5cb;
 }
-
-.btn--outline:hover {
-  background: #f5f5f5;
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
 }
-
-.form-card {
-  padding: 20px 24px;
-  margin-bottom: 16px;
-  border: 1px solid #d9d9db;
-  border-radius: 10px;
+.section-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
 }
-
-.form-card__title {
-  margin: 0 0 16px;
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.section-header-row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2a2933;
+}
+.section-desc {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  color: #616167;
+}
+.org-type-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.org-type-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  cursor: default;
+  background: #fff;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
+}
+.org-type-card-selected {
+  border: 2px solid #5749f4;
+}
+.org-type-card[role="button"] {
+  cursor: pointer;
+}
+.org-type-card[role="button"]:hover {
+  border-color: #5749f4;
+}
+.org-type-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.org-type-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #001133;
+  background: #c9d6f0;
+  border-radius: 24px;
+}
+.org-type-badge-pill {
+  padding: 5px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #001133;
+  letter-spacing: 0.3px;
+  background: #c9d6f0;
+  border-radius: 999px;
+}
+.org-type-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #5749f4;
+}
+.org-type-title {
+  margin: 0;
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: #2a2933;
 }
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.org-type-desc {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #616167;
 }
-
-.form-group {
+.org-type-status {
+  display: flex;
+}
+.status-badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 999px;
+}
+.status-badge-selected {
+  color: #fff;
+  background: #5749f4;
+}
+.status-badge-active {
+  color: #2a2933;
+  background: #f5f5f5;
+}
+.status-badge-select {
+  color: #616167;
+  background: #f5f5f5;
+}
+.field-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
-.form-group--full {
-  grid-column: 1 / -1;
-}
-
-.form-label {
+.field-label {
   font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #2a2933;
-}
-
-.form-input {
-  padding: 10px 14px;
-  font-family: Inter, sans-serif;
-  font-size: 14px;
-  color: #2a2933;
-  outline: none;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
-  border-radius: 8px;
-  transition: border-color 0.15s;
-}
-
-.form-input:focus {
-  border-color: #5749f4;
-}
-
-.form-input[readonly],
-.form-input:disabled {
+  font-size: 11px;
+  font-weight: 500;
   color: #616167;
-  cursor: default;
-  background: #f9f9f9;
 }
-
-.form-checkbox {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #616167;
-  cursor: pointer;
-}
-
-.checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: #5749f4;
-  cursor: pointer;
-}
-
-.documents-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.doc-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: #f9f9f9;
-  border-radius: 8px;
-}
-
-.doc-item__info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.doc-item__name {
+.field-value {
+  padding: 2px 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
   color: #2a2933;
 }
-
-.doc-item__size {
+.field-value-full {
+  width: 100%;
+}
+.field-input {
+  box-sizing: border-box;
+  padding: 10px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2a2933;
+  outline: none;
+  background: #fff;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
+}
+.field-input:focus {
+  border-color: #5749f4;
+}
+.field-input-full {
+  width: 100%;
+}
+.field-row {
+  display: flex;
+  gap: 14px;
+}
+.field-row .field-group {
+  flex: 1;
+}
+.doc-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
+}
+.doc-icon {
+  flex-shrink: 0;
+  color: #616167;
+}
+.doc-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.doc-name {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2a2933;
+}
+.doc-meta {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #939399;
+  color: #616167;
 }
-
+.doc-badge {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+}
+.badge-verified {
+  color: #003300;
+  background: #a1e5a1;
+}
+.badge-pending {
+  color: #4d2700;
+  background: #ffd9b2;
+}
 .btn-icon {
-  display: inline-flex;
+  display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
-  padding: 0;
-  color: #939399;
+  padding: 6px 12px;
+  color: #616167;
   cursor: pointer;
-  background: none;
-  border: none;
-  border-radius: 6px;
-  transition: all 0.15s;
+  background: transparent;
+  border: 1px solid #c5c5cb;
+  border-radius: 999px;
 }
-
-.btn-icon:hover {
-  color: #cc3314;
-  background: #fee9e5;
-}
-
-.doc-upload {
-  display: flex;
-  gap: 8px;
+.btn-download-pill {
+  display: inline-flex;
+  gap: 6px;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
+  padding: 6px 12px;
   font-family: Inter, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: #5749f4;
+  color: #2a2933;
   cursor: pointer;
-  border: 2px dashed #d9d9db;
-  border-radius: 8px;
-  transition: border-color 0.15s;
+  background: transparent;
+  border: 1px solid #c5c5cb;
+  border-radius: 999px;
 }
-
-.doc-upload:hover {
-  border-color: #5749f4;
+.btn-icon-danger {
+  color: #cc3314;
+  border-color: #c5c5cb;
 }
-
-.form-actions {
+.edit-actions {
   display: flex;
   gap: 8px;
-  justify-content: flex-end;
-  margin-top: 8px;
 }
 </style>
