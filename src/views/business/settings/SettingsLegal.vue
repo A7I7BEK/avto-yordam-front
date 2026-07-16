@@ -3,6 +3,7 @@
   lang="ts"
 >
 import {
+  Briefcase,
   Building2,
   Check,
   Download,
@@ -10,6 +11,7 @@ import {
   Pencil,
   Trash2,
   Upload,
+  UserRound,
 } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { getSettingsLegal } from '@/services/settingsService';
@@ -40,7 +42,7 @@ interface LegalInfoData {
 
 const isEditing = ref(false);
 const data = ref<LegalInfoData | null>(null);
-const form = ref<LegalInfoData>({
+const form = ref({
   orgType: 'mchj',
   legalEntityName: '',
   stateRegNumber: '',
@@ -52,7 +54,7 @@ const form = ref<LegalInfoData>({
   city: '',
   postalCode: '',
   street: '',
-  documents: [],
+  documents: [] as LegalDocument[],
 });
 
 const orgTypeOptions = [
@@ -62,6 +64,11 @@ const orgTypeOptions = [
     subtitle:
       'MChJ \u2014 the most common form for small and mid-size service businesses. Liability limited to capital contribution.',
     badge: 'MCHJ',
+    icon: Building2,
+    iconBg: '#c9d6f0',
+    iconColor: '#001133',
+    badgeBg: '#c9d6f0',
+    badgeColor: '#001133',
   },
   {
     value: 'ytt',
@@ -69,6 +76,11 @@ const orgTypeOptions = [
     subtitle:
       'YTT (Yakka Tartibdagi Tadbirkor) \u2014 sole-trader format with simplified tax and direct personal liability.',
     badge: 'YTT',
+    icon: Briefcase,
+    iconBg: '#ffd9b2',
+    iconColor: '#4d2700',
+    badgeBg: '#ffd9b2',
+    badgeColor: '#4d2700',
   },
   {
     value: 'self-employed',
@@ -76,6 +88,11 @@ const orgTypeOptions = [
     subtitle:
       'For one-person setups working without a formal company. Lowest paperwork, fastest start.',
     badge: 'Self-employed',
+    icon: UserRound,
+    iconBg: '#a1e5a1',
+    iconColor: '#003300',
+    badgeBg: '#a1e5a1',
+    badgeColor: '#003300',
   },
 ];
 
@@ -129,8 +146,32 @@ function save() {
   isEditing.value = false;
 }
 
-function removeDocument(index: number) {
-  form.value.documents.splice(index, 1);
+const deleteDocIndex = ref<number | null>(null);
+const deleteDocName = ref('');
+
+function confirmDelete(index: number) {
+  const frm = form.value;
+  if (!frm) {
+    return;
+  }
+  const doc = frm.documents[index];
+  if (doc) {
+    deleteDocName.value = doc.name;
+    deleteDocIndex.value = index;
+  }
+}
+
+function executeDelete() {
+  if (deleteDocIndex.value !== null) {
+    form.value.documents.splice(deleteDocIndex.value, 1);
+  }
+  deleteDocIndex.value = null;
+  deleteDocName.value = '';
+}
+
+function cancelDelete() {
+  deleteDocIndex.value = null;
+  deleteDocName.value = '';
 }
 </script>
 
@@ -229,30 +270,39 @@ function removeDocument(index: number) {
           @keydown.enter="form.orgType = option.value"
         >
           <div class="org-type-card-header">
-            <span class="org-type-badge">{{ option.badge }}</span>
             <div
-              v-if="form.orgType === option.value"
-              class="org-type-check"
+              class="org-type-icon-box"
+              :style="{ background: option.iconBg, color: option.iconColor }"
             >
-              <Check :size="16"></Check>
+              <component
+                :is="option.icon"
+                :size="20"
+              ></component>
             </div>
+            <span
+              class="org-type-badge-pill"
+              :style="{ background: option.badgeBg, color: option.badgeColor }"
+              >{{ option.badge }}</span
+            >
           </div>
           <h3 class="org-type-title">{{ option.title }}</h3>
           <p class="org-type-desc">{{ option.subtitle }}</p>
           <div class="org-type-status">
-            <div
+            <button
               v-if="form.orgType === option.value"
-              class="status-badge status-badge-selected"
+              type="button"
+              class="org-type-btn org-type-btn-current"
             >
               <Check :size="14"></Check>
-              Selected
-            </div>
-            <div
+              Current type
+            </button>
+            <button
               v-else
-              class="status-badge status-badge-select"
+              type="button"
+              class="org-type-btn org-type-btn-select"
             >
               Select
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -433,7 +483,7 @@ function removeDocument(index: number) {
           type="button"
           class="btn btn-primary btn-sm"
         >
-          <Upload :size="14"></Upload>
+          <Upload :size="13"></Upload>
           Upload document
         </button>
       </div>
@@ -470,34 +520,52 @@ function removeDocument(index: number) {
         <button
           v-else
           type="button"
-          class="btn-icon btn-icon-danger"
-          title="Remove document"
-          @click="removeDocument(index)"
+          class="btn-delete-pill"
+          @click="confirmDelete(index)"
         >
-          <Trash2 :size="16"></Trash2>
+          <Trash2 :size="12"></Trash2>
+          Remove
         </button>
       </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
     <div
-      v-if="isEditing"
-      class="edit-actions"
+      v-if="deleteDocIndex !== null"
+      class="modal-overlay"
+      @click.self="cancelDelete"
     >
-      <button
-        type="button"
-        class="btn btn-outline"
-        @click="cancelEditing"
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-        @click="save"
-      >
-        <Check :size="14"></Check>
-        Save changes
-      </button>
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-icon-box">
+            <Trash2 :size="22"></Trash2>
+          </div>
+          <div class="modal-title-group">
+            <h3 class="modal-title">Remove this document?</h3>
+            <p class="modal-desc">
+              <strong>{{ deleteDocName }}</strong>
+              will be permanently deleted. This action cannot be undone.
+            </p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn btn-outline"
+            @click="cancelDelete"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            @click="executeDelete"
+          >
+            <Trash2 :size="14"></Trash2>
+            Remove
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -558,6 +626,11 @@ function removeDocument(index: number) {
   background: transparent;
   border: 1px solid #c5c5cb;
 }
+.btn-danger {
+  color: #fff;
+  background: #cc3314;
+  border: none;
+}
 .btn-sm {
   padding: 8px 14px;
   font-size: 12px;
@@ -597,11 +670,12 @@ function removeDocument(index: number) {
 }
 .org-type-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 14px;
 }
 .org-type-card {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 12px;
   padding: 20px;
@@ -611,7 +685,7 @@ function removeDocument(index: number) {
   border-radius: 24px;
 }
 .org-type-card-selected {
-  border: 2px solid #5749f4;
+  border-color: #5749f4;
 }
 .org-type-card[role="button"] {
   cursor: pointer;
@@ -680,17 +754,32 @@ function removeDocument(index: number) {
   font-weight: 500;
   border-radius: 999px;
 }
-.status-badge-selected {
-  color: #fff;
-  background: #5749f4;
-}
 .status-badge-active {
   color: #2a2933;
   background: #f5f5f5;
 }
-.status-badge-select {
-  color: #616167;
-  background: #f5f5f5;
+.org-type-btn {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 9px 16px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px;
+}
+.org-type-btn-current {
+  color: #fff;
+  background: #5749f4;
+  border: none;
+}
+.org-type-btn-select {
+  color: #2a2933;
+  background: transparent;
+  border: 1px solid #c5c5cb;
 }
 .field-group {
   display: flex;
@@ -812,6 +901,20 @@ function removeDocument(index: number) {
   border: 1px solid #c5c5cb;
   border-radius: 999px;
 }
+.btn-delete-pill {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cc3314;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #cc3314;
+  border-radius: 999px;
+}
 .btn-icon-danger {
   color: #cc3314;
   border-color: #c5c5cb;
@@ -819,5 +922,67 @@ function removeDocument(index: number) {
 .edit-actions {
   display: flex;
   gap: 8px;
+}
+
+/* Delete Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.6);
+}
+.modal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 440px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #c5c5cb;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+}
+.modal-header {
+  display: flex;
+  gap: 14px;
+}
+.modal-icon-box {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: #cc3314;
+  background: #f5f5f5;
+  border-radius: 24px;
+}
+.modal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+.modal-title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2a2933;
+}
+.modal-desc {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #616167;
+}
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 </style>
