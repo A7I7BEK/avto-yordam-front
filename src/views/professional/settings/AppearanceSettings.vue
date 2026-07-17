@@ -171,15 +171,6 @@ const languages = [
         </div>
       </div>
     </div>
-
-    <div class="footer-actions">
-      <button
-        class="btn btn-save"
-        type="button"
-      >
-        Save changes
-      </button>
-    </div>
   </div>
 </template>
 
@@ -387,25 +378,5 @@ const languages = [
 }
 .lang-check.active {
   opacity: 1;
-}
-
-.footer-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.btn-save {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: #ffffff;
-  cursor: pointer;
-  background: #5749f4;
-  border: none;
-  border-radius: 999px;
 }
 </style>

@@ -2,105 +2,172 @@
   setup
   lang="ts"
 >
-import { onMounted, ref } from 'vue';
-import { getSettingsAppearance } from '@/services/settingsService';
+import { Check, Monitor, Moon, Sun } from '@lucide/vue';
+import { ref } from 'vue';
+import flagEn from '@/assets/flags/flag-en.png';
+import flagRu from '@/assets/flags/flag-ru.png';
+import flagUz from '@/assets/flags/flag-uz.png';
 
-interface AppearanceData {
-  theme: string;
-  language: string;
-  fontSize: string;
-}
-
-const settings = ref<AppearanceData>({
-  theme: 'light',
-  language: 'EN',
-  fontSize: 'medium',
-});
+const selectedTheme = ref<'light' | 'dark' | 'system'>('light');
+const selectedLanguage = ref('english');
 
 const themes = [
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-  { value: 'system', label: 'System' },
+  {
+    key: 'light' as const,
+    label: 'Light',
+    icon: Sun,
+    previewBg: '#FFFFFF',
+    previewSidebar: '#F5F5F5',
+    previewBlocks: ['#F5F5F5', '#F5F5F5'],
+  },
+  {
+    key: 'dark' as const,
+    label: 'Dark',
+    icon: Moon,
+    previewBg: '#131124',
+    previewSidebar: '#1A182E',
+    previewBlocks: ['#1A182E', '#1A182E'],
+  },
+  {
+    key: 'system' as const,
+    label: 'System',
+    icon: Monitor,
+    previewBg: 'linear-gradient(90deg, #FFFFFF 50%, #131124 50%)',
+    previewSidebar: undefined,
+    previewBlocks: undefined,
+  },
 ];
 
 const languages = [
-  { value: 'EN', label: 'English' },
-  { value: 'UZ', label: "O'zbek" },
-  { value: 'RU', label: 'Русский' },
+  {
+    key: 'english',
+    name: 'English',
+    code: 'EN',
+    flagImage: flagEn,
+  },
+  {
+    key: 'uzbek',
+    name: 'Uzbek',
+    code: 'UZ',
+    flagImage: flagUz,
+  },
+  {
+    key: 'russian',
+    name: 'Russian',
+    code: 'RU',
+    flagImage: flagRu,
+  },
 ];
-
-const fontSizes = [
-  { value: 'small', label: 'Small' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'large', label: 'Large' },
-];
-
-onMounted(async () => {
-  const data = await getSettingsAppearance();
-  if (data) {
-    settings.value = { ...data };
-  }
-});
 </script>
 
 <template>
-  <div class="settings-page">
-    <div class="header-row">
-      <h1 class="page-title">Appearance & Language</h1>
+  <div class="appearance-page">
+    <div class="page-header">
+      <h2 class="page-title">Appearance &amp; language</h2>
     </div>
 
-    <div class="settings-group">
-      <!-- Theme -->
-      <div class="setting-section">
-        <h2 class="setting-section__title">Theme</h2>
-        <p class="setting-section__desc">Choose how the interface looks</p>
-        <div class="option-group">
-          <button
-            v-for="theme in themes"
-            :key="theme.value"
-            type="button"
-            class="option-btn"
-            :class="{ active: settings.theme === theme.value }"
-            @click="settings.theme = theme.value"
+    <!-- Theme Section -->
+    <div class="section-label">Theme</div>
+    <div class="theme-cards-row">
+      <div
+        v-for="theme in themes"
+        :key="theme.key"
+        class="theme-card"
+        :class="{ selected: selectedTheme === theme.key }"
+        role="button"
+        tabindex="0"
+        @click="selectedTheme = theme.key"
+        @keydown.enter="selectedTheme = theme.key"
+      >
+        <!-- Preview Area -->
+        <div
+          class="theme-preview"
+          :style="{ background: theme.previewBg }"
+        >
+          <template v-if="theme.key !== 'system'">
+            <div
+              class="preview-sidebar"
+              :style="{
+                background: theme.previewSidebar,
+              }"
+            />
+            <div class="preview-content">
+              <div
+                v-for="(block, idx) in theme.previewBlocks"
+                :key="idx"
+                class="preview-block"
+                :style="{ background: block }"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div class="preview-sidebar light-sidebar" />
+            <div class="preview-content light-content">
+              <div class="preview-block light-block" />
+              <div class="preview-block light-block" />
+            </div>
+            <div class="preview-divider" />
+            <div class="preview-sidebar dark-sidebar" />
+            <div class="preview-content dark-content">
+              <div class="preview-block dark-block" />
+              <div class="preview-block dark-block" />
+            </div>
+          </template>
+        </div>
+
+        <!-- Footer -->
+        <div class="theme-footer">
+          <div class="theme-label-row">
+            <component
+              :is="theme.icon"
+              :size="16"
+              color="#2A2933"
+            />
+            <span>{{ theme.label }}</span>
+          </div>
+          <div
+            class="theme-radio"
+            :class="{ selected: selectedTheme === theme.key }"
           >
-            {{ theme.label }}
-          </button>
+            <div
+              v-if="selectedTheme === theme.key"
+              class="radio-dot"
+            />
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Language -->
-      <div class="setting-section">
-        <h2 class="setting-section__title">Language</h2>
-        <p class="setting-section__desc">Select your preferred language</p>
-        <div class="option-group">
-          <button
-            v-for="lang in languages"
-            :key="lang.value"
-            type="button"
-            class="option-btn"
-            :class="{ active: settings.language === lang.value }"
-            @click="settings.language = lang.value"
-          >
-            {{ lang.label }}
-          </button>
+    <!-- Language Section -->
+    <div class="section-label">Language</div>
+    <div class="language-list">
+      <div
+        v-for="lang in languages"
+        :key="lang.key"
+        class="language-item"
+        :class="{ selected: selectedLanguage === lang.key }"
+        role="button"
+        tabindex="0"
+        @click="selectedLanguage = lang.key"
+        @keydown.enter="selectedLanguage = lang.key"
+      >
+        <img
+          :src="lang.flagImage"
+          :alt="`${lang.name} flag`"
+          class="flag-image"
+        >
+        <div class="lang-info">
+          <span class="lang-name">{{ lang.name }}</span>
+          <span class="lang-code">{{ lang.code }}</span>
         </div>
-      </div>
-
-      <!-- Font Size -->
-      <div class="setting-section">
-        <h2 class="setting-section__title">Font size</h2>
-        <p class="setting-section__desc">Adjust the text size</p>
-        <div class="option-group">
-          <button
-            v-for="size in fontSizes"
-            :key="size.value"
-            type="button"
-            class="option-btn"
-            :class="{ active: settings.fontSize === size.value }"
-            @click="settings.fontSize = size.value"
-          >
-            {{ size.label }}
-          </button>
+        <div
+          class="lang-check"
+          :class="{ 'active': selectedLanguage === lang.key }"
+        >
+          <Check
+            :size="10"
+            color="#FFFFFF"
+          />
         </div>
       </div>
     </div>
@@ -108,77 +175,208 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.settings-page {
-  max-width: 600px;
-  padding: 24px 32px;
+.appearance-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.header-row {
-  margin-bottom: 24px;
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .page-title {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 22px;
+  font-weight: 700;
+  color: #2a2933;
+}
+
+.section-label {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
   font-weight: 600;
   color: #2a2933;
 }
 
-.settings-group {
+.theme-cards-row {
   display: flex;
+  gap: 16px;
+}
+
+.theme-card {
+  display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 24px;
+  gap: 10px;
+  padding: 14px;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
 }
 
-.setting-section {
+.theme-card.selected {
+  border-color: #5749f4;
+}
+
+.theme-preview {
+  position: relative;
   display: flex;
+  height: 120px;
+  overflow: hidden;
+  border: 1px solid #c5c5cb;
+  border-radius: 6px;
+}
+
+.preview-sidebar {
+  flex-shrink: 0;
+  width: 32px;
+}
+
+.preview-content {
+  display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  padding: 8px;
 }
 
-.setting-section__title {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: #2a2933;
+.preview-block {
+  height: 20px;
+  border-radius: 3px;
 }
 
-.setting-section__desc {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: #616167;
+.light-sidebar {
+  background: #f5f5f5;
 }
 
-.option-group {
+.light-content {
+  background: #ffffff;
+}
+
+.light-block {
+  background: #f5f5f5;
+}
+
+.dark-sidebar {
+  background: #1a182e;
+}
+
+.dark-content {
+  background: #131124;
+}
+
+.dark-block {
+  background: #1a182e;
+}
+
+.preview-divider {
+  flex-shrink: 0;
+  width: 2px;
+  background: #c5c5cb;
+}
+
+.theme-footer {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.option-btn {
-  padding: 8px 20px;
+.theme-label-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #616167;
-  cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
-  border-radius: 8px;
-  transition: all 0.15s;
+  color: #2a2933;
 }
 
-.option-btn:hover {
-  color: #5749f4;
-  border-color: #5749f4;
+.theme-radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #c5c5cb;
+  border-radius: 999px;
 }
 
-.option-btn.active {
-  color: #ffffff;
+.theme-radio.selected {
   background: #5749f4;
   border-color: #5749f4;
+}
+
+.radio-dot {
+  width: 4px;
+  height: 4px;
+  background: #ffffff;
+  border-radius: 999px;
+}
+
+.language-list {
+  display: flex;
+  gap: 16px;
+}
+
+.language-item {
+  display: flex;
+  flex: 1;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
+}
+
+.language-item.selected {
+  border-color: #5749f4;
+}
+
+.flag-image {
+  flex-shrink: 0;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.lang-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lang-name {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2a2933;
+}
+
+.lang-code {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  color: #616167;
+}
+
+.lang-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: #5749f4;
+  border-radius: 999px;
+  opacity: 0;
+}
+.lang-check.active {
+  opacity: 1;
 }
 </style>
