@@ -2,25 +2,99 @@
   setup
   lang="ts"
 >
-import { Eye, Pencil, Search, Trash2, UserPlus } from '@lucide/vue';
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CircleCheckBig,
+  Eye,
+  KeyRound,
+  Pencil,
+  Search,
+  Trash2,
+  UserPlus,
+  Users,
+} from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getEmployees } from '@/services/employeesService';
 import type { Employee } from '@/types/business';
 
-const router = useRouter();
+interface EmployeeRow {
+  id: string;
+  name: string;
+  initials: string;
+  email: string;
+  role: string;
+  roleColor: string;
+  status: 'Active' | 'Inactive';
+  statusLabel: string;
+  avatarColor: string;
+  lastActive: string;
+  lastActiveDate: string;
+}
 
+const router = useRouter();
 const searchQuery = ref('');
 const roleFilter = ref('');
+const statusFilter = ref('');
+const currentPage = ref(1);
+const pageSize = 3;
 
-const employees = ref<Employee[]>([]);
+const employees = ref<EmployeeRow[]>([]);
 const loading = ref(true);
+
+const roleColors: Record<string, string> = {
+  Owner: '#5749F4',
+  Admin: '#CC3314',
+  Manager: '#F77E40',
+  Accountant: '#2BC8B6',
+  Mechanic: '#1FAA59',
+  Receptionist: '#00A0E9',
+};
+
+const roleDotColors: Record<string, string> = {
+  Owner: '#5749F4',
+  Admin: '#CC3314',
+  Manager: '#F77E40',
+  Accountant: '#2BC8B6',
+  Mechanic: '#1FAA59',
+  Receptionist: '#00A0E9',
+};
 
 async function loadEmployees() {
   try {
     loading.value = true;
     const data = await getEmployees();
-    employees.value = data ?? [];
+    employees.value = (data ?? []).map((e: Employee, i: number) => ({
+      id: e.id,
+      name: e.name,
+      initials: e.initials,
+      email: `${e.name.toLowerCase().replace(/\s+/g, '.')}@autofix.uz`,
+      role: e.role,
+      roleColor: roleColors[e.role] ?? '#5749F4',
+      status: e.status,
+      statusLabel: e.status,
+      avatarColor: e.avatarColor,
+      lastActive: [
+        '5 minutes ago',
+        '2 hours ago',
+        'Yesterday',
+        '3 days ago',
+        'Not signed in yet',
+        '5 minutes ago',
+        '2 hours ago',
+      ][i % 7],
+      lastActiveDate: [
+        'Online now',
+        'Today, 09:14',
+        'May 20, 2026',
+        'May 18, 2026',
+        'Invite sent May 19',
+        'Online now',
+        'Today, 10:30',
+      ][i % 7],
+    }));
   } finally {
     loading.value = false;
   }
@@ -37,11 +111,22 @@ const filteredEmployees = computed(() =>
   employees.value.filter((e) => {
     const matchSearch =
       !searchQuery.value ||
-      e.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+      e.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      e.email.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchRole = !roleFilter.value || e.role === roleFilter.value;
-    return matchSearch && matchRole;
+    const matchStatus = !statusFilter.value || e.status === statusFilter.value;
+    return matchSearch && matchRole && matchStatus;
   }),
 );
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredEmployees.value.length / pageSize)),
+);
+
+const pagedEmployees = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return filteredEmployees.value.slice(start, start + pageSize);
+});
 
 function viewEmployee(id: string) {
   router.push(`/business/team/employees/${id}`);
@@ -51,74 +136,118 @@ function editEmployee(id: string) {
   router.push(`/business/team/employees/${id}/edit`);
 }
 
-function deleteEmployee(id: string) {
-  // biome-ignore lint/suspicious/noConsole: allowed in handler
-  console.log('Delete employee', id);
+function resetPassword(id: string) {
+  router.push(`/business/team/employees/${id}/reset-password`);
+}
+
+function deleteEmployee(_id: string) {
+  // Delete logic
+}
+
+function goToPage(page: number) {
+  currentPage.value = Math.max(1, Math.min(page, totalPages.value));
 }
 </script>
 
 <template>
-  <div class="page">
-    <div class="page__header">
-      <div>
-        <h1 class="page__title">Employees</h1>
-        <p class="page__subtitle">Manage your team</p>
+  <div class="employees-page">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-text">
+        <h1 class="page-title">Employees</h1>
+        <p class="page-subtitle">
+          Manage team members, their roles and account access.
+        </p>
       </div>
       <button
         type="button"
         class="btn btn--primary"
         @click="router.push('/business/team/employees/new')"
       >
-        <UserPlus :size="18" />
+        <UserPlus :size="15" />
         Add employee
       </button>
     </div>
 
-    <div class="page__toolbar">
-      <div class="search-input">
-        <Search
-          :size="18"
-          class="search-input__icon"
-        />
-        <input
-          v-model="searchQuery"
-          type="text"
-          class="search-input__field"
-          placeholder="Search employees..."
-        >
+    <!-- Table card -->
+    <div class="table-card">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-box">
+          <Search
+            :size="15"
+            class="search-icon"
+          />
+          <input
+            v-model="searchQuery"
+            type="text"
+            class="search-input"
+            placeholder="Search employees by name or email..."
+          >
+        </div>
+        <div class="filter-group">
+          <div class="filter-pill">
+            <Users :size="14" />
+            <select
+              v-model="roleFilter"
+              class="filter-select"
+            >
+              <option value="">All roles</option>
+              <option
+                v-for="role in roles"
+                :key="role"
+                :value="role"
+              >
+                {{ role }}
+              </option>
+            </select>
+            <ChevronDown :size="14" />
+          </div>
+          <div class="filter-pill">
+            <CircleCheckBig :size="14" />
+            <select
+              v-model="statusFilter"
+              class="filter-select"
+            >
+              <option value="">All statuses</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <ChevronDown :size="14" />
+          </div>
+        </div>
       </div>
-      <select
-        v-model="roleFilter"
-        class="select-input"
-      >
-        <option value="">All roles</option>
-        <option
-          v-for="role in roles"
-          :key="role"
-          :value="role"
-        >
-          {{ role }}
-        </option>
-      </select>
-    </div>
 
-    <div class="table-wrapper">
-      <table class="table">
+      <!-- Table -->
+      <table class="data-table">
         <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th class="table__th--actions">Actions</th>
+          <tr class="column-headers">
+            <th class="col--employee">Employee</th>
+            <th class="col--role">Role</th>
+            <th class="col--status">Status</th>
+            <th class="col--last-active">Last active</th>
+            <th class="col--actions">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="emp in filteredEmployees"
-            :key="emp.id"
+            v-if="!loading && pagedEmployees.length === 0"
+            class="empty-row"
           >
-            <td>
+            <td
+              colspan="5"
+              class="empty-state"
+            >
+              No employees found
+            </td>
+          </tr>
+          <tr
+            v-for="emp in pagedEmployees"
+            :key="emp.id"
+            class="data-row"
+          >
+            <!-- Employee cell -->
+            <td class="col--employee">
               <div class="employee-cell">
                 <div
                   class="avatar"
@@ -126,26 +255,51 @@ function deleteEmployee(id: string) {
                 >
                   {{ emp.initials }}
                 </div>
-                <span class="employee-cell__name">{{ emp.name }}</span>
+                <div class="employee-info">
+                  <span class="employee-name">{{ emp.name }}</span>
+                  <span class="employee-email">{{ emp.email }}</span>
+                </div>
               </div>
             </td>
-            <td class="table__cell-muted">{{ emp.phone }}</td>
-            <td>
-              <span class="badge badge--role">{{ emp.role }}</span>
+
+            <!-- Role cell -->
+            <td class="col--role">
+              <div class="role-cell">
+                <span
+                  class="role-dot"
+                  :style="{ background: emp.roleColor }"
+                />
+                <span class="role-name">{{ emp.role }}</span>
+              </div>
             </td>
-            <td>
+
+            <!-- Status cell -->
+            <td class="col--status">
               <span
-                class="badge badge--status"
-                :class="emp.status === 'Active' ? 'badge--success' : 'badge--muted'"
+                class="status-badge"
+                :class="{
+                  'status-badge--active': emp.status === 'Active',
+                  'status-badge--inactive': emp.status === 'Inactive',
+                }"
               >
-                {{ emp.status }}
+                {{ emp.statusLabel }}
               </span>
             </td>
-            <td>
-              <div class="action-btns">
+
+            <!-- Last active cell -->
+            <td class="col--last-active">
+              <div class="last-active-cell">
+                <span class="last-active-time">{{ emp.lastActive }}</span>
+                <span class="last-active-date">{{ emp.lastActiveDate }}</span>
+              </div>
+            </td>
+
+            <!-- Actions cell -->
+            <td class="col--actions">
+              <div class="actions-cell">
                 <button
                   type="button"
-                  class="icon-btn"
+                  class="action-btn"
                   title="View"
                   @click="viewEmployee(emp.id)"
                 >
@@ -153,7 +307,7 @@ function deleteEmployee(id: string) {
                 </button>
                 <button
                   type="button"
-                  class="icon-btn"
+                  class="action-btn"
                   title="Edit"
                   @click="editEmployee(emp.id)"
                 >
@@ -161,7 +315,15 @@ function deleteEmployee(id: string) {
                 </button>
                 <button
                   type="button"
-                  class="icon-btn icon-btn--danger"
+                  class="action-btn"
+                  title="Reset password"
+                  @click="resetPassword(emp.id)"
+                >
+                  <KeyRound :size="16" />
+                </button>
+                <button
+                  type="button"
+                  class="action-btn action-btn--danger"
                   title="Delete"
                   @click="deleteEmployee(emp.id)"
                 >
@@ -170,259 +332,438 @@ function deleteEmployee(id: string) {
               </div>
             </td>
           </tr>
-          <tr v-if="!loading && filteredEmployees.length === 0">
-            <td
-              colspan="5"
-              class="table__empty"
-            >
-              No employees found
-            </td>
-          </tr>
         </tbody>
       </table>
+
+      <!-- Pagination footer -->
+      <div class="table-footer">
+        <span class="pagination-info">
+          Showing {{ pagedEmployees.length }} of
+          {{ filteredEmployees.length }}
+          employees
+        </span>
+        <div class="pagination-controls">
+          <button
+            type="button"
+            class="page-btn"
+            :disabled="currentPage <= 1"
+            @click="goToPage(currentPage - 1)"
+          >
+            <ChevronLeft :size="16" />
+          </button>
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            type="button"
+            class="page-btn"
+            :class="{ 'page-btn--active': currentPage === page }"
+            @click="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+          <button
+            type="button"
+            class="page-btn"
+            :disabled="currentPage >= totalPages"
+            @click="goToPage(currentPage + 1)"
+          >
+            <ChevronRight :size="16" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+/* ===== Page layout ===== */
+.employees-page {
   padding: 32px;
 }
 
-.page__header {
+/* ===== Header ===== */
+.page-header {
   display: flex;
-  gap: 16px;
   align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.page__title {
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-title {
   margin: 0;
-  font-family: var(--font-primary);
+  font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 700;
   color: var(--foreground);
 }
 
-.page__subtitle {
-  margin: 4px 0 0;
-  font-family: var(--font-primary);
-  font-size: 14px;
+.page-subtitle {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--muted-foreground);
 }
 
-/* Buttons */
+/* ===== Add employee button ===== */
 .btn {
   display: inline-flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  padding: 10px 20px;
-  font-family: var(--font-primary);
+  padding: 10px 16px;
+  font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  white-space: nowrap;
   cursor: pointer;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   transition: opacity 0.15s;
 }
 
-.btn:hover {
+.btn--primary {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn--primary:hover {
   opacity: 0.9;
 }
 
-.btn--primary {
-  color: #ffffff;
-  background: #5749f4;
+/* ===== Table card ===== */
+.table-card {
+  overflow: hidden;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
 }
 
-/* Toolbar */
-.page__toolbar {
+/* ===== Toolbar ===== */
+.toolbar {
   display: flex;
   gap: 12px;
   align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 320px;
+  padding: 9px 14px;
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+.search-icon {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
 }
 
 .search-input {
-  display: flex;
   flex: 1;
-  gap: 8px;
-  align-items: center;
-  max-width: 320px;
-  padding: 8px 12px;
-  background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-}
-
-.search-input__icon {
-  flex-shrink: 0;
-  color: var(--muted-icon);
-}
-
-.search-input__field {
-  flex: 1;
-  font-family: var(--font-primary);
-  font-size: 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--foreground);
   outline: none;
   background: transparent;
   border: none;
 }
 
-.search-input__field::placeholder {
-  color: var(--muted-icon);
+.search-input::placeholder {
+  color: var(--muted-foreground);
 }
 
-.select-input {
-  padding: 8px 12px;
-  font-family: var(--font-primary);
-  font-size: 14px;
+.filter-group {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.filter-pill {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 14px;
   color: var(--foreground);
-  cursor: pointer;
-  outline: none;
   background: var(--background);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
 }
 
-/* Table */
-.table-wrapper {
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+.filter-select {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  background: transparent;
+  border: none;
 }
 
-.table {
+/* ===== Data table ===== */
+.data-table {
   width: 100%;
-  font-family: var(--font-primary);
   border-collapse: collapse;
 }
 
-.table th {
-  padding: 12px 16px;
-  font-size: 12px;
+/* ===== Column headers ===== */
+.column-headers th {
+  padding: 13px 18px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
   font-weight: 600;
   color: var(--muted-foreground);
   text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.3px;
   background: var(--accent);
   border-bottom: 1px solid var(--border);
 }
 
-.table td {
-  padding: 12px 16px;
-  font-size: 14px;
-  color: var(--foreground);
+.col--employee {
+  width: 340px;
+}
+
+.col--role {
+  width: 168px;
+}
+
+.col--status {
+  width: 150px;
+}
+
+.col--last-active {
+  width: 188px;
+}
+
+/* ===== Data rows ===== */
+.data-row td {
+  padding: 13px 18px;
+  vertical-align: middle;
   border-bottom: 1px solid var(--border);
 }
 
-.table tr:last-child td {
+.data-row:last-of-type td {
   border-bottom: none;
 }
 
-.table__th--actions {
-  text-align: right;
-}
-
-.table__cell-muted {
-  color: var(--muted-foreground);
-}
-
-.table__empty {
-  padding: 32px 16px;
-  color: var(--muted-foreground);
-  text-align: center;
-}
-
-/* Employee cell */
+/* ===== Employee cell ===== */
 .employee-cell {
   display: flex;
-  gap: 10px;
+  gap: 11px;
   align-items: center;
 }
-
 .avatar {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  font-family: var(--font-primary);
-  font-size: 12px;
+  width: 38px;
+  height: 38px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
   font-weight: 600;
   color: #ffffff;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
 }
 
-.employee-cell__name {
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  margin-left: 11px;
+}
+
+.employee-name {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.employee-email {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Role cell ===== */
+.role-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.role-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+}
+
+.role-name {
+  margin-left: 8px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
   font-weight: 500;
+  color: var(--foreground);
 }
 
-/* Badges */
-.badge {
+/* ===== Status cell ===== */
+.status-badge {
   display: inline-block;
-  padding: 3px 10px;
-  font-family: var(--font-primary);
+  padding: 4px 10px;
+  font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
   border-radius: var(--radius-pill);
 }
 
-.badge--role {
+.status-badge--active {
+  color: #003300;
+  background: #a1e5a1;
+}
+
+.status-badge--inactive {
+  color: #590f00;
+  background: #ffbfb2;
+}
+
+/* ===== Last active cell ===== */
+.last-active-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.last-active-time {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--foreground);
-  background: var(--accent);
 }
 
-.badge--status {
-  font-weight: 600;
-}
-
-.badge--success {
-  color: var(--success);
-  background: var(--success-bg);
-}
-
-.badge--muted {
+.last-active-date {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
   color: var(--muted-foreground);
-  background: var(--accent);
 }
 
-/* Action buttons */
-.action-btns {
+/* ===== Actions cell ===== */
+.actions-cell {
   display: flex;
   gap: 4px;
-  justify-content: flex-end;
 }
 
-.icon-btn {
+.action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  color: var(--muted-icon);
+  padding: 8px;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
   transition:
     background 0.15s,
+    border 0.15s,
     color 0.15s;
 }
 
-.icon-btn:hover {
+.action-btn--danger {
+  color: var(--destructive);
+}
+
+.action-btn:hover {
   color: var(--foreground);
   background: var(--accent);
 }
 
-.icon-btn--danger:hover {
+.action-btn--danger:hover {
   color: var(--destructive);
-  background: #fee2e2;
+  background: color-mix(in srgb, var(--destructive) 10%, white);
+  border-color: var(--destructive);
+}
+
+/* ===== Table footer ===== */
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  background: var(--accent);
+  border-top: 1px solid var(--border);
+}
+
+.pagination-info {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+}
+
+.page-btn--active {
+  color: var(--foreground);
+  background: var(--background);
+  border-color: var(--border);
+}
+
+.page-btn:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* ===== Empty state ===== */
+.empty-state {
+  padding: 40px 18px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  text-align: center;
 }
 </style>
