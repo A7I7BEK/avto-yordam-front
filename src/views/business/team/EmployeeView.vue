@@ -31,6 +31,7 @@ import {
 } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import DeleteEmployeeModal from '@/components/business/DeleteEmployeeModal.vue';
 import { getEmployee } from '@/services/employeesService';
 import type { Employee } from '@/types/business';
 
@@ -40,6 +41,7 @@ const router = useRouter();
 const employee = ref<Employee | null>(null);
 const loading = ref(true);
 const activeTab = ref<'account' | 'activity' | 'security'>('account');
+const showDeleteModal = ref(false);
 
 onMounted(async () => {
   try {
@@ -66,7 +68,12 @@ function resetPassword() {
 }
 
 function deleteEmployee() {
-  // Delete logic
+  showDeleteModal.value = true;
+}
+
+function confirmDelete() {
+  showDeleteModal.value = false;
+  router.push('/business/team/employees');
 }
 </script>
 
@@ -343,6 +350,13 @@ function deleteEmployee() {
         </div>
       </div>
     </div>
+
+    <DeleteEmployeeModal
+      :is-open="showDeleteModal"
+      :employee="employee"
+      @cancel="showDeleteModal = false"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>
 

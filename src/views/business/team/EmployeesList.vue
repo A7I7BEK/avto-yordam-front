@@ -17,6 +17,7 @@ import {
 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import DeleteEmployeeModal from '@/components/business/DeleteEmployeeModal.vue';
 import { getEmployees } from '@/services/employeesService';
 import type { Employee } from '@/types/business';
 
@@ -40,6 +41,7 @@ const roleFilter = ref('');
 const statusFilter = ref('');
 const currentPage = ref(1);
 const pageSize = 3;
+const deleteTarget = ref<EmployeeRow | null>(null);
 
 const employees = ref<EmployeeRow[]>([]);
 const loading = ref(true);
@@ -181,8 +183,14 @@ function resetPassword(id: string) {
   router.push(`/business/team/employees/${id}/reset-password`);
 }
 
-function deleteEmployee(_id: string) {
-  // Delete logic
+function deleteEmployee(id: string) {
+  const emp = employees.value.find((e) => e.id === id) ?? null;
+  deleteTarget.value = emp;
+}
+
+function confirmDelete(id: string) {
+  employees.value = employees.value.filter((e) => e.id !== id);
+  deleteTarget.value = null;
 }
 
 function goToPage(page: number) {
@@ -434,6 +442,13 @@ function goToNext() {
         </div>
       </div>
     </div>
+
+    <DeleteEmployeeModal
+      :is-open="!!deleteTarget"
+      :employee="deleteTarget"
+      @cancel="deleteTarget = null"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>
 
