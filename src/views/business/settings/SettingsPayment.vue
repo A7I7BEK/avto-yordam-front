@@ -4,6 +4,9 @@
 >
 import { CircleCheck, CircleX, Eye, Info, Pencil, Play } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
+import clickLogo from '@/assets/payment-providers/click.png';
+import paymeLogo from '@/assets/payment-providers/payme.jpg';
+import paynetLogo from '@/assets/payment-providers/paynet.png';
 import { getSettingsPayment } from '@/services/settingsService';
 
 interface ProviderField {
@@ -46,10 +49,10 @@ const lastChargeTexts: Record<string, string> = {
   paynet: 'Never used',
 };
 
-const providerColors: Record<string, string> = {
-  payme: '#00A0E9',
-  click: '#1D7DE0',
-  paynet: '#7A4BFF',
+const providerLogos: Record<string, string> = {
+  payme: paymeLogo,
+  click: clickLogo,
+  paynet: paynetLogo,
 };
 
 const revealedKeys = ref<Record<string, boolean>>({});
@@ -66,7 +69,7 @@ onMounted(async () => {
         name: p.name,
         enabled: p.enabled,
         fee: p.fee,
-        color: providerColors[p.id] ?? '#5749F4',
+        color: providerLogos[p.id] ?? '',
         fields: (fieldConfigs[p.id] ?? []).map((f) => ({ ...f })),
         lastCharge: lastChargeTexts[p.id] ?? 'Never used',
         hasActivity: p.enabled && p.id !== 'paynet',
@@ -149,20 +152,19 @@ function saveEditing(providerId: string) {
         <!-- Header row -->
         <div class="provider-header">
           <div class="provider-header-left">
-            <div
-              class="provider-icon"
-              :style="{ background: provider.color }"
-            >
-              <span class="provider-icon-text"
-                >{{ provider.name.charAt(0) }}</span
+            <div class="provider-icon">
+              <img
+                :src="provider.color"
+                :alt="provider.name"
+                class="provider-icon-img"
               >
             </div>
             <div class="provider-info">
               <span class="provider-name">{{ provider.name }}</span>
-              <span class="provider-fee"
-                >{{ provider.fee }}
-                per transaction</span
-              >
+              <span class="provider-fee">
+                {{ provider.fee }}
+                per transaction
+              </span>
             </div>
           </div>
           <button
@@ -367,14 +369,14 @@ function saveEditing(providerId: string) {
   justify-content: center;
   width: 36px;
   height: 36px;
+  overflow: hidden;
   border-radius: var(--radius-sm);
 }
 
-.provider-icon-text {
-  font-family: Inter, sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
+.provider-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .provider-info {
