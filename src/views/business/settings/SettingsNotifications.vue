@@ -2,101 +2,149 @@
   setup
   lang="ts"
 >
+import { Bell, Info, Lock, Mail, MessageSquare, Send } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { getSettingsNotifications } from '@/services/settingsService';
 
-interface ChannelSettings {
-  push: boolean;
-  email: boolean;
-  sms: boolean;
+interface Channel {
+  id: string;
+  name: string;
+  description: string;
+  enabled: boolean;
+  configurable: boolean;
 }
 
-interface NotificationData {
-  [category: string]: ChannelSettings;
-}
-
-const categoryLabels: Record<string, string> = {
-  bookings: 'Bookings',
-  reviews: 'Reviews',
-  payments: 'Payments',
-  reminders: 'Reminders',
-  marketing: 'Marketing',
-};
-
-const preferences = ref<NotificationData>({});
+const channels = ref<Channel[]>([]);
 
 onMounted(async () => {
   const data = await getSettingsNotifications();
   if (data) {
-    preferences.value = {
-      bookings: { ...data.bookings },
-      reviews: { ...data.reviews },
-      payments: { ...data.payments },
-      reminders: { ...data.reminders },
-      marketing: { ...data.marketing },
-    };
+    channels.value = [
+      {
+        id: 'in-app',
+        name: 'In-app',
+        description: 'Bell menu inside Masters. Not configurable.',
+        enabled: true,
+        configurable: false,
+      },
+      {
+        id: 'sms',
+        name: 'SMS',
+        description:
+          'Sent to the phone number on file. Telecom fees apply at standard rates.',
+        enabled: data.sms?.sms ?? true,
+        configurable: true,
+      },
+      {
+        id: 'telegram',
+        name: 'Telegram',
+        description: 'Members link their Telegram once. Free to use.',
+        enabled: false,
+        configurable: true,
+      },
+      {
+        id: 'email',
+        name: 'Email',
+        description: "Sent to the email address on each member's profile.",
+        enabled: data.email?.email ?? false,
+        configurable: true,
+      },
+    ];
   }
 });
 
-function toggle(category: string, channel: 'push' | 'email' | 'sms') {
-  if (preferences.value[category]) {
-    preferences.value[category][channel] =
-      !preferences.value[category][channel];
+function toggleChannel(id: string) {
+  const channel = channels.value.find((c) => c.id === id);
+  if (channel?.configurable) {
+    channel.enabled = !channel.enabled;
   }
 }
 </script>
 
 <template>
-  <div class="settings-page">
-    <div class="header-row">
-      <h1 class="page-title">Notification preferences</h1>
+  <div class="notif-page">
+    <!-- Page header -->
+    <div class="page-header">
+      <h1 class="page-title">Notification policy</h1>
+      <p class="page-subtitle">
+        Controls which delivery channels are available org-wide. Members cannot
+        enable a channel that is disabled here.
+      </p>
     </div>
 
-    <div class="prefs-card">
-      <!-- Header row -->
-      <div class="prefs-header">
-        <span class="prefs-header__label">Category</span>
-        <div class="prefs-header__channels">
-          <span class="channel-label">Push</span>
-          <span class="channel-label">Email</span>
-          <span class="channel-label">SMS</span>
-        </div>
+    <!-- Info banner -->
+    <div class="info-banner">
+      <Info
+        :size="16"
+        class="info-icon"
+      />
+      <div class="info-text">
+        <span class="info-title">In-app notifications are always on</span>
+        <span class="info-desc">
+          Every team member always receives in-app notifications in the bell
+          menu. The other channels below are opt-in.
+        </span>
       </div>
+    </div>
 
-      <!-- Rows -->
+    <!-- Channels card -->
+    <div class="channels-card">
       <div
-        v-for="(settings, category) in preferences"
-        :key="category"
-        class="prefs-row"
+        v-for="(channel, index) in channels"
+        :key="channel.id"
+        class="channel-row"
+        :class="{ 'channel-row--last': index === channels.length - 1 }"
       >
-        <span class="prefs-row__name"
-          >{{ categoryLabels[category] || category }}</span
-        >
-        <div class="prefs-row__toggles">
-          <label class="toggle-switch">
-            <input
-              type="checkbox"
-              :checked="settings.push"
-              @change="toggle(category, 'push')"
-            >
-            <span class="toggle-slider" />
-          </label>
-          <label class="toggle-switch">
-            <input
-              type="checkbox"
-              :checked="settings.email"
-              @change="toggle(category, 'email')"
-            >
-            <span class="toggle-slider" />
-          </label>
-          <label class="toggle-switch">
-            <input
-              type="checkbox"
-              :checked="settings.sms"
-              @change="toggle(category, 'sms')"
-            >
-            <span class="toggle-slider" />
-          </label>
+        <!-- Left: icon + text -->
+        <div class="channel-left">
+          <div class="channel-icon">
+            <Bell
+              v-if="channel.id === 'in-app'"
+              :size="18"
+            />
+            <MessageSquare
+              v-else-if="channel.id === 'sms'"
+              :size="18"
+            />
+            <Send
+              v-else-if="channel.id === 'telegram'"
+              :size="18"
+            />
+            <Mail
+              v-else-if="channel.id === 'email'"
+              :size="18"
+            />
+          </div>
+          <div class="channel-text">
+            <div class="channel-name-row">
+              <span class="channel-name">{{ channel.name }}</span>
+              <span
+                v-if="channel.id === 'in-app'"
+                class="always-on-badge"
+                >Always on</span
+              >
+            </div>
+            <span class="channel-desc">{{ channel.description }}</span>
+          </div>
+        </div>
+
+        <!-- Right: lock or toggle -->
+        <div class="channel-right">
+          <Lock
+            v-if="!channel.configurable"
+            :size="14"
+            class="lock-icon"
+          />
+          <button
+            v-else
+            type="button"
+            class="toggle-switch"
+            :class="{ 'toggle-switch--on': channel.enabled }"
+            :aria-label="`Toggle ${channel.name}`"
+            @click="toggleChannel(channel.id)"
+          >
+            <span class="toggle-knob" />
+          </button>
         </div>
       </div>
     </div>
@@ -104,126 +152,182 @@ function toggle(category: string, channel: 'push' | 'email' | 'sms') {
 </template>
 
 <style scoped>
-.settings-page {
-  max-width: 600px;
-  padding: 24px 32px;
-}
-
-.header-row {
-  margin-bottom: 24px;
+/* ===== Page header ===== */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
 }
 
 .page-title {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 22px;
-  font-weight: 600;
-  color: #2a2933;
+  font-weight: 700;
+  color: var(--foreground);
 }
 
-.prefs-card {
+.page-subtitle {
+  max-width: 780px;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Info banner ===== */
+.info-banner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px;
+  margin-bottom: 16px;
+  background: #c9d6f0;
+  border: 1px solid #001133;
+  border-radius: var(--radius-xl);
+}
+
+.info-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #001133;
+}
+
+.info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-title {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #001133;
+}
+
+.info-desc {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #001133;
+}
+
+/* ===== Channels card ===== */
+.channels-card {
   overflow: hidden;
-  border: 1px solid #d9d9db;
-  border-radius: 10px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
 }
 
-.prefs-header {
+/* ===== Channel row ===== */
+.channel-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  background: #fafafa;
-  border-bottom: 1px solid #d9d9db;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
 }
 
-.prefs-header__label {
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: #939399;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.prefs-header__channels {
-  display: flex;
-  gap: 48px;
-}
-
-.channel-label {
-  width: 40px;
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: #939399;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.prefs-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.prefs-row:last-child {
+.channel-row--last {
   border-bottom: none;
 }
 
-.prefs-row__name {
+.channel-left {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  min-width: 0;
+}
+
+.channel-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--foreground);
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+}
+
+.channel-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.channel-name-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.channel-name {
   font-family: Inter, sans-serif;
   font-size: 14px;
-  font-weight: 500;
-  color: #2a2933;
+  font-weight: 600;
+  color: var(--foreground);
 }
 
-.prefs-row__toggles {
+.always-on-badge {
+  padding: 2px 8px;
+  font-family: Inter, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #003300;
+  white-space: nowrap;
+  background: #a1e5a1;
+  border-radius: var(--radius-pill);
+}
+
+.channel-desc {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.channel-right {
   display: flex;
-  gap: 40px;
+  flex-shrink: 0;
+  align-items: center;
 }
 
+.lock-icon {
+  color: var(--muted-foreground);
+}
+
+/* ===== Toggle switch ===== */
 .toggle-switch {
-  position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   width: 40px;
   height: 22px;
+  padding: 3px;
   cursor: pointer;
+  background: var(--border-soft);
+  border: none;
+  border-radius: var(--radius-pill);
+  transition: background 0.2s ease;
 }
 
-.toggle-switch input {
-  width: 0;
-  height: 0;
-  opacity: 0;
+.toggle-switch--on {
+  justify-content: flex-end;
+  background: var(--primary);
 }
 
-.toggle-slider {
-  position: absolute;
-  inset: 0;
-  background: #d9d9db;
-  border-radius: 22px;
-  transition: background 0.2s;
-}
-
-.toggle-slider::before {
-  position: absolute;
-  bottom: 3px;
-  left: 3px;
+.toggle-knob {
+  display: block;
   width: 16px;
   height: 16px;
-  content: "";
-  background: #ffffff;
-  border-radius: 50%;
-  transition: transform 0.2s;
-}
-
-.toggle-switch input:checked + .toggle-slider {
-  background: #5749f4;
-}
-
-.toggle-switch input:checked + .toggle-slider::before {
-  transform: translateX(18px);
+  background: var(--background);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 </style>
