@@ -2,15 +2,7 @@
   setup
   lang="ts"
 >
-import {
-  Check,
-  CircleCheckBig,
-  Eye,
-  KeyRound,
-  Lock,
-  RefreshCw,
-  Wrench,
-} from '@lucide/vue';
+import { Check, Eye, KeyRound, Lock, Wrench, X } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 
 interface EmployeeData {
@@ -35,7 +27,8 @@ const emit = defineEmits<{
 const orgName = 'AutoFix MCHJ';
 const password = ref('');
 const confirmPassword = ref('');
-const showPassword = ref(false);
+const showNewPassword = ref(false);
+const showConfirmPassword = ref(false);
 const requireChangeAtSignIn = ref(true);
 
 const employeeEmail = computed(() => {
@@ -65,16 +58,6 @@ const passwordStrength = computed(() => {
   return { level: 4, label: 'Strong', color: '#1FAA59' };
 });
 
-function generatePassword() {
-  const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789!@#$%&*';
-  let result = '';
-  for (let i = 0; i < 14; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  password.value = result;
-  confirmPassword.value = result;
-}
-
 function onCancel() {
   emit('cancel');
 }
@@ -89,8 +72,8 @@ watch(
     if (open) {
       password.value = '';
       confirmPassword.value = '';
-      showPassword.value = false;
-      generatePassword();
+      showNewPassword.value = false;
+      showConfirmPassword.value = false;
     }
   },
 );
@@ -145,26 +128,21 @@ watch(
         <div class="field-group">
           <span class="field-label">New password</span>
           <div class="password-input-wrap">
-            <Lock :size="16" />
+            <Lock
+              :size="16"
+              class="pw-icon pw-icon--left"
+            />
             <input
               v-model="password"
-              :type="showPassword ? 'text' : 'password'"
+              :type="showNewPassword ? 'text' : 'password'"
               class="password-input"
             >
             <button
               type="button"
-              class="icon-btn"
-              @click="showPassword = !showPassword"
+              class="pw-action"
+              @click="showNewPassword = !showNewPassword"
             >
               <Eye :size="16" />
-            </button>
-            <button
-              type="button"
-              class="generate-btn"
-              @click="generatePassword"
-            >
-              <RefreshCw :size="12" />
-              Generate
             </button>
           </div>
           <div class="strength-row">
@@ -193,30 +171,45 @@ watch(
         <div class="field-group">
           <span class="field-label">Confirm new password</span>
           <div class="password-input-wrap">
-            <Lock :size="16" />
+            <Lock
+              :size="16"
+              class="pw-icon pw-icon--left"
+            />
             <input
               v-model="confirmPassword"
-              :type="showPassword ? 'text' : 'password'"
+              :type="showConfirmPassword ? 'text' : 'password'"
               class="password-input"
             >
-            <CircleCheckBig
-              v-if="passwordsMatch"
-              :size="16"
-              class="match-icon"
-            />
+            <button
+              type="button"
+              class="pw-action"
+              @click="showConfirmPassword = !showConfirmPassword"
+            >
+              <Eye :size="16" />
+            </button>
           </div>
           <div
             v-if="passwordsMatch"
-            class="match-text"
+            class="match-text match-text--success"
           >
             <Check :size="13" />
             Both passwords match
+          </div>
+          <div
+            v-else-if="confirmPassword.length > 0 && password.length > 0"
+            class="match-text match-text--error"
+          >
+            <X :size="13" />
+            Passwords do not match
           </div>
         </div>
 
         <!-- Checkbox -->
         <label class="checkbox-row">
-          <span class="checkbox-box">
+          <span
+            class="checkbox-box"
+            :class="{'checked': requireChangeAtSignIn}"
+          >
             <input
               v-model="requireChangeAtSignIn"
               type="checkbox"
@@ -224,7 +217,7 @@ watch(
             >
             <Check
               v-if="requireChangeAtSignIn"
-              :size="11"
+              :size="12"
               class="checkbox-check"
             />
           </span>
@@ -417,29 +410,48 @@ watch(
 }
 
 .password-input-wrap {
+  position: relative;
   display: flex;
-  gap: 10px;
   align-items: center;
-  padding: 10px 16px;
-  color: var(--muted-foreground);
-  background: var(--background);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-pill);
 }
 
 .password-input {
-  flex: 1;
+  width: 100%;
+  padding: 14px 44px 14px 42px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: var(--foreground);
   outline: none;
-  background: transparent;
-  border: none;
+  background: var(--background);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
 }
 
-.icon-btn {
+.pw-icon {
+  position: absolute;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.pw-icon--left {
+  left: 16px;
+}
+
+.pw-icon--right {
+  right: 16px;
+}
+
+.pw-icon--success {
+  color: #1faa59;
+}
+
+.pw-action {
+  position: absolute;
+  right: 16px;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   padding: 2px;
@@ -449,27 +461,8 @@ watch(
   border: none;
 }
 
-.icon-btn:hover {
+.pw-action:hover {
   color: var(--foreground);
-}
-
-.generate-btn {
-  display: inline-flex;
-  gap: 5px;
-  align-items: center;
-  padding: 5px 10px;
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--foreground);
-  cursor: pointer;
-  background: var(--accent);
-  border: none;
-  border-radius: var(--radius-pill);
-}
-
-.generate-btn:hover {
-  opacity: 0.85;
 }
 
 /* ===== Strength ===== */
@@ -509,7 +502,14 @@ watch(
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
+}
+
+.match-text--success {
   color: #1faa59;
+}
+
+.match-text--error {
+  color: var(--destructive);
 }
 
 /* ===== Checkbox ===== */
@@ -531,8 +531,12 @@ watch(
   justify-content: center;
   width: 18px;
   height: 18px;
-  background: var(--primary);
+  border: 1px solid var(--primary);
   border-radius: var(--radius-sm);
+}
+
+.checkbox-box.checked {
+  background: var(--primary);
 }
 
 .checkbox-hidden {
@@ -565,7 +569,11 @@ watch(
   cursor: pointer;
   border: none;
   border-radius: var(--radius-pill);
-  transition: opacity 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    opacity 0.15s;
 }
 
 .btn--secondary {
@@ -574,7 +582,7 @@ watch(
 }
 
 .btn--secondary:hover {
-  opacity: 0.85;
+  background: color-mix(in srgb, var(--accent) 97%, black);
 }
 
 .btn--primary {
@@ -584,7 +592,7 @@ watch(
 }
 
 .btn--primary:hover {
-  opacity: 0.9;
+  background: color-mix(in srgb, var(--primary) 88%, black);
 }
 
 /* ===== Footer note ===== */
