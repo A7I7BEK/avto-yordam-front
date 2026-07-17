@@ -607,7 +607,7 @@ function goToNext() {
 /* ===== Employee cell ===== */
 .employee-cell {
   display: flex;
-  gap: 11px;
+  gap: 12px;
   align-items: center;
 }
 .avatar {
@@ -629,7 +629,6 @@ function goToNext() {
   flex-direction: column;
   gap: 2px;
   min-width: 0;
-  margin-left: 11px;
 }
 
 .employee-name {
@@ -661,7 +660,6 @@ function goToNext() {
 }
 
 .role-name {
-  margin-left: 8px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;

@@ -546,10 +546,14 @@ function handleDelete(role: Role) {
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-  transition: background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s;
 }
 
 .page-btn:hover:not(:disabled):not(.page-btn--active) {
+  background: color-mix(in srgb, var(--primary) 10%, white);
   border-color: var(--primary);
 }
 
