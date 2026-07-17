@@ -161,8 +161,8 @@ const languages = [
           <span class="lang-code">{{ lang.code }}</span>
         </div>
         <div
-          v-if="selectedLanguage === lang.key"
           class="lang-check"
+          :class="{ 'active': selectedLanguage === lang.key }"
         >
           <Check
             :size="10"
@@ -329,12 +329,12 @@ const languages = [
 
 .language-list {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
 
 .language-item {
   display: flex;
+  flex: 1;
   gap: 14px;
   align-items: center;
   padding: 16px;
@@ -383,6 +383,10 @@ const languages = [
   height: 16px;
   background: #5749f4;
   border-radius: 999px;
+  opacity: 0;
+}
+.lang-check.active {
+  opacity: 1;
 }
 
 .footer-actions {
