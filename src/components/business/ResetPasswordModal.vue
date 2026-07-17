@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Check, Eye, KeyRound, Lock, Wrench, X } from '@lucide/vue';
+import { Check, Eye, EyeOff, KeyRound, Lock, Wrench, X } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 
 interface EmployeeData {
@@ -142,7 +142,14 @@ watch(
               class="pw-action"
               @click="showNewPassword = !showNewPassword"
             >
-              <Eye :size="16" />
+              <EyeOff
+                v-if="showNewPassword"
+                :size="16"
+              />
+              <Eye
+                v-else
+                :size="16"
+              />
             </button>
           </div>
           <div class="strength-row">
@@ -185,7 +192,14 @@ watch(
               class="pw-action"
               @click="showConfirmPassword = !showConfirmPassword"
             >
-              <Eye :size="16" />
+              <EyeOff
+                v-if="showConfirmPassword"
+                :size="16"
+              />
+              <Eye
+                v-else
+                :size="16"
+              />
             </button>
           </div>
           <div
