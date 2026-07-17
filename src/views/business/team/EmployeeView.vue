@@ -429,7 +429,11 @@ function deleteEmployee() {
   cursor: pointer;
   border: none;
   border-radius: var(--radius-pill);
-  transition: opacity 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    opacity 0.15s;
 }
 
 .btn--primary {
@@ -448,7 +452,8 @@ function deleteEmployee() {
 }
 
 .btn--outline:hover {
-  border-color: var(--primary);
+  background: var(--accent);
+  border-color: var(--foreground);
 }
 
 .btn--destructive-outline {
@@ -458,7 +463,8 @@ function deleteEmployee() {
 }
 
 .btn--destructive-outline:hover {
-  background: #fef2f2;
+  color: var(--primary-foreground);
+  background: var(--destructive);
 }
 
 .btn--copy {
