@@ -303,6 +303,7 @@ function toggleDay(dayKey: string) {
 
 .col--hours {
   flex: 1;
+  gap: 10px;
   min-width: 0;
 }
 
