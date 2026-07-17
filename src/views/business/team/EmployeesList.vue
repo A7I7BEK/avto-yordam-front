@@ -128,6 +128,47 @@ const pagedEmployees = computed(() => {
   return filteredEmployees.value.slice(start, start + pageSize);
 });
 
+const showingStart = computed(() => {
+  if (filteredEmployees.value.length === 0) {
+    return 0;
+  }
+  return (currentPage.value - 1) * pageSize + 1;
+});
+
+const showingEnd = computed(() =>
+  Math.min(currentPage.value * pageSize, filteredEmployees.value.length),
+);
+
+const visiblePages = computed(() => {
+  const pages: number[] = [];
+  const total = totalPages.value;
+  const current = currentPage.value;
+
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  pages.push(1);
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+
+  if (start > 2) {
+    pages.push(-1);
+  }
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  if (end < total - 1) {
+    pages.push(-1);
+  }
+  pages.push(total);
+
+  return pages;
+});
+
 function viewEmployee(id: string) {
   router.push(`/business/team/employees/${id}`);
 }
@@ -145,7 +186,18 @@ function deleteEmployee(_id: string) {
 }
 
 function goToPage(page: number) {
-  currentPage.value = Math.max(1, Math.min(page, totalPages.value));
+  if (page < 1 || page > totalPages.value) {
+    return;
+  }
+  currentPage.value = page;
+}
+
+function goToPrev() {
+  goToPage(currentPage.value - 1);
+}
+
+function goToNext() {
+  goToPage(currentPage.value + 1);
 }
 </script>
 
@@ -222,11 +274,11 @@ function goToPage(page: number) {
       <table class="data-table">
         <thead>
           <tr class="column-headers">
-            <th class="col--employee">Employee</th>
-            <th class="col--role">Role</th>
-            <th class="col--status">Status</th>
-            <th class="col--last-active">Last active</th>
-            <th class="col--actions">Actions</th>
+            <th>Employee</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Last active</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -247,7 +299,7 @@ function goToPage(page: number) {
             class="data-row"
           >
             <!-- Employee cell -->
-            <td class="col--employee">
+            <td>
               <div class="employee-cell">
                 <div
                   class="avatar"
@@ -263,7 +315,7 @@ function goToPage(page: number) {
             </td>
 
             <!-- Role cell -->
-            <td class="col--role">
+            <td>
               <div class="role-cell">
                 <span
                   class="role-dot"
@@ -274,7 +326,7 @@ function goToPage(page: number) {
             </td>
 
             <!-- Status cell -->
-            <td class="col--status">
+            <td>
               <span
                 class="status-badge"
                 :class="{
@@ -287,7 +339,7 @@ function goToPage(page: number) {
             </td>
 
             <!-- Last active cell -->
-            <td class="col--last-active">
+            <td>
               <div class="last-active-cell">
                 <span class="last-active-time">{{ emp.lastActive }}</span>
                 <span class="last-active-date">{{ emp.lastActiveDate }}</span>
@@ -295,7 +347,7 @@ function goToPage(page: number) {
             </td>
 
             <!-- Actions cell -->
-            <td class="col--actions">
+            <td>
               <div class="actions-cell">
                 <button
                   type="button"
@@ -335,39 +387,49 @@ function goToPage(page: number) {
         </tbody>
       </table>
 
-      <!-- Pagination footer -->
+      <!-- Pagination -->
       <div class="table-footer">
-        <span class="pagination-info">
-          Showing {{ pagedEmployees.length }} of
-          {{ filteredEmployees.length }}
-          employees
+        <span class="table-footer__text">
+          Showing {{ showingStart }}–{{ showingEnd }}
+          of {{ filteredEmployees.length }} employees
         </span>
-        <div class="pagination-controls">
+        <div class="pagination">
           <button
             type="button"
             class="page-btn"
-            :disabled="currentPage <= 1"
-            @click="goToPage(currentPage - 1)"
+            :disabled="currentPage === 1"
+            aria-label="Previous page"
+            @click="goToPrev"
           >
-            <ChevronLeft :size="16" />
+            <ChevronLeft :size="14" />
           </button>
-          <button
-            v-for="page in totalPages"
+          <template
+            v-for="page in visiblePages"
             :key="page"
-            type="button"
-            class="page-btn"
-            :class="{ 'page-btn--active': currentPage === page }"
-            @click="goToPage(page)"
           >
-            {{ page }}
-          </button>
+            <span
+              v-if="page === -1"
+              class="page-btn page-btn--ellipsis"
+              >…</span
+            >
+            <button
+              v-else
+              type="button"
+              class="page-btn"
+              :class="{ 'page-btn--active': page === currentPage }"
+              @click="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          </template>
           <button
             type="button"
             class="page-btn"
-            :disabled="currentPage >= totalPages"
-            @click="goToPage(currentPage + 1)"
+            :disabled="currentPage === totalPages"
+            aria-label="Next page"
+            @click="goToNext"
           >
-            <ChevronRight :size="16" />
+            <ChevronRight :size="14" />
           </button>
         </div>
       </div>
@@ -531,22 +593,6 @@ function goToPage(page: number) {
   border-bottom: 1px solid var(--border);
 }
 
-.col--employee {
-  width: 340px;
-}
-
-.col--role {
-  width: 168px;
-}
-
-.col--status {
-  width: 150px;
-}
-
-.col--last-active {
-  width: 188px;
-}
-
 /* ===== Data rows ===== */
 .data-row td {
   padding: 13px 18px;
@@ -692,6 +738,7 @@ function goToPage(page: number) {
 .action-btn:hover {
   color: var(--foreground);
   background: var(--accent);
+  border-color: var(--foreground);
 }
 
 .action-btn--danger:hover {
@@ -705,19 +752,20 @@ function goToPage(page: number) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 13px 18px;
+  padding: 12px 18px;
   background: var(--accent);
   border-top: 1px solid var(--border);
 }
 
-.pagination-info {
+.table-footer__text {
   font-family: Inter, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--muted-foreground);
 }
 
-.pagination-controls {
+/* ===== Pagination ===== */
+.pagination {
   display: flex;
   gap: 4px;
   align-items: center;
@@ -727,35 +775,44 @@ function goToPage(page: number) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
+  width: 36px;
   height: 36px;
-  padding: 0 8px;
+  padding: 0;
   font-family: Inter, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--foreground);
   cursor: pointer;
-  background: transparent;
+  background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   transition:
+    border-color 0.15s,
     background 0.15s,
-    border-color 0.15s;
+    color 0.15s;
 }
 
-.page-btn:hover:not(:disabled) {
+.page-btn:hover:not(:disabled):not(.page-btn--active):not(.page-btn--ellipsis) {
+  background: color-mix(in srgb, var(--primary) 10%, white);
   border-color: var(--primary);
 }
 
-.page-btn--active {
-  color: var(--foreground);
-  background: var(--background);
-  border-color: var(--border);
+.page-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
 }
 
-.page-btn:disabled {
+.page-btn--active {
+  font-weight: 600;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.page-btn--ellipsis {
   cursor: default;
-  opacity: 0.4;
+  background: none;
+  border: none;
 }
 
 /* ===== Empty state ===== */
