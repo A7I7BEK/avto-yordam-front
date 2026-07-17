@@ -18,6 +18,7 @@ import {
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import DeleteEmployeeModal from '@/components/business/DeleteEmployeeModal.vue';
+import ResetPasswordModal from '@/components/business/ResetPasswordModal.vue';
 import { getEmployees } from '@/services/employeesService';
 import type { Employee } from '@/types/business';
 
@@ -42,6 +43,7 @@ const statusFilter = ref('');
 const currentPage = ref(1);
 const pageSize = 3;
 const deleteTarget = ref<EmployeeRow | null>(null);
+const resetTarget = ref<EmployeeRow | null>(null);
 
 const employees = ref<EmployeeRow[]>([]);
 const loading = ref(true);
@@ -180,7 +182,8 @@ function editEmployee(id: string) {
 }
 
 function resetPassword(id: string) {
-  router.push(`/business/team/employees/${id}/reset-password`);
+  const emp = employees.value.find((e) => e.id === id) ?? null;
+  resetTarget.value = emp;
 }
 
 function deleteEmployee(id: string) {
@@ -448,6 +451,13 @@ function goToNext() {
       :employee="deleteTarget"
       @cancel="deleteTarget = null"
       @confirm="confirmDelete"
+    />
+
+    <ResetPasswordModal
+      :is-open="!!resetTarget"
+      :employee="resetTarget"
+      @cancel="resetTarget = null"
+      @confirm="resetTarget = null"
     />
   </div>
 </template>

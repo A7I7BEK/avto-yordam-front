@@ -32,6 +32,7 @@ import {
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DeleteEmployeeModal from '@/components/business/DeleteEmployeeModal.vue';
+import ResetPasswordModal from '@/components/business/ResetPasswordModal.vue';
 import { getEmployee } from '@/services/employeesService';
 import type { Employee } from '@/types/business';
 
@@ -42,6 +43,7 @@ const employee = ref<Employee | null>(null);
 const loading = ref(true);
 const activeTab = ref<'account' | 'activity' | 'security'>('account');
 const showDeleteModal = ref(false);
+const showResetModal = ref(false);
 
 onMounted(async () => {
   try {
@@ -64,7 +66,7 @@ function editEmployee() {
 }
 
 function resetPassword() {
-  // Reset logic
+  showResetModal.value = true;
 }
 
 function deleteEmployee() {
@@ -356,6 +358,13 @@ function confirmDelete() {
       :employee="employee"
       @cancel="showDeleteModal = false"
       @confirm="confirmDelete"
+    />
+
+    <ResetPasswordModal
+      :is-open="showResetModal"
+      :employee="employee"
+      @cancel="showResetModal = false"
+      @confirm="showResetModal = false"
     />
   </div>
 </template>

@@ -129,8 +129,10 @@ function onConfirm() {
   inset: 0;
   z-index: 1000;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
   background: rgba(15, 23, 42, 0.6);
 }
 
