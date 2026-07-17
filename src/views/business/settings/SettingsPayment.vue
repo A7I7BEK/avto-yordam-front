@@ -2,7 +2,15 @@
   setup
   lang="ts"
 >
-import { CircleCheck, CircleX, Eye, Info, Pencil, Play } from '@lucide/vue';
+import {
+  CircleCheck,
+  CircleX,
+  Eye,
+  EyeOff,
+  Info,
+  Pencil,
+  Play,
+} from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import clickLogo from '@/assets/payment-providers/click.png';
 import paymeLogo from '@/assets/payment-providers/payme.jpg';
@@ -31,11 +39,19 @@ const providers = ref<Provider[]>([]);
 const fieldConfigs: Record<string, ProviderField[]> = {
   payme: [
     { label: 'Merchant ID', value: '680e8a7c2f9d1b3c4e5a6789' },
-    { label: 'Secret key', value: '•••••••••••••••••••', secret: true },
+    {
+      label: 'Secret key',
+      value: 'sk_live_payme_8a7c2f9d1b3c4e5a',
+      secret: true,
+    },
   ],
   click: [
     { label: 'Service ID', value: '31247' },
-    { label: 'Secret key', value: '•••••••••••••••••••', secret: true },
+    {
+      label: 'Secret key',
+      value: 'sk_live_click_b3c4e5a6789d1b3c',
+      secret: true,
+    },
   ],
   paynet: [
     { label: 'Terminal ID', value: 'Not configured' },
@@ -54,6 +70,20 @@ const providerLogos: Record<string, string> = {
   click: clickLogo,
   paynet: paynetLogo,
 };
+
+const MASKED_VALUE = '•••••••••••••••••••';
+
+function getDisplayValue(field: ProviderField, revealed: boolean): string {
+  if (!field.secret) {
+    return field.value;
+  }
+  return revealed ? field.value : MASKED_VALUE;
+}
+
+function onSecretInput(event: Event, field: ProviderField) {
+  const target = event.target as HTMLInputElement;
+  field.value = target.value;
+}
 
 const revealedKeys = ref<Record<string, boolean>>({});
 const editingProviders = ref<Record<string, boolean>>({});
@@ -108,6 +138,9 @@ function startEditing(providerId: string) {
   for (const [index, field] of provider.fields.entries()) {
     const key = `${providerId}-field-${index}`;
     savedFields.value[key] = field.value;
+    if (field.secret) {
+      revealedKeys.value[`${providerId}-${index}`] = true;
+    }
   }
   editingProviders.value[providerId] = true;
 }
@@ -122,11 +155,22 @@ function cancelEditing(providerId: string) {
     if (savedFields.value[key] !== undefined) {
       field.value = savedFields.value[key];
     }
+    if (field.secret) {
+      revealedKeys.value[`${providerId}-${index}`] = false;
+    }
   }
   editingProviders.value[providerId] = false;
 }
 
 function saveEditing(providerId: string) {
+  const provider = providers.value.find((p) => p.id === providerId);
+  if (provider) {
+    for (const [index, field] of provider.fields.entries()) {
+      if (field.secret) {
+        revealedKeys.value[`${providerId}-${index}`] = false;
+      }
+    }
+  }
   editingProviders.value[providerId] = false;
 }
 </script>
@@ -201,21 +245,28 @@ function saveEditing(providerId: string) {
           >
             <input
               :id="`${provider.id}-field-${index}`"
-              v-model="field.value"
-              :type="isRevealed(provider.id, index) ? 'text' : 'password'"
+              :value="getDisplayValue(field, isRevealed(provider.id, index))"
+              type="text"
               class="field-input"
               :class="{
                 'field-input--empty': field.value === 'Not configured',
               }"
               :disabled="!isEditing(provider.id)"
+              @input="onSecretInput($event, field)"
             >
             <button
               type="button"
               class="field-eye-btn"
-              :aria-label="isRevealed(provider.id, index) ? 'Hide' : 'Show'"
+              :aria-label="isRevealed(provider.id, index) ? 'Hide secret key' : 'Show secret key'"
               @click="toggleReveal(provider.id, index)"
             >
+              <EyeOff
+                v-if="isRevealed(provider.id, index)"
+                :size="14"
+                class="field-eye-icon"
+              />
               <Eye
+                v-else
                 :size="14"
                 class="field-eye-icon"
               />
