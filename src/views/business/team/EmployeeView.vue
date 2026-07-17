@@ -476,7 +476,7 @@ function deleteEmployee() {
 }
 
 .btn--copy:hover {
-  border-color: var(--primary);
+  border-color: var(--foreground);
 }
 
 /* ===== Profile Card ===== */
@@ -638,7 +638,7 @@ function deleteEmployee() {
 }
 
 .qa-btn:hover {
-  border-color: var(--primary);
+  border-color: var(--foreground);
 }
 
 /* ===== Stats Row ===== */
