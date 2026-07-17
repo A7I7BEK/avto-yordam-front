@@ -2,9 +2,11 @@
   setup
   lang="ts"
 >
-import { Image, Plus, Trash2 } from '@lucide/vue';
-import { onMounted, ref } from 'vue';
+import { Image, Plus, Upload } from '@lucide/vue';
+import { computed, onMounted, ref } from 'vue';
 import { getSettingsPhotos } from '@/services/settingsService';
+
+const MAX_GALLERY_PHOTOS = 12;
 
 interface Photo {
   id: string;
@@ -13,176 +15,304 @@ interface Photo {
   uploadedAt: string;
 }
 
-const photos = ref<Photo[]>([]);
+const coverPhoto = ref<Photo | null>(null);
+const galleryPhotos = ref<Photo[]>([]);
+
+const emptySlots = computed(() =>
+  Math.max(0, MAX_GALLERY_PHOTOS - galleryPhotos.value.length),
+);
 
 onMounted(async () => {
   const data = await getSettingsPhotos();
-  if (data) {
-    photos.value = [...data];
+  if (data && data.length > 0) {
+    coverPhoto.value = data[0] ?? null;
+    galleryPhotos.value = data.slice(1);
   }
 });
 
-function addPhoto() {
-  // Add photo logic
+function uploadCover() {
+  // Upload cover logic
 }
 
-function deletePhoto(id: string) {
-  photos.value = photos.value.filter((p) => p.id !== id);
+function removeCover() {
+  coverPhoto.value = null;
+}
+
+function addPhotos() {
+  // Add photos logic
 }
 </script>
 
 <template>
-  <div class="settings-page">
-    <div class="header-row">
+  <div class="operating-hours">
+    <!-- Page header -->
+    <div class="page-header">
       <h1 class="page-title">Photos</h1>
-      <button
-        type="button"
-        class="btn btn--primary"
-        @click="addPhoto"
-      >
-        <Plus :size="16" />
-        Add photo
-      </button>
+      <p class="page-subtitle">
+        Photos shown on your public organization profile and to customers
+        browsing service providers.
+      </p>
     </div>
 
-    <div class="photos-grid">
-      <div
-        v-for="photo in photos"
-        :key="photo.id"
-        class="photo-card"
-      >
-        <div class="photo-card__image">
+    <div class="cards-stack">
+      <!-- Cover photo card -->
+      <div class="card">
+        <div class="cover-header">
+          <h2 class="section-title">Cover photo</h2>
+          <p class="section-desc">
+            Displayed at the top of your public profile. Recommended 1600 × 400.
+          </p>
+        </div>
+
+        <!-- Cover placeholder -->
+        <div class="cover-placeholder">
           <Image
-            :size="36"
-            color="#d9d9db"
+            :size="28"
+            class="placeholder-icon"
           />
+          <span class="cover-meta">1600 × 400 · JPG or PNG · max 5 MB</span>
         </div>
-        <div class="photo-card__info">
-          <span class="photo-card__name">{{ photo.name }}</span>
-          <span class="photo-card__date">{{ photo.uploadedAt }}</span>
+
+        <!-- Cover actions -->
+        <div class="cover-actions">
+          <button
+            type="button"
+            class="btn btn--outline"
+            @click="uploadCover"
+          >
+            <Upload :size="13" />
+            Upload new
+          </button>
+          <button
+            type="button"
+            class="btn btn--ghost"
+            @click="removeCover"
+          >
+            Remove
+          </button>
         </div>
-        <button
-          type="button"
-          class="btn-icon"
-          title="Delete photo"
-          @click="deletePhoto(photo.id)"
-        >
-          <Trash2 :size="16" />
-        </button>
+      </div>
+
+      <!-- Gallery card -->
+      <div class="card">
+        <div class="gallery-header">
+          <div class="gallery-header-text">
+            <h2 class="section-title">Gallery</h2>
+            <p class="section-desc">
+              Up to 12 photos of your workshop, team and completed work.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn btn--primary"
+            @click="addPhotos"
+          >
+            <Plus :size="13" />
+            Add photos
+          </button>
+        </div>
+
+        <!-- Gallery grid -->
+        <div class="gallery-grid">
+          <div
+            v-for="photo in galleryPhotos"
+            :key="photo.id"
+            class="gallery-item"
+          >
+            <Image
+              :size="24"
+              class="placeholder-icon"
+            />
+          </div>
+          <div
+            v-for="n in emptySlots"
+            :key="`empty-${n}`"
+            class="gallery-item"
+          >
+            <Image
+              :size="24"
+              class="placeholder-icon"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.settings-page {
-  padding: 24px 32px;
-}
-
-.header-row {
+/* ===== Page header ===== */
+.page-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
 }
 
 .page-title {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 22px;
-  font-weight: 600;
-  color: #2a2933;
+  font-weight: 700;
+  color: var(--foreground);
 }
 
-.btn {
-  display: inline-flex;
+.page-subtitle {
+  max-width: 720px;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Cards stack ===== */
+.cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== Card ===== */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+/* ===== Section titles ===== */
+.cover-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.section-title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.section-desc {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Cover placeholder ===== */
+.cover-placeholder {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   align-items: center;
-  padding: 10px 20px;
+  justify-content: center;
+  height: 180px;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.placeholder-icon {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+
+.cover-meta {
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+/* ===== Cover actions ===== */
+.cover-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   border: none;
-  border-radius: 999px;
-  transition: background 0.15s;
+  border-radius: var(--radius-pill);
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .btn--primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .btn--primary:hover {
   background: #4639d4;
 }
 
-.photos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+.btn--outline {
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
 }
 
-.photo-card {
+.btn--outline:hover {
+  border-color: var(--primary);
+}
+
+.btn--ghost {
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn--ghost:hover {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+/* ===== Gallery header ===== */
+.gallery-header {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px;
-  border: 1px solid #d9d9db;
-  border-radius: 10px;
-  transition: box-shadow 0.15s;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
-.photo-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.photo-card__image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 140px;
-  background: #f5f5f5;
-  border-radius: 8px;
-}
-
-.photo-card__info {
+.gallery-header-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.photo-card__name {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: #2a2933;
+/* ===== Gallery grid ===== */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
 
-.photo-card__date {
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  color: #939399;
-}
-
-.btn-icon {
-  display: inline-flex;
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   align-items: center;
-  align-self: flex-end;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: #939399;
-  cursor: pointer;
-  background: none;
-  border: none;
-  border-radius: 6px;
-  transition: all 0.15s;
-}
-
-.btn-icon:hover {
-  color: #cc3314;
-  background: #fee9e5;
+  height: 120px;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
 }
 </style>
