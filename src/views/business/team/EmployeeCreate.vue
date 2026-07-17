@@ -2,7 +2,14 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Sparkles, Upload, UserPlus, UserRound } from '@lucide/vue';
+import {
+  ArrowLeft,
+  ChevronDown,
+  Sparkles,
+  Upload,
+  UserPlus,
+  UserRound,
+} from '@lucide/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -26,6 +33,11 @@ const fullName = ref('');
 const email = ref('');
 const password = ref('');
 const selectedRole = ref('');
+const fileInput = ref<HTMLInputElement | null>(null);
+
+function triggerFileUpload() {
+  fileInput.value?.click();
+}
 
 function goBack() {
   router.push('/business/team/employees');
@@ -89,9 +101,16 @@ function createEmployee() {
             Upload a clear photo of the team member. PNG or JPG, up to 2MB.
           </span>
           <div class="avatar-actions">
+            <input
+              ref="fileInput"
+              type="file"
+              accept="image/png, image/jpeg"
+              class="file-input-hidden"
+            >
             <button
               type="button"
               class="btn btn--outline"
+              @click="triggerFileUpload"
             >
               <Upload :size="13" />
               Upload photo
@@ -183,25 +202,31 @@ function createEmployee() {
             for="role"
             >Role</label
           >
-          <select
-            id="role"
-            v-model="selectedRole"
-            class="field-select"
-          >
-            <option
-              value=""
-              disabled
+          <div class="select-wrapper">
+            <select
+              id="role"
+              v-model="selectedRole"
+              class="field-select"
             >
-              Select a role
-            </option>
-            <option
-              v-for="role in roles"
-              :key="role.id"
-              :value="role.id"
-            >
-              {{ role.name }}
-            </option>
-          </select>
+              <option
+                value=""
+                disabled
+              >
+                Select a role
+              </option>
+              <option
+                v-for="role in roles"
+                :key="role.id"
+                :value="role.id"
+              >
+                {{ role.name }}
+              </option>
+            </select>
+            <ChevronDown
+              :size="16"
+              class="select-chevron"
+            />
+          </div>
           <span class="field-hint">
             Controls which areas of the app this employee can access.
           </span>
@@ -449,6 +474,27 @@ function createEmployee() {
 
 .field-select:focus {
   border-color: var(--primary);
+}
+
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select-wrapper .field-select {
+  width: 100%;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 18px;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.file-input-hidden {
+  display: none;
 }
 
 .field-hint {
