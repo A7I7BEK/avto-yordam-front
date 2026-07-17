@@ -2,572 +2,479 @@
   setup
   lang="ts"
 >
-import { Eye, EyeOff } from '@lucide/vue';
-import { onMounted, ref } from 'vue';
+import { ArrowLeft, Sparkles, Upload, UserPlus, UserRound } from '@lucide/vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { apiClient } from '@/api/client';
-import { isMockMode } from '@/config';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface RoleOption {
   id: string;
   name: string;
-  code?: string;
 }
-
-const rolesList = ref<RoleOption[]>([]);
-
-async function fetchRoles() {
-  if (isMockMode()) {
-    rolesList.value = [
-      { id: 'role-master-id', name: 'Master', code: 'MASTER' },
-      {
-        id: 'role-receptionist-id',
-        name: 'Receptionist',
-        code: 'RECEPTIONIST',
-      },
-      { id: 'role-admin-id', name: 'Admin', code: 'ADMIN' },
-    ];
-    return;
-  }
-  try {
-    const list = await apiClient.get('/role/get-for-organization');
-    if (Array.isArray(list)) {
-      rolesList.value = list.map((r: unknown) => {
-        const item = r as Record<string, unknown>;
-        return {
-          id: String(item.id || ''),
-          name: String(item.name || ''),
-          code: String(item.code || ''),
-        };
-      });
-    }
-  } catch {
-    try {
-      const list = await apiClient.get('/role');
-      if (Array.isArray(list)) {
-        rolesList.value = list.map((r: unknown) => {
-          const item = r as Record<string, unknown>;
-          return {
-            id: String(item.id || ''),
-            name: String(item.name || ''),
-            code: String(item.code || ''),
-          };
-        });
-      }
-    } catch {
-      rolesList.value = [];
-    }
-  }
-}
-
-onMounted(() => {
-  fetchRoles();
-});
 
 const router = useRouter();
 
-const form = ref({
-  fullName: '',
-  password: '',
-  phone: '',
-  email: '',
-  birthday: '',
-  role: '',
-  specialization: '',
-});
+const roles = ref<RoleOption[]>([
+  { id: 'role-master', name: 'Master' },
+  { id: 'role-receptionist', name: 'Receptionist' },
+  { id: 'role-admin', name: 'Admin' },
+  { id: 'role-manager', name: 'Manager' },
+  { id: 'role-accountant', name: 'Accountant' },
+  { id: 'role-mechanic', name: 'Mechanic' },
+]);
 
-const errors = ref<Record<string, string>>({});
-const errorMessage = ref('');
-const submitted = ref(false);
-const showPassword = ref(false);
-const isSaving = ref(false);
+const fullName = ref('');
+const email = ref('');
+const password = ref('');
+const selectedRole = ref('');
 
-function validate() {
-  const errs: Record<string, string> = {};
-
-  if (!form.value.fullName.trim()) {
-    errs.fullName = 'Full name is required';
-  }
-
-  if (!form.value.password) {
-    errs.password = 'Password is required';
-  } else if (form.value.password.length < 6) {
-    errs.password = 'Password must be at least 6 characters';
-  }
-
-  if (!(form.value.phone.trim() || form.value.email.trim())) {
-    errs.contact = 'Either phone number or email is required';
-  }
-
-  if (form.value.email.trim() && !EMAIL_REGEX.test(form.value.email.trim())) {
-    errs.email = 'Invalid email format';
-  }
-
-  if (!form.value.role) {
-    errs.role = 'Role is required';
-  }
-
-  errors.value = errs;
-  return Object.keys(errs).length === 0;
+function goBack() {
+  router.push('/business/team/employees');
 }
 
-async function handleSave() {
-  errorMessage.value = '';
-  if (!validate()) {
-    return;
+function generatePassword() {
+  const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789!@#$%';
+  let result = '';
+  for (let i = 0; i < 16; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-
-  isSaving.value = true;
-  try {
-    const payload: Record<string, unknown> = {
-      fullName: form.value.fullName.trim(),
-      password: form.value.password,
-      roleId: form.value.role,
-    };
-
-    if (form.value.phone.trim()) {
-      payload.phone = form.value.phone.trim();
-    }
-    if (form.value.email.trim()) {
-      payload.email = form.value.email.trim();
-    }
-    if (form.value.birthday) {
-      payload.birthday = form.value.birthday;
-    }
-    if (form.value.specialization.trim()) {
-      payload.specialization = form.value.specialization.trim();
-    }
-
-    if (isMockMode()) {
-      submitted.value = true;
-      setTimeout(() => {
-        router.push('/business/team/employees');
-      }, 1000);
-      return;
-    }
-
-    await apiClient.post('/user', payload);
-    submitted.value = true;
-    setTimeout(() => {
-      router.push('/business/team/employees');
-    }, 1000);
-  } catch (err: unknown) {
-    const errorVal = err as Record<string, unknown> | null;
-    errorMessage.value =
-      String(errorVal?.message || '') || 'Failed to create employee profile.';
-  } finally {
-    isSaving.value = false;
-  }
+  password.value = result;
 }
 
-function handleCancel() {
+function createEmployee() {
+  // Create logic
   router.push('/business/team/employees');
 }
 </script>
 
 <template>
-  <div class="page">
-    <div class="page__header">
-      <div>
-        <h1 class="page__title">Add employee</h1>
-        <p class="page__subtitle">Fill in the details to add a new employee</p>
-      </div>
-    </div>
-
-    <!-- Error Banner -->
-    <div
-      v-if="errorMessage"
-      class="error-banner"
+  <div class="add-employee-page">
+    <!-- Back link -->
+    <button
+      type="button"
+      class="back-link"
+      @click="goBack"
     >
-      {{ errorMessage }}
+      <ArrowLeft :size="14" />
+      Back
+    </button>
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="header-text">
+        <h1 class="page-title">Add employee</h1>
+        <p class="page-subtitle">
+          Create a new team member and set their access level.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="btn btn--primary"
+        @click="createEmployee"
+      >
+        <UserPlus :size="15" />
+        Create employee
+      </button>
     </div>
 
+    <!-- Form card -->
     <div class="form-card">
-      <div class="form-card__section">
+      <!-- Avatar section -->
+      <div class="avatar-section">
+        <div class="avatar-circle">
+          <UserRound :size="32" />
+        </div>
+        <div class="avatar-info">
+          <span class="avatar-title">Profile photo</span>
+          <span class="avatar-desc">
+            Upload a clear photo of the team member. PNG or JPG, up to 2MB.
+          </span>
+          <div class="avatar-actions">
+            <button
+              type="button"
+              class="btn btn--outline"
+            >
+              <Upload :size="13" />
+              Upload photo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="form-divider" />
+
+      <!-- Details heading -->
+      <div class="details-heading">
+        <h2 class="details-title">Employee details</h2>
+        <p class="details-desc">
+          Basic profile information and login credentials for this team member.
+        </p>
+      </div>
+
+      <!-- Fields -->
+      <div class="fields-stack">
         <!-- Full name -->
-        <div class="form-group">
-          <label class="form-label">
-            Full name <span class="required">*</span>
-          </label>
+        <div class="field-group">
+          <label
+            class="field-label"
+            for="full-name"
+            >Full name</label
+          >
           <input
-            v-model="form.fullName"
+            id="full-name"
+            v-model="fullName"
             type="text"
-            class="form-input"
-            placeholder="Enter full name"
-            :class="{ 'form-input--error': errors.fullName }"
+            class="field-input"
+            placeholder="e.g. Azizbek Karimov"
           >
-          <span
-            v-if="errors.fullName"
-            class="form-error"
-          >
-            {{ errors.fullName }}
+          <span class="field-hint">
+            Enter the employee's real name as it should appear across the
+            workspace.
           </span>
         </div>
 
-        <!-- Password and Birthday -->
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">
-              Password <span class="required">*</span>
-            </label>
-            <div class="password-wrapper">
-              <input
-                v-model="form.password"
-                :type="showPassword ? 'text' : 'password'"
-                class="form-input password-input-field"
-                placeholder="Enter password"
-                :class="{ 'form-input--error': errors.password }"
-              >
-              <button
-                type="button"
-                class="password-toggle-btn"
-                @click="showPassword = !showPassword"
-              >
-                <component
-                  :is="showPassword ? EyeOff : Eye"
-                  :size="16"
-                />
-              </button>
-            </div>
-            <span
-              v-if="errors.password"
-              class="form-error"
-            >
-              {{ errors.password }}
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Birthday</label>
-            <input
-              v-model="form.birthday"
-              type="date"
-              class="form-input"
-            >
-          </div>
+        <!-- Email -->
+        <div class="field-group">
+          <label
+            class="field-label"
+            for="email"
+            >Email address</label
+          >
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            class="field-input"
+            placeholder="name@autofix.uz"
+          >
+          <span class="field-hint">
+            Used for signing in and receiving account notifications.
+          </span>
         </div>
 
-        <!-- Contact Method Information -->
-        <div class="contact-info-banner">
-          At least one contact method (Phone or Email) must be provided.
+        <!-- Password -->
+        <div class="field-group">
+          <label
+            class="field-label"
+            for="password"
+            >Password</label
+          >
+          <input
+            id="password"
+            v-model="password"
+            type="text"
+            class="field-input"
+            placeholder="Create a secure password"
+          >
+          <button
+            type="button"
+            class="generate-link"
+            @click="generatePassword"
+          >
+            <Sparkles :size="13" />
+            Generate a strong password
+          </button>
         </div>
 
-        <!-- Phone and Email -->
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Phone</label>
-            <input
-              v-model="form.phone"
-              type="tel"
-              class="form-input"
-              placeholder="+998 XX XXX XX XX"
-              :class="{ 'form-input--error': errors.contact }"
+        <!-- Role -->
+        <div class="field-group">
+          <label
+            class="field-label"
+            for="role"
+            >Role</label
+          >
+          <select
+            id="role"
+            v-model="selectedRole"
+            class="field-select"
+          >
+            <option
+              value=""
+              disabled
             >
-            <span
-              v-if="errors.contact"
-              class="form-error"
+              Select a role
+            </option>
+            <option
+              v-for="role in roles"
+              :key="role.id"
+              :value="role.id"
             >
-              {{ errors.contact }}
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input
-              v-model="form.email"
-              type="email"
-              class="form-input"
-              placeholder="email@example.com"
-              :class="{ 'form-input--error': errors.contact || errors.email }"
-            >
-            <span
-              v-if="errors.email"
-              class="form-error"
-            >
-              {{ errors.email }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Role and Specialization -->
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">
-              Role <span class="required">*</span>
-            </label>
-            <select
-              v-model="form.role"
-              class="form-input"
-              :class="{ 'form-input--error': errors.role }"
-            >
-              <option
-                value=""
-                disabled
-              >
-                Select role
-              </option>
-              <option
-                v-for="role in rolesList"
-                :key="role.id"
-                :value="role.id"
-              >
-                {{ role.name }}
-              </option>
-            </select>
-            <span
-              v-if="errors.role"
-              class="form-error"
-            >
-              {{ errors.role }}
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Specialization</label>
-            <input
-              v-model="form.specialization"
-              type="text"
-              class="form-input"
-              placeholder="e.g. Engine Repair"
-            >
-          </div>
+              {{ role.name }}
+            </option>
+          </select>
+          <span class="field-hint">
+            Controls which areas of the app this employee can access.
+          </span>
         </div>
       </div>
-
-      <div class="form-card__actions">
-        <button
-          type="button"
-          class="btn btn--outline"
-          :disabled="isSaving"
-          @click="handleCancel"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn--primary"
-          :disabled="isSaving"
-          @click="handleSave"
-        >
-          {{ isSaving ? 'Saving...' : 'Save' }}
-        </button>
-      </div>
-    </div>
-
-    <div
-      v-if="submitted"
-      class="success-toast"
-    >
-      Employee added successfully!
     </div>
   </div>
 </template>
 
 <style scoped>
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 32px;
-}
-
-.page__header {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.page__title {
-  margin: 0;
-  font-family: var(--font-primary);
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--foreground);
-}
-
-.page__subtitle {
-  margin: 4px 0 0;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  color: var(--muted-foreground);
-}
-
-/* Form card */
-.form-card {
+/* ===== Page layout ===== */
+.add-employee-page {
   max-width: 720px;
-  background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  padding: 24px 0;
+  margin: auto;
 }
 
-.form-card__section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 24px;
-}
-
-.form-card__actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  padding: 16px 24px;
-  border-top: 1px solid var(--border);
-}
-
-/* Form groups */
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
+/* ===== Back link ===== */
+.back-link {
+  display: inline-flex;
   gap: 6px;
-}
-
-.form-label {
-  font-family: var(--font-primary);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--foreground);
-}
-
-.required {
-  color: var(--destructive);
-}
-
-.form-input {
-  padding: 10px 12px;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  color: var(--foreground);
-  outline: none;
-  background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  transition: border-color 0.15s;
-}
-
-.form-input:focus {
-  border-color: var(--primary);
-}
-
-.form-input--error {
-  border-color: var(--destructive);
-}
-
-.form-error {
-  font-family: var(--font-primary);
-  font-size: 12px;
-  color: var(--destructive);
-}
-
-.password-wrapper {
-  position: relative;
-  display: flex;
   align-items: center;
-}
-
-.password-input-field {
-  width: 100%;
-  padding-right: 40px;
-}
-
-.password-toggle-btn {
-  position: absolute;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 0;
+  margin-bottom: 18px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
   color: var(--muted-foreground);
   cursor: pointer;
   background: none;
   border: none;
 }
 
-.contact-info-banner {
-  padding: 10px 14px;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  color: #3b82f6;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: var(--radius-md);
+.back-link:hover {
+  color: var(--foreground);
 }
 
-.error-banner {
-  max-width: 720px;
-  padding: 12px 16px;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  color: var(--destructive);
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: var(--radius-md);
+/* ===== Page header ===== */
+.page-header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-/* Buttons */
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.page-subtitle {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Buttons ===== */
 .btn {
   display: inline-flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  padding: 10px 20px;
-  font-family: var(--font-primary);
+  padding: 10px 16px;
+  font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  white-space: nowrap;
   cursor: pointer;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   transition: opacity 0.15s;
 }
 
-.btn:hover {
+.btn--primary {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn--primary:hover {
   opacity: 0.9;
 }
 
-.btn--primary {
-  color: #ffffff;
-  background: #5749f4;
-}
-
 .btn--outline {
+  font-size: 13px;
   color: var(--foreground);
-  background: transparent;
+  background: var(--background);
   border: 1px solid var(--border);
 }
 
-/* Success toast */
-.success-toast {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  padding: 12px 24px;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  font-weight: 500;
-  color: #ffffff;
-  background: var(--success);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-modal);
-  animation: fadeInUp 0.3s ease;
+.btn--outline:hover {
+  border-color: var(--primary);
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ===== Form card ===== */
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+/* ===== Avatar section ===== */
+.avatar-section {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.avatar-circle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  color: var(--muted-foreground);
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.avatar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.avatar-title {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.avatar-desc {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.avatar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== Divider ===== */
+.form-divider {
+  height: 1px;
+  background: var(--border);
+}
+
+/* ===== Details heading ===== */
+.details-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.details-title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.details-desc {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Fields stack ===== */
+.fields-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== Field group ===== */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.field-input {
+  padding: 18px 24px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--foreground);
+  outline: none;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: border-color 0.15s;
+}
+
+.field-input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.field-input:focus {
+  border-color: var(--primary);
+}
+
+.field-select {
+  padding: 18px 24px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--foreground);
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: border-color 0.15s;
+}
+
+.field-select:focus {
+  border-color: var(--primary);
+}
+
+.field-hint {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Generate password link ===== */
+.generate-link {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  align-self: flex-start;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.generate-link:hover {
+  text-decoration: underline;
 }
 </style>
