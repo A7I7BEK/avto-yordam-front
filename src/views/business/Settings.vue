@@ -6,6 +6,7 @@ import {
   Bell,
   Building2,
   CreditCard,
+  FileText,
   Image,
   Landmark,
   Palette,
@@ -18,6 +19,7 @@ import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import SettingsAppearance from './settings/SettingsAppearance.vue';
 import SettingsBankInfo from './settings/SettingsBankInfo.vue';
 import SettingsDangerZone from './settings/SettingsDangerZone.vue';
+import SettingsDocuments from './settings/SettingsDocuments.vue';
 import SettingsHours from './settings/SettingsHours.vue';
 import SettingsLegal from './settings/SettingsLegal.vue';
 import SettingsNotifications from './settings/SettingsNotifications.vue';
@@ -53,6 +55,9 @@ const section = computed(() => {
   if (path.includes('/settings/danger-zone')) {
     return 'danger-zone';
   }
+  if (path.includes('/settings/documents')) {
+    return 'documents';
+  }
   return 'legal';
 });
 
@@ -60,6 +65,7 @@ const subNavItems = [
   { key: 'legal', icon: Building2, label: 'Legal info' },
   { key: 'hours', icon: Timer, label: 'Operating hours' },
   { key: 'photos', icon: Image, label: 'Photos' },
+  { key: 'documents', icon: FileText, label: 'Documents' },
   { key: 'bank-info', icon: Landmark, label: 'Bank info' },
   { key: 'payment', icon: CreditCard, label: 'Payment providers' },
   { key: 'notifications', icon: Bell, label: 'Notification policy' },
@@ -75,6 +81,8 @@ function navigateToSection(key: string) {
     router.push(`${base}/hours`);
   } else if (key === 'photos') {
     router.push(`${base}/photos`);
+  } else if (key === 'documents') {
+    router.push(`${base}/documents`);
   } else if (key === 'bank-info') {
     router.push(`${base}/bank-info`);
   } else if (key === 'payment') {
@@ -96,6 +104,8 @@ function breadcrumbItems() {
     items.push('Operating hours');
   } else if (section.value === 'photos') {
     items.push('Photos');
+  } else if (section.value === 'documents') {
+    items.push('Documents');
   } else if (section.value === 'bank-info') {
     items.push('Bank info');
   } else if (section.value === 'payment') {
@@ -141,6 +151,7 @@ function breadcrumbItems() {
       <SettingsLegal v-if="section === 'legal'" />
       <SettingsHours v-else-if="section === 'hours'" />
       <SettingsPhotos v-else-if="section === 'photos'" />
+      <SettingsDocuments v-else-if="section === 'documents'" />
       <SettingsBankInfo v-else-if="section === 'bank-info'" />
       <SettingsPayment v-else-if="section === 'payment'" />
       <SettingsNotifications v-else-if="section === 'notifications'" />

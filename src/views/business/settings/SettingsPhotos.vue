@@ -2,44 +2,140 @@
   setup
   lang="ts"
 >
-import { Image, Plus, Upload } from '@lucide/vue';
+import { Image, Loader2, Plus, Trash2, Upload, X } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
-import { getSettingsPhotos } from '@/services/settingsService';
+import {
+  deleteOrganizationFile,
+  getDownloadUrl,
+  getOrganizationFilesByType,
+  type OrganizationFileResponse,
+  uploadOrganizationFile,
+} from '@/services/documentsService';
 
 const MAX_GALLERY_PHOTOS = 12;
 
-interface Photo {
-  id: string;
-  url: string;
-  name: string;
-  uploadedAt: string;
-}
+const coverPhoto = ref<OrganizationFileResponse | null>(null);
+const galleryPhotos = ref<OrganizationFileResponse[]>([]);
+const loading = ref(false);
+const uploadingCover = ref(false);
+const uploadingGallery = ref(false);
+const deletingPhotoId = ref<string | null>(null);
+const errorMsg = ref<string | null>(null);
 
-const coverPhoto = ref<Photo | null>(null);
-const galleryPhotos = ref<Photo[]>([]);
+const coverInputRef = ref<HTMLInputElement | null>(null);
+const galleryInputRef = ref<HTMLInputElement | null>(null);
 
 const emptySlots = computed(() =>
   Math.max(0, MAX_GALLERY_PHOTOS - galleryPhotos.value.length),
 );
 
 onMounted(async () => {
-  const data = await getSettingsPhotos();
-  if (data && data.length > 0) {
-    coverPhoto.value = data[0] ?? null;
-    galleryPhotos.value = data.slice(1);
-  }
+  await loadPhotos();
 });
 
-function uploadCover() {
-  // Upload cover logic
+async function loadPhotos() {
+  loading.value = true;
+  errorMsg.value = null;
+  try {
+    const data = await getOrganizationFilesByType('PHOTO');
+    coverPhoto.value = data.find((p) => p.isCover) ?? null;
+    galleryPhotos.value = data.filter((p) => !p.isCover);
+  } catch (e) {
+    errorMsg.value = e instanceof Error ? e.message : 'Failed to load photos';
+  } finally {
+    loading.value = false;
+  }
 }
 
-function removeCover() {
-  coverPhoto.value = null;
+function triggerUploadCover() {
+  coverInputRef.value?.click();
 }
 
-function addPhotos() {
-  // Add photos logic
+async function onCoverSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  uploadingCover.value = true;
+  errorMsg.value = null;
+  try {
+    // If cover photo already exists, delete it first to avoid cluttering storage
+    if (coverPhoto.value) {
+      try {
+        await deleteOrganizationFile(coverPhoto.value.file.id);
+      } catch {
+        // Non-critical, swallow and continue
+      }
+    }
+    const saved = await uploadOrganizationFile(file, 'PHOTO', true);
+    coverPhoto.value = saved;
+  } catch (e) {
+    errorMsg.value = e instanceof Error ? e.message : 'Cover upload failed';
+  } finally {
+    uploadingCover.value = false;
+    input.value = '';
+  }
+}
+
+async function removeCover() {
+  if (!coverPhoto.value) {
+    return;
+  }
+  uploadingCover.value = true;
+  errorMsg.value = null;
+  try {
+    await deleteOrganizationFile(coverPhoto.value.file.id);
+    coverPhoto.value = null;
+  } catch (e) {
+    errorMsg.value = e instanceof Error ? e.message : 'Failed to remove cover';
+  } finally {
+    uploadingCover.value = false;
+  }
+}
+
+function triggerAddPhotos() {
+  galleryInputRef.value?.click();
+}
+
+async function onGallerySelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const files = Array.from(input.files ?? []);
+  if (files.length === 0) {
+    return;
+  }
+
+  uploadingGallery.value = true;
+  errorMsg.value = null;
+  try {
+    for (const file of files) {
+      if (galleryPhotos.value.length >= MAX_GALLERY_PHOTOS) {
+        errorMsg.value = `Maximum gallery photos is ${MAX_GALLERY_PHOTOS}`;
+        break;
+      }
+      const saved = await uploadOrganizationFile(file, 'PHOTO', false);
+      galleryPhotos.value.push(saved);
+    }
+  } catch (e) {
+    errorMsg.value = e instanceof Error ? e.message : 'Upload failed';
+  } finally {
+    uploadingGallery.value = false;
+    input.value = '';
+  }
+}
+
+async function deletePhoto(id: string) {
+  deletingPhotoId.value = id;
+  errorMsg.value = null;
+  try {
+    await deleteOrganizationFile(id);
+    galleryPhotos.value = galleryPhotos.value.filter((p) => p.file.id !== id);
+  } catch (e) {
+    errorMsg.value = e instanceof Error ? e.message : 'Failed to delete photo';
+  } finally {
+    deletingPhotoId.value = null;
+  }
 }
 </script>
 
@@ -54,7 +150,37 @@ function addPhotos() {
       </p>
     </div>
 
-    <div class="cards-stack">
+    <!-- Error banner -->
+    <div
+      v-if="errorMsg"
+      class="error-banner"
+    >
+      <span>{{ errorMsg }}</span>
+      <button
+        type="button"
+        class="error-dismiss"
+        @click="errorMsg = null"
+      >
+        <X :size="14" />
+      </button>
+    </div>
+
+    <!-- Loading state -->
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <Loader2
+        :size="28"
+        class="spin"
+      />
+      <span>Loading photos…</span>
+    </div>
+
+    <div
+      v-else
+      class="cards-stack"
+    >
       <!-- Cover photo card -->
       <div class="card">
         <div class="cover-header">
@@ -64,13 +190,36 @@ function addPhotos() {
           </p>
         </div>
 
-        <!-- Cover placeholder -->
-        <div class="cover-placeholder">
-          <Image
-            :size="28"
-            class="placeholder-icon"
-          />
-          <span class="cover-meta">1600 × 400 · JPG or PNG · max 5 MB</span>
+        <!-- Cover placeholder or Image -->
+        <div class="cover-container">
+          <div
+            v-if="coverPhoto"
+            class="cover-image-wrapper"
+          >
+            <img
+              :src="getDownloadUrl(coverPhoto.file.id)"
+              alt="Cover"
+              class="cover-image"
+            >
+          </div>
+          <div
+            v-else
+            class="cover-placeholder"
+          >
+            <Loader2
+              v-if="uploadingCover"
+              :size="28"
+              class="spin placeholder-icon"
+            />
+            <Image
+              v-else
+              :size="28"
+              class="placeholder-icon"
+            />
+            <span class="cover-meta">
+              {{ uploadingCover ? 'Uploading cover photo…' : '1600 × 400 · JPG or PNG · max 5 MB' }}
+            </span>
+          </div>
         </div>
 
         <!-- Cover actions -->
@@ -78,18 +227,36 @@ function addPhotos() {
           <button
             type="button"
             class="btn btn--outline"
-            @click="uploadCover"
+            :disabled="uploadingCover"
+            @click="triggerUploadCover"
           >
-            <Upload :size="13" />
+            <Loader2
+              v-if="uploadingCover"
+              :size="13"
+              class="spin"
+            />
+            <Upload
+              v-else
+              :size="13"
+            />
             Upload new
           </button>
           <button
+            v-if="coverPhoto"
             type="button"
             class="btn btn--ghost"
+            :disabled="uploadingCover"
             @click="removeCover"
           >
             Remove
           </button>
+          <input
+            ref="coverInputRef"
+            type="file"
+            accept="image/*"
+            style="display: none"
+            @change="onCoverSelected"
+          >
         </div>
       </div>
 
@@ -105,25 +272,63 @@ function addPhotos() {
           <button
             type="button"
             class="btn btn--primary"
-            @click="addPhotos"
+            :disabled="uploadingGallery || galleryPhotos.length >= MAX_GALLERY_PHOTOS"
+            @click="triggerAddPhotos"
           >
-            <Plus :size="13" />
+            <Loader2
+              v-if="uploadingGallery"
+              :size="13"
+              class="spin"
+            />
+            <Plus
+              v-else
+              :size="13"
+            />
             Add photos
           </button>
+          <input
+            ref="galleryInputRef"
+            type="file"
+            multiple
+            accept="image/*"
+            style="display: none"
+            @change="onGallerySelected"
+          >
         </div>
 
         <!-- Gallery grid -->
         <div class="gallery-grid">
+          <!-- Loaded Gallery Images -->
           <div
             v-for="photo in galleryPhotos"
-            :key="photo.id"
-            class="gallery-item"
+            :key="photo.file.id"
+            class="gallery-item has-image"
           >
-            <Image
-              :size="24"
-              class="placeholder-icon"
-            />
+            <img
+              :src="getDownloadUrl(photo.file.id)"
+              alt="Gallery showcase"
+              class="gallery-image"
+            >
+            <div class="gallery-item-overlay">
+              <button
+                type="button"
+                class="delete-btn"
+                :disabled="deletingPhotoId === photo.file.id"
+                @click="deletePhoto(photo.file.id)"
+              >
+                <Loader2
+                  v-if="deletingPhotoId === photo.file.id"
+                  :size="14"
+                  class="spin"
+                />
+                <Trash2
+                  v-else
+                  :size="14"
+                />
+              </button>
+            </div>
           </div>
+          <!-- Empty Slots -->
           <div
             v-for="n in emptySlots"
             :key="`empty-${n}`"
@@ -163,6 +368,51 @@ function addPhotos() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Error banner ===== */
+.error-banner {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #7c1400;
+  background: #fde8e3;
+  border: 1px solid #f5bfb4;
+  border-radius: 12px;
+}
+
+.error-dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: #7c1400;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+}
+
+.error-dismiss:hover {
+  background: #f5bfb4;
+}
+
+/* ===== Loading ===== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
   color: var(--muted-foreground);
 }
 
@@ -207,7 +457,26 @@ function addPhotos() {
   color: var(--muted-foreground);
 }
 
-/* ===== Cover placeholder ===== */
+/* ===== Cover placeholder and Image ===== */
+.cover-container {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.cover-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: var(--accent);
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .cover-placeholder {
   display: flex;
   flex-direction: column;
@@ -216,8 +485,6 @@ function addPhotos() {
   justify-content: center;
   height: 180px;
   background: var(--accent);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
 }
 
 .placeholder-icon {
@@ -255,12 +522,17 @@ function addPhotos() {
     border-color 0.15s;
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .btn--primary {
   color: var(--primary-foreground);
   background: var(--primary);
 }
 
-.btn--primary:hover {
+.btn--primary:not(:disabled):hover {
   background: #4639d4;
 }
 
@@ -270,7 +542,7 @@ function addPhotos() {
   border: 1px solid var(--border);
 }
 
-.btn--outline:hover {
+.btn--outline:not(:disabled):hover {
   border-color: var(--primary);
 }
 
@@ -279,7 +551,7 @@ function addPhotos() {
   background: transparent;
 }
 
-.btn--ghost:hover {
+.btn--ghost:not(:disabled):hover {
   color: var(--foreground);
   background: var(--accent);
 }
@@ -305,14 +577,74 @@ function addPhotos() {
 }
 
 .gallery-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
   align-items: center;
   justify-content: center;
   height: 120px;
+  overflow: hidden;
   background: var(--accent);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-item-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 40%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.gallery-item:hover .gallery-item-overlay {
+  opacity: 1;
+}
+
+.delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  cursor: pointer;
+  background: rgb(204 51 20 / 80%);
+  border: none;
+  border-radius: 50%;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+.delete-btn:hover {
+  background: rgb(204 51 20 / 100%);
+  transform: scale(1.05);
+}
+
+.delete-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ===== Spin animation ===== */
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
