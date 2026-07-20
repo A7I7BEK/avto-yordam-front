@@ -20,6 +20,7 @@ import {
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
+import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
 import { members as rawMembers } from '@/data/members';
 import type { TeamMember } from '@/types/business';
 
@@ -171,9 +172,28 @@ function viewMember(id: string) {
   router.push(`/business/team/members/${id}`);
 }
 
-function removeMember(id: string) {
+// ── Remove modal ──────────────────────────────────────────
+const showRemoveModal = ref(false);
+const removeTarget = ref<TeamMember | null>(null);
+
+function openRemoveModal(id: string) {
   closeDropdown();
-  members.value = members.value.filter((m) => m.id !== id);
+  removeTarget.value = members.value.find((m) => m.id === id) ?? null;
+  showRemoveModal.value = true;
+}
+
+function confirmRemove() {
+  const target = removeTarget.value;
+  if (target) {
+    members.value = members.value.filter((m) => m.id !== target.id);
+  }
+  showRemoveModal.value = false;
+  removeTarget.value = null;
+}
+
+function cancelRemove() {
+  showRemoveModal.value = false;
+  removeTarget.value = null;
 }
 
 function onDocumentClick() {
@@ -537,7 +557,7 @@ function onInviteSend(data: {
           <button
             type="button"
             class="action-dropdown__item action-dropdown__item--danger"
-            @click="removeMember(openDropdownId)"
+            @click="openRemoveModal(openDropdownId)"
           >
             <Trash2 :size="15" />
             Remove member
@@ -552,6 +572,14 @@ function onInviteSend(data: {
       org-name="AutoFix MCHJ"
       @close="showInviteModal = false"
       @send="onInviteSend"
+    />
+
+    <RemoveMemberModal
+      :is-open="showRemoveModal"
+      :member-name="removeTarget?.name"
+      org-name="AutoFix MCHJ"
+      @cancel="cancelRemove"
+      @confirm="confirmRemove"
     />
   </div>
 </template>
