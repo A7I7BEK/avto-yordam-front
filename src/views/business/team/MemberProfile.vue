@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Clock, Pencil, Star, Trash2 } from '@lucide/vue';
+import { ArrowLeft, Clock, Pencil, Star, Trash2 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
@@ -18,6 +18,10 @@ const member = computed<TeamMember | null>(() => {
 });
 
 const activeTab = ref('Overview');
+
+function goBack() {
+  router.push('/business/team/members');
+}
 
 // ── Remove modal ──────────────────────────────────────────
 const showRemoveModal = ref(false);
@@ -47,11 +51,20 @@ function confirmRemove() {
     <!-- Header -->
     <div class="profile-header">
       <div class="profile-header__left">
-        <h1 class="profile-header__name">{{ member.name }}</h1>
-        <p class="profile-header__subtitle">
-          {{ member.role }}
-          · Joined {{ member.joined }}
-        </p>
+        <button
+          type="button"
+          class="profile-back-btn"
+          @click="goBack"
+        >
+          <ArrowLeft :size="16" />
+        </button>
+        <div>
+          <h1 class="profile-header__name">{{ member.name }}</h1>
+          <p class="profile-header__subtitle">
+            {{ member.role }}
+            · Joined {{ member.joined }}
+          </p>
+        </div>
       </div>
       <button
         type="button"
@@ -264,8 +277,26 @@ function confirmRemove() {
 }
 .profile-header__left {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  gap: 12px;
+  align-items: flex-start;
+}
+.profile-back-btn {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--foreground);
+  cursor: pointer;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: background 0.15s;
+}
+.profile-back-btn:hover {
+  background: var(--accent);
 }
 .profile-header__name {
   margin: 0;
