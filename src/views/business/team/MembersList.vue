@@ -232,10 +232,8 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 
       <!-- Status filter -->
       <div class="filter-pill">
-        <Filter :size="13" />
         <span class="filter-pill__label">Status:</span>
         <span class="filter-pill__value">{{ statusFilter }}</span>
-        <span class="filter-pill__count">{{ members.length }}</span>
         <select
           v-model="statusFilter"
           class="filter-pill__select"
@@ -599,31 +597,31 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 }
 
 .filter-search {
-  display: flex;
+  position: relative;
   flex: 1;
-  gap: 8px;
-  align-items: center;
-  padding: 8px 12px;
-  background: var(--accent);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
 }
 
 .filter-search__icon {
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 14px;
+  margin: auto;
   color: var(--muted-foreground);
 }
 
 .filter-search__input {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
+  width: 100%;
+  height: 34px;
+  padding-left: 34px;
   font-size: 12px;
   font-weight: 400;
+  line-height: 1;
   color: var(--foreground);
   outline: none;
-  background: transparent;
-  border: none;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
 }
 
 .filter-search__input::placeholder {
@@ -635,9 +633,11 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
   display: flex;
   gap: 6px;
   align-items: center;
-  padding: 8px 12px;
+  height: 34px;
+  padding: 0 12px;
   font-size: 12px;
   font-weight: 400;
+  line-height: 1;
   color: var(--muted-foreground);
   white-space: nowrap;
   cursor: pointer;
@@ -685,7 +685,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
   padding: 0 6px;
   font-size: 10px;
   font-weight: 600;
-  line-height: 18px;
+  line-height: 14px;
   color: var(--muted-foreground);
   background: var(--muted);
   border-radius: var(--radius-pill);
@@ -702,7 +702,6 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
    ============================================ */
 .data-table {
   width: 100%;
-  table-layout: fixed;
   border-spacing: 0;
   border-collapse: separate;
   background: var(--card);
