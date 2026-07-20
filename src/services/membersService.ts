@@ -5,9 +5,9 @@ import type { TeamMember } from '@/types/business';
 
 async function getMyOrgId(): Promise<string | null> {
   try {
-    const members = await apiClient.get('/organization-member/get-by-user');
-    if (members && members.length > 0) {
-      return members[0].organizationId;
+    const orgMembers = await apiClient.get('/organization-member/get-by-user');
+    if (orgMembers && orgMembers.length > 0) {
+      return orgMembers[0].organizationId;
     }
   } catch {
     /* no org members yet */
@@ -26,23 +26,26 @@ export async function getMembers(): Promise<TeamMember[]> {
   }
 
   try {
-    const members = await apiClient.get(
+    const apiMembers = await apiClient.get(
       `/organization-member/get-by-organization-id/${orgId}`,
     );
-    return members.map((m: any) => ({
+    return apiMembers.map((m: any) => ({
       id: m.id,
       name: m.userName || 'Unknown Member',
+      email: m.email || '',
       initials: (m.userName || 'UM')
         .split(' ')
         .map((n: string) => n[0])
         .join('')
         .toUpperCase()
         .slice(0, 2),
+      avatarColor: '#D9D9DB',
       role: m.role?.name || 'Employee',
-      org: m.organizationName || 'Auto Yordam',
-      phone: '',
-      status: 'Active' as const,
-      avatarColor: '#2A2933',
+      specialties: m.specialties || [],
+      rating: m.rating || 0,
+      orders: m.orders || 0,
+      status: m.status || 'Accepted',
+      joined: m.joined || '',
     }));
   } catch {
     return [];
