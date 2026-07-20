@@ -19,8 +19,10 @@ import {
 } from '@lucide/vue';
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import CopyInviteLinkModal from '@/components/business/CopyInviteLinkModal.vue';
 import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
 import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
+import ResendInvitationModal from '@/components/business/ResendInvitationModal.vue';
 import { members as rawMembers } from '@/data/members';
 import type { TeamMember } from '@/types/business';
 
@@ -194,6 +196,41 @@ function confirmRemove() {
 function cancelRemove() {
   showRemoveModal.value = false;
   removeTarget.value = null;
+}
+
+// ── Resend invitation modal ───────────────────────────────
+const showResendModal = ref(false);
+const resendTarget = ref<TeamMember | null>(null);
+
+function openResendModal(id: string) {
+  closeDropdown();
+  resendTarget.value = members.value.find((m) => m.id === id) ?? null;
+  showResendModal.value = true;
+}
+
+function confirmResend() {
+  showResendModal.value = false;
+  resendTarget.value = null;
+}
+
+function cancelResend() {
+  showResendModal.value = false;
+  resendTarget.value = null;
+}
+
+// ── Copy invite link modal ────────────────────────────────
+const showCopyLinkModal = ref(false);
+const copyLinkTarget = ref<TeamMember | null>(null);
+
+function openCopyLinkModal(id: string) {
+  closeDropdown();
+  copyLinkTarget.value = members.value.find((m) => m.id === id) ?? null;
+  showCopyLinkModal.value = true;
+}
+
+function closeCopyLinkModal() {
+  showCopyLinkModal.value = false;
+  copyLinkTarget.value = null;
 }
 
 function onDocumentClick() {
@@ -542,6 +579,7 @@ function onInviteSend(data: {
           <button
             type="button"
             class="action-dropdown__item"
+            @click="openResendModal(openDropdownId)"
           >
             <Send :size="15" />
             Resend invitation
@@ -549,6 +587,7 @@ function onInviteSend(data: {
           <button
             type="button"
             class="action-dropdown__item"
+            @click="openCopyLinkModal(openDropdownId)"
           >
             <Link :size="15" />
             Copy invite link
@@ -580,6 +619,20 @@ function onInviteSend(data: {
       org-name="AutoFix MCHJ"
       @cancel="cancelRemove"
       @confirm="confirmRemove"
+    />
+
+    <ResendInvitationModal
+      :is-open="showResendModal"
+      :member-name="resendTarget?.name"
+      :member-email="resendTarget?.email"
+      @cancel="cancelResend"
+      @confirm="confirmResend"
+    />
+
+    <CopyInviteLinkModal
+      :is-open="showCopyLinkModal"
+      :member-name="copyLinkTarget?.name"
+      @cancel="closeCopyLinkModal"
     />
   </div>
 </template>
