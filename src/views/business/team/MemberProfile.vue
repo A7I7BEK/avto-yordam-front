@@ -108,9 +108,10 @@ function removeMember() {
           <span
             class="badge badge--status"
             :class="{
-              'badge--success': member.status === 'Active',
-              'badge--muted': member.status === 'Inactive',
-              'badge--warning': member.status === 'Pending',
+              'badge--accepted': member.status === 'Accepted',
+              'badge--invited': member.status === 'Invited',
+              'badge--declined': member.status === 'Declined',
+              'badge--expired': member.status === 'Expired',
             }"
           >
             {{ member.status }}
@@ -124,12 +125,8 @@ function removeMember() {
           <span class="detail-row__value">{{ member.name }}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-row__label">Phone</span>
-          <span class="detail-row__value">{{ member.phone }}</span>
-        </div>
-        <div class="detail-row">
           <span class="detail-row__label">Email</span>
-          <span class="detail-row__value">—</span>
+          <span class="detail-row__value">{{ member.email || '—' }}</span>
         </div>
         <div class="detail-row">
           <span class="detail-row__label">Role</span>
@@ -138,8 +135,26 @@ function removeMember() {
           </span>
         </div>
         <div class="detail-row">
-          <span class="detail-row__label">Organization</span>
-          <span class="detail-row__value">{{ member.org }}</span>
+          <span class="detail-row__label">Specialties</span>
+          <span class="detail-row__value">
+            <span
+              v-for="spec in member.specialties"
+              :key="spec"
+              class="badge badge--role"
+              style="margin-right: 4px"
+            >
+              {{ spec }}
+            </span>
+            <span v-if="member.specialties.length === 0">—</span>
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Rating</span>
+          <span class="detail-row__value">{{ member.rating.toFixed(1) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Orders completed</span>
+          <span class="detail-row__value">{{ member.orders }}</span>
         </div>
         <div class="detail-row">
           <span class="detail-row__label">Status</span>
@@ -147,9 +162,10 @@ function removeMember() {
             <span
               class="badge badge--status"
               :class="{
-                'badge--success': member.status === 'Active',
-                'badge--muted': member.status === 'Inactive',
-                'badge--warning': member.status === 'Pending',
+                'badge--accepted': member.status === 'Accepted',
+                'badge--invited': member.status === 'Invited',
+                'badge--declined': member.status === 'Declined',
+                'badge--expired': member.status === 'Expired',
               }"
             >
               {{ member.status }}
@@ -158,7 +174,7 @@ function removeMember() {
         </div>
         <div class="detail-row">
           <span class="detail-row__label">Joined date</span>
-          <span class="detail-row__value">—</span>
+          <span class="detail-row__value">{{ member.joined }}</span>
         </div>
       </div>
     </div>
@@ -356,18 +372,23 @@ function removeMember() {
   font-weight: 600;
 }
 
-.badge--success {
-  color: var(--success);
-  background: var(--success-bg);
+.badge--accepted {
+  color: var(--color-success-foreground);
+  background: var(--color-success);
 }
 
-.badge--muted {
+.badge--invited {
+  color: var(--color-warning-foreground);
+  background: var(--color-warning);
+}
+
+.badge--declined {
+  color: var(--color-error-foreground);
+  background: var(--color-error);
+}
+
+.badge--expired {
   color: var(--muted-foreground);
-  background: var(--accent);
-}
-
-.badge--warning {
-  color: var(--warning);
-  background: var(--warning-bg);
+  background: var(--muted);
 }
 </style>

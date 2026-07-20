@@ -22,12 +22,15 @@ export interface Employee {
 export interface TeamMember {
   id: string;
   name: string;
+  email: string;
   initials: string;
-  role: string;
-  org: string;
-  phone: string;
-  status: MemberStatus;
   avatarColor: string;
+  role: string;
+  specialties: string[];
+  rating: number;
+  orders: number;
+  status: 'Accepted' | 'Invited' | 'Declined' | 'Expired';
+  joined: string;
 }
 
 export interface Order {
