@@ -19,6 +19,7 @@ import {
 } from '@lucide/vue';
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
 import { members as rawMembers } from '@/data/members';
 import type { TeamMember } from '@/types/business';
 
@@ -181,6 +182,49 @@ function onDocumentClick() {
 
 onMounted(() => document.addEventListener('click', onDocumentClick));
 onUnmounted(() => document.removeEventListener('click', onDocumentClick));
+
+// ── Invite modal ──────────────────────────────────────────
+const showInviteModal = ref(false);
+
+function onInviteSend(data: {
+  contactMethod: 'phone' | 'email';
+  phone: string;
+  email: string;
+  role: string;
+  message: string;
+}) {
+  showInviteModal.value = false;
+  const emailAddr =
+    data.contactMethod === 'email'
+      ? data.email
+      : `user${members.value.length + 1}@autofix.uz`;
+  const displayName =
+    data.contactMethod === 'email'
+      ? (data.email.split('@')[0] ?? '')
+          .replace(/[^a-zA-Z]/g, ' ')
+          .replace(/\b\w/g, (c) => c.toUpperCase()) || 'New Member'
+      : 'New Member';
+  const displayInitials = displayName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
+  members.value.push({
+    id: `m${members.value.length + 1}`,
+    name: displayName,
+    email: emailAddr,
+    initials: displayInitials || 'NM',
+    avatarColor: '#D9D9DB',
+    role: data.role,
+    specialties: [],
+    rating: 0,
+    orders: 0,
+    status: 'Invited',
+    joined: 'Just now',
+  });
+}
 </script>
 
 <template>
@@ -207,7 +251,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
         <button
           type="button"
           class="btn btn--primary"
-          @click="router.push('/business/team/members/invite')"
+          @click="showInviteModal = true"
         >
           <UserPlus :size="14" />
           Invite member
@@ -501,6 +545,14 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
         </div>
       </div>
     </Teleport>
+
+    <!-- Invite Member Modal -->
+    <InviteMemberModal
+      :is-open="showInviteModal"
+      org-name="AutoFix MCHJ"
+      @close="showInviteModal = false"
+      @send="onInviteSend"
+    />
   </div>
 </template>
 

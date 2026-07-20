@@ -18,6 +18,9 @@
   --info-bg: #c9d6f0;
 
   /* Halo Design System Colors */
+  --card: #ffffff;
+  --card-foreground: #2a2933;
+  --input: #c5c5cb;
   --secondary: #d9d9db;
   --secondary-foreground: #2a2933;
   --muted: #f5f5f5;
