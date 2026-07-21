@@ -19,6 +19,10 @@ import {
 } from '@lucide/vue';
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import CopyInviteLinkModal from '@/components/business/CopyInviteLinkModal.vue';
+import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
+import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
+import ResendInvitationModal from '@/components/business/ResendInvitationModal.vue';
 import { members as rawMembers } from '@/data/members';
 import type { TeamMember } from '@/types/business';
 
@@ -170,9 +174,63 @@ function viewMember(id: string) {
   router.push(`/business/team/members/${id}`);
 }
 
-function removeMember(id: string) {
+// ── Remove modal ──────────────────────────────────────────
+const showRemoveModal = ref(false);
+const removeTarget = ref<TeamMember | null>(null);
+
+function openRemoveModal(id: string) {
   closeDropdown();
-  members.value = members.value.filter((m) => m.id !== id);
+  removeTarget.value = members.value.find((m) => m.id === id) ?? null;
+  showRemoveModal.value = true;
+}
+
+function confirmRemove() {
+  const target = removeTarget.value;
+  if (target) {
+    members.value = members.value.filter((m) => m.id !== target.id);
+  }
+  showRemoveModal.value = false;
+  removeTarget.value = null;
+}
+
+function cancelRemove() {
+  showRemoveModal.value = false;
+  removeTarget.value = null;
+}
+
+// ── Resend invitation modal ───────────────────────────────
+const showResendModal = ref(false);
+const resendTarget = ref<TeamMember | null>(null);
+
+function openResendModal(id: string) {
+  closeDropdown();
+  resendTarget.value = members.value.find((m) => m.id === id) ?? null;
+  showResendModal.value = true;
+}
+
+function confirmResend() {
+  showResendModal.value = false;
+  resendTarget.value = null;
+}
+
+function cancelResend() {
+  showResendModal.value = false;
+  resendTarget.value = null;
+}
+
+// ── Copy invite link modal ────────────────────────────────
+const showCopyLinkModal = ref(false);
+const copyLinkTarget = ref<TeamMember | null>(null);
+
+function openCopyLinkModal(id: string) {
+  closeDropdown();
+  copyLinkTarget.value = members.value.find((m) => m.id === id) ?? null;
+  showCopyLinkModal.value = true;
+}
+
+function closeCopyLinkModal() {
+  showCopyLinkModal.value = false;
+  copyLinkTarget.value = null;
 }
 
 function onDocumentClick() {
@@ -181,6 +239,49 @@ function onDocumentClick() {
 
 onMounted(() => document.addEventListener('click', onDocumentClick));
 onUnmounted(() => document.removeEventListener('click', onDocumentClick));
+
+// ── Invite modal ──────────────────────────────────────────
+const showInviteModal = ref(false);
+
+function onInviteSend(data: {
+  contactMethod: 'phone' | 'email';
+  phone: string;
+  email: string;
+  role: string;
+  message: string;
+}) {
+  showInviteModal.value = false;
+  const emailAddr =
+    data.contactMethod === 'email'
+      ? data.email
+      : `user${members.value.length + 1}@autofix.uz`;
+  const displayName =
+    data.contactMethod === 'email'
+      ? (data.email.split('@')[0] ?? '')
+          .replace(/[^a-zA-Z]/g, ' ')
+          .replace(/\b\w/g, (c) => c.toUpperCase()) || 'New Member'
+      : 'New Member';
+  const displayInitials = displayName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
+  members.value.push({
+    id: `m${members.value.length + 1}`,
+    name: displayName,
+    email: emailAddr,
+    initials: displayInitials || 'NM',
+    avatarColor: '#D9D9DB',
+    role: data.role,
+    specialties: [],
+    rating: 0,
+    orders: 0,
+    status: 'Invited',
+    joined: 'Just now',
+  });
+}
 </script>
 
 <template>
@@ -207,7 +308,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
         <button
           type="button"
           class="btn btn--primary"
-          @click="router.push('/business/team/members/invite')"
+          @click="showInviteModal = true"
         >
           <UserPlus :size="14" />
           Invite member
@@ -478,6 +579,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
           <button
             type="button"
             class="action-dropdown__item"
+            @click="openResendModal(openDropdownId)"
           >
             <Send :size="15" />
             Resend invitation
@@ -485,6 +587,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
           <button
             type="button"
             class="action-dropdown__item"
+            @click="openCopyLinkModal(openDropdownId)"
           >
             <Link :size="15" />
             Copy invite link
@@ -493,7 +596,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
           <button
             type="button"
             class="action-dropdown__item action-dropdown__item--danger"
-            @click="removeMember(openDropdownId)"
+            @click="openRemoveModal(openDropdownId)"
           >
             <Trash2 :size="15" />
             Remove member
@@ -501,6 +604,36 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
         </div>
       </div>
     </Teleport>
+
+    <!-- Invite Member Modal -->
+    <InviteMemberModal
+      :is-open="showInviteModal"
+      org-name="AutoFix MCHJ"
+      @close="showInviteModal = false"
+      @send="onInviteSend"
+    />
+
+    <RemoveMemberModal
+      :is-open="showRemoveModal"
+      :member-name="removeTarget?.name"
+      org-name="AutoFix MCHJ"
+      @cancel="cancelRemove"
+      @confirm="confirmRemove"
+    />
+
+    <ResendInvitationModal
+      :is-open="showResendModal"
+      :member-name="resendTarget?.name"
+      :member-email="resendTarget?.email"
+      @cancel="cancelResend"
+      @confirm="confirmResend"
+    />
+
+    <CopyInviteLinkModal
+      :is-open="showCopyLinkModal"
+      :member-name="copyLinkTarget?.name"
+      @cancel="closeCopyLinkModal"
+    />
   </div>
 </template>
 
