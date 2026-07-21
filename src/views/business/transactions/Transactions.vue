@@ -187,6 +187,8 @@ function statusClass(status: string): string {
     <div class="filter-bar">
       <div class="filter-pill">
         <span class="filter-label">Status:</span>
+        <span class="filter-value">{{ statusFilter || 'All' }}</span>
+        <ChevronDown :size="12" />
         <select
           v-model="statusFilter"
           class="filter-select"
@@ -200,10 +202,11 @@ function statusClass(status: string): string {
             {{ s }}
           </option>
         </select>
-        <ChevronDown :size="12" />
       </div>
       <div class="filter-pill">
         <span class="filter-label">Provider:</span>
+        <span class="filter-value">{{ providerFilter || 'All' }}</span>
+        <ChevronDown :size="12" />
         <select
           v-model="providerFilter"
           class="filter-select"
@@ -217,7 +220,6 @@ function statusClass(status: string): string {
             {{ p }}
           </option>
         </select>
-        <ChevronDown :size="12" />
       </div>
       <div class="filter-pill">
         <ChevronDown :size="12" />
@@ -441,6 +443,7 @@ function statusClass(status: string): string {
 }
 
 .filter-pill {
+  position: relative;
   display: flex;
   gap: 6px;
   align-items: center;
@@ -458,23 +461,27 @@ function statusClass(status: string): string {
   color: var(--muted-foreground);
 }
 
-.filter-select {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--foreground);
-  appearance: none;
-  cursor: pointer;
-  outline: none;
-  background: transparent;
-  border: none;
-}
-
 .filter-value {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
   color: var(--foreground);
+}
+
+.filter-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: transparent;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-pill);
 }
 
 /* ===== Table card ===== */
