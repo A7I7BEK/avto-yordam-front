@@ -4708,42 +4708,6 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "a9nEu",
-                      "name": "s39crumb",
-                      "gap": 6,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "E9BATh",
-                          "fill": "$--muted-foreground",
-                          "content": "Finance",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "eEujK",
-                          "width": 12,
-                          "height": 12,
-                          "icon": "chevron-right",
-                          "library": "lucide",
-                          "fill": "$--muted-foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "KbuhF",
-                          "fill": "$--foreground",
-                          "content": "Earnings",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
                       "id": "u8ltzT",
                       "name": "s39head",
                       "width": "fill_container",
