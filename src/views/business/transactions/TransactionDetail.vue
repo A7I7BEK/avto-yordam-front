@@ -2,38 +2,64 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, ExternalLink } from '@lucide/vue';
-import { onMounted, ref } from 'vue';
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  CheckCircle2,
+  ExternalLink,
+  Info,
+  Undo2,
+} from '@lucide/vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getTransactionDetail } from '@/services/transactionsService';
+
+interface TimelineItem {
+  title: string;
+  description: string;
+  time: string;
+  isLast: boolean;
+}
 
 interface TransactionDetailData {
   id: string;
   orderId: string;
+  orderTitle: string;
   customerName: string;
   customerInitials: string;
   amount: number;
   amountFormatted: string;
   provider: string;
-  providerDot: string;
-  providerBg: string;
+  providerColor: string;
   status: string;
   date: string;
-  service: string;
-  masterName: string;
-  description: string;
+  time: string;
+  providerTransactionId: string;
+  merchantId: string;
+  payerName: string;
+  payerPhone: string;
+  cardType: string;
+  cardLast4: string;
+  receiptUrl: string;
+  feePercentage: string;
+  feeAmount: string;
+  netAmount: string;
+  platformFee: string;
+  platformFeePct: string;
+  providerFee: string;
+  providerFeePct: string;
+  netPayout: string;
+  settlementDate: string;
+  completedDate: string;
+  completedTime: string;
+  initiatedTime: string;
+  timeline: TimelineItem[];
 }
 
 const route = useRoute();
 const router = useRouter();
 const detail = ref<TransactionDetailData | null>(null);
 const loading = ref(true);
-
-onMounted(async () => {
-  const id = route.params.id as string;
-  detail.value = await getTransactionDetail(id);
-  loading.value = false;
-});
 
 function goBack() {
   router.push('/business/transactions');
@@ -42,47 +68,47 @@ function goBack() {
 function statusClass(status: string): string {
   switch (status) {
     case 'Paid':
-      return 'badge--success';
-    case 'Pending':
-      return 'badge--warning';
-    case 'Failed':
-      return 'badge--danger';
     case 'Collected':
-      return 'badge--info';
+      return 'status-badge--success';
+    case 'Pending':
+      return 'status-badge--warning';
+    case 'Failed':
+      return 'status-badge--error';
     default:
       return '';
   }
 }
+
+const statusIcon = computed(() => {
+  const s = detail.value?.status;
+  if (s === 'Paid' || s === 'Collected') {
+    return CheckCircle2;
+  }
+  return CheckCircle2;
+});
+
+onMounted(async () => {
+  try {
+    const id = route.params.id as string;
+    detail.value = (await getTransactionDetail(id)) as TransactionDetailData;
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <template>
   <div class="detail-page">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <span class="breadcrumb__item">Finance</span>
-      <span class="breadcrumb__separator">-</span>
-      <router-link
-        to="/business/transactions"
-        class="breadcrumb__item breadcrumb__link"
-        >Transactions</router-link
-      >
-      <span class="breadcrumb__separator">-</span>
-      <span class="breadcrumb__item breadcrumb__item--active"
-        >{{ detail?.id ?? route.params.id }}</span
-      >
-    </nav>
-
-    <!-- Back Button -->
+    <!-- Back button -->
     <button
       type="button"
-      class="back-btn"
+      class="detail-back-btn"
       @click="goBack"
     >
-      <ArrowLeft :size="18" />
-      <span>Back</span>
+      <ArrowLeft :size="16" />
     </button>
 
-    <!-- Loading State -->
+    <!-- Loading -->
     <div
       v-if="loading"
       class="loading"
@@ -90,353 +116,678 @@ function statusClass(status: string): string {
       Loading transaction details...
     </div>
 
-    <!-- Detail Card -->
+    <!-- Not found -->
     <div
-      v-else-if="detail"
-      class="detail-card"
+      v-else-if="!detail"
+      class="loading"
     >
-      <div class="detail-card__header">
-        <h1 class="detail-card__title">Transaction {{ detail.id }}</h1>
-        <span
-          class="badge detail-card__status"
-          :class="statusClass(detail.status)"
-        >
-          {{ detail.status }}
-        </span>
-      </div>
+      Transaction not found
+    </div>
 
-      <div class="detail-card__divider" />
-
+    <!-- Content -->
+    <template v-else>
       <div class="detail-grid">
-        <div class="detail-row">
-          <span class="detail-row__label">Transaction ID</span>
-          <span class="detail-row__value detail-row__value--mono"
-            >{{ detail.id }}</span
-          >
-        </div>
-        <div class="detail-row">
-          <span class="detail-row__label">Order</span>
-          <router-link
-            :to="`/business/orders/${detail.orderId}`"
-            class="detail-row__value detail-row__value--link"
-          >
-            {{ detail.orderId }}
-            <ExternalLink :size="14" />
-          </router-link>
-        </div>
-        <div class="detail-row">
-          <span class="detail-row__label">Customer</span>
-          <div class="customer-info">
-            <div
-              class="avatar"
-              :style="{ background: '#5749F4' }"
-            >
-              {{ detail.customerInitials }}
+        <!-- Left Column -->
+        <div class="detail-left">
+          <!-- Header -->
+          <div class="detail-header">
+            <div class="detail-header__left">
+              <div class="detail-header__title-row">
+                <h1 class="detail-header__id">{{ detail.id }}</h1>
+                <span
+                  class="status-badge"
+                  :class="statusClass(detail.status)"
+                >
+                  <component
+                    :is="statusIcon"
+                    :size="11"
+                  />
+                  {{ detail.status }}
+                </span>
+              </div>
+              <p class="detail-header__meta">
+                Initiated {{ detail.date }} • {{ detail.time }} • Order
+                {{ detail.orderId }}
+              </p>
             </div>
-            <span>{{ detail.customerName }}</span>
-          </div>
-        </div>
-        <div class="detail-row">
-          <span class="detail-row__label">Amount</span>
-          <span class="detail-row__value detail-row__value--amount"
-            >{{ detail.amountFormatted }}</span
-          >
-        </div>
-        <div class="detail-row">
-          <span class="detail-row__label">Provider</span>
-          <div class="provider-info">
-            <span
-              class="provider-dot"
-              :style="{ background: detail.providerDot }"
-            />
-            <span
-              class="provider-badge"
-              :style="{ background: detail.providerBg }"
-              >{{ detail.provider }}</span
+            <button
+              type="button"
+              class="btn-refund"
             >
+              <Undo2 :size="14" />
+              Refund
+            </button>
+          </div>
+
+          <!-- Provider response card -->
+          <div class="info-card">
+            <h2 class="info-card__title">Provider response</h2>
+            <div class="info-rows">
+              <div class="info-row">
+                <span class="info-row__label">Provider</span>
+                <span class="info-row__value">
+                  <span class="provider-pill">
+                    <span
+                      class="provider-dot"
+                      :style="{ background: detail.providerColor }"
+                    />
+                    {{ detail.provider }}
+                  </span>
+                </span>
+              </div>
+              <div class="info-row">
+                <span class="info-row__label">Provider transaction ID</span>
+                <span class="info-row__value info-row__value--mono"
+                  >{{ detail.providerTransactionId }}</span
+                >
+              </div>
+              <div class="info-row">
+                <span class="info-row__label">Merchant ID</span>
+                <span class="info-row__value info-row__value--mono"
+                  >{{ detail.merchantId }}</span
+                >
+              </div>
+              <div class="info-row">
+                <span class="info-row__label">Payer</span>
+                <span class="info-row__value"
+                  >{{ detail.payerName }}
+                  • {{ detail.payerPhone }}</span
+                >
+              </div>
+              <div class="info-row">
+                <span class="info-row__label">Card</span>
+                <span class="info-row__value"
+                  >{{ detail.cardType }}
+                  •••• {{ detail.cardLast4 }}</span
+                >
+              </div>
+              <div class="info-row">
+                <span class="info-row__label">Receipt</span>
+                <span class="info-row__value">
+                  <a
+                    :href="detail.receiptUrl"
+                    class="receipt-link"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Open in {{ detail.provider }}
+                    <ExternalLink :size="11" />
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline card -->
+          <div class="info-card">
+            <h2 class="info-card__title">Timeline</h2>
+            <div class="timeline">
+              <div
+                v-for="(item, i) in detail.timeline"
+                :key="i"
+                class="timeline-item"
+                :class="{ 'timeline-item--last': item.isLast }"
+              >
+                <div class="timeline-item__dot-line">
+                  <div class="timeline-dot" />
+                  <div
+                    v-if="!item.isLast"
+                    class="timeline-line"
+                  />
+                </div>
+                <div class="timeline-item__content">
+                  <span class="timeline-item__title">{{ item.title }}</span>
+                  <span class="timeline-item__desc"
+                    >{{ item.description }}
+                    • {{ item.time }}</span
+                  >
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="detail-row">
-          <span class="detail-row__label">Date</span>
-          <span class="detail-row__value">{{ detail.date }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-row__label">Service</span>
-          <span class="detail-row__value">{{ detail.service }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-row__label">Master</span>
-          <span class="detail-row__value">{{ detail.masterName }}</span>
-        </div>
-        <div class="detail-row detail-row--full">
-          <span class="detail-row__label">Description</span>
-          <span class="detail-row__value">{{ detail.description }}</span>
+
+        <!-- Right Column - Summary -->
+        <div class="detail-right">
+          <div class="summary-card">
+            <span class="summary-card__label">Summary</span>
+            <span class="summary-card__amount"
+              >{{ detail.amountFormatted }}</span
+            >
+            <div class="summary-card__status">
+              <span class="summary-card__status-label">Status</span>
+              <span
+                class="status-badge"
+                :class="statusClass(detail.status)"
+              >
+                {{ detail.status }}
+              </span>
+            </div>
+            <div class="summary-card__row">
+              <span class="summary-card__row-label">Fee</span>
+              <span class="summary-card__row-value"
+                >{{ detail.feePercentage }}
+                • {{ detail.feeAmount }}</span
+              >
+            </div>
+            <div class="summary-card__row">
+              <span class="summary-card__row-label">Net</span>
+              <span class="summary-card__row-value"
+                >{{ detail.netAmount }}</span
+              >
+            </div>
+            <div class="summary-card__divider" />
+            <div class="summary-card__section">
+              <span class="summary-card__section-label">Related order</span>
+              <a
+                class="summary-card__order-link"
+                href="#"
+              >
+                {{ detail.orderId }}
+                — {{ detail.orderTitle }}
+                <ArrowUpRight :size="12" />
+              </a>
+            </div>
+            <div class="summary-card__section">
+              <span class="summary-card__section-label">Initiated</span>
+              <span class="summary-card__section-value"
+                >{{ detail.date }}
+                • {{ detail.initiatedTime }}</span
+              >
+            </div>
+            <div class="summary-card__section">
+              <span class="summary-card__section-label">Completed</span>
+              <span class="summary-card__section-value"
+                >{{ detail.completedDate }}
+                • {{ detail.completedTime }}</span
+              >
+            </div>
+            <div class="summary-card__section">
+              <span class="summary-card__section-label">Settlement date</span>
+              <span class="summary-card__section-value"
+                >{{ detail.settlementDate }}
+                (T+2)</span
+              >
+            </div>
+            <div class="summary-card__section">
+              <span class="summary-card__section-label"
+                >Provider fee ({{ detail.providerFeePct }})</span
+              >
+              <span class="summary-card__section-value"
+                >−{{ detail.providerFee }}</span
+              >
+            </div>
+            <div class="summary-card__section">
+              <span class="summary-card__section-label"
+                >Platform fee ({{ detail.platformFeePct }})</span
+              >
+              <span class="summary-card__section-value"
+                >−{{ detail.platformFee }}</span
+              >
+            </div>
+            <div class="summary-card__section summary-card__section--net">
+              <span
+                class="summary-card__section-label summary-card__section-label--net"
+                >Net payout</span
+              >
+              <span
+                class="summary-card__section-value summary-card__section-value--net"
+                >{{ detail.netPayout }}</span
+              >
+            </div>
+          </div>
+
+          <!-- Refunds notice -->
+          <div class="info-notice">
+            <Info :size="16" />
+            <div class="info-notice__text">
+              <span class="info-notice__title">Refunds coming soon</span>
+              <span class="info-notice__desc"
+                >Automated refund processing will be available in the next
+                update.</span
+              >
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Back Link -->
-    <div class="back-link-wrapper">
-      <router-link
-        to="/business/transactions"
-        class="back-link"
-      >
-        <ArrowLeft :size="16" />
-        <span>Back to transactions</span>
-      </router-link>
-    </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
+/* ===== Page layout ===== */
 .detail-page {
   padding: 24px 32px;
-  font-family: var(--font-primary);
-  color: var(--foreground);
 }
 
-/* Breadcrumb */
-.breadcrumb {
+/* ===== Back button ===== */
+.detail-back-btn {
   display: flex;
-  gap: 8px;
+  flex-shrink: 0;
   align-items: center;
-  margin-bottom: 20px;
-  font-size: 13px;
-}
-
-.breadcrumb__item {
-  color: var(--muted-foreground);
-  text-decoration: none;
-}
-
-.breadcrumb__link {
-  color: var(--primary);
-  cursor: pointer;
-}
-
-.breadcrumb__link:hover {
-  text-decoration: underline;
-}
-
-.breadcrumb__item--active {
-  font-weight: 500;
-  color: var(--foreground);
-}
-
-.breadcrumb__separator {
-  color: var(--muted-icon);
-}
-
-/* Back Button */
-.back-btn {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  padding: 6px 14px;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   margin-bottom: 24px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
   color: var(--foreground);
   cursor: pointer;
-  background: var(--background);
+  background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   transition: background 0.15s;
 }
 
-.back-btn:hover {
+.detail-back-btn:hover {
   background: var(--accent);
 }
 
-/* Loading */
+/* ===== Loading ===== */
 .loading {
   padding: 40px 0;
+  font-family: Inter, sans-serif;
   font-size: 14px;
   color: var(--muted-foreground);
   text-align: center;
 }
 
-/* Detail Card */
-.detail-card {
-  max-width: 720px;
-  padding: 28px;
-  background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+/* ===== Two-column grid ===== */
+.detail-grid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
 }
 
-.detail-card__header {
+.detail-left {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.detail-right {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 16px;
+  width: 30%;
+}
+
+/* ===== Header ===== */
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.detail-header__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-header__title-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.detail-header__id {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.detail-header__meta {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Refund button ===== */
+.btn-refund {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: opacity 0.15s;
+}
+
+.btn-refund:hover {
+  opacity: 0.8;
+}
+
+/* ===== Info card ===== */
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+.info-card__title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* ===== Info rows ===== */
+.info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-row {
   display: flex;
   gap: 16px;
   align-items: center;
   justify-content: space-between;
 }
 
-.detail-card__title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--foreground);
-}
-
-.detail-card__status {
-  padding: 4px 14px;
-  font-size: 13px;
-}
-
-.detail-card__divider {
-  height: 1px;
-  margin: 20px 0;
-  background: var(--border);
-}
-
-/* Detail Grid */
-.detail-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.detail-row {
-  display: flex;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.detail-row:last-child {
-  border-bottom: none;
-}
-
-.detail-row--full {
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
-}
-
-.detail-row__label {
-  flex-shrink: 0;
-  width: 140px;
-  font-size: 13px;
-  color: var(--muted-foreground);
-}
-
-.detail-row__value {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  font-size: 13px;
-  color: var(--foreground);
-}
-
-.detail-row__value--mono {
-  font-family: "SF Mono", "Fira Code", monospace;
+.info-row__label {
+  font-family: Inter, sans-serif;
   font-size: 12px;
+  font-weight: 400;
   color: var(--muted-foreground);
+  white-space: nowrap;
 }
 
-.detail-row__value--link {
+.info-row__value {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--primary);
-  text-decoration: none;
+  color: var(--foreground);
+  text-align: right;
 }
 
-.detail-row__value--link:hover {
-  text-decoration: underline;
+.info-row__value--mono {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 11px;
+  word-break: break-all;
 }
 
-.detail-row__value--amount {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-/* Customer Info */
-.customer-info {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.avatar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  font-size: 10px;
-  font-weight: 600;
-  color: #ffffff;
-  border-radius: 50%;
-}
-
-/* Provider Info */
-.provider-info {
-  display: flex;
+/* ===== Provider pill ===== */
+.provider-pill {
+  display: inline-flex;
   gap: 6px;
   align-items: center;
+  padding: 3px 8px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-info-foreground);
+  background: var(--color-info);
+  border-radius: var(--radius-pill);
 }
 
 .provider-dot {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.provider-badge {
-  padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 500;
+  width: 6px;
+  height: 6px;
   border-radius: var(--radius-pill);
 }
 
-/* Badge */
-.badge {
-  display: inline-block;
-  padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 500;
-  border-radius: var(--radius-pill);
-}
-
-.badge--success {
-  color: var(--success);
-  background: var(--success-bg);
-}
-
-.badge--warning {
-  color: var(--warning);
-  background: var(--warning-bg);
-}
-
-.badge--danger {
-  color: var(--destructive);
-  background: #fee8e3;
-}
-
-.badge--info {
-  color: var(--muted-foreground);
-  background: var(--accent);
-}
-
-/* Back Link */
-.back-link-wrapper {
-  margin-top: 24px;
-}
-
-.back-link {
+/* ===== Receipt link ===== */
+.receipt-link {
   display: inline-flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
-  font-size: 13px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
   font-weight: 500;
   color: var(--primary);
   text-decoration: none;
 }
 
-.back-link:hover {
+.receipt-link:hover {
   text-decoration: underline;
+}
+
+/* ===== Timeline ===== */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 12px;
+}
+
+.timeline-item__dot-line {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  width: 20px;
+}
+
+.timeline-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  background: var(--color-success-foreground);
+  border-radius: var(--radius-pill);
+}
+
+.timeline-item--last .timeline-dot {
+  background: var(--primary);
+}
+
+.timeline-line {
+  flex: 1;
+  width: 1px;
+  min-height: 32px;
+  background: var(--border);
+}
+
+.timeline-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline-item__title {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.timeline-item__desc {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+/* ===== Status badge ===== */
+.status-badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+.status-badge--success {
+  color: var(--color-success-foreground);
+  background: var(--color-success);
+}
+
+.status-badge--warning {
+  color: var(--color-warning-foreground);
+  background: var(--color-warning);
+}
+
+.status-badge--error {
+  color: var(--color-error-foreground);
+  background: var(--color-error);
+}
+
+/* ===== Summary card ===== */
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+.summary-card__label {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.summary-card__amount {
+  font-family: Inter, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.summary-card__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-card__status-label {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.summary-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-card__row-label {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.summary-card__row-value {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.summary-card__divider {
+  height: 1px;
+  background: var(--border);
+}
+
+.summary-card__section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summary-card__section-label {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.summary-card__section-value {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.summary-card__order-link {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.summary-card__order-link:hover {
+  text-decoration: underline;
+}
+
+.summary-card__section--net {
+  margin-top: 4px;
+}
+
+.summary-card__section-label--net {
+  font-weight: 600;
+}
+
+.summary-card__section-value--net {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ===== Info notice ===== */
+.info-notice {
+  display: flex;
+  gap: 10px;
+  padding: 14px 16px;
+  color: var(--color-info-foreground);
+  background: var(--color-info);
+  border-radius: var(--radius-xl);
+}
+
+.info-notice__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-notice__title {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.info-notice__desc {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.8;
 }
 </style>
