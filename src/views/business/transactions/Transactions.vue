@@ -33,8 +33,22 @@ const transactions = ref<Transaction[]>([]);
 const loading = ref(true);
 const statusFilter = ref('');
 const providerFilter = ref('');
+const dateFilter = ref('');
 const currentPage = ref(1);
 const pageSize = 6;
+
+const dateOptions = [
+  { label: 'All time', value: '' },
+  { label: 'Today', value: 'today' },
+  { label: 'Yesterday', value: 'yesterday' },
+  { label: 'This week', value: 'this-week' },
+  { label: 'Last week', value: 'last-week' },
+  { label: 'This month', value: 'this-month' },
+  { label: 'Last month', value: 'last-month' },
+  { label: 'This year', value: 'this-year' },
+  { label: 'Last year', value: 'last-year' },
+  { label: 'Last 30 days', value: 'last-30' },
+];
 
 async function loadTransactions() {
   try {
@@ -73,9 +87,75 @@ const filteredTransactions = computed(() =>
     const matchStatus = !statusFilter.value || t.status === statusFilter.value;
     const matchProvider =
       !providerFilter.value || t.provider === providerFilter.value;
-    return matchStatus && matchProvider;
+    const matchDate = matchesDateFilter(t.date);
+    return matchStatus && matchProvider && matchDate;
   }),
 );
+
+function matchesDateFilter(dateStr: string): boolean {
+  if (!dateFilter.value) {
+    return true;
+  }
+  const now = new Date();
+  const txDate = new Date(dateStr);
+
+  if (Number.isNaN(txDate.getTime())) {
+    return true;
+  }
+
+  const startOfDay = (d: Date) =>
+    new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  switch (dateFilter.value) {
+    case 'today': {
+      const today = startOfDay(now);
+      return txDate >= today;
+    }
+    case 'yesterday': {
+      const yesterday = startOfDay(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const today = startOfDay(now);
+      return txDate >= yesterday && txDate < today;
+    }
+    case 'this-week': {
+      const start = startOfDay(now);
+      start.setDate(start.getDate() - start.getDay());
+      return txDate >= start;
+    }
+    case 'last-week': {
+      const thisWeekStart = startOfDay(now);
+      thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+      const lastWeekStart = new Date(thisWeekStart);
+      lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+      return txDate >= lastWeekStart && txDate < thisWeekStart;
+    }
+    case 'this-month': {
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      return txDate >= start;
+    }
+    case 'last-month': {
+      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      return txDate >= lastMonthStart && txDate < thisMonthStart;
+    }
+    case 'this-year': {
+      const start = new Date(now.getFullYear(), 0, 1);
+      return txDate >= start;
+    }
+    case 'last-year': {
+      const start = new Date(now.getFullYear() - 1, 0, 1);
+      const end = new Date(now.getFullYear(), 0, 1);
+      return txDate >= start && txDate < end;
+    }
+    case 'last-30': {
+      const thirtyDaysAgo = new Date(now);
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      return txDate >= thirtyDaysAgo;
+    }
+    default:
+      return true;
+  }
+}
 
 // Pagination (copied from EmployeesList)
 const totalPages = computed(() =>
@@ -222,8 +302,23 @@ function statusClass(status: string): string {
         </select>
       </div>
       <div class="filter-pill">
+        <span class="filter-label">Date:</span>
+        <span class="filter-value"
+          >{{ dateOptions.find((d) => d.value === dateFilter)?.label ?? 'All time' }}</span
+        >
         <ChevronDown :size="12" />
-        <span class="filter-value">Last 30 days</span>
+        <select
+          v-model="dateFilter"
+          class="filter-select"
+        >
+          <option
+            v-for="d in dateOptions"
+            :key="d.value"
+            :value="d.value"
+          >
+            {{ d.label }}
+          </option>
+        </select>
       </div>
     </div>
 
