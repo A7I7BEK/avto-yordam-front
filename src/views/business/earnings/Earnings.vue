@@ -43,12 +43,25 @@ interface MasterRow {
   revenue: number;
 }
 
-const dateRange = ref('Last 30 days');
+const dateFilter = ref('');
 const kpiCards = ref<KpiCard[]>([]);
 const weeklyRevenue = ref<WeeklyBar[]>([]);
 const categoryBreakdown = ref<CategoryRow[]>([]);
 const topMasters = ref<MasterRow[]>([]);
 const loading = ref(true);
+
+const dateOptions = [
+  { label: 'All time', value: '' },
+  { label: 'Today', value: 'today' },
+  { label: 'Yesterday', value: 'yesterday' },
+  { label: 'This week', value: 'this-week' },
+  { label: 'Last week', value: 'last-week' },
+  { label: 'This month', value: 'this-month' },
+  { label: 'Last month', value: 'last-month' },
+  { label: 'This year', value: 'this-year' },
+  { label: 'Last year', value: 'last-year' },
+  { label: 'Last 30 days', value: 'last-30' },
+];
 
 const kpiIcons: Record<string, typeof Wallet> = {
   wallet: Wallet,
@@ -106,8 +119,22 @@ function cashHeight(val: number): number {
       <div class="header-actions">
         <div class="date-pill">
           <Calendar :size="14" />
-          <span class="date-pill__text">Last 30 days</span>
+          <span class="date-pill__text"
+            >{{ dateOptions.find((d) => d.value === dateFilter)?.label ?? 'All time' }}</span
+          >
           <ChevronDown :size="12" />
+          <select
+            v-model="dateFilter"
+            class="date-pill__select"
+          >
+            <option
+              v-for="d in dateOptions"
+              :key="d.value"
+              :value="d.value"
+            >
+              {{ d.label }}
+            </option>
+          </select>
         </div>
         <button
           type="button"
@@ -300,6 +327,7 @@ function cashHeight(val: number): number {
 }
 
 .date-pill {
+  position: relative;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -315,6 +343,30 @@ function cashHeight(val: number): number {
   font-size: 13px;
   font-weight: 500;
   color: var(--foreground);
+}
+
+.date-pill__select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  border-radius: var(--radius-pill);
+  opacity: 0;
+}
+
+.date-pill__select option {
+  padding: 8px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  background: var(--card);
 }
 
 .btn-export {
