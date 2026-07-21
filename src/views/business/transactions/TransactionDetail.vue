@@ -396,7 +396,7 @@ onMounted(async () => {
 /* ===== Two-column grid ===== */
 .detail-grid {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   align-items: flex-start;
 }
 
