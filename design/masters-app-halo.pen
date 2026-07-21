@@ -7247,42 +7247,6 @@
                           "children": [
                             {
                               "type": "frame",
-                              "id": "zMONI",
-                              "name": "s40hr1",
-                              "fill": "$--card",
-                              "cornerRadius": "$--radius-pill",
-                              "stroke": "$--border",
-                              "strokeWidth": 1,
-                              "strokeAlignment": "inner",
-                              "gap": 6,
-                              "padding": [
-                                8,
-                                14
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "icon",
-                                  "id": "Met90",
-                                  "width": 14,
-                                  "height": 14,
-                                  "icon": "sliders-horizontal",
-                                  "library": "lucide",
-                                  "fill": "$--foreground"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "qnF7D",
-                                  "fill": "$--foreground",
-                                  "content": "Filters",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
                               "id": "EwlSS",
                               "name": "s40hr2",
                               "fill": "$--card",
