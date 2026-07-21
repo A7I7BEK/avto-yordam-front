@@ -12,9 +12,9 @@ import {
   Play,
 } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
-import clickLogo from '@/assets/payment-providers/click.png';
-import paymeLogo from '@/assets/payment-providers/payme.jpg';
-import paynetLogo from '@/assets/payment-providers/paynet.png';
+import clickLogo from '@/assets/payment-providers/logo/click.png';
+import paymeLogo from '@/assets/payment-providers/logo/payme.jpg';
+import paynetLogo from '@/assets/payment-providers/logo/paynet.png';
 import { getSettingsPayment } from '@/services/settingsService';
 
 interface ProviderField {

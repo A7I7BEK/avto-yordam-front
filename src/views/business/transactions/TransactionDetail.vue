@@ -12,6 +12,9 @@ import {
 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import clickLogo from '@/assets/payment-providers/brand/click.png';
+import paymeLogo from '@/assets/payment-providers/brand/payme.svg';
+import paynetLogo from '@/assets/payment-providers/brand/paynet.svg';
 import { getTransactionDetail } from '@/services/transactionsService';
 
 interface TimelineItem {
@@ -85,6 +88,19 @@ const statusIcon = computed(() => {
     return CheckCircle2;
   }
   return CheckCircle2;
+});
+
+const providerLogos: Record<string, string> = {
+  PayMe: paymeLogo,
+  Click: clickLogo,
+  Paynet: paynetLogo,
+};
+
+const providerLogo = computed(() => {
+  if (!detail.value) {
+    return null;
+  }
+  return providerLogos[detail.value.provider] ?? null;
 });
 
 onMounted(async () => {
@@ -168,14 +184,14 @@ onMounted(async () => {
             <div class="info-rows">
               <div class="info-row">
                 <span class="info-row__label">Provider</span>
-                <span class="info-row__value">
-                  <span class="provider-pill">
-                    <span
-                      class="provider-dot"
-                      :style="{ background: detail.providerColor }"
-                    />
-                    {{ detail.provider }}
-                  </span>
+                <span class="provider-pill">
+                  <img
+                    v-if="providerLogo"
+                    :src="providerLogo"
+                    :alt="detail.provider"
+                    :title="detail.provider"
+                    class="provider-pill__logo"
+                  >
                 </span>
               </div>
               <div class="info-row">
@@ -536,23 +552,21 @@ onMounted(async () => {
 
 /* ===== Provider pill ===== */
 .provider-pill {
-  display: inline-flex;
+  display: flex;
   gap: 6px;
   align-items: center;
-  padding: 3px 8px;
+  padding: 8px 10px;
   font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--color-info-foreground);
-  background: var(--color-info);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--foreground);
+  background: #fff;
+  border: 1px solid var(--border);
   border-radius: var(--radius-pill);
 }
 
-.provider-dot {
-  flex-shrink: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-pill);
+.provider-pill__logo {
+  height: 16px;
 }
 
 /* ===== Receipt link ===== */
