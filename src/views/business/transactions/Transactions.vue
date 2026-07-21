@@ -472,16 +472,24 @@ function statusClass(status: string): string {
   position: absolute;
   inset: 0;
   width: 100%;
+  padding: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: transparent;
-  appearance: none;
   cursor: pointer;
   outline: none;
-  background: transparent;
   border: none;
   border-radius: var(--radius-pill);
+  opacity: 0;
+}
+
+.filter-select option {
+  padding: 8px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  background: var(--card);
 }
 
 /* ===== Table card ===== */
