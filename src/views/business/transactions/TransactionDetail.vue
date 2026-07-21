@@ -99,15 +99,6 @@ onMounted(async () => {
 
 <template>
   <div class="detail-page">
-    <!-- Back button -->
-    <button
-      type="button"
-      class="detail-back-btn"
-      @click="goBack"
-    >
-      <ArrowLeft :size="16" />
-    </button>
-
     <!-- Loading -->
     <div
       v-if="loading"
@@ -126,39 +117,51 @@ onMounted(async () => {
 
     <!-- Content -->
     <template v-else>
+      <!-- Header -->
+      <div class="detail-header">
+        <div class="detail-header__left">
+          <!-- Back button -->
+          <button
+            type="button"
+            class="detail-back-btn"
+            @click="goBack"
+          >
+            <ArrowLeft :size="16" />
+          </button>
+
+          <div class="detail-header__text">
+            <div class="detail-header__title-row">
+              <h1 class="detail-header__id">{{ detail.id }}</h1>
+              <span
+                class="status-badge"
+                :class="statusClass(detail.status)"
+              >
+                <component
+                  :is="statusIcon"
+                  :size="11"
+                />
+                {{ detail.status }}
+              </span>
+            </div>
+            <p class="detail-header__meta">
+              Initiated {{ detail.date }} • {{ detail.time }} • Order
+              {{ detail.orderId }}
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn-refund"
+        >
+          <Undo2 :size="14" />
+          Refund
+        </button>
+      </div>
+
       <div class="detail-grid">
         <!-- Left Column -->
         <div class="detail-left">
-          <!-- Header -->
-          <div class="detail-header">
-            <div class="detail-header__left">
-              <div class="detail-header__title-row">
-                <h1 class="detail-header__id">{{ detail.id }}</h1>
-                <span
-                  class="status-badge"
-                  :class="statusClass(detail.status)"
-                >
-                  <component
-                    :is="statusIcon"
-                    :size="11"
-                  />
-                  {{ detail.status }}
-                </span>
-              </div>
-              <p class="detail-header__meta">
-                Initiated {{ detail.date }} • {{ detail.time }} • Order
-                {{ detail.orderId }}
-              </p>
-            </div>
-            <button
-              type="button"
-              class="btn-refund"
-            >
-              <Undo2 :size="14" />
-              Refund
-            </button>
-          </div>
-
           <!-- Provider response card -->
           <div class="info-card">
             <h2 class="info-card__title">Provider response</h2>
@@ -369,7 +372,6 @@ onMounted(async () => {
   width: 36px;
   height: 36px;
   padding: 0;
-  margin-bottom: 24px;
   color: var(--foreground);
   cursor: pointer;
   background: var(--card);
@@ -417,11 +419,18 @@ onMounted(async () => {
 /* ===== Header ===== */
 .detail-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
+  margin-bottom: 16px;
 }
 
 .detail-header__left {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.detail-header__text {
   display: flex;
   flex-direction: column;
   gap: 4px;
