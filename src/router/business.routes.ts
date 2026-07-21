@@ -205,11 +205,6 @@ export const businessRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/business/Settings.vue'),
       },
       {
-        path: 'settings/documents',
-        name: 'biz-settings-documents',
-        component: () => import('@/views/business/Settings.vue'),
-      },
-      {
         path: 'settings/bank-info',
         name: 'biz-settings-bank-info',
         component: () => import('@/views/business/Settings.vue'),
