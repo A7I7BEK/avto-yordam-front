@@ -7,12 +7,14 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleDollarSign,
-  CreditCard,
   Download,
   Eye,
 } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import clickLogo from '@/assets/payment-providers/brand/click.png';
+import paymeLogo from '@/assets/payment-providers/brand/payme.svg';
+import paynetLogo from '@/assets/payment-providers/brand/paynet.svg';
 import { getTransactions } from '@/services/transactionsService';
 
 interface Transaction {
@@ -23,7 +25,6 @@ interface Transaction {
   avatarColor: string;
   amount: string;
   provider: string;
-  providerIcon: string;
   status: string;
   date: string;
 }
@@ -56,7 +57,6 @@ async function loadTransactions() {
     const data = await getTransactions();
     transactions.value = (data ?? []).map((t) => ({
       ...t,
-      providerIcon: getProviderIcon(t.provider),
     }));
   } finally {
     loading.value = false;
@@ -65,11 +65,14 @@ async function loadTransactions() {
 
 loadTransactions();
 
-function getProviderIcon(provider: string): string {
-  if (provider === 'Cash') {
-    return 'circle-dollar-sign';
-  }
-  return 'credit-card';
+const providerLogos: Record<string, string> = {
+  PayMe: paymeLogo,
+  Click: clickLogo,
+  Paynet: paynetLogo,
+};
+
+function getProviderLogo(provider: string): string | undefined {
+  return providerLogos[provider];
 }
 
 const statuses = computed(() => {
@@ -384,12 +387,22 @@ function statusClass(status: string): string {
 
             <!-- Provider -->
             <td>
-              <div class="provider-pill">
-                <component
-                  :is="tx.providerIcon === 'circle-dollar-sign' ? CircleDollarSign : CreditCard"
-                  :size="15"
-                />
-                <span>{{ tx.provider }}</span>
+              <div
+                v-if="getProviderLogo(tx.provider)"
+                class="provider-pill-has-logo"
+              >
+                <img
+                  :src="getProviderLogo(tx.provider)"
+                  :alt="tx.provider"
+                  class="provider-pill__logo"
+                >
+              </div>
+              <div
+                v-else
+                class="provider-pill"
+              >
+                <CircleDollarSign :size="14" />
+                {{ tx.provider }}
               </div>
             </td>
 
@@ -683,7 +696,7 @@ function statusClass(status: string): string {
   display: inline-flex;
   gap: 7px;
   align-items: center;
-  padding: 4px 10px;
+  padding: 5px 10px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
@@ -691,6 +704,18 @@ function statusClass(status: string): string {
   background: var(--accent);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
+}
+
+.provider-pill-has-logo {
+  display: inline-flex;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.provider-pill__logo {
+  height: 14px;
 }
 
 /* ===== Status badge ===== */
