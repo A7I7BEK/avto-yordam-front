@@ -7205,42 +7205,6 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "wV3pj",
-                      "name": "s40bc",
-                      "gap": 6,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "iWzZi",
-                          "fill": "$--muted-foreground",
-                          "content": "Finance",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "TyPan",
-                          "width": 12,
-                          "height": 12,
-                          "icon": "chevron-right",
-                          "library": "lucide",
-                          "fill": "$--muted-foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "HRSyw",
-                          "fill": "$--foreground",
-                          "content": "Transactions",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
                       "id": "zxqtq",
                       "name": "s40hd",
                       "width": "fill_container",
@@ -7723,8 +7687,11 @@
                                   "type": "frame",
                                   "id": "yu62R",
                                   "name": "r1p",
-                                  "fill": "$--color-info",
+                                  "fill": "$--accent",
                                   "cornerRadius": "$--radius-pill",
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "gap": 6,
                                   "padding": [
                                     3,
@@ -7733,17 +7700,18 @@
                                   "alignItems": "center",
                                   "children": [
                                     {
-                                      "type": "frame",
-                                      "id": "SpJJa",
-                                      "width": 6,
-                                      "height": 6,
-                                      "fill": "#00A0E9",
-                                      "cornerRadius": "$--radius-pill"
+                                      "type": "icon",
+                                      "id": "ViIZW",
+                                      "width": 10,
+                                      "height": 10,
+                                      "icon": "credit-card",
+                                      "library": "lucide",
+                                      "fill": "$--foreground"
                                     },
                                     {
                                       "type": "text",
                                       "id": "qutgJ",
-                                      "fill": "$--color-info-foreground",
+                                      "fill": "$--foreground",
                                       "content": "PayMe",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
@@ -7922,8 +7890,11 @@
                                   "type": "frame",
                                   "id": "J2g7j",
                                   "name": "r2p",
-                                  "fill": "$--color-warning",
+                                  "fill": "$--accent",
                                   "cornerRadius": "$--radius-pill",
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "gap": 6,
                                   "padding": [
                                     3,
@@ -7932,17 +7903,18 @@
                                   "alignItems": "center",
                                   "children": [
                                     {
-                                      "type": "frame",
-                                      "id": "su0Z1",
-                                      "width": 6,
-                                      "height": 6,
-                                      "fill": "#1D7DE0",
-                                      "cornerRadius": "$--radius-pill"
+                                      "type": "icon",
+                                      "id": "W2dX5N",
+                                      "width": 10,
+                                      "height": 10,
+                                      "icon": "credit-card",
+                                      "library": "lucide",
+                                      "fill": "$--foreground"
                                     },
                                     {
                                       "type": "text",
                                       "id": "wpPTw",
-                                      "fill": "$--color-warning-foreground",
+                                      "fill": "$--foreground",
                                       "content": "Click",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
@@ -8139,7 +8111,7 @@
                                       "id": "ErlfN",
                                       "width": 10,
                                       "height": 10,
-                                      "icon": "banknote",
+                                      "icon": "circle-dollar-sign",
                                       "library": "lucide",
                                       "fill": "$--foreground"
                                     },
@@ -8325,8 +8297,11 @@
                                   "type": "frame",
                                   "id": "nRSih",
                                   "name": "r4p",
-                                  "fill": "$--color-info",
+                                  "fill": "$--accent",
                                   "cornerRadius": "$--radius-pill",
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "gap": 6,
                                   "padding": [
                                     3,
@@ -8335,17 +8310,18 @@
                                   "alignItems": "center",
                                   "children": [
                                     {
-                                      "type": "frame",
-                                      "id": "hfuqL",
-                                      "width": 6,
-                                      "height": 6,
-                                      "fill": "#7A4BFF",
-                                      "cornerRadius": "$--radius-pill"
+                                      "type": "icon",
+                                      "id": "yAYl5",
+                                      "width": 10,
+                                      "height": 10,
+                                      "icon": "credit-card",
+                                      "library": "lucide",
+                                      "fill": "$--foreground"
                                     },
                                     {
                                       "type": "text",
                                       "id": "ESngp",
-                                      "fill": "$--color-info-foreground",
+                                      "fill": "$--foreground",
                                       "content": "Paynet",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
@@ -8524,8 +8500,11 @@
                                   "type": "frame",
                                   "id": "Hcxp8",
                                   "name": "r5p",
-                                  "fill": "$--color-info",
+                                  "fill": "$--accent",
                                   "cornerRadius": "$--radius-pill",
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "gap": 6,
                                   "padding": [
                                     3,
@@ -8534,17 +8513,18 @@
                                   "alignItems": "center",
                                   "children": [
                                     {
-                                      "type": "frame",
-                                      "id": "AfgrK",
-                                      "width": 6,
-                                      "height": 6,
-                                      "fill": "#00A0E9",
-                                      "cornerRadius": "$--radius-pill"
+                                      "type": "icon",
+                                      "id": "I3Ayn",
+                                      "width": 10,
+                                      "height": 10,
+                                      "icon": "credit-card",
+                                      "library": "lucide",
+                                      "fill": "$--foreground"
                                     },
                                     {
                                       "type": "text",
                                       "id": "IoYOy",
-                                      "fill": "$--color-info-foreground",
+                                      "fill": "$--foreground",
                                       "content": "PayMe",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
@@ -8627,6 +8607,11 @@
                           "id": "uuL7P",
                           "name": "r6",
                           "width": "fill_container",
+                          "stroke": "$--border",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "strokeAlignment": "inner",
                           "gap": 12,
                           "padding": [
                             14,
@@ -8718,8 +8703,11 @@
                                   "type": "frame",
                                   "id": "O9CgZE",
                                   "name": "r6p",
-                                  "fill": "$--color-warning",
+                                  "fill": "$--accent",
                                   "cornerRadius": "$--radius-pill",
+                                  "stroke": "$--border",
+                                  "strokeWidth": 1,
+                                  "strokeAlignment": "inner",
                                   "gap": 6,
                                   "padding": [
                                     3,
@@ -8728,17 +8716,18 @@
                                   "alignItems": "center",
                                   "children": [
                                     {
-                                      "type": "frame",
-                                      "id": "D1U2aX",
-                                      "width": 6,
-                                      "height": 6,
-                                      "fill": "#1D7DE0",
-                                      "cornerRadius": "$--radius-pill"
+                                      "type": "icon",
+                                      "id": "srLFC",
+                                      "width": 10,
+                                      "height": 10,
+                                      "icon": "credit-card",
+                                      "library": "lucide",
+                                      "fill": "$--foreground"
                                     },
                                     {
                                       "type": "text",
                                       "id": "PqGWy",
-                                      "fill": "$--color-warning-foreground",
+                                      "fill": "$--foreground",
                                       "content": "Click",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
@@ -9904,33 +9893,6 @@
                     32
                   ],
                   "children": [
-                    {
-                      "type": "frame",
-                      "id": "zovVx",
-                      "name": "s41back",
-                      "gap": 6,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "bujdV",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "arrow-left",
-                          "library": "lucide",
-                          "fill": "$--muted-foreground"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ofn6Q",
-                          "fill": "$--muted-foreground",
-                          "content": "Back to transactions",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
                     {
                       "type": "frame",
                       "id": "puKzx",
@@ -19997,8 +19959,8 @@
                             {
                               "type": "icon",
                               "id": "v1HnS",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -22028,8 +21990,8 @@
                             {
                               "type": "icon",
                               "id": "xx7DW",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -23583,8 +23545,8 @@
                             {
                               "type": "icon",
                               "id": "ZHR2x",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -24808,8 +24770,8 @@
                             {
                               "type": "icon",
                               "id": "lG8lo",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -26909,8 +26871,8 @@
                             {
                               "type": "icon",
                               "id": "XRTfS",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -28673,8 +28635,8 @@
                             {
                               "type": "icon",
                               "id": "wcs6o",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -30372,8 +30334,8 @@
                             {
                               "type": "icon",
                               "id": "w8QfhL",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -88942,7 +88904,7 @@
                             {
                               "type": "icon",
                               "id": "mxD4B",
-                              "width": 468.5211658303073,
+                              "width": 527.5211658303074,
                               "height": 18,
                               "icon": "file-text",
                               "library": "lucide",
@@ -97631,8 +97593,8 @@
                             {
                               "type": "icon",
                               "id": "INEM7",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -101638,8 +101600,8 @@
                             {
                               "type": "icon",
                               "id": "NHkYG",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -103663,8 +103625,8 @@
                             {
                               "type": "icon",
                               "id": "F385OI",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-primary-foreground"
@@ -105399,8 +105361,8 @@
                             {
                               "type": "icon",
                               "id": "kXJLt",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -106937,8 +106899,8 @@
                             {
                               "type": "icon",
                               "id": "FW0MA",
-                              "width": 329.6465074095822,
-                              "height": 15.15842724039799,
+                              "width": 413.6465074095822,
+                              "height": 15.088122253005896,
                               "icon": "mail",
                               "library": "lucide",
                               "fill": "$--sidebar-foreground"
@@ -117191,7 +117153,7 @@
                   "id": "q5kDc",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 122.24335511914596,
+                  "height": 132.54125949628727,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
@@ -120885,7 +120847,7 @@
                   "id": "VJ3Gs",
                   "name": "tb30",
                   "width": "fill_container",
-                  "height": 1478.1565624765124,
+                  "height": 1941.769316148693,
                   "stroke": "$--sidebar-border",
                   "strokeWidth": {
                     "top": 1,
