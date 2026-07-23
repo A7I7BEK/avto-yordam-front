@@ -2,15 +2,14 @@
   setup
   lang="ts"
 >
-import { ChevronDown, Globe, Timer } from '@lucide/vue';
+import { ChevronDown, Globe, LoaderCircle, Timer } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
-import { getSettingsHours } from '@/services/settingsService';
-
-interface DaySchedule {
-  open: string;
-  close: string;
-  closed: boolean;
-}
+import {
+  getMyOrgId,
+  getSettingsHours,
+  saveSettingsHours,
+} from '@/services/settingsService';
+import type { DaySchedule } from '@/types/settings';
 
 interface TimezoneOption {
   value: string;
@@ -27,7 +26,7 @@ const days = [
   { key: 'sunday', label: 'Sunday' },
 ];
 
-const schedule = ref<Record<string, DaySchedule>>({
+const defaultSchedule: Record<string, DaySchedule> = {
   monday: { open: '09:00', close: '18:00', closed: false },
   tuesday: { open: '09:00', close: '18:00', closed: false },
   wednesday: { open: '09:00', close: '18:00', closed: false },
@@ -35,7 +34,15 @@ const schedule = ref<Record<string, DaySchedule>>({
   friday: { open: '09:00', close: '18:00', closed: false },
   saturday: { open: '', close: '', closed: true },
   sunday: { open: '', close: '', closed: true },
+};
+
+const schedule = ref<Record<string, DaySchedule>>({ ...defaultSchedule });
+const initialSchedule = ref<Record<string, DaySchedule>>({
+  ...defaultSchedule,
 });
+const loading = ref(true);
+const saving = ref(false);
+const orgId = ref<string | null>(null);
 
 const timezones: TimezoneOption[] = [
   { value: 'Asia/Tashkent', label: 'Asia/Tashkent  (GMT +05:00)' },
@@ -48,14 +55,45 @@ const timezones: TimezoneOption[] = [
 const selectedTimezone = ref('Asia/Tashkent');
 
 onMounted(async () => {
+  const id = await getMyOrgId();
+  orgId.value = id;
+
   const data = await getSettingsHours();
   if (data) {
     schedule.value = { ...data };
+    initialSchedule.value = JSON.parse(JSON.stringify(data));
   }
+  loading.value = false;
 });
 
 function toggleDay(dayKey: string) {
   schedule.value[dayKey].closed = !schedule.value[dayKey].closed;
+}
+
+function hasChanges(): boolean {
+  return (
+    JSON.stringify(schedule.value) !== JSON.stringify(initialSchedule.value)
+  );
+}
+
+async function save() {
+  if (!orgId.value || saving.value) {
+    return;
+  }
+
+  saving.value = true;
+  try {
+    await saveSettingsHours(orgId.value, schedule.value);
+    initialSchedule.value = JSON.parse(JSON.stringify(schedule.value));
+  } catch {
+    // Error toast could be added here
+  } finally {
+    saving.value = false;
+  }
+}
+
+function cancel() {
+  schedule.value = JSON.parse(JSON.stringify(initialSchedule.value));
 }
 </script>
 
@@ -213,6 +251,46 @@ function toggleDay(dayKey: string) {
           with their own schedules.
         </p>
       </div>
+
+      <!-- Action bar -->
+      <div
+        v-if="!loading"
+        class="action-bar"
+      >
+        <button
+          type="button"
+          class="btn btn--secondary"
+          :disabled="!hasChanges() || saving"
+          @click="cancel"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn--primary"
+          :disabled="!hasChanges() || saving"
+          @click="save"
+        >
+          <LoaderCircle
+            v-if="saving"
+            :size="16"
+            class="btn-spinner"
+          />
+          {{ saving ? 'Saving…' : 'Save changes' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <LoaderCircle
+        :size="24"
+        class="loading-spinner"
+      />
+      <span>Loading operating hours…</span>
     </div>
   </div>
 </template>
@@ -396,6 +474,85 @@ function toggleDay(dayKey: string) {
   height: 100%;
   cursor: pointer;
   opacity: 0;
+}
+
+/* ===== Action bar ===== */
+.action-bar {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 20px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    opacity 0.15s;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn--primary {
+  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--primary-hover, #2563eb);
+}
+
+.btn--secondary {
+  color: var(--foreground);
+  background: transparent;
+  border-color: var(--border);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: var(--accent);
+}
+
+.btn-spinner {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Loading state ===== */
+.loading-state {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+.loading-spinner {
+  animation: spin 0.7s linear infinite;
+  color: var(--primary);
 }
 
 .time-separator {
