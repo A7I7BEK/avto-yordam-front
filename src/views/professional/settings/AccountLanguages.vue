@@ -2,56 +2,116 @@
   setup
   lang="ts"
 >
-import { ChevronDown, Globe, Plus, Trash2 } from '@lucide/vue';
-import { ref } from 'vue';
+import { ChevronDown, Globe, Loader2, Plus, Trash2 } from '@lucide/vue';
+import { onMounted, ref } from 'vue';
+import {
+  addUserLanguage,
+  getAllLanguages,
+  getUserProfile,
+  removeUserLanguage,
+} from '@/services/userService';
+import type { LanguageResponse } from '@/types/user';
 
-const languageOptions = [
-  { value: 'uzbek', label: 'Uzbek' },
-  { value: 'russian', label: 'Russian' },
-  { value: 'english', label: 'English' },
-  { value: 'german', label: 'German' },
-  { value: 'tajik', label: 'Tajik' },
-  { value: 'turkish', label: 'Turkish' },
-  { value: 'french', label: 'French' },
-  { value: 'korean', label: 'Korean' },
-];
+const saveError = ref('');
 
-const proficiencyOptions = [
-  'Native or bilingual',
-  'Professional working',
-  'Limited working',
-  'Elementary',
-];
+const allLanguages = ref<LanguageResponse[]>([]);
+const userLanguages = ref<LanguageResponse[]>([]);
+const loading = ref(true);
+const saving = ref(false);
 
 interface LanguageEntry {
-  id: number;
-  language: string;
-  proficiency: string;
+  tempId: number;
+  language: LanguageResponse | null;
 }
 
-let nextId = 4;
+let nextTempId = 1;
 
-const entries = ref<LanguageEntry[]>([
-  { id: 1, language: 'uzbek', proficiency: 'Native or bilingual' },
-  { id: 2, language: 'russian', proficiency: 'Native or bilingual' },
-  { id: 3, language: 'english', proficiency: 'Professional working' },
-]);
+const entries = ref<LanguageEntry[]>([]);
+
+async function fetchData() {
+  loading.value = true;
+  try {
+    const [langs, user] = await Promise.all([
+      getAllLanguages(),
+      getUserProfile(),
+    ]);
+    allLanguages.value = langs;
+    userLanguages.value = user.languages;
+    entries.value = user.languages.map((lang) => ({
+      tempId: nextTempId++,
+      language: lang,
+    }));
+  } catch {
+    // Keep defaults on error
+  } finally {
+    loading.value = false;
+  }
+}
+
+function getAvailableLanguages(): LanguageResponse[] {
+  const addedIds = new Set(entries.value.map((e) => e.language?.id));
+  return allLanguages.value.filter((lang) => !addedIds.has(lang.id));
+}
+
+function isLanguageTaken(languageId: string, excludeTempId: number): boolean {
+  return entries.value.some(
+    (e) => e.tempId !== excludeTempId && e.language?.id === languageId,
+  );
+}
+
+function onLanguageChange(event: Event, entry: LanguageEntry) {
+  const select = event.target as HTMLSelectElement;
+  const langId = select.value;
+  const lang = allLanguages.value.find((l) => l.id === langId) ?? null;
+  entry.language = lang;
+}
 
 function addEntry() {
+  const available = getAvailableLanguages();
+  if (available.length === 0) {
+    return;
+  }
   entries.value.push({
-    id: nextId++,
-    language: '',
-    proficiency: proficiencyOptions[0] ?? 'Native or bilingual',
+    tempId: nextTempId++,
+    language: available[0] ?? null,
   });
 }
 
-function removeEntry(id: number) {
-  entries.value = entries.value.filter((e) => e.id !== id);
+function removeEntry(tempId: number) {
+  entries.value = entries.value.filter((e) => e.tempId !== tempId);
 }
 
-function saveChanges() {
-  // Mock save
+async function saveChanges() {
+  saveError.value = '';
+  saving.value = true;
+  try {
+    const currentIds = new Set(userLanguages.value.map((l) => l.id));
+    const newIds = new Set(
+      entries.value
+        .map((e) => e.language?.id)
+        .filter((id): id is string => id !== undefined),
+    );
+
+    const toAdd = [...newIds].filter((id) => !currentIds.has(id));
+    const toRemove = [...currentIds].filter((id) => !newIds.has(id));
+
+    await Promise.all([
+      ...toAdd.map((id) => addUserLanguage(id)),
+      ...toRemove.map((id) => removeUserLanguage(id)),
+    ]);
+
+    // Update saved state to match current entries (no re-fetch needed)
+    userLanguages.value = entries.value
+      .map((e) => e.language)
+      .filter((l): l is LanguageResponse => l !== null);
+  } catch (e: any) {
+    saveError.value = e.message ?? 'Failed to save changes';
+  } finally {
+    saving.value = false;
+  }
 }
+
+onMounted(fetchData);
 </script>
 
 <template>
@@ -76,19 +136,36 @@ function saveChanges() {
 
     <div class="divider" />
 
+    <!-- Loading State -->
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <Loader2
+        :size="20"
+        color="#616167"
+        class="spin"
+      />
+      <span>Loading languages...</span>
+    </div>
+
     <!-- Language List -->
-    <div class="lang-list">
+    <div
+      v-else
+      class="lang-list"
+    >
       <div
         v-for="entry in entries"
-        :key="entry.id"
+        :key="entry.tempId"
         class="lang-row"
       >
         <div class="lang-field">
           <span class="field-label">Language</span>
           <div class="select-wrapper">
             <select
-              v-model="entry.language"
+              :value="entry.language?.id ?? ''"
               class="select-pill"
+              @change="onLanguageChange($event, entry)"
             >
               <option
                 value=""
@@ -97,33 +174,12 @@ function saveChanges() {
                 Select language
               </option>
               <option
-                v-for="opt in languageOptions"
-                :key="opt.value"
-                :value="opt.value"
+                v-for="lang in allLanguages"
+                :key="lang.id"
+                :value="lang.id"
+                :disabled="isLanguageTaken(lang.id, entry.tempId)"
               >
-                {{ opt.label }}
-              </option>
-            </select>
-            <ChevronDown
-              :size="14"
-              color="#616167"
-              class="select-chevron"
-            />
-          </div>
-        </div>
-        <div class="lang-field">
-          <span class="field-label">Proficiency</span>
-          <div class="select-wrapper">
-            <select
-              v-model="entry.proficiency"
-              class="select-pill"
-            >
-              <option
-                v-for="opt in proficiencyOptions"
-                :key="opt"
-                :value="opt"
-              >
-                {{ opt }}
+                {{ lang.name }}
               </option>
             </select>
             <ChevronDown
@@ -136,17 +192,27 @@ function saveChanges() {
         <button
           class="btn-delete"
           type="button"
-          @click="removeEntry(entry.id)"
+          @click="removeEntry(entry.tempId)"
         >
           <Trash2 :size="15" />
         </button>
       </div>
     </div>
 
+    <!-- Error message -->
+    <div
+      v-if="saveError"
+      class="error-message"
+    >
+      {{ saveError }}
+    </div>
+
     <!-- Add another language -->
     <button
       class="btn-add"
+      :class="{ disabled: getAvailableLanguages().length === 0 }"
       type="button"
+      :disabled="getAvailableLanguages().length === 0"
       @click="addEntry"
     >
       <Plus
@@ -168,10 +234,16 @@ function saveChanges() {
       </button>
       <button
         class="btn-save"
+        :disabled="saving"
         type="button"
         @click="saveChanges"
       >
-        Save changes
+        <Loader2
+          v-if="saving"
+          :size="13"
+          class="spin"
+        />
+        <span>{{ saving ? 'Saving...' : 'Save changes' }}</span>
       </button>
     </div>
   </div>
@@ -333,8 +405,53 @@ function saveChanges() {
   border-radius: 6px;
 }
 
+/* Error message */
+.error-message {
+  padding: 10px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  color: #cc3314;
+  background: #fff5f5;
+  border: 1px solid #cc3314;
+  border-radius: 6px;
+}
+
 .btn-add:hover {
   background: #f5f5ff;
+}
+
+.btn-add.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-add.disabled:hover {
+  background: #ffffff;
+}
+
+/* Loading state */
+.loading-state {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #616167;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Footer */

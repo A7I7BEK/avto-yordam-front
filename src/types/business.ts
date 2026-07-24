@@ -35,6 +35,7 @@ export interface TeamMember {
 
 export interface Order {
   id: string;
+  backendId: string;
   customer: string;
   initials: string;
   service: string;
@@ -69,4 +70,25 @@ export interface Role {
   createdBy: string;
   lastEditedDate: string;
   lastEditedBy: string;
+}
+
+// ── Backend API types ──
+
+export interface PermissionResponse {
+  id: string;
+  name: string;
+  code: string;
+}
+
+export interface RoleResponse {
+  id: string;
+  name: string;
+  code: string;
+  permissions: PermissionResponse[];
+}
+
+export interface RoleRequestDto {
+  name: string;
+  code: string;
+  permissions: string[];
 }

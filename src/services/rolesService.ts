@@ -1,23 +1,113 @@
+import { apiClient } from '@/api/client';
 import { isMockMode } from '@/config';
 import {
+  colorSwatches,
   getPermissionCategoriesForRole,
+  permissionTemplates,
   roles as rawRoles,
 } from '@/data/roles';
-import type { PermissionCategory, Role } from '@/types/business';
+import type {
+  PermissionCategory,
+  Role,
+  RoleRequestDto,
+  RoleResponse,
+} from '@/types/business';
 
-export function getRoles(): Role[] {
+const colorPalette = colorSwatches;
+
+let colorIndex = 0;
+function nextColor(): string {
+  const c = colorPalette[colorIndex % colorPalette.length] ?? '#5749F4';
+  colorIndex++;
+  return c;
+}
+
+function formatDate(dateStr: string): string {
+  if (!dateStr) {
+    const now = new Date();
+    return now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    });
+  }
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  });
+}
+
+function mapRoleResponseToRole(r: RoleResponse): Role {
+  return {
+    id: r.id,
+    name: r.name,
+    description: r.code || r.name,
+    color: nextColor(),
+    isSystem: false,
+    memberCount: 0,
+    enabledPermissionCount: r.permissions?.length ?? 0,
+    totalPermissionCount: 30,
+    createdDate: formatDate(''),
+    createdBy: 'You',
+    lastEditedDate: formatDate(''),
+    lastEditedBy: 'You',
+  };
+}
+
+function mapBackendPermissionsToCategories(
+  backendPerms: { id: string }[],
+): PermissionCategory[] {
+  const template = JSON.parse(
+    JSON.stringify(permissionTemplates.blank),
+  ) as PermissionCategory[];
+  const backendIds = new Set(backendPerms.map((p) => p.id));
+  for (const cat of template) {
+    for (const perm of cat.permissions) {
+      if (backendIds.has(perm.id)) {
+        perm.allowed = true;
+      }
+    }
+  }
+  return template;
+}
+
+function collectAllowedPermissionIds(
+  categories: PermissionCategory[],
+): string[] {
+  const ids: string[] = [];
+  for (const cat of categories) {
+    for (const perm of cat.permissions) {
+      if (perm.allowed) {
+        ids.push(perm.id);
+      }
+    }
+  }
+  return ids;
+}
+
+export async function getRoles(): Promise<Role[]> {
   if (isMockMode()) {
     return rawRoles;
   }
-  return rawRoles;
+  try {
+    const data: RoleResponse[] = await apiClient.get(
+      '/role/get-for-organization',
+    );
+    colorIndex = 0;
+    return data.map(mapRoleResponseToRole);
+  } catch {
+    return rawRoles;
+  }
 }
 
-export function getRole(id: string): Role | null {
-  const all = getRoles();
+export async function getRole(id: string): Promise<Role | null> {
+  const all = await getRoles();
   return all.find((r) => r.id === id) ?? null;
 }
 
-export function createRole(
+export async function createRole(
   data: Omit<
     Role,
     | 'id'
@@ -30,67 +120,104 @@ export function createRole(
     | 'lastEditedDate'
     | 'lastEditedBy'
   >,
-): Role {
-  const newRole: Role = {
-    id: `r${Date.now()}`,
-    ...data,
-    isSystem: false,
-    memberCount: 0,
-    enabledPermissionCount: 0,
-    totalPermissionCount: 30,
-    createdDate: new Date().toLocaleDateString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-    }),
-    createdBy: 'You',
-    lastEditedDate: new Date().toLocaleDateString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-    }),
-    lastEditedBy: 'You',
+  permissionIds?: string[],
+): Promise<Role> {
+  if (isMockMode()) {
+    const newRole: Role = {
+      id: `r${Date.now()}`,
+      ...data,
+      isSystem: false,
+      memberCount: 0,
+      enabledPermissionCount: permissionIds?.length ?? 0,
+      totalPermissionCount: 30,
+      createdDate: formatDate(''),
+      createdBy: 'You',
+      lastEditedDate: formatDate(''),
+      lastEditedBy: 'You',
+    };
+    rawRoles.push(newRole);
+    return newRole;
+  }
+
+  const body: RoleRequestDto = {
+    name: data.name,
+    code: data.description || data.name,
+    permissions: permissionIds ?? [],
   };
-  rawRoles.push(newRole);
-  return newRole;
+  const created: RoleResponse = await apiClient.post('/role', body);
+  return mapRoleResponseToRole(created);
 }
 
-export function updateRole(
+export async function updateRole(
   id: string,
   data: Partial<Pick<Role, 'name' | 'description' | 'color'>>,
-): Role | null {
-  const role = rawRoles.find((r) => r.id === id);
-  if (!role) {
-    return null;
+): Promise<Role | null> {
+  if (isMockMode()) {
+    const role = rawRoles.find((r) => r.id === id);
+    if (!role) {
+      return null;
+    }
+    Object.assign(role, data, {
+      lastEditedDate: formatDate(''),
+      lastEditedBy: 'You',
+    });
+    return role;
   }
-  Object.assign(role, data, {
-    lastEditedDate: new Date().toLocaleDateString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-    }),
-    lastEditedBy: 'You',
-  });
-  return role;
+
+  const body: RoleRequestDto = {
+    name: data.name ?? '',
+    code: data.description ?? data.name ?? '',
+    permissions: [],
+  };
+  const updated: RoleResponse = await apiClient.put(`/role/${id}`, body);
+  return mapRoleResponseToRole(updated);
 }
 
-export function deleteRole(id: string): boolean {
-  const idx = rawRoles.findIndex((r) => r.id === id);
-  if (idx === -1) {
-    return false;
+export async function deleteRole(id: string): Promise<boolean> {
+  if (isMockMode()) {
+    const idx = rawRoles.findIndex((r) => r.id === id);
+    if (idx === -1) {
+      return false;
+    }
+    rawRoles.splice(idx, 1);
+    return true;
   }
-  rawRoles.splice(idx, 1);
+  await apiClient.delete(`/role/${id}`);
   return true;
 }
 
-export function getRolePermissions(roleId: string): PermissionCategory[] {
-  return getPermissionCategoriesForRole(roleId);
+export async function getRolePermissions(
+  roleId: string,
+): Promise<PermissionCategory[]> {
+  if (isMockMode()) {
+    return getPermissionCategoriesForRole(roleId);
+  }
+
+  try {
+    const data: RoleResponse = await apiClient.get(`/role/${roleId}`);
+    return mapBackendPermissionsToCategories(data.permissions ?? []);
+  } catch {
+    return getPermissionCategoriesForRole(roleId);
+  }
 }
 
 export async function saveRolePermissions(
-  _roleId: string,
-  _categories: PermissionCategory[],
+  roleId: string,
+  categories: PermissionCategory[],
 ): Promise<void> {
-  // In mock mode, just resolve
-  await new Promise((r) => setTimeout(r, 200));
+  if (isMockMode()) {
+    await new Promise((r) => setTimeout(r, 200));
+    return;
+  }
+
+  const permissionIds = collectAllowedPermissionIds(categories);
+
+  // Fetch current role data to preserve name/code
+  const current: RoleResponse = await apiClient.get(`/role/${roleId}`);
+  const body: RoleRequestDto = {
+    name: current.name,
+    code: current.code,
+    permissions: permissionIds,
+  };
+  await apiClient.put(`/role/${roleId}`, body);
 }

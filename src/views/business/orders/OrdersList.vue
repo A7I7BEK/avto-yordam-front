@@ -23,9 +23,17 @@ loadOrders();
 const tabs = [
   { key: 'all', label: 'All', count: orders.value.length },
   {
-    key: 'new',
-    label: 'New',
-    count: orders.value.filter((o) => o.status === 'new').length,
+    key: 'pending-master-confirmation',
+    label: 'Pending Master',
+    count: orders.value.filter(
+      (o) => o.status === 'pending-master-confirmation',
+    ).length,
+  },
+  {
+    key: 'pending-user-confirmation',
+    label: 'Pending User',
+    count: orders.value.filter((o) => o.status === 'pending-user-confirmation')
+      .length,
   },
   {
     key: 'confirmed',
@@ -38,24 +46,37 @@ const tabs = [
     count: orders.value.filter((o) => o.status === 'in-progress').length,
   },
   {
-    key: 'done',
-    label: 'Done',
-    count: orders.value.filter((o) => o.status === 'done').length,
+    key: 'completed',
+    label: 'Completed',
+    count: orders.value.filter((o) => o.status === 'completed').length,
   },
   {
     key: 'cancelled',
     label: 'Cancelled',
     count: orders.value.filter((o) => o.status === 'cancelled').length,
   },
+  {
+    key: 'rejected',
+    label: 'Rejected',
+    count: orders.value.filter((o) => o.status === 'rejected').length,
+  },
 ];
 
 const statusMap: Record<string, { label: string; class: string }> = {
-  new: { label: 'New', class: 'status-badge--new' },
-  pending: { label: 'Pending', class: 'status-badge--pending' },
+  created: { label: 'Created', class: 'status-badge--new' },
+  'pending-master-confirmation': {
+    label: 'Pending Master',
+    class: 'status-badge--pending',
+  },
+  'pending-user-confirmation': {
+    label: 'Pending User',
+    class: 'status-badge--pending',
+  },
   confirmed: { label: 'Confirmed', class: 'status-badge--confirmed' },
   'in-progress': { label: 'In Progress', class: 'status-badge--progress' },
-  done: { label: 'Done', class: 'status-badge--done' },
+  completed: { label: 'Completed', class: 'status-badge--done' },
   cancelled: { label: 'Cancelled', class: 'status-badge--cancelled' },
+  rejected: { label: 'Rejected', class: 'status-badge--cancelled' },
 };
 
 const filteredOrders = computed(() => {
@@ -190,7 +211,7 @@ function goToAddWalkIn() {
                 <button
                   type="button"
                   class="link-order"
-                  @click="viewOrder(order.id)"
+                  @click="viewOrder(order.backendId)"
                 >
                   {{ order.id }}
                 </button>
@@ -218,7 +239,7 @@ function goToAddWalkIn() {
                   type="button"
                   class="btn-icon"
                   title="View order"
-                  @click="viewOrder(order.id)"
+                  @click="viewOrder(order.backendId)"
                 >
                   <Eye :size="16" />
                 </button>

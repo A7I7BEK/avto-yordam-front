@@ -259,7 +259,20 @@ async function refreshAll() {
       getTimeSlots(),
       getOrders(),
     ]);
-    slots.value = slotList;
+    // Mark slots as booked if their id matches an order's masterTimeSlotId
+    // or if the backend already returned isBooked=true
+    const bookedSlotIds = new Set(
+      orderList
+        .filter(
+          (o: any) => o.status !== 'CANCELLED' && o.status !== 'cancelled',
+        )
+        .map((o: any) => o.masterTimeSlotId || o.slotId)
+        .filter(Boolean),
+    );
+    slots.value = slotList.map((s: any) => ({
+      ...s,
+      isBooked: s.isBooked || bookedSlotIds.has(s.id),
+    }));
     orders.value = orderList;
   } catch (err: any) {
     triggerToast(err.message || 'Failed to load calendar data', 'error');

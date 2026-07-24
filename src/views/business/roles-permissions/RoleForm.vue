@@ -5,9 +5,9 @@
 import { ArrowLeft, Check } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { colorSwatches } from '@/data/roles';
+import { colorSwatches, permissionTemplates } from '@/data/roles';
 import { createRole, getRole, updateRole } from '@/services/rolesService';
-import type { Role } from '@/types/business';
+import type { PermissionCategory, Role } from '@/types/business';
 
 const route = useRoute();
 const router = useRouter();
@@ -75,12 +75,16 @@ async function handleSave() {
       });
       router.push(`/business/roles-permissions/${roleId.value}`);
     } else {
-      const newRole = createRole({
-        name: form.value.name,
-        description: form.value.description,
-        color: form.value.color,
-      });
-      router.push(`/business/roles-permissions/${newRole.id}/permissions`);
+      const permissionIds = getTemplatePermissionIds(form.value.template);
+      const newRole = await createRole(
+        {
+          name: form.value.name,
+          description: form.value.description,
+          color: form.value.color,
+        },
+        permissionIds,
+      );
+      router.push(`/business/roles-permissions/${newRole.id}`);
     }
   } finally {
     saving.value = false;
@@ -89,6 +93,24 @@ async function handleSave() {
 
 function goBack() {
   router.push('/business/roles-permissions');
+}
+
+function getTemplatePermissionIds(template: string): string[] {
+  const tmpl = (permissionTemplates as Record<string, PermissionCategory[]>)[
+    template
+  ];
+  if (!tmpl) {
+    return [];
+  }
+  const ids: string[] = [];
+  for (const cat of tmpl) {
+    for (const perm of cat.permissions) {
+      if (perm.allowed) {
+        ids.push(perm.id);
+      }
+    }
+  }
+  return ids;
 }
 
 function selectColor(color: string) {
@@ -111,7 +133,7 @@ function selectColor(color: string) {
       <div>
         <h1 class="page__title">{{ isEdit ? 'Edit role' : 'Create role' }}</h1>
         <p class="page__subtitle">
-          {{ isEdit ? 'Update the role details.' : 'Define a new role and continue to assign permissions.' }}
+          {{ isEdit ? 'Update the role details.' : 'Select a template to pre-fill permissions for this role.' }}
         </p>
       </div>
       <button

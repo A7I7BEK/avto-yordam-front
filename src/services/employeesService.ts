@@ -55,3 +55,16 @@ export async function getEmployee(id: string): Promise<Employee | null> {
   const all = await getEmployees();
   return all.find((e) => e.id === id) || null;
 }
+
+export async function createEmployee(data: {
+  phone?: string;
+  password: string;
+  email?: string;
+  fullName: string;
+  roleId: string;
+}): Promise<void> {
+  if (isMockMode()) {
+    return;
+  }
+  await apiClient.post('/user', data);
+}

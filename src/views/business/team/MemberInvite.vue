@@ -2,10 +2,13 @@
   setup
   lang="ts"
 >
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { getRoles } from '@/services/rolesService';
 
 const router = useRouter();
+
+const roles = ref<{ id: string; name: string }[]>([]);
 
 const form = ref({
   email: '',
@@ -54,6 +57,15 @@ function handleSend() {
 function handleCancel() {
   router.push('/business/team/members');
 }
+
+onMounted(async () => {
+  try {
+    const data = await getRoles();
+    roles.value = data.map((r) => ({ id: r.name, name: r.name }));
+  } catch {
+    // keep empty
+  }
+});
 </script>
 
 <template>
@@ -103,9 +115,13 @@ function handleCancel() {
               >
                 Select role
               </option>
-              <option value="Master">Master</option>
-              <option value="Receptionist">Receptionist</option>
-              <option value="Admin">Admin</option>
+              <option
+                v-for="role in roles"
+                :key="role.id"
+                :value="role.name"
+              >
+                {{ role.name }}
+              </option>
             </select>
             <span
               v-if="errors.role"

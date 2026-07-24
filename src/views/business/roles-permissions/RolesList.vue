@@ -103,12 +103,12 @@ function editRole(id: string) {
   router.push(`/business/roles-permissions/${id}/edit`);
 }
 
-function handleDelete(role: Role) {
+async function handleDelete(role: Role) {
   if (role.isSystem) {
     return;
   }
-  deleteRole(role.id);
-  roles.value = roles.value.filter((r) => r.id !== role.id);
+  await deleteRole(role.id);
+  roles.value = await getRoles();
   if (paginatedRoles.value.length === 0 && currentPage.value > 1) {
     currentPage.value--;
   }

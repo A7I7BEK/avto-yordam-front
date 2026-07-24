@@ -17,7 +17,6 @@ import {
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { isMockMode } from '@/config';
-import { getCategories } from '@/services/categoriesService';
 import { getEmployees } from '@/services/employeesService';
 import {
   acceptOrder,
@@ -31,7 +30,9 @@ import {
   sendOrderToMaster,
   startOrder,
 } from '@/services/ordersService';
+import { getOrganizationServices } from '@/services/organizationService';
 import type { Order } from '@/types/business';
+import type { OrganizationServiceResponse } from '@/types/user';
 
 const router = useRouter();
 
@@ -83,7 +84,7 @@ const activeRejectOrderId = ref<string | null>(null);
 
 const createModalOpen = ref(false);
 const createLoading = ref(false);
-const services = ref<any[]>([]);
+const services = ref<OrganizationServiceResponse[]>([]);
 const masters = ref<any[]>([]);
 const searchQuery = ref('');
 
@@ -191,7 +192,7 @@ async function load() {
 // Fetch helper items (services/masters) for creation modal
 async function loadModalHelpers() {
   try {
-    const { services: svcList } = await getCategories();
+    const svcList = await getOrganizationServices(orgId.value);
     services.value = svcList || [];
     const empList = await getEmployees();
     masters.value = empList || [];
@@ -240,7 +241,7 @@ const groupedOrders = computed(() => {
 
 // Action triggers
 async function handleAction(
-  orderId: string,
+  order: Order,
   action:
     | 'accept'
     | 'start'
@@ -250,31 +251,27 @@ async function handleAction(
     | 'delete',
 ) {
   try {
-    let rawId = orderId;
-    if (orderId.startsWith('#BK-')) {
-      // In real backend mode, we might need to strip or map back the BK prefix or use the real numeric id if available
-      // For fallback/mock we keep it as is
-    }
+    const backendId = order.backendId || order.id;
     if (action === 'accept') {
-      await acceptOrder(rawId);
+      await acceptOrder(backendId);
       triggerToast('Order accepted');
     } else if (action === 'start') {
-      await startOrder(rawId);
+      await startOrder(backendId);
       triggerToast('Order started');
     } else if (action === 'complete') {
-      await completeOrder(rawId);
+      await completeOrder(backendId);
       triggerToast('Order completed');
     } else if (action === 'cancel') {
-      await cancelOrder(rawId);
+      await cancelOrder(backendId);
       triggerToast('Order cancelled');
     } else if (action === 'sendToMaster') {
-      await sendOrderToMaster(rawId);
+      await sendOrderToMaster(backendId);
       triggerToast('Order sent to master');
     } else if (action === 'delete') {
       if (!confirm('Are you sure you want to delete this order?')) {
         return;
       }
-      await deleteOrder(rawId);
+      await deleteOrder(backendId);
       triggerToast('Order deleted');
     }
     await load();
@@ -284,8 +281,8 @@ async function handleAction(
 }
 
 // Reject logic
-function openRejectModal(orderId: string) {
-  activeRejectOrderId.value = orderId;
+function openRejectModal(order: Order) {
+  activeRejectOrderId.value = order.backendId || order.id;
   rejectReason.value = '';
   rejectModalOpen.value = true;
 }
@@ -444,7 +441,7 @@ async function onDrop(event: DragEvent, targetColId: ColumnId) {
   };
 
   if (targetColId === 'REJECTED') {
-    openRejectModal(orderId);
+    openRejectModal(order);
     return;
   }
 
@@ -459,7 +456,7 @@ async function onDrop(event: DragEvent, targetColId: ColumnId) {
   order.status = targetColId.toLowerCase(); // update locally
 
   try {
-    await handleAction(orderId, action);
+    await handleAction(order, action);
   } catch (_) {
     // revert
     order.status = previousStatus;
@@ -550,12 +547,12 @@ function viewOrder(id: string) {
             class="order-card"
             draggable="true"
             @dragstart="onDragStart($event, order.id)"
-            @dblclick="viewOrder(order.id)"
+            @dblclick="viewOrder(order.backendId || order.id)"
           >
             <div class="order-card__header">
               <span
                 class="order-card__id"
-                @click="viewOrder(order.id)"
+                @click="viewOrder(order.backendId || order.id)"
                 >{{ order.id }}</span
               >
               <span class="order-card__amount">{{ order.amount }}</span>
@@ -586,7 +583,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn"
                   title="Send to Master"
-                  @click="handleAction(order.id, 'sendToMaster')"
+                  @click="handleAction(order, 'sendToMaster')"
                 >
                   <Send :size="12" />
                 </button>
@@ -594,7 +591,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -602,7 +599,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-danger"
                   title="Delete"
-                  @click="handleAction(order.id, 'delete')"
+                  @click="handleAction(order, 'delete')"
                 >
                   <Trash2 :size="12" />
                 </button>
@@ -616,7 +613,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-success"
                   title="Accept"
-                  @click="handleAction(order.id, 'accept')"
+                  @click="handleAction(order, 'accept')"
                 >
                   <Check :size="12" />
                 </button>
@@ -624,7 +621,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-danger"
                   title="Reject"
-                  @click="openRejectModal(order.id)"
+                  @click="openRejectModal(order)"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -632,7 +629,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -646,7 +643,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -658,7 +655,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-primary"
                   title="Start Job"
-                  @click="handleAction(order.id, 'start')"
+                  @click="handleAction(order, 'start')"
                 >
                   <Play :size="12" />
                 </button>
@@ -666,7 +663,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -678,7 +675,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-success"
                   title="Complete"
-                  @click="handleAction(order.id, 'complete')"
+                  @click="handleAction(order, 'complete')"
                 >
                   <CheckCircle :size="12" />
                 </button>
@@ -686,7 +683,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -698,7 +695,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-danger"
                   title="Delete"
-                  @click="handleAction(order.id, 'delete')"
+                  @click="handleAction(order, 'delete')"
                 >
                   <Trash2 :size="12" />
                 </button>
@@ -709,7 +706,7 @@ function viewOrder(id: string) {
                 type="button"
                 class="action-btn ml-auto"
                 title="View details"
-                @click="viewOrder(order.id)"
+                @click="viewOrder(order.backendId || order.id)"
               >
                 <Eye :size="12" />
               </button>
@@ -734,7 +731,7 @@ function viewOrder(id: string) {
     >
       <div
         class="modal-content"
-        @click.stopPropagation
+        @click.stop
       >
         <h3 class="modal-title">Reject Order</h3>
         <p class="modal-desc">
@@ -773,7 +770,7 @@ function viewOrder(id: string) {
     >
       <div
         class="modal-content modal-content--wide"
-        @click.stopPropagation
+        @click.stop
       >
         <h3 class="modal-title">Create New Order</h3>
         <div class="create-form-grid">
@@ -808,7 +805,7 @@ function viewOrder(id: string) {
                 :value="s.id"
               >
                 {{ s.name }}
-                (UZS {{ (s.price || 0).toLocaleString() }})
+                ({{ s.minPrice || s.maxPrice ? `UZS ${(s.minPrice ?? 0).toLocaleString()} – ${(s.maxPrice ?? 0).toLocaleString()}` : '—' }})
               </option>
             </select>
           </div>

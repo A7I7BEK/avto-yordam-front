@@ -11,13 +11,13 @@ export async function getOrders() {
     let backendOrders: any[] = [];
     try {
       backendOrders = await apiClient.get('/order/get-by-master');
-    } catch (_) {
+    } catch {
       try {
         const pageData = await apiClient.get('/order/page', {
           params: { size: 50 },
         });
         backendOrders = pageData.content || [];
-      } catch (_) {
+      } catch {
         backendOrders = [];
       }
     }
@@ -26,19 +26,38 @@ export async function getOrders() {
       return [];
     }
 
-    return backendOrders.map((o: any) => ({
-      id: `#BK-${o.id.slice(0, 4).toUpperCase()}`,
-      customer: o.carDescription || 'Client',
-      initials: 'C',
-      service: o.problemDescription || 'General Repair',
-      date: o.createdDate
-        ? new Date(o.createdDate).toLocaleString()
-        : 'Just now',
-      master: o.masterId ? 'Master' : '—',
-      amount: `${(o.estimatedPrice || 200_000) / 1000}K UZS`,
-      status: String(o.status || 'new').toLowerCase(),
-    }));
-  } catch (_) {
+    return backendOrders.map((o: any) => {
+      const clientName = o.client?.fullName ?? '';
+      const masterName = o.master?.fullName ?? '';
+      const serviceName = o.organizationServices?.name ?? '';
+      const initials = clientName
+        ? clientName
+            .split(' ')
+            .map((p: string) => p.charAt(0))
+            .join('')
+            .slice(0, 2)
+        : 'C';
+      const finalAmount = o.finalPrice ?? o.estimatedPrice ?? 0;
+      const amount =
+        finalAmount > 0 ? `${(finalAmount / 1000).toLocaleString()}K UZS` : '—';
+
+      return {
+        id: `#BK-${o.id.slice(0, 4).toUpperCase()}`,
+        backendId: o.id,
+        customer: clientName || o.carDescription || 'Client',
+        initials,
+        service: serviceName || o.problemDescription || 'General Repair',
+        date: o.createdDate
+          ? new Date(o.createdDate).toLocaleString()
+          : 'Just now',
+        master: masterName || '—',
+        amount,
+        status: String(o.status || 'new')
+          .toLowerCase()
+          .replace(/_/g, '-'),
+      };
+    });
+  } catch {
     return [];
   }
 }
@@ -76,7 +95,7 @@ export async function createOrderWithMaster(data: any) {
 }
 
 export async function createOrderByOwner(data: any) {
-  return await apiClient.post('/order/save-by-owner', data);
+  return await apiClient.post('/order/save-with-master', data);
 }
 
 export async function startOrder(id: string) {

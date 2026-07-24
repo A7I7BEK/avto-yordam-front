@@ -6,12 +6,8 @@ import { ArrowLeft, Check, ChevronDown, ImageUp, Trash2 } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getEmployee } from '@/services/employeesService';
+import { getRoles } from '@/services/rolesService';
 import type { Employee } from '@/types/business';
-
-interface RoleOption {
-  id: string;
-  name: string;
-}
 
 const route = useRoute();
 const router = useRouter();
@@ -20,14 +16,7 @@ const employee = ref<Employee | null>(null);
 const loading = ref(true);
 const fileInput = ref<HTMLInputElement | null>(null);
 
-const roles = ref<RoleOption[]>([
-  { id: 'Master', name: 'Master' },
-  { id: 'Receptionist', name: 'Receptionist' },
-  { id: 'Admin', name: 'Admin' },
-  { id: 'Manager', name: 'Manager' },
-  { id: 'Accountant', name: 'Accountant' },
-  { id: 'Mechanic', name: 'Mechanic' },
-]);
+const roles = ref<{ id: string; name: string }[]>([]);
 
 const fullName = ref('');
 const email = ref('');
@@ -35,13 +24,16 @@ const selectedRole = ref('');
 
 onMounted(async () => {
   try {
-    const id = route.params.id as string;
-    const data = await getEmployee(id);
-    if (data) {
-      employee.value = data;
-      fullName.value = data.name;
-      email.value = `${data.name.toLowerCase().replace(/\s+/g, '.')}@autofix.uz`;
-      selectedRole.value = data.role;
+    const [roleData, employeeData] = await Promise.all([
+      getRoles(),
+      getEmployee(route.params.id as string),
+    ]);
+    roles.value = roleData.map((r) => ({ id: r.name, name: r.name }));
+    if (employeeData) {
+      employee.value = employeeData;
+      fullName.value = employeeData.name;
+      email.value = `${employeeData.name.toLowerCase().replace(/\s+/g, '.')}@autofix.uz`;
+      selectedRole.value = employeeData.role;
     }
   } finally {
     loading.value = false;
