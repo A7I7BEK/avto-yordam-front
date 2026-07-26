@@ -8,7 +8,7 @@ export const orders = [
     date: 'Apr 12 · 14:30',
     master: 'Bekzod R.',
     amount: '850K UZS',
-    status: 'pending-master-confirmation',
+    status: 'pending_master_confirmation',
   },
   {
     id: '#BK-1246',
@@ -19,7 +19,7 @@ export const orders = [
     date: 'Apr 12 · 11:08',
     master: 'Jasur T.',
     amount: '180K UZS',
-    status: 'pending-user-confirmation',
+    status: 'pending_user_confirmation',
   },
   {
     id: '#BK-1245',

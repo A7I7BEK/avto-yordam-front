@@ -64,7 +64,7 @@ async function onCoverSelected(event: Event) {
     // If cover photo already exists, delete it first to avoid cluttering storage
     if (coverPhoto.value) {
       try {
-        await deleteOrganizationFile(coverPhoto.value.file.id);
+        await deleteOrganizationFile(coverPhoto.value.id);
       } catch {
         // Non-critical, swallow and continue
       }
@@ -86,7 +86,7 @@ async function removeCover() {
   uploadingCover.value = true;
   errorMsg.value = null;
   try {
-    await deleteOrganizationFile(coverPhoto.value.file.id);
+    await deleteOrganizationFile(coverPhoto.value.id);
     coverPhoto.value = null;
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Failed to remove cover';
@@ -130,7 +130,7 @@ async function deletePhoto(id: string) {
   errorMsg.value = null;
   try {
     await deleteOrganizationFile(id);
-    galleryPhotos.value = galleryPhotos.value.filter((p) => p.file.id !== id);
+    galleryPhotos.value = galleryPhotos.value.filter((p) => p.id !== id);
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Failed to delete photo';
   } finally {
@@ -301,7 +301,7 @@ async function deletePhoto(id: string) {
           <!-- Loaded Gallery Images -->
           <div
             v-for="photo in galleryPhotos"
-            :key="photo.file.id"
+            :key="photo.id"
             class="gallery-item has-image"
           >
             <img
@@ -313,11 +313,11 @@ async function deletePhoto(id: string) {
               <button
                 type="button"
                 class="delete-btn"
-                :disabled="deletingPhotoId === photo.file.id"
-                @click="deletePhoto(photo.file.id)"
+                :disabled="deletingPhotoId === photo.id"
+                @click="deletePhoto(photo.id)"
               >
                 <Loader2
-                  v-if="deletingPhotoId === photo.file.id"
+                  v-if="deletingPhotoId === photo.id"
                   :size="14"
                   class="spin"
                 />

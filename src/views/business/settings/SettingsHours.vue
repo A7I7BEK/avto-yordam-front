@@ -551,8 +551,8 @@ function cancel() {
 }
 
 .loading-spinner {
-  animation: spin 0.7s linear infinite;
   color: var(--primary);
+  animation: spin 0.7s linear infinite;
 }
 
 .time-separator {
