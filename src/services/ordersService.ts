@@ -52,9 +52,7 @@ export async function getOrders() {
           : 'Just now',
         master: masterName || '—',
         amount,
-        status: String(o.status || 'new')
-          .toLowerCase()
-          .replace(/_/g, '-'),
+        status: String(o.status || 'new').toLowerCase(),
       };
     });
   } catch {

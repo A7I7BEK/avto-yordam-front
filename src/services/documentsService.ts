@@ -12,6 +12,7 @@ export interface FileResponse {
 }
 
 export interface OrganizationFileResponse {
+  id: string;
   organization?: any;
   file: FileResponse;
   type: OrganizationFileType;

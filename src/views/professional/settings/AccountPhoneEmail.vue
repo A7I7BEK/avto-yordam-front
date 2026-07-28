@@ -200,14 +200,12 @@ function handleCancelEmailChange() {
   }
 }
 
-function onOtpInput(
-  event: Event,
-  index: number,
-  inputs: string[],
-) {
+function onOtpInput(event: Event, index: number, inputs: string[]) {
   const input = event.target as HTMLInputElement;
   if (input.value && index < 5) {
-    const nextInput = input.parentElement?.children[index + 1] as HTMLInputElement | undefined;
+    const nextInput = input.parentElement?.children[index + 1] as
+      | HTMLInputElement
+      | undefined;
     nextInput?.focus();
   }
 }
@@ -329,8 +327,8 @@ onMounted(async () => {
               <h3 class="alert-title">SMS verification required</h3>
             </div>
             <p class="alert-description">
-              We sent a 6-digit code to {{ newPhone }}. Your number is not
-              saved until this code is confirmed.
+              We sent a 6-digit code to {{ newPhone }}. Your number is not saved
+              until this code is confirmed.
             </p>
 
             <!-- OTP inputs -->
@@ -351,7 +349,8 @@ onMounted(async () => {
                 <span
                   v-if="otpTimeLeft > 0"
                   class="timer-text"
-                >Resend code in {{ formatOtpTime(otpTimeLeft) }}</span>
+                  >Resend code in {{ formatOtpTime(otpTimeLeft) }}</span
+                >
                 <button
                   v-else
                   class="resend-btn"
@@ -389,7 +388,9 @@ onMounted(async () => {
                     v-else
                     :size="16"
                   />
-                  <span>{{ phoneConfirming ? 'Confirming...' : 'Confirm number' }}</span>
+                  <span
+                    >{{ phoneConfirming ? 'Confirming...' : 'Confirm number' }}</span
+                  >
                 </button>
               </div>
             </div>
@@ -492,8 +493,8 @@ onMounted(async () => {
               </div>
             </div>
             <p class="alert-description">
-              We sent a 6-digit code to {{ newEmail }}. The new email
-              only becomes active after this code is confirmed.
+              We sent a 6-digit code to {{ newEmail }}. The new email only
+              becomes active after this code is confirmed.
             </p>
 
             <!-- OTP inputs -->
@@ -514,7 +515,8 @@ onMounted(async () => {
                 <span
                   v-if="otpTimeLeft > 0"
                   class="timer-text"
-                >Resend code in {{ formatOtpTime(otpTimeLeft) }}</span>
+                  >Resend code in {{ formatOtpTime(otpTimeLeft) }}</span
+                >
                 <button
                   v-else
                   class="resend-btn"
@@ -552,7 +554,9 @@ onMounted(async () => {
                     v-else
                     :size="16"
                   />
-                  <span>{{ emailConfirming ? 'Confirming...' : 'Confirm email' }}</span>
+                  <span
+                    >{{ emailConfirming ? 'Confirming...' : 'Confirm email' }}</span
+                  >
                 </button>
               </div>
             </div>
@@ -952,8 +956,8 @@ onMounted(async () => {
 }
 
 .resend-btn:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 /* OTP actions */
@@ -976,12 +980,12 @@ onMounted(async () => {
 }
 
 .action-btn:disabled {
-  opacity: 0.6;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .confirm-btn:disabled {
-  opacity: 0.6;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 </style>

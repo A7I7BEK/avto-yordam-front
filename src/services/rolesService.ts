@@ -8,6 +8,7 @@ import {
 } from '@/data/roles';
 import type {
   PermissionCategory,
+  PermissionResponse,
   Role,
   RoleRequestDto,
   RoleResponse,
@@ -87,6 +88,25 @@ function collectAllowedPermissionIds(
   return ids;
 }
 
+export async function getPermissions(): Promise<PermissionResponse[]> {
+  if (isMockMode()) {
+    const all: PermissionResponse[] = [];
+    for (const cat of Object.values(permissionTemplates).flat()) {
+      for (const perm of cat.permissions) {
+        all.push({ id: perm.id, name: perm.label, code: perm.id });
+      }
+    }
+    return all;
+  }
+
+  try {
+    const data: PermissionResponse[] = await apiClient.get('/permission');
+    return data || [];
+  } catch {
+    return [];
+  }
+}
+
 export async function getRoles(): Promise<Role[]> {
   if (isMockMode()) {
     return rawRoles;
@@ -151,6 +171,7 @@ export async function createRole(
 export async function updateRole(
   id: string,
   data: Partial<Pick<Role, 'name' | 'description' | 'color'>>,
+  permissionIds?: string[],
 ): Promise<Role | null> {
   if (isMockMode()) {
     const role = rawRoles.find((r) => r.id === id);
@@ -158,6 +179,7 @@ export async function updateRole(
       return null;
     }
     Object.assign(role, data, {
+      enabledPermissionCount: permissionIds?.length ?? role.enabledPermissionCount,
       lastEditedDate: formatDate(''),
       lastEditedBy: 'You',
     });
@@ -167,7 +189,7 @@ export async function updateRole(
   const body: RoleRequestDto = {
     name: data.name ?? '',
     code: data.description ?? data.name ?? '',
-    permissions: [],
+    permissions: permissionIds ?? [],
   };
   const updated: RoleResponse = await apiClient.put(`/role/${id}`, body);
   return mapRoleResponseToRole(updated);
@@ -184,6 +206,30 @@ export async function deleteRole(id: string): Promise<boolean> {
   }
   await apiClient.delete(`/role/${id}`);
   return true;
+}
+
+export async function getRolePermissionIds(
+  roleId: string,
+): Promise<string[]> {
+  if (isMockMode()) {
+    const cats = getPermissionCategoriesForRole(roleId);
+    const ids: string[] = [];
+    for (const cat of cats) {
+      for (const perm of cat.permissions) {
+        if (perm.allowed) {
+          ids.push(perm.id);
+        }
+      }
+    }
+    return ids;
+  }
+
+  try {
+    const data: RoleResponse = await apiClient.get(`/role/${roleId}`);
+    return data.permissions?.map((p) => p.id) ?? [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getRolePermissions(
