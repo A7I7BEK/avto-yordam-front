@@ -77,6 +77,7 @@ export const paymentProviders = [
   { id: 'payme', name: 'PayMe', enabled: true, fee: '2.5%', type: 'online' },
   { id: 'click', name: 'Click', enabled: true, fee: '2.0%', type: 'online' },
   { id: 'paynet', name: 'Paynet', enabled: false, fee: '3.0%', type: 'online' },
+  { id: 'uzum', name: 'Uzum', enabled: false, fee: '2.0%', type: 'online' },
   { id: 'cash', name: 'Cash', enabled: true, fee: '0%', type: 'offline' },
 ];
 

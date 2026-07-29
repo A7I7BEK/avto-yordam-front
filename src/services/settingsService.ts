@@ -15,6 +15,10 @@ import type {
   DaySchedule,
   OrganizationOperatingHoursRequest,
   OrganizationOperatingHoursResponse,
+  OrganizationPaymentProviderRequest,
+  OrganizationPaymentProviderResponse,
+  PaymentProviderResponse,
+  PaymentProviderType,
 } from '@/types/settings';
 import {
   DAY_KEY_TO_DAY_OF_WEEK,
@@ -84,8 +88,10 @@ function toRequest(
   organizationId: string,
   dayKey: string,
   schedule: DaySchedule,
+  id?: string,
 ): OrganizationOperatingHoursRequest {
   return {
+    id,
     organizationId,
     dayOfWeek: DAY_KEY_TO_DAY_OF_WEEK[dayKey] as DayOfWeek,
     isOpen: !schedule.closed,
@@ -128,8 +134,8 @@ export async function getSettingsHours(): Promise<Record<string, DaySchedule>> {
 }
 
 /**
- * Save the full weekly schedule.
- * Deletes all existing records for the organization, then creates a fresh week batch.
+ * Save the weekly schedule via batch update.
+ * Sends all days as a single PUT request to the /week endpoint with IDs included.
  */
 export async function saveSettingsHours(
   orgId: string,
@@ -139,23 +145,27 @@ export async function saveSettingsHours(
     return;
   }
 
-  // 1. Delete existing records
+  // 1. Fetch existing records to get their IDs
   const existing: OrganizationOperatingHoursResponse[] = await apiClient.get(
     `${HOURS_BASE}/organization/${orgId}`,
   );
-  if (existing && existing.length > 0) {
-    await Promise.all(
-      existing.map((record) => apiClient.delete(`${HOURS_BASE}/${record.id}`)),
-    );
+
+  // 2. Build a lookup: dayOfWeek → existing record ID
+  const existingIdByDay: Record<string, string> = {};
+  for (const record of existing || []) {
+    const dayKey = DAY_OF_WEEK_TO_DAY_KEY[record.dayOfWeek];
+    if (dayKey) {
+      existingIdByDay[dayKey] = record.id;
+    }
   }
 
-  // 2. Create the full week batch
+  // 3. Build requests with IDs included
   const dayKeys = Object.keys(schedule);
   const requests: OrganizationOperatingHoursRequest[] = dayKeys.map((dayKey) =>
-    toRequest(orgId, dayKey, schedule[dayKey]),
+    toRequest(orgId, dayKey, schedule[dayKey], existingIdByDay[dayKey]),
   );
 
-  await apiClient.post(`${HOURS_BASE}/week`, requests);
+  await apiClient.put(`${HOURS_BASE}/week`, requests);
 }
 
 export async function getSettingsPhotos() {
@@ -187,8 +197,97 @@ export async function getSettingsBankInfo() {
   }
 }
 
-export async function getSettingsPayment() {
-  return paymentProviders;
+const PAYMENT_BASE = '/organization-payment-providers';
+const PROVIDERS_BASE = '/payment-providers';
+
+function getMockPaymentProviders(): PaymentProviderResponse[] {
+  return [
+    {
+      id: 'payme-mock',
+      code: 'PAYME',
+      displayName: 'PayMe',
+      logoUrl: '',
+      fields: [
+        { id: 'f1', paymentProviderId: 'payme-mock', name: 'merchant_id', label: 'Merchant ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter merchant ID' },
+        { id: 'f2', paymentProviderId: 'payme-mock', name: 'secret_key', label: 'Secret key', type: 'password', required: true, orderNo: 2, placeHolder: 'Enter secret key' },
+      ],
+    },
+    {
+      id: 'click-mock',
+      code: 'CLICK',
+      displayName: 'Click',
+      logoUrl: '',
+      fields: [
+        { id: 'f3', paymentProviderId: 'click-mock', name: 'service_id', label: 'Service ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter service ID' },
+        { id: 'f4', paymentProviderId: 'click-mock', name: 'secret_key', label: 'Secret key', type: 'password', required: true, orderNo: 2, placeHolder: 'Enter secret key' },
+      ],
+    },
+    {
+      id: 'paynet-mock',
+      code: 'PAYNET',
+      displayName: 'Paynet',
+      logoUrl: '',
+      fields: [
+        { id: 'f5', paymentProviderId: 'paynet-mock', name: 'terminal_id', label: 'Terminal ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter terminal ID' },
+        { id: 'f6', paymentProviderId: 'paynet-mock', name: 'api_token', label: 'API token', type: 'text', required: true, orderNo: 2, placeHolder: 'Enter API token' },
+      ],
+    },
+    {
+      id: 'uzum-mock',
+      code: 'UZUM',
+      displayName: 'Uzum',
+      logoUrl: '',
+      fields: [
+        { id: 'f7', paymentProviderId: 'uzum-mock', name: 'merchant_id', label: 'Merchant ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter merchant ID' },
+        { id: 'f8', paymentProviderId: 'uzum-mock', name: 'secret_key', label: 'Secret key', type: 'password', required: true, orderNo: 2, placeHolder: 'Enter secret key' },
+      ],
+    },
+  ];
+}
+
+export async function getPaymentProviders(): Promise<PaymentProviderResponse[]> {
+  if (isMockMode()) {
+    return getMockPaymentProviders();
+  }
+
+  try {
+    return await apiClient.get(PROVIDERS_BASE);
+  } catch {
+    return [];
+  }
+}
+
+export async function getSettingsPayment(): Promise<
+  OrganizationPaymentProviderResponse[]
+> {
+  if (isMockMode()) {
+    return paymentProviders.map((p) => ({
+      id: p.id,
+      organizationId: '',
+      type: p.id.toUpperCase() as PaymentProviderType,
+      credentials: null,
+      enabled: p.enabled,
+    }));
+  }
+
+  try {
+    return await apiClient.get(`${PAYMENT_BASE}/organization`);
+  } catch {
+    return [];
+  }
+}
+
+export async function createSettingsPayment(
+  request: OrganizationPaymentProviderRequest,
+): Promise<OrganizationPaymentProviderResponse> {
+  return await apiClient.post(`${PAYMENT_BASE}`, request);
+}
+
+export async function updateSettingsPayment(
+  id: string,
+  request: OrganizationPaymentProviderRequest,
+): Promise<OrganizationPaymentProviderResponse> {
+  return await apiClient.put(`${PAYMENT_BASE}/${id}`, request);
 }
 
 export async function getSettingsNotifications() {
