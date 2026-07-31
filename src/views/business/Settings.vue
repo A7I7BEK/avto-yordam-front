@@ -160,7 +160,7 @@ function breadcrumbItems() {
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   width: 240px;
   padding: 24px 16px;
   background: #ffffff;
@@ -176,26 +176,34 @@ function breadcrumbItems() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: #939399;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   background: transparent;
   border: none;
   border-radius: 6px;
-  transition: background 0.15s;
+  transition: all 0.2s;
+}
+
+.nav-item:hover {
+  color: var(--foreground);
+  background: var(--accent);
 }
 
 .nav-item.active {
-  font-weight: 600;
-  background: #f5f5f5;
+  color: #fff;
+  background: var(--primary);
 }
 
-.nav-item-danger {
-  color: #cc3314;
+.nav-item-danger,
+.nav-item-danger:hover {
+  color: var(--destructive);
 }
 
 .nav-item-danger.active {
-  background: #f5f5f5;
+  color: #fff;
+  background: var(--destructive);
 }
 
 .settings-content {
