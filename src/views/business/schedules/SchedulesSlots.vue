@@ -293,10 +293,8 @@ async function loadModalHelpers() {
 
     const orgIdVal = orgId.value || '1';
     const [orgSvcList, baseSvcList, empList] = await Promise.all([
-      apiClient.get(
-        `/organization-services/get-by-organization-id/${orgIdVal}`,
-      ),
-      apiClient.get('/service'),
+      apiClient.get(`/organization-catalog/get-by-organization-id/${orgIdVal}`),
+      apiClient.get('/catalog'),
       getEmployees(),
     ]);
 

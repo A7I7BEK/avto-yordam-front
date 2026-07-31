@@ -144,8 +144,8 @@ async function loadData() {
       return;
     }
 
-    // Load base services
-    const baseList = await apiClient.get('/service');
+    // Load base catalog
+    const baseList = await apiClient.get('/catalog');
     if (Array.isArray(baseList)) {
       baseServices.value = baseList;
     }
@@ -164,9 +164,9 @@ async function loadData() {
       });
     }
 
-    // Load organization services
+    // Load organization catalog
     const servicesList = await apiClient.get(
-      `/organization-services/get-by-organization-id/${orgId}`,
+      `/organization-catalog/get-by-organization-id/${orgId}`,
     );
     if (Array.isArray(servicesList)) {
       orgServices.value = servicesList;
@@ -285,7 +285,7 @@ function validateForm() {
 
 function saveMockService(payload: {
   organizationId: string | null;
-  serviceId: string;
+  catalogId: string;
   minPrice: number;
   maxPrice: number;
   minDurationMinutes: number;
@@ -302,7 +302,7 @@ function saveMockService(payload: {
         mockOrgServices.value[idx] = {
           id: serviceObj.id,
           organizationId: serviceObj.organizationId,
-          serviceId: serviceObj.serviceId,
+          serviceId: payload.catalogId,
           minPrice: payload.minPrice,
           maxPrice: payload.maxPrice,
           minDurationMinutes: payload.minDurationMinutes,
@@ -317,7 +317,7 @@ function saveMockService(payload: {
     mockOrgServices.value.push({
       id: `os-${Math.random().toString(36).slice(2, 9)}`,
       organizationId: payload.organizationId || 'af-org-uuid',
-      serviceId: payload.serviceId,
+      serviceId: payload.catalogId,
       minPrice: payload.minPrice,
       maxPrice: payload.maxPrice,
       minDurationMinutes: payload.minDurationMinutes,
@@ -337,7 +337,7 @@ async function saveOrganizationService() {
 
   const payload = {
     organizationId: activeOrgId.value,
-    serviceId: formServiceId.value,
+    catalogId: formServiceId.value,
     minPrice: formMinPrice.value,
     maxPrice: formMaxPrice.value,
     minDurationMinutes: formMinDuration.value,
@@ -351,11 +351,11 @@ async function saveOrganizationService() {
       saveMockService(payload);
     } else if (editingServiceId.value) {
       await apiClient.put(
-        `/organization-services/${editingServiceId.value}`,
+        `/organization-catalog/${editingServiceId.value}`,
         payload,
       );
     } else {
-      await apiClient.post('/organization-services', payload);
+      await apiClient.post('/organization-catalog', payload);
     }
     closeDialog();
     await loadData();
@@ -381,7 +381,7 @@ async function deleteService(id: string) {
       return;
     }
 
-    await apiClient.delete(`/organization-services/${id}`);
+    await apiClient.delete(`/organization-catalog/${id}`);
     await loadData();
   } catch (err: unknown) {
     const errorVal = err as Record<string, unknown> | null;

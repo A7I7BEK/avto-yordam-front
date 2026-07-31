@@ -63,7 +63,7 @@ export async function getOrganizationServices(
   }
   try {
     return await apiClient.get(
-      `/organization-services/get-by-organization-id/${organizationId}`,
+      `/organization-catalog/get-by-organization-id/${organizationId}`,
     );
   } catch {
     return [];

@@ -54,6 +54,7 @@ interface ProviderTypeInfo {
   type: PaymentProviderType;
   name: string;
   logoUrl: string;
+  fee: string;
   fieldDefs: PaymentProviderFieldResponse[];
 }
 
@@ -61,7 +62,9 @@ const providers = ref<Provider[]>([]);
 const orgId = ref<string | null>(null);
 const loading = ref(true);
 const savingProviders = ref<Record<string, boolean>>({});
-const creatingType = ref<string | null>(null);
+const addingProviderKey = ref<string | null>(null);
+const addingFieldValues = ref<Record<string, string>>({});
+const savingAdd = ref(false);
 
 const providerFees: Record<string, string> = {
   payme: '2.5%',
@@ -87,6 +90,7 @@ const allProviderTypes = computed<ProviderTypeInfo[]>(() =>
       type: p.code as PaymentProviderType,
       name: p.displayName,
       logoUrl: p.logoUrl,
+      fee: providerFees[p.code.toLowerCase()] ?? '',
       fieldDefs: p.fields,
     })),
 );
@@ -95,6 +99,10 @@ const configuredTypes = computed(() => new Set(providers.value.map((p) => p.type
 
 const availableTypes = computed(() =>
   allProviderTypes.value.filter((t) => !configuredTypes.value.has(t.typeKey)),
+);
+
+const addingProviderData = computed(() =>
+  allProviderTypes.value.find((t) => t.typeKey === addingProviderKey.value) ?? null,
 );
 
 const MASKED_VALUE = '•••••••••••••••••••';
@@ -200,19 +208,36 @@ onMounted(async () => {
   loading.value = false;
 });
 
-async function createProvider(typeInfo: ProviderTypeInfo) {
-  if (!orgId.value || creatingType.value) {
+function startAddingProvider(typeInfo: ProviderTypeInfo) {
+  addingProviderKey.value = typeInfo.typeKey;
+  // Initialize field values from field definitions (all empty)
+  const initial: Record<string, string> = {};
+  for (const def of typeInfo.fieldDefs) {
+    initial[def.name] = '';
+  }
+  addingFieldValues.value = initial;
+}
+
+function cancelAddingProvider() {
+  addingProviderKey.value = null;
+  addingFieldValues.value = {};
+}
+
+async function confirmAddingProvider(typeInfo: ProviderTypeInfo) {
+  if (!orgId.value || addingProviderKey.value !== typeInfo.typeKey || savingAdd.value) {
     return;
   }
 
-  creatingType.value = typeInfo.typeKey;
+  savingAdd.value = true;
 
   try {
+    const credentials = JSON.stringify(addingFieldValues.value);
+
     const response = await createSettingsPayment({
       organizationId: orgId.value,
       type: typeInfo.type,
-      credentials: null,
-      enabled: false,
+      credentials,
+      enabled: true,
     });
 
     const parsedCredentials = parseCredentials(response.credentials);
@@ -229,10 +254,13 @@ async function createProvider(typeInfo: ProviderTypeInfo) {
       lastCharge: lastChargeTexts[typeInfo.typeKey] ?? 'Never used',
       hasActivity: false,
     });
+
+    addingProviderKey.value = null;
+    addingFieldValues.value = {};
   } catch {
     // Error toast could be added here
   } finally {
-    creatingType.value = null;
+    savingAdd.value = false;
   }
 }
 
@@ -532,23 +560,116 @@ async function saveEditing(providerId: string) {
           <button
             type="button"
             class="btn btn--primary btn--add"
-            :disabled="creatingType === typeInfo.typeKey"
-            @click="createProvider(typeInfo)"
+            @click="startAddingProvider(typeInfo)"
           >
-            <LoaderCircle
-              v-if="creatingType === typeInfo.typeKey"
-              :size="14"
-              class="btn-spinner"
-            />
-            <Plus
-              v-else
-              :size="14"
-            />
-            {{ creatingType === typeInfo.typeKey ? 'Adding…' : 'Add' }}
+            <Plus :size="14" />
+            Add
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Modal: Add provider credentials -->
+    <Teleport to="body">
+      <div
+        v-if="addingProviderData"
+        class="modal-overlay"
+        @click.self="cancelAddingProvider"
+      >
+        <div class="modal-content">
+          <!-- Modal header -->
+          <div class="modal-header">
+            <div class="modal-header-left">
+              <div class="provider-icon">
+                <img
+                  :src="addingProviderData.logoUrl"
+                  :alt="addingProviderData.name"
+                  class="provider-icon-img"
+                >
+              </div>
+              <div class="provider-info">
+                <span class="provider-name">{{ addingProviderData.name }}</span>
+                <span class="provider-fee">{{ addingProviderData.fee }} per transaction</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="modal-close-btn"
+              :disabled="savingAdd"
+              @click="cancelAddingProvider"
+            >
+              <CircleX :size="18" />
+            </button>
+          </div>
+
+          <div class="modal-divider" />
+
+          <!-- Credential fields -->
+          <div class="modal-body">
+            <p class="modal-body-title">Configure credentials</p>
+            <div
+              v-for="def in addingProviderData.fieldDefs"
+              :key="def.id"
+              class="provider-field"
+            >
+              <label
+                class="field-label"
+                :for="`modal-${def.name}`"
+              >{{ def.label }} <span v-if="def.required" class="field-required">*</span></label>
+              <div
+                v-if="def.type === 'password'"
+                class="field-input-wrap"
+              >
+                <input
+                  :id="`modal-${def.name}`"
+                  v-model="addingFieldValues[def.name]"
+                  type="text"
+                  class="field-input"
+                  :placeholder="def.placeHolder"
+                >
+              </div>
+              <input
+                v-else
+                :id="`modal-${def.name}`"
+                v-model="addingFieldValues[def.name]"
+                type="text"
+                class="field-input"
+                :placeholder="def.placeHolder"
+              >
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn--outline"
+              :disabled="savingAdd"
+              @click="cancelAddingProvider"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn--primary"
+              :disabled="savingAdd"
+              @click="confirmAddingProvider(addingProviderData)"
+            >
+              <LoaderCircle
+                v-if="savingAdd"
+                :size="14"
+                class="btn-spinner"
+              />
+              <CircleCheck
+                v-else
+                :size="14"
+              />
+              {{ savingAdd ? 'Adding…' : 'Add provider' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Refunds banner -->
     <div class="info-banner">
@@ -950,5 +1071,93 @@ async function saveEditing(providerId: string) {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.modal-header-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 4px;
+}
+
+.modal-close-btn:hover:not(:disabled) {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+.modal-divider {
+  height: 1px;
+  background: var(--border);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.modal-body-title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.field-required {
+  color: #e53e3e;
 }
 </style>

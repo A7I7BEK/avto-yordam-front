@@ -2,36 +2,68 @@
   setup
   lang="ts"
 >
-import { ref } from 'vue';
-import { members } from '@/data/members';
+import { LoaderCircle } from '@lucide/vue';
+import { onMounted, ref } from 'vue';
+import {
+  deactivateOrganization,
+  getMyOrgId,
+  transferOrganizationOwnership,
+} from '@/services/settingsService';
 
 type ModalType = 'transfer' | 'deactivate' | 'delete' | null;
 
 const activeModal = ref<ModalType>(null);
-const selectedMemberId = ref<string | null>(null);
+const newOwnerPhone = ref('');
+const orgId = ref<string | null>(null);
+const actionLoading = ref(false);
 
-const eligibleMembers = members.filter(
-  (m) => m.status === 'Active' && m.role !== 'Owner',
-);
+onMounted(async () => {
+  orgId.value = await getMyOrgId();
+});
 
 function openModal(type: ModalType) {
-  selectedMemberId.value = null;
+  newOwnerPhone.value = '';
   activeModal.value = type;
 }
 
 function closeModal() {
   activeModal.value = null;
-  selectedMemberId.value = null;
+  newOwnerPhone.value = '';
 }
 
-function confirmTransfer() {
-  if (selectedMemberId.value) {
+async function confirmTransfer() {
+  if (!(newOwnerPhone.value.trim() && orgId.value) || actionLoading.value) {
+    return;
+  }
+
+  actionLoading.value = true;
+  try {
+    await transferOrganizationOwnership({
+      newOwnerPhoneNumber: newOwnerPhone.value.trim(),
+      organizationId: orgId.value,
+    });
     closeModal();
+  } catch {
+    // Error toast could be added here
+  } finally {
+    actionLoading.value = false;
   }
 }
 
-function confirmDeactivate() {
-  closeModal();
+async function confirmDeactivate() {
+  if (!orgId.value || actionLoading.value) {
+    return;
+  }
+
+  actionLoading.value = true;
+  try {
+    await deactivateOrganization(orgId.value);
+    closeModal();
+  } catch {
+    // Error toast could be added here
+  } finally {
+    actionLoading.value = false;
+  }
 }
 
 function confirmDelete() {
@@ -119,43 +151,31 @@ function confirmDelete() {
         <div class="modal-card">
           <h3 class="modal-title">Transfer ownership</h3>
           <p class="modal-desc">
-            Select a team member to transfer ownership to. You will become an
-            admin.
+            Enter the phone number of the new owner. You will become an admin
+            after the transfer.
           </p>
 
-          <div class="member-list">
+          <div class="transfer-field">
             <label
-              v-for="member in eligibleMembers"
-              :key="member.id"
-              class="member-item"
-              :class="{ 'member-item--selected': selectedMemberId === member.id }"
+              class="transfer-label"
+              for="new-owner-phone"
+              >New owner phone number</label
             >
-              <div class="member-item-left">
-                <div
-                  class="member-avatar"
-                  :style="{ background: member.avatarColor }"
-                >
-                  {{ member.initials }}
-                </div>
-                <div class="member-info">
-                  <span class="member-name">{{ member.name }}</span>
-                  <span class="member-role">{{ member.role }}</span>
-                </div>
-              </div>
-              <input
-                v-model="selectedMemberId"
-                type="radio"
-                :value="member.id"
-                name="transfer-member"
-                class="member-radio"
-              >
-            </label>
+            <input
+              id="new-owner-phone"
+              v-model="newOwnerPhone"
+              type="tel"
+              class="transfer-input"
+              placeholder="+998 90 123 45 67"
+              :disabled="actionLoading"
+            >
           </div>
 
           <div class="modal-actions">
             <button
               type="button"
               class="btn btn--outline"
+              :disabled="actionLoading"
               @click="closeModal"
             >
               Cancel
@@ -163,10 +183,15 @@ function confirmDelete() {
             <button
               type="button"
               class="btn btn--filled-destructive"
-              :disabled="!selectedMemberId"
+              :disabled="!newOwnerPhone.trim() || actionLoading"
               @click="confirmTransfer"
             >
-              Transfer ownership
+              <LoaderCircle
+                v-if="actionLoading"
+                :size="13"
+                class="btn-spinner"
+              />
+              {{ actionLoading ? 'Transferring…' : 'Transfer ownership' }}
             </button>
           </div>
         </div>
@@ -192,6 +217,7 @@ function confirmDelete() {
             <button
               type="button"
               class="btn btn--outline"
+              :disabled="actionLoading"
               @click="closeModal"
             >
               Cancel
@@ -199,9 +225,15 @@ function confirmDelete() {
             <button
               type="button"
               class="btn btn--outline-destructive"
+              :disabled="actionLoading"
               @click="confirmDeactivate"
             >
-              Deactivate
+              <LoaderCircle
+                v-if="actionLoading"
+                :size="13"
+                class="btn-spinner"
+              />
+              {{ actionLoading ? 'Deactivating…' : 'Deactivate' }}
             </button>
           </div>
         </div>
@@ -423,78 +455,51 @@ function confirmDelete() {
   padding-top: 4px;
 }
 
-/* ===== Member list (transfer modal) ===== */
-.member-list {
+/* ===== Transfer ownership input ===== */
+.transfer-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.member-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  transition:
-    border-color 0.15s,
-    background 0.15s;
-}
-
-.member-item:hover {
-  border-color: var(--primary);
-}
-
-.member-item--selected {
-  background: #f5f3ff;
-  border-color: var(--primary);
-}
-
-.member-item-left {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.member-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
+.transfer-label {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  color: #ffffff;
-  border-radius: var(--radius-pill);
-}
-
-.member-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.member-name {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--foreground);
-}
-
-.member-role {
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--muted-foreground);
 }
 
-.member-radio {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--primary);
-  cursor: pointer;
+.transfer-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--foreground);
+  outline: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s;
+}
+
+.transfer-input:focus {
+  border-color: var(--primary);
+}
+
+.transfer-input:disabled {
+  cursor: default;
+  background: var(--accent);
+  opacity: 1;
+}
+
+/* ===== Button spinner ===== */
+.btn-spinner {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

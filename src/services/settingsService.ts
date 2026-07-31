@@ -17,6 +17,7 @@ import type {
   OrganizationOperatingHoursResponse,
   OrganizationPaymentProviderRequest,
   OrganizationPaymentProviderResponse,
+  OrganizationTransferOwnerShipRequest,
   PaymentProviderResponse,
   PaymentProviderType,
 } from '@/types/settings';
@@ -208,8 +209,26 @@ function getMockPaymentProviders(): PaymentProviderResponse[] {
       displayName: 'PayMe',
       logoUrl: '',
       fields: [
-        { id: 'f1', paymentProviderId: 'payme-mock', name: 'merchant_id', label: 'Merchant ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter merchant ID' },
-        { id: 'f2', paymentProviderId: 'payme-mock', name: 'secret_key', label: 'Secret key', type: 'password', required: true, orderNo: 2, placeHolder: 'Enter secret key' },
+        {
+          id: 'f1',
+          paymentProviderId: 'payme-mock',
+          name: 'merchant_id',
+          label: 'Merchant ID',
+          type: 'text',
+          required: true,
+          orderNo: 1,
+          placeHolder: 'Enter merchant ID',
+        },
+        {
+          id: 'f2',
+          paymentProviderId: 'payme-mock',
+          name: 'secret_key',
+          label: 'Secret key',
+          type: 'password',
+          required: true,
+          orderNo: 2,
+          placeHolder: 'Enter secret key',
+        },
       ],
     },
     {
@@ -218,8 +237,26 @@ function getMockPaymentProviders(): PaymentProviderResponse[] {
       displayName: 'Click',
       logoUrl: '',
       fields: [
-        { id: 'f3', paymentProviderId: 'click-mock', name: 'service_id', label: 'Service ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter service ID' },
-        { id: 'f4', paymentProviderId: 'click-mock', name: 'secret_key', label: 'Secret key', type: 'password', required: true, orderNo: 2, placeHolder: 'Enter secret key' },
+        {
+          id: 'f3',
+          paymentProviderId: 'click-mock',
+          name: 'service_id',
+          label: 'Service ID',
+          type: 'text',
+          required: true,
+          orderNo: 1,
+          placeHolder: 'Enter service ID',
+        },
+        {
+          id: 'f4',
+          paymentProviderId: 'click-mock',
+          name: 'secret_key',
+          label: 'Secret key',
+          type: 'password',
+          required: true,
+          orderNo: 2,
+          placeHolder: 'Enter secret key',
+        },
       ],
     },
     {
@@ -228,8 +265,26 @@ function getMockPaymentProviders(): PaymentProviderResponse[] {
       displayName: 'Paynet',
       logoUrl: '',
       fields: [
-        { id: 'f5', paymentProviderId: 'paynet-mock', name: 'terminal_id', label: 'Terminal ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter terminal ID' },
-        { id: 'f6', paymentProviderId: 'paynet-mock', name: 'api_token', label: 'API token', type: 'text', required: true, orderNo: 2, placeHolder: 'Enter API token' },
+        {
+          id: 'f5',
+          paymentProviderId: 'paynet-mock',
+          name: 'terminal_id',
+          label: 'Terminal ID',
+          type: 'text',
+          required: true,
+          orderNo: 1,
+          placeHolder: 'Enter terminal ID',
+        },
+        {
+          id: 'f6',
+          paymentProviderId: 'paynet-mock',
+          name: 'api_token',
+          label: 'API token',
+          type: 'text',
+          required: true,
+          orderNo: 2,
+          placeHolder: 'Enter API token',
+        },
       ],
     },
     {
@@ -238,14 +293,34 @@ function getMockPaymentProviders(): PaymentProviderResponse[] {
       displayName: 'Uzum',
       logoUrl: '',
       fields: [
-        { id: 'f7', paymentProviderId: 'uzum-mock', name: 'merchant_id', label: 'Merchant ID', type: 'text', required: true, orderNo: 1, placeHolder: 'Enter merchant ID' },
-        { id: 'f8', paymentProviderId: 'uzum-mock', name: 'secret_key', label: 'Secret key', type: 'password', required: true, orderNo: 2, placeHolder: 'Enter secret key' },
+        {
+          id: 'f7',
+          paymentProviderId: 'uzum-mock',
+          name: 'merchant_id',
+          label: 'Merchant ID',
+          type: 'text',
+          required: true,
+          orderNo: 1,
+          placeHolder: 'Enter merchant ID',
+        },
+        {
+          id: 'f8',
+          paymentProviderId: 'uzum-mock',
+          name: 'secret_key',
+          label: 'Secret key',
+          type: 'password',
+          required: true,
+          orderNo: 2,
+          placeHolder: 'Enter secret key',
+        },
       ],
     },
   ];
 }
 
-export async function getPaymentProviders(): Promise<PaymentProviderResponse[]> {
+export async function getPaymentProviders(): Promise<
+  PaymentProviderResponse[]
+> {
   if (isMockMode()) {
     return getMockPaymentProviders();
   }
@@ -300,4 +375,20 @@ export async function getSettingsAppearance() {
 
 export async function getSettingsDangerZone() {
   return dangerZoneData;
+}
+
+const ORG_BASE = '/organization';
+
+export async function transferOrganizationOwnership(
+  request: OrganizationTransferOwnerShipRequest,
+): Promise<unknown> {
+  return await apiClient.put(`${ORG_BASE}/transfer-ownership`, request);
+}
+
+export async function activateOrganization(id: string): Promise<unknown> {
+  return await apiClient.put(`${ORG_BASE}/activate/${id}`);
+}
+
+export async function deactivateOrganization(id: string): Promise<unknown> {
+  return await apiClient.put(`${ORG_BASE}/deactivate/${id}`);
 }

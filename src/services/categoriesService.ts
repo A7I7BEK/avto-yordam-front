@@ -8,7 +8,7 @@ export async function getCategories() {
   }
 
   try {
-    const services = await apiClient.get('/service');
+    const services = await apiClient.get('/catalog');
     const formattedServices = services.map((svc: any) => ({
       id: svc.id,
       name: svc.name,

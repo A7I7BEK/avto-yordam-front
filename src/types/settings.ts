@@ -55,7 +55,12 @@ export const DAY_OF_WEEK_TO_DAY_KEY: Record<DayOfWeek, string> = {
 
 /* ───── Payment Provider Types ───── */
 
-export type PaymentProviderType = 'PAYME' | 'CLICK' | 'PAYNET' | 'UZUM' | 'CASH';
+export type PaymentProviderType =
+  | 'PAYME'
+  | 'CLICK'
+  | 'PAYNET'
+  | 'UZUM'
+  | 'CASH';
 
 export interface OrganizationPaymentProviderRequest {
   id?: string;
@@ -92,4 +97,11 @@ export interface PaymentProviderResponse {
   displayName: string;
   logoUrl: string;
   fields: PaymentProviderFieldResponse[];
+}
+
+/* ───── Danger Zone ───── */
+
+export interface OrganizationTransferOwnerShipRequest {
+  newOwnerPhoneNumber: string;
+  organizationId: string;
 }
