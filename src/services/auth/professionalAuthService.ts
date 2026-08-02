@@ -19,6 +19,7 @@ import type {
   VerifyOtpResponse,
 } from '@/types/auth';
 import { mockAuthService } from './mock';
+import { saveAuthTokens } from './tokenService';
 
 export const professionalAuth = {
   async loginWithPhone(
@@ -60,7 +61,7 @@ export const professionalAuth = {
         type: 'PROFESSIONAL',
       });
 
-      localStorage.setItem('token', result.accessToken);
+      saveAuthTokens(result);
       sessionStorage.removeItem('reg_details');
       const userRes = await apiClient.get('/user/me');
 
@@ -81,7 +82,7 @@ export const professionalAuth = {
         login: req.otpId,
         password: 'password',
       });
-      localStorage.setItem('token', result.accessToken);
+      saveAuthTokens(result);
       const userRes = await apiClient.get('/user/me');
       return {
         token: result.accessToken,
@@ -117,7 +118,7 @@ export const professionalAuth = {
       login: req.email,
       password: req.password,
     });
-    localStorage.setItem('token', result.accessToken);
+    saveAuthTokens(result);
     const userRes = await apiClient.get('/user/me');
 
     return {
@@ -143,7 +144,7 @@ export const professionalAuth = {
       login: cleanPhone,
       password: req.password,
     });
-    localStorage.setItem('token', result.accessToken);
+    saveAuthTokens(result);
     const userRes = await apiClient.get('/user/me');
 
     return {
@@ -170,7 +171,7 @@ export const professionalAuth = {
       password: req.password,
       type: 'PROFESSIONAL',
     });
-    localStorage.setItem('token', result.accessToken);
+    saveAuthTokens(result);
     const userRes = await apiClient.get('/user/me');
 
     return {

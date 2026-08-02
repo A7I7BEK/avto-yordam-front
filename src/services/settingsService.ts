@@ -13,6 +13,7 @@ import {
 import type {
   DayOfWeek,
   DaySchedule,
+  OrganizationDetailsResponse,
   OrganizationOperatingHoursRequest,
   OrganizationOperatingHoursResponse,
   OrganizationPaymentProviderRequest,
@@ -25,6 +26,7 @@ import {
   DAY_KEY_TO_DAY_OF_WEEK,
   DAY_OF_WEEK_TO_DAY_KEY,
 } from '@/types/settings';
+import type { OrganizationResponse } from '@/types/user';
 
 export async function getMyOrgId(): Promise<string | null> {
   try {
@@ -34,6 +36,66 @@ export async function getMyOrgId(): Promise<string | null> {
     }
   } catch (_) {}
   return null;
+}
+
+/**
+ * Map a backend ServiceCenterType to the frontend org-type keys used by the
+ * legal info form (mchj | ytt | self-employed). Returns '' when unknown.
+ */
+function normalizeOrgType(type?: string): string {
+  const t = (type ?? '').toUpperCase();
+  if (t.includes('YATT') || t.includes('YTT')) {
+    return 'ytt';
+  }
+  if (t.includes('SELF')) {
+    return 'self-employed';
+  }
+  if (t.includes('MCHJ')) {
+    return 'mchj';
+  }
+  return '';
+}
+
+export interface RegisteredLegalDetails {
+  registrationNumber?: string;
+  registeredDate?: string;
+}
+
+function registeredLegalDetails(
+  type?: string,
+  details?: OrganizationDetailsResponse | null,
+): RegisteredLegalDetails | null {
+  if (!details) {
+    return null;
+  }
+  const t = (type ?? '').toUpperCase();
+  if (t.includes('YATT') || t.includes('YTT')) {
+    const y = details.yattDetails;
+    if (!y) {
+      return null;
+    }
+    return {
+      registrationNumber: y.registrationNumber,
+      registeredDate: y.registeredDate ?? undefined,
+    };
+  }
+  if (t.includes('SELF')) {
+    const s = details.selfEmployedDetails;
+    if (!s) {
+      return null;
+    }
+    return {
+      registeredDate: s.passportGivenDate ?? undefined,
+    };
+  }
+  const c = details.companyDetails;
+  if (!c) {
+    return null;
+  }
+  return {
+    registrationNumber: c.registrationNumber,
+    registeredDate: c.registeredDate ?? undefined,
+  };
 }
 
 export async function getSettingsLegal() {
@@ -47,23 +109,42 @@ export async function getSettingsLegal() {
       return legalInfo;
     }
 
-    const org = await apiClient.get(`/organization/${orgId}`);
+    const org = (await apiClient.get(
+      `/organization/${orgId}`,
+    )) as OrganizationResponse;
+    const details = await getOrganizationDetails(orgId);
+    const registered = registeredLegalDetails(org.type, details);
+
     return {
-      orgType: org.orgType || legalInfo.orgType,
+      orgType: normalizeOrgType(org.type) || legalInfo.orgType,
       legalEntityName: org.name || legalInfo.legalEntityName,
-      stateRegNumber: org.stateRegNumber || legalInfo.stateRegNumber,
-      taxId: org.taxId || legalInfo.taxId,
-      vatStatus: org.vatStatus || legalInfo.vatStatus,
-      foundingDate: org.foundingDate || legalInfo.foundingDate,
-      country: org.country || legalInfo.country,
-      region: org.region || legalInfo.region,
-      city: org.city || legalInfo.city,
-      postalCode: org.postalCode || legalInfo.postalCode,
-      street: org.street || legalInfo.street,
-      documents: org.documents || legalInfo.documents,
+      stateRegNumber:
+        registered?.registrationNumber || legalInfo.stateRegNumber,
+      taxId: org.inn || legalInfo.taxId,
+      vatStatus: legalInfo.vatStatus,
+      foundingDate: registered?.registeredDate || legalInfo.foundingDate,
+      country: legalInfo.country,
+      region: legalInfo.region,
+      city: legalInfo.city,
+      postalCode: legalInfo.postalCode,
+      street: org.address || legalInfo.street,
+      documents: legalInfo.documents,
     };
   } catch (_) {
     return legalInfo;
+  }
+}
+
+export async function getOrganizationDetails(
+  orgId: string,
+): Promise<OrganizationDetailsResponse | null> {
+  if (isMockMode()) {
+    return null;
+  }
+  try {
+    return await apiClient.get(`/organization/${orgId}/details`);
+  } catch {
+    return null;
   }
 }
 
@@ -184,7 +265,9 @@ export async function getSettingsBankInfo() {
       return bankInfo;
     }
 
-    const org = await apiClient.get(`/organization/${orgId}`);
+    const org = (await apiClient.get(
+      `/organization/${orgId}`,
+    )) as OrganizationResponse;
     return {
       accountHolder: org.name || bankInfo.accountHolder,
       bank: org.bankName || bankInfo.bank,
@@ -391,4 +474,27 @@ export async function activateOrganization(id: string): Promise<unknown> {
 
 export async function deactivateOrganization(id: string): Promise<unknown> {
   return await apiClient.put(`${ORG_BASE}/deactivate/${id}`);
+}
+
+/**
+ * Determine whether the organization is currently active.
+ * Prefers the boolean `active` flag; falls back to a `status` enum where
+ * anything other than `INACTIVE` is treated as active.
+ */
+export async function getOrganizationActiveState(
+  orgId?: string | null,
+): Promise<boolean> {
+  const id = orgId ?? (await getMyOrgId());
+  if (!id) {
+    return true;
+  }
+  try {
+    const org = await apiClient.get(`/organization/${id}`);
+    if (typeof org.active === 'boolean') {
+      return org.active;
+    }
+    return String(org.status ?? '').toUpperCase() !== 'INACTIVE';
+  } catch {
+    return true;
+  }
 }

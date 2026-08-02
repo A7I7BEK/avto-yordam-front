@@ -17,7 +17,7 @@ export interface ProfessionalInfoData {
   workingDays: string[];
 }
 
-export type OrganizationType = 'MCHJ' | 'YTT' | 'SELF_EMPLOYED';
+export type OrganizationType = 'MCHJ' | 'YATT' | 'SELF_EMPLOYED';
 
 export interface BusinessOnboardingData {
   organizationType: OrganizationType;

@@ -4,11 +4,13 @@
 >
 import { Image, Loader2, Plus, Trash2, Upload, X } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
+import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import {
   deleteOrganizationFile,
   getDownloadUrl,
   getOrganizationFilesByType,
   type OrganizationFileResponse,
+  updateOrganizationFile,
   uploadOrganizationFile,
 } from '@/services/documentsService';
 
@@ -24,6 +26,10 @@ const errorMsg = ref<string | null>(null);
 
 const coverInputRef = ref<HTMLInputElement | null>(null);
 const galleryInputRef = ref<HTMLInputElement | null>(null);
+
+// Confirmation dialogs
+const confirmRemoveCover = ref(false);
+const confirmDeletePhotoId = ref<string | null>(null);
 
 const emptySlots = computed(() =>
   Math.max(0, MAX_GALLERY_PHOTOS - galleryPhotos.value.length),
@@ -61,16 +67,19 @@ async function onCoverSelected(event: Event) {
   uploadingCover.value = true;
   errorMsg.value = null;
   try {
-    // If cover photo already exists, delete it first to avoid cluttering storage
     if (coverPhoto.value) {
-      try {
-        await deleteOrganizationFile(coverPhoto.value.id);
-      } catch {
-        // Non-critical, swallow and continue
-      }
+      // Replace the existing cover via the update endpoint
+      const saved = await updateOrganizationFile(
+        coverPhoto.value.id,
+        file,
+        'PHOTO',
+        true,
+      );
+      coverPhoto.value = saved;
+    } else {
+      const saved = await uploadOrganizationFile(file, 'PHOTO', true);
+      coverPhoto.value = saved;
     }
-    const saved = await uploadOrganizationFile(file, 'PHOTO', true);
-    coverPhoto.value = saved;
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Cover upload failed';
   } finally {
@@ -79,7 +88,13 @@ async function onCoverSelected(event: Event) {
   }
 }
 
-async function removeCover() {
+function askRemoveCover() {
+  if (coverPhoto.value) {
+    confirmRemoveCover.value = true;
+  }
+}
+
+async function performRemoveCover() {
   if (!coverPhoto.value) {
     return;
   }
@@ -92,6 +107,7 @@ async function removeCover() {
     errorMsg.value = e instanceof Error ? e.message : 'Failed to remove cover';
   } finally {
     uploadingCover.value = false;
+    confirmRemoveCover.value = false;
   }
 }
 
@@ -106,16 +122,19 @@ async function onGallerySelected(event: Event) {
     return;
   }
 
+  // Respect the gallery limit: only upload what fits in the remaining slots
+  const availableSlots = MAX_GALLERY_PHOTOS - galleryPhotos.value.length;
+  const toUpload = files.slice(0, availableSlots);
+
   uploadingGallery.value = true;
   errorMsg.value = null;
   try {
-    for (const file of files) {
-      if (galleryPhotos.value.length >= MAX_GALLERY_PHOTOS) {
-        errorMsg.value = `Maximum gallery photos is ${MAX_GALLERY_PHOTOS}`;
-        break;
-      }
+    for (const file of toUpload) {
       const saved = await uploadOrganizationFile(file, 'PHOTO', false);
       galleryPhotos.value.push(saved);
+    }
+    if (files.length > availableSlots) {
+      errorMsg.value = `Maximum gallery photos is ${MAX_GALLERY_PHOTOS}`;
     }
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Upload failed';
@@ -125,7 +144,15 @@ async function onGallerySelected(event: Event) {
   }
 }
 
-async function deletePhoto(id: string) {
+function askDeletePhoto(id: string) {
+  confirmDeletePhotoId.value = id;
+}
+
+async function performDeletePhoto() {
+  const id = confirmDeletePhotoId.value;
+  if (!id) {
+    return;
+  }
   deletingPhotoId.value = id;
   errorMsg.value = null;
   try {
@@ -135,6 +162,7 @@ async function deletePhoto(id: string) {
     errorMsg.value = e instanceof Error ? e.message : 'Failed to delete photo';
   } finally {
     deletingPhotoId.value = null;
+    confirmDeletePhotoId.value = null;
   }
 }
 </script>
@@ -246,7 +274,7 @@ async function deletePhoto(id: string) {
             type="button"
             class="btn btn--ghost"
             :disabled="uploadingCover"
-            @click="removeCover"
+            @click="askRemoveCover"
           >
             Remove
           </button>
@@ -314,7 +342,7 @@ async function deletePhoto(id: string) {
                 type="button"
                 class="delete-btn"
                 :disabled="deletingPhotoId === photo.id"
-                @click="deletePhoto(photo.id)"
+                @click="askDeletePhoto(photo.id)"
               >
                 <Loader2
                   v-if="deletingPhotoId === photo.id"
@@ -342,6 +370,28 @@ async function deletePhoto(id: string) {
         </div>
       </div>
     </div>
+
+    <!-- Remove cover confirmation -->
+    <ConfirmDialog
+      :is-open="confirmRemoveCover"
+      title="Remove cover photo?"
+      message="This removes the cover photo from your public profile. You can upload a new one at any time."
+      confirm-label="Remove"
+      :loading="uploadingCover"
+      @cancel="confirmRemoveCover = false"
+      @confirm="performRemoveCover"
+    />
+
+    <!-- Delete gallery photo confirmation -->
+    <ConfirmDialog
+      :is-open="confirmDeletePhotoId !== null"
+      title="Delete this photo?"
+      message="This permanently removes the photo from your gallery. This action can't be undone."
+      confirm-label="Delete"
+      :loading="deletingPhotoId !== null"
+      @cancel="confirmDeletePhotoId = null"
+      @confirm="performDeletePhoto"
+    />
   </div>
 </template>
 

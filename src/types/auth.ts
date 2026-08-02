@@ -109,3 +109,9 @@ export interface ResendOtpRequest {
 export interface ResendOtpResponse {
   otpId: string;
 }
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
+  type: string;
+}

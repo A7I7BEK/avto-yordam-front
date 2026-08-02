@@ -13,12 +13,14 @@ import {
   Wrench,
 } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
+import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import { deleteReview, getReviews } from '@/services/reviewsService';
 import type { ReviewResponse } from '@/types/user';
 
 const reviews = ref<ReviewResponse[]>([]);
 const loading = ref(true);
 const selectedReview = ref<ReviewResponse | null>(null);
+const confirmDeleteId = ref<string | null>(null);
 
 onMounted(async () => {
   try {
@@ -56,12 +58,21 @@ function renderStars(): number[] {
   return [1, 2, 3, 4, 5];
 }
 
-async function handleDelete(id: string) {
+function askDelete(id: string) {
+  confirmDeleteId.value = id;
+}
+
+async function performDelete() {
+  const id = confirmDeleteId.value;
+  if (!id) {
+    return;
+  }
   await deleteReview(id);
   reviews.value = reviews.value.filter((r) => r.id !== id);
   if (selectedReview.value?.id === id) {
     selectedReview.value = null;
   }
+  confirmDeleteId.value = null;
 }
 </script>
 
@@ -289,7 +300,7 @@ async function handleDelete(id: string) {
               <button
                 class="delete-btn"
                 type="button"
-                @click="handleDelete(selectedReview.id)"
+                @click="askDelete(selectedReview.id)"
               >
                 <Trash2 :size="14" />
                 Delete review
@@ -299,6 +310,16 @@ async function handleDelete(id: string) {
         </div>
       </div>
     </template>
+
+    <!-- Delete review confirmation -->
+    <ConfirmDialog
+      :is-open="confirmDeleteId !== null"
+      title="Delete this review?"
+      message="This permanently removes the review from your organization. This action can't be undone."
+      confirm-label="Delete"
+      @cancel="confirmDeleteId = null"
+      @confirm="performDelete"
+    />
   </div>
 </template>
 

@@ -4,6 +4,7 @@
 >
 import { CheckCheck, Settings, Trash2 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
+import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import { getNotifications } from '@/services/notificationsService';
 
 interface Notification {
@@ -21,6 +22,7 @@ interface Notification {
 
 const notifications = ref<Notification[]>([]);
 const activeTab = ref('All');
+const confirmDeleteId = ref<string | null>(null);
 
 onMounted(async () => {
   notifications.value = await getNotifications();
@@ -61,8 +63,17 @@ const groupedNotifications = computed(() => {
   return groups;
 });
 
-function deleteNotification(id: string) {
+function askDeleteNotification(id: string) {
+  confirmDeleteId.value = id;
+}
+
+function performDeleteNotification() {
+  const id = confirmDeleteId.value;
+  if (!id) {
+    return;
+  }
   notifications.value = notifications.value.filter((n) => n.id !== id);
+  confirmDeleteId.value = null;
 }
 
 function markAllAsRead() {
@@ -275,7 +286,7 @@ function markAllAsRead() {
                 type="button"
                 class="notification-item__delete"
                 title="Delete"
-                @click="deleteNotification(item.id)"
+                @click="askDeleteNotification(item.id)"
               >
                 <Trash2
                   :size="14"
@@ -309,6 +320,16 @@ function markAllAsRead() {
         <p>No notifications to show for this category.</p>
       </div>
     </div>
+
+    <!-- Delete notification confirmation -->
+    <ConfirmDialog
+      :is-open="confirmDeleteId !== null"
+      title="Delete this notification?"
+      message="This removes the notification from your list. This action can't be undone."
+      confirm-label="Delete"
+      @cancel="confirmDeleteId = null"
+      @confirm="performDeleteNotification"
+    />
   </div>
 </template>
 

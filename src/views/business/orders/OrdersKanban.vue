@@ -16,6 +16,7 @@ import {
 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import { isMockMode } from '@/config';
 import { getEmployees } from '@/services/employeesService';
 import {
@@ -81,6 +82,7 @@ const draggedOrderId = ref<string | null>(null);
 const rejectModalOpen = ref(false);
 const rejectReason = ref('');
 const activeRejectOrderId = ref<string | null>(null);
+const confirmDeleteOrder = ref<Order | null>(null);
 
 const createModalOpen = ref(false);
 const createLoading = ref(false);
@@ -268,12 +270,25 @@ async function handleAction(
       await sendOrderToMaster(backendId);
       triggerToast('Order sent to master');
     } else if (action === 'delete') {
-      if (!confirm('Are you sure you want to delete this order?')) {
-        return;
-      }
-      await deleteOrder(backendId);
-      triggerToast('Order deleted');
+      confirmDeleteOrder.value = order;
+      return;
     }
+    await load();
+  } catch (err: any) {
+    triggerToast(err.message || 'Operation failed', 'error');
+  }
+}
+
+async function performDeleteOrder() {
+  const order = confirmDeleteOrder.value;
+  if (!order) {
+    return;
+  }
+  try {
+    const backendId = order.backendId || order.id;
+    await deleteOrder(backendId);
+    triggerToast('Order deleted');
+    confirmDeleteOrder.value = null;
     await load();
   } catch (err: any) {
     triggerToast(err.message || 'Operation failed', 'error');
@@ -906,6 +921,16 @@ function viewOrder(id: string) {
         </div>
       </div>
     </div>
+
+    <!-- Delete Order confirmation -->
+    <ConfirmDialog
+      :is-open="confirmDeleteOrder !== null"
+      title="Delete this order?"
+      message="This permanently removes the order and all its details. This action can't be undone."
+      confirm-label="Delete"
+      @cancel="confirmDeleteOrder = null"
+      @confirm="performDeleteOrder"
+    />
 
     <!-- Success Toast -->
     <div

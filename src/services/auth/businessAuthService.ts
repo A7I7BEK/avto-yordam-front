@@ -16,6 +16,7 @@ import type {
   VerifyOtpResponse,
 } from '@/types/auth';
 import { mockBusinessAuthService } from './businessMock';
+import { saveAuthTokens } from './tokenService';
 
 export const businessAuth = {
   async loginWithPhone(
@@ -57,7 +58,7 @@ export const businessAuth = {
         type: 'ORGANIZATION',
       });
 
-      localStorage.setItem('token', result.accessToken);
+      saveAuthTokens(result);
       sessionStorage.removeItem('reg_details');
       const userRes = await apiClient.get('/user/me');
 
@@ -78,7 +79,7 @@ export const businessAuth = {
         login: req.otpId,
         password: 'password',
       });
-      localStorage.setItem('token', result.accessToken);
+      saveAuthTokens(result);
       const userRes = await apiClient.get('/user/me');
       return {
         token: result.accessToken,
@@ -117,7 +118,7 @@ export const businessAuth = {
       login: req.email,
       password: req.password,
     });
-    localStorage.setItem('token', result.accessToken);
+    saveAuthTokens(result);
     const userRes = await apiClient.get('/user/me');
 
     return {
@@ -143,7 +144,7 @@ export const businessAuth = {
       login: cleanPhone,
       password: req.password,
     });
-    localStorage.setItem('token', result.accessToken);
+    saveAuthTokens(result);
     const userRes = await apiClient.get('/user/me');
 
     return {
@@ -174,7 +175,7 @@ export const businessAuth = {
       password: req.password,
       type: 'ORGANIZATION',
     });
-    localStorage.setItem('token', result.accessToken);
+    saveAuthTokens(result);
     const userRes = await apiClient.get('/user/me');
 
     return {

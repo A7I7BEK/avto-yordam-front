@@ -15,6 +15,7 @@ import {
 import { nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { apiClient } from '@/api/client';
+import { refreshAccessToken } from '@/services/auth/tokenService';
 
 const router = useRouter();
 const currentStep = ref(1);
@@ -71,7 +72,7 @@ const orgTypes = [
     icon: Building2,
   },
   {
-    value: 'YTT',
+    value: 'YATT',
     label: 'Individual Entrepreneur (YTT)',
     desc: 'Sole-proprietor setup with private business structure.',
     icon: Briefcase,
@@ -388,6 +389,7 @@ async function submit() {
 
   try {
     await apiClient.post('/organization', payload);
+    await refreshAccessToken();
     router.push({ name: 'biz-dashboard-overview' });
   } catch (e: any) {
     errorMessage.value =

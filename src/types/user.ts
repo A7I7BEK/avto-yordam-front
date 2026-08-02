@@ -50,15 +50,27 @@ export type OrderStatus =
   | 'CANCELLED'
   | 'REJECTED';
 
+export type ServiceCenterType = 'MCHJ' | 'YATT' | 'SELF_EMPLOYED';
+
 export interface OrganizationResponse {
   id: string;
+  type?: ServiceCenterType;
   name: string;
-  phone: string;
-  email: string;
-  address: string;
   description?: string;
-  imageUrl?: string;
-  createdAt?: string;
+  phone: string;
+  inn?: string;
+  bankAccount?: string;
+  mfo?: string;
+  bankName?: string;
+  email: string;
+  latitude?: string;
+  longitude?: string;
+  address: string;
+  ratingAvg?: number;
+  ratingCount?: number;
+  ownerId?: string;
+  ownerName?: string;
+  isActive?: boolean;
 }
 
 export interface OrganizationMemberResponse {

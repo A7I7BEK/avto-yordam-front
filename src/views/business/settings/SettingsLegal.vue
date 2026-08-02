@@ -19,13 +19,22 @@ import {
 import { computed, onMounted, ref } from 'vue';
 import {
   deleteOrganizationFile,
-  deleteOrganizationFiles,
   type FileResponse,
   getDownloadUrl,
   getOrganizationFilesByType,
   uploadOrganizationFile,
 } from '@/services/documentsService';
-import { getSettingsLegal } from '@/services/settingsService';
+import {
+  getMyOrgId,
+  getOrganizationDetails,
+  getSettingsLegal,
+} from '@/services/settingsService';
+import type {
+  OrganizationCompanyDetailsResponse,
+  OrganizationDetailsResponse,
+  OrganizationSelfEmployedDetailsResponse,
+  OrganizationYattDetailsResponse,
+} from '@/types/settings';
 
 interface LegalInfoData {
   orgType: string;
@@ -96,6 +105,108 @@ const orgTypeOptions = [
   },
 ];
 
+// ── Registered details (GET /organization/{id}/details) ────────────────────────
+
+const details = ref<OrganizationDetailsResponse | null>(null);
+const loadingDetails = ref(false);
+
+interface DetailField {
+  label: string;
+  value: string;
+}
+
+function formatOptionalDate(value: string | null | undefined): string {
+  if (!value) {
+    return '';
+  }
+  return formatDate(value);
+}
+
+function companyFields(
+  c: OrganizationCompanyDetailsResponse | null,
+): DetailField[] {
+  if (!c) {
+    return [];
+  }
+  return [
+    { label: 'Director full name', value: c.directorFullName ?? '' },
+    { label: 'Director PINFL', value: c.directorPinfl ?? '' },
+    { label: 'State registration number', value: c.registrationNumber ?? '' },
+    { label: 'Registered date', value: formatOptionalDate(c.registeredDate) },
+    { label: 'OKED', value: c.oked ?? '' },
+    {
+      label: 'Charter capital',
+      value: c.charterCapital == null ? '' : String(c.charterCapital),
+    },
+  ];
+}
+
+function yattFields(y: OrganizationYattDetailsResponse | null): DetailField[] {
+  if (!y) {
+    return [];
+  }
+  return [
+    { label: 'Full name', value: y.fullName ?? '' },
+    { label: 'Passport', value: y.passport ?? '' },
+    { label: 'PINFL', value: y.pinfl ?? '' },
+    { label: 'Registration number', value: y.registrationNumber ?? '' },
+    { label: 'Registered date', value: formatOptionalDate(y.registeredDate) },
+  ];
+}
+
+function selfEmployedFields(
+  s: OrganizationSelfEmployedDetailsResponse | null,
+): DetailField[] {
+  if (!s) {
+    return [];
+  }
+  return [
+    { label: 'Full name', value: s.fullName ?? '' },
+    { label: 'PINFL', value: s.pinfl ?? '' },
+    { label: 'Passport series', value: s.passportSeries ?? '' },
+    {
+      label: 'Passport given date',
+      value: formatOptionalDate(s.passportGivenDate),
+    },
+    { label: 'Activity type', value: s.activityType ?? '' },
+    { label: 'Phone number', value: s.phoneNumber ?? '' },
+    { label: 'Address', value: s.address ?? '' },
+  ];
+}
+
+const detailFields = computed<DetailField[]>(() => {
+  const d = details.value;
+  if (!d) {
+    return [];
+  }
+  const orgType = (data.value?.orgType ?? '').toUpperCase();
+  if (orgType.includes('YATT') || orgType.includes('YTT')) {
+    return yattFields(d.yattDetails);
+  }
+  if (orgType.includes('SELF')) {
+    return selfEmployedFields(d.selfEmployedDetails);
+  }
+  if (d.yattDetails) {
+    return yattFields(d.yattDetails);
+  }
+  if (d.selfEmployedDetails) {
+    return selfEmployedFields(d.selfEmployedDetails);
+  }
+  return companyFields(d.companyDetails);
+});
+
+async function loadDetails() {
+  loadingDetails.value = true;
+  try {
+    const orgId = await getMyOrgId();
+    if (orgId) {
+      details.value = await getOrganizationDetails(orgId);
+    }
+  } finally {
+    loadingDetails.value = false;
+  }
+}
+
 onMounted(async () => {
   const result = await getSettingsLegal();
   data.value = result;
@@ -115,6 +226,7 @@ onMounted(async () => {
     };
   }
   await loadFiles();
+  await loadDetails();
 });
 
 function startEditing() {
@@ -152,15 +264,8 @@ const loadingDocs = ref(false);
 const uploading = ref(false);
 const errorMsg = ref<string | null>(null);
 
-// Selection
-const selected = ref<Set<string>>(new Set());
-const allSelected = computed(
-  () => files.value.length > 0 && selected.value.size === files.value.length,
-);
-
 // Delete modal
 const deleteTarget = ref<FileResponse | null>(null);
-const deleteMany = ref(false);
 const deleting = ref(false);
 
 // Upload input ref
@@ -178,24 +283,6 @@ async function loadFiles() {
   } finally {
     loadingDocs.value = false;
   }
-}
-
-function toggleSelectAll() {
-  if (allSelected.value) {
-    selected.value = new Set();
-  } else {
-    selected.value = new Set(files.value.map((f) => f.id));
-  }
-}
-
-function toggleSelect(id: string) {
-  const next = new Set(selected.value);
-  if (next.has(id)) {
-    next.delete(id);
-  } else {
-    next.add(id);
-  }
-  selected.value = next;
 }
 
 function triggerUpload() {
@@ -226,39 +313,27 @@ async function onFilesSelected(event: Event) {
 
 function askDeleteOne(file: FileResponse) {
   deleteTarget.value = file;
-  deleteMany.value = false;
-}
-
-function askDeleteSelected() {
-  deleteMany.value = true;
-  deleteTarget.value = null;
 }
 
 function cancelDeleteDocs() {
   deleteTarget.value = null;
-  deleteMany.value = false;
 }
 
 async function confirmDeleteDocs() {
+  if (!deleteTarget.value) {
+    return;
+  }
   deleting.value = true;
   errorMsg.value = null;
   try {
-    if (deleteMany.value) {
-      const ids = Array.from(selected.value);
-      await deleteOrganizationFiles(ids);
-      files.value = files.value.filter((f) => !selected.value.has(f.id));
-      selected.value = new Set();
-    } else if (deleteTarget.value) {
-      await deleteOrganizationFile(deleteTarget.value.id);
-      files.value = files.value.filter((f) => f.id !== deleteTarget.value?.id);
-      selected.value.delete(deleteTarget.value.id);
-    }
+    const target = deleteTarget.value;
+    await deleteOrganizationFile(target.id);
+    files.value = files.value.filter((f) => f.id !== target.id);
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Delete failed';
   } finally {
     deleting.value = false;
     deleteTarget.value = null;
-    deleteMany.value = false;
   }
 }
 
@@ -321,12 +396,7 @@ function fileIcon(contentType: string): string {
   return 'file';
 }
 
-const deleteModalName = computed(() => {
-  if (deleteMany.value) {
-    return `${selected.value.size} selected files`;
-  }
-  return deleteTarget.value?.originalName ?? '';
-});
+const deleteModalName = computed(() => deleteTarget.value?.originalName ?? '');
 </script>
 
 <template>
@@ -546,6 +616,33 @@ const deleteModalName = computed(() => {
       </div>
     </div>
 
+    <div
+      v-if="loadingDetails"
+      class="section-card"
+    >
+      <h2 class="section-title">Registered entity details</h2>
+      <p class="section-desc">Loading registered details&hellip;</p>
+    </div>
+
+    <div
+      v-else-if="detailFields.length > 0"
+      class="section-card"
+    >
+      <h2 class="section-title">Registered entity details</h2>
+      <div class="detail-grid">
+        <div
+          v-for="field in detailFields"
+          :key="field.label"
+          class="field-group"
+        >
+          <label class="field-label">{{ field.label }}</label>
+          <div class="field-value">
+            {{ field.value || '—' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="section-card">
       <h2 class="section-title">Registered legal address</h2>
       <div class="field-row">
@@ -634,15 +731,6 @@ const deleteModalName = computed(() => {
         <h2 class="section-title">Legal documents</h2>
         <div class="header-actions">
           <button
-            v-if="selected.size > 0"
-            type="button"
-            class="btn btn-danger btn-sm"
-            @click="askDeleteSelected"
-          >
-            <Trash2 :size="13" />
-            Delete {{ selected.size }} selected
-          </button>
-          <button
             type="button"
             class="btn btn-primary btn-sm"
             :disabled="uploading"
@@ -722,31 +810,11 @@ const deleteModalName = computed(() => {
 
       <!-- Document rows -->
       <template v-else>
-        <!-- Select-all header -->
-        <div class="docs-list-header">
-          <input
-            type="checkbox"
-            class="checkbox"
-            :checked="allSelected"
-            @change="toggleSelectAll"
-          >
-          <span class="docs-count"
-            >{{ files.length }}
-            document{{ files.length === 1 ? '' : 's' }}</span
-          >
-        </div>
         <div
           v-for="file in files"
           :key="file.id"
           class="doc-row"
-          :class="{ 'doc-row-selected': selected.has(file.id) }"
         >
-          <input
-            type="checkbox"
-            class="checkbox"
-            :checked="selected.has(file.id)"
-            @change="toggleSelect(file.id)"
-          >
           <div
             class="file-type-badge"
             :class="`type-${fileIcon(file.contentType)}`"
@@ -785,7 +853,7 @@ const deleteModalName = computed(() => {
 
     <!-- Delete Confirmation Modal -->
     <div
-      v-if="deleteTarget || deleteMany"
+      v-if="deleteTarget"
       class="modal-overlay"
       @click.self="cancelDeleteDocs"
     >
@@ -1091,6 +1159,16 @@ const deleteModalName = computed(() => {
 .field-row .field-group {
   flex: 1;
 }
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 640px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
 .doc-row {
   display: flex;
   gap: 16px;
@@ -1340,30 +1418,6 @@ const deleteModalName = computed(() => {
   font-size: 12px;
   line-height: 1.5;
   color: #616167;
-}
-.docs-list-header {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 8px 14px;
-}
-.docs-count {
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: #616167;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: #5749f4;
-  cursor: pointer;
-}
-.doc-row-selected {
-  background: #f5f3ff;
-  border-color: #5749f4;
 }
 .doc-actions {
   display: flex;

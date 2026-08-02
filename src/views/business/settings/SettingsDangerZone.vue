@@ -5,20 +5,26 @@
 import { LoaderCircle } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import {
+  activateOrganization,
   deactivateOrganization,
   getMyOrgId,
+  getOrganizationActiveState,
   transferOrganizationOwnership,
 } from '@/services/settingsService';
 
-type ModalType = 'transfer' | 'deactivate' | 'delete' | null;
+type ModalType = 'transfer' | 'activate' | 'deactivate' | 'delete' | null;
 
 const activeModal = ref<ModalType>(null);
 const newOwnerPhone = ref('');
 const orgId = ref<string | null>(null);
 const actionLoading = ref(false);
+const orgActive = ref(true);
+const statusLoading = ref(true);
 
 onMounted(async () => {
   orgId.value = await getMyOrgId();
+  orgActive.value = await getOrganizationActiveState(orgId.value);
+  statusLoading.value = false;
 });
 
 function openModal(type: ModalType) {
@@ -50,6 +56,23 @@ async function confirmTransfer() {
   }
 }
 
+async function confirmActivate() {
+  if (!orgId.value || actionLoading.value) {
+    return;
+  }
+
+  actionLoading.value = true;
+  try {
+    await activateOrganization(orgId.value);
+    orgActive.value = true;
+    closeModal();
+  } catch {
+    // Error toast could be added here
+  } finally {
+    actionLoading.value = false;
+  }
+}
+
 async function confirmDeactivate() {
   if (!orgId.value || actionLoading.value) {
     return;
@@ -58,6 +81,7 @@ async function confirmDeactivate() {
   actionLoading.value = true;
   try {
     await deactivateOrganization(orgId.value);
+    orgActive.value = false;
     closeModal();
   } catch {
     // Error toast could be added here
@@ -102,22 +126,41 @@ function confirmDelete() {
         </button>
       </div>
 
-      <!-- Row 2: Deactivate organization -->
+      <!-- Row 2: Organization activation state -->
       <div class="danger-row danger-row--bordered">
         <div class="danger-row-text">
-          <span class="danger-row-title">Deactivate organization</span>
+          <span class="danger-row-title">
+            {{ orgActive
+                ? 'Deactivate organization'
+                : 'Activate organization' }}
+          </span>
           <span class="danger-row-desc">
-            Temporarily hide the organization from customers. Bookings are
-            paused; you can reactivate anytime.
+            {{ orgActive
+                ? 'Temporarily hide the organization from customers. Bookings are paused; you can reactivate anytime.'
+                : 'Make your organization visible to customers again and resume taking bookings.' }}
           </span>
         </div>
-        <button
-          type="button"
-          class="btn btn--outline-destructive"
-          @click="openModal('deactivate')"
-        >
-          Deactivate
-        </button>
+        <div class="danger-row-actions">
+          <span
+            class="status-pill"
+            :class="orgActive ? 'status-pill--active' : 'status-pill--inactive'"
+          >
+            {{ orgActive ? 'Active' : 'Inactive' }}
+          </span>
+          <button
+            type="button"
+            :class="orgActive ? 'btn btn--outline-destructive' : 'btn btn--primary'"
+            :disabled="statusLoading || actionLoading"
+            @click="openModal(orgActive ? 'deactivate' : 'activate')"
+          >
+            <LoaderCircle
+              v-if="actionLoading"
+              :size="13"
+              class="btn-spinner"
+            />
+            {{ orgActive ? 'Deactivate' : 'Activate' }}
+          </button>
+        </div>
       </div>
 
       <!-- Row 3: Delete organization -->
@@ -240,6 +283,47 @@ function confirmDelete() {
       </div>
     </Teleport>
 
+    <!-- Activate confirmation modal -->
+    <Teleport to="body">
+      <div
+        v-if="activeModal === 'activate'"
+        class="modal-overlay"
+        @click.self="closeModal"
+      >
+        <div class="modal-card">
+          <h3 class="modal-title">Activate organization</h3>
+          <p class="modal-desc">
+            Are you sure you want to activate this organization? It will become
+            visible to customers again and bookings will resume.
+          </p>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn btn--outline"
+              :disabled="actionLoading"
+              @click="closeModal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn--primary"
+              :disabled="actionLoading"
+              @click="confirmActivate"
+            >
+              <LoaderCircle
+                v-if="actionLoading"
+                :size="13"
+                class="btn-spinner"
+              />
+              {{ actionLoading ? 'Activating…' : 'Activate' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- Delete confirmation modal -->
     <Teleport to="body">
       <div
@@ -338,6 +422,31 @@ function confirmDelete() {
   min-width: 0;
 }
 
+.danger-row-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+.status-pill--active {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-pill--inactive {
+  color: #7f1d1d;
+  background: #fee2e2;
+}
+
 .danger-row-title {
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -402,6 +511,20 @@ function confirmDelete() {
 
 .btn--outline:hover {
   border-color: var(--primary);
+}
+
+.btn--primary {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn--primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.btn--primary:disabled {
+  cursor: default;
+  opacity: 0.45;
 }
 
 /* ===== Modal overlay ===== */

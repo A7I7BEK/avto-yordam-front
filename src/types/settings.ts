@@ -105,3 +105,41 @@ export interface OrganizationTransferOwnerShipRequest {
   newOwnerPhoneNumber: string;
   organizationId: string;
 }
+
+/* ───── Organization Details (GET /organization/{id}/details) ───── */
+
+export interface OrganizationCompanyDetailsResponse {
+  id: string;
+  directorFullName: string;
+  directorPinfl: string;
+  registrationNumber: string;
+  registeredDate: string | null;
+  oked: string | null;
+  charterCapital: number | null;
+}
+
+export interface OrganizationYattDetailsResponse {
+  id: string;
+  fullName: string;
+  passport: string;
+  pinfl: string;
+  registrationNumber: string;
+  registeredDate: string | null;
+}
+
+export interface OrganizationSelfEmployedDetailsResponse {
+  id: string;
+  fullName: string;
+  pinfl: string;
+  passportSeries: string;
+  passportGivenDate: string | null;
+  activityType: string;
+  phoneNumber: string;
+  address: string;
+}
+
+export interface OrganizationDetailsResponse {
+  companyDetails: OrganizationCompanyDetailsResponse | null;
+  yattDetails: OrganizationYattDetailsResponse | null;
+  selfEmployedDetails: OrganizationSelfEmployedDetailsResponse | null;
+}
