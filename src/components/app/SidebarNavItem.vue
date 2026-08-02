@@ -48,12 +48,10 @@ defineProps<{
   text-decoration: none;
   cursor: pointer;
   border-radius: 10px;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: all 0.2s;
 }
 
-.nav-item:hover {
+/* .nav-item:hover {
   color: #2a2933;
   background: rgba(245, 245, 245, 0.5);
 }
@@ -61,6 +59,16 @@ defineProps<{
 .nav-item.active {
   color: #2a2933;
   background: #f5f5f5;
+} */
+
+.nav-item:hover {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+.nav-item.active {
+  color: #fff;
+  background: var(--primary);
 }
 
 .label {
@@ -77,7 +85,12 @@ defineProps<{
   font-size: 10px;
   font-weight: 700;
   color: #ffffff;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 999px;
+}
+
+.nav-item.active .badge {
+  color: var(--primary);
+  background: #ffffff;
 }
 </style>

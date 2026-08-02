@@ -81,7 +81,10 @@ const isMemberActive = computed(() =>
       />
 
       <!-- Team expandable -->
-      <div class="sidebar__team-group">
+      <div
+        class="sidebar__team-group"
+        :class="{ open: isTeamOpen }"
+      >
         <button
           type="button"
           class="sidebar__team-header"
@@ -197,8 +200,8 @@ const isMemberActive = computed(() =>
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
-  padding: 8px 16px;
+  gap: 4px;
+  padding: 8px;
 }
 
 /* Team expandable group */
@@ -222,20 +225,14 @@ const isMemberActive = computed(() =>
   background: none;
   border: none;
   border-radius: 10px;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: all 0.2s;
 }
 
-.sidebar__team-header:hover {
-  color: #2a2933;
-  background: rgba(245, 245, 245, 0.5);
-}
-
-.sidebar__team-header.active {
-  font-weight: 600;
-  color: #2a2933;
-  background: #f5f5f5;
+.sidebar__team-header:hover,
+.sidebar__team-header.active,
+.sidebar__team-group.open .sidebar__team-header {
+  color: var(--foreground);
+  background: var(--accent);
 }
 
 .sidebar__team-header .label {
@@ -244,7 +241,7 @@ const isMemberActive = computed(() =>
 }
 
 .sidebar__chevron {
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .sidebar__chevron.rotated {
@@ -254,36 +251,38 @@ const isMemberActive = computed(() =>
 .sidebar__submenu {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding-left: 16px;
+  gap: 4px;
+  padding: 8px;
+  margin: 4px 0 12px;
+  background: color-mix(in srgb, var(--primary) 6%, white);
+  border-bottom: 1px solid color-mix(in srgb, var(--primary) 40%, white);
+  border-radius: var(--radius-sm);
 }
 
 .sidebar__sub-item {
   display: flex;
   gap: 12px;
   align-items: center;
-  height: 32px;
+  height: 40px;
   padding: 8px 12px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: #939399;
   text-decoration: none;
+  cursor: pointer;
   border-radius: 6px;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: all 0.2s;
 }
 
 .sidebar__sub-item:hover {
-  color: #2a2933;
-  background: rgba(245, 245, 245, 0.5);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--accent) 95%, black);
 }
 
 .sidebar__sub-item.active {
-  font-weight: 600;
-  color: #2a2933;
-  background: #f5f5f5;
+  color: #fff;
+  background: var(--primary);
 }
 
 /* Override for Transactions item — border-radius 6px */
