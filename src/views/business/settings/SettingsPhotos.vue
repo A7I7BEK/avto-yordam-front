@@ -7,7 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import {
   deleteOrganizationFile,
-  getDownloadUrl,
+  getFileUrl,
   getOrganizationFilesByType,
   type OrganizationFileResponse,
   updateOrganizationFile,
@@ -225,7 +225,7 @@ async function performDeletePhoto() {
             class="cover-image-wrapper"
           >
             <img
-              :src="getDownloadUrl(coverPhoto.file.id)"
+              :src="getFileUrl(coverPhoto.file.path)"
               alt="Cover"
               class="cover-image"
             >
@@ -333,7 +333,7 @@ async function performDeletePhoto() {
             class="gallery-item has-image"
           >
             <img
-              :src="getDownloadUrl(photo.file.id)"
+              :src="getFileUrl(photo.file.path)"
               alt="Gallery showcase"
               class="gallery-image"
             >

@@ -100,3 +100,40 @@ export function getDownloadUrl(fileId: string): string {
   const base = import.meta.env.VITE_URL_API || 'http://localhost:8700/api';
   return `${base}/files/${fileId}/download`;
 }
+
+/**
+ * Host that serves uploaded files (no trailing slash).
+ *
+ * The backend returns file `path`s prefixed with `/app`, e.g.
+ * `/app/files/<uuid>.xlsx`. To use them directly in `src` / `href` the
+ * `/app` prefix must be stripped and the file host prepended:
+ *
+ *   `/app/files/f169f1f5-2a15-4f8d-bbac-e52d50b55b56.xlsx`
+ *     → `https://autoflow.aislayd.uz/files/f169f1f5-2a15-4f8d-bbac-e52d50b55b56.xlsx`
+ */
+const FILE_BASE_URL = (
+  import.meta.env.VITE_URL_FILES ||
+  import.meta.env.VITE_URL_ADMIN ||
+  'https://autoflow.aislayd.uz'
+).replace(/\/+$/, '');
+
+// Matches absolute URLs (e.g. `https://...`) passed straight through.
+const ABSOLUTE_URL_REGEX = /^https?:\/\//i;
+// Backend prefix stripped from file paths (e.g. `/app/files/...` → `/files/...`).
+const APP_PATH_PREFIX_REGEX = /^\/app/;
+
+/**
+ * Resolve an API file `path` to a full URL usable in `<img src>` / `<a href>`.
+ *
+ * Returns the input unchanged when it is empty or already an absolute URL.
+ */
+export function getFileUrl(filePath: string): string {
+  if (!filePath) {
+    return '';
+  }
+  if (ABSOLUTE_URL_REGEX.test(filePath)) {
+    return filePath;
+  }
+  const cleanPath = filePath.replace(APP_PATH_PREFIX_REGEX, '');
+  return `${FILE_BASE_URL}${cleanPath}`;
+}
