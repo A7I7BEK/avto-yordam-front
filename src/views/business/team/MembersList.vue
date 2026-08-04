@@ -23,14 +23,14 @@ import CopyInviteLinkModal from '@/components/business/CopyInviteLinkModal.vue';
 import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
 import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
 import ResendInvitationModal from '@/components/business/ResendInvitationModal.vue';
-import { members as rawMembers } from '@/data/members';
+import { getMembers } from '@/services/membersService';
 import type { TeamMember } from '@/types/business';
 
 const router = useRouter();
 
-// ── Mock data ──────────────────────────────────────────────
-const members = ref<TeamMember[]>(rawMembers);
-const loading = ref(false);
+// ── Data ──────────────────────────────────────────────────
+const members = ref<TeamMember[]>([]);
+const loading = ref(true);
 
 // ── Filters ────────────────────────────────────────────────
 const searchQuery = ref('');
@@ -237,7 +237,22 @@ function onDocumentClick() {
   closeDropdown();
 }
 
-onMounted(() => document.addEventListener('click', onDocumentClick));
+async function loadMembers() {
+  try {
+    loading.value = true;
+    const data = await getMembers();
+    members.value = data ?? [];
+  } catch {
+    members.value = [];
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  loadMembers();
+  document.addEventListener('click', onDocumentClick);
+});
 onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 
 // ── Invite modal ──────────────────────────────────────────
