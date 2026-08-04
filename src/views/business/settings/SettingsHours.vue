@@ -32,8 +32,8 @@ const defaultSchedule: Record<string, DaySchedule> = {
   wednesday: { open: '09:00', close: '18:00', closed: false },
   thursday: { open: '09:00', close: '18:00', closed: false },
   friday: { open: '09:00', close: '18:00', closed: false },
-  saturday: { open: '', close: '', closed: true },
-  sunday: { open: '', close: '', closed: true },
+  saturday: { open: '09:00', close: '18:00', closed: true },
+  sunday: { open: '09:00', close: '18:00', closed: true },
 };
 
 const schedule = ref<Record<string, DaySchedule>>({ ...defaultSchedule });
@@ -144,58 +144,55 @@ function cancel() {
 
           <!-- Hours area -->
           <div class="col col--hours">
-            <template v-if="!schedule[day.key].closed">
-              <label
-                class="time-picker"
-                :for="`time-open-${day.key}`"
-              >
-                <Timer
-                  :size="13"
-                  class="time-picker-icon"
-                />
-                <span class="time-picker-value"
-                  >{{ schedule[day.key].open }}</span
-                >
-                <ChevronDown
-                  :size="14"
-                  class="time-picker-chevron"
-                />
-                <input
-                  :id="`time-open-${day.key}`"
-                  v-model="schedule[day.key].open"
-                  type="time"
-                  class="time-picker-input"
-                >
-              </label>
-              <span class="time-separator">to</span>
-              <label
-                class="time-picker"
-                :for="`time-close-${day.key}`"
-              >
-                <Timer
-                  :size="13"
-                  class="time-picker-icon"
-                />
-                <span class="time-picker-value"
-                  >{{ schedule[day.key].close }}</span
-                >
-                <ChevronDown
-                  :size="14"
-                  class="time-picker-chevron"
-                />
-                <input
-                  :id="`time-close-${day.key}`"
-                  v-model="schedule[day.key].close"
-                  type="time"
-                  class="time-picker-input"
-                >
-              </label>
-            </template>
-            <span
-              v-else
-              class="closed-all-day"
-              >Closed all day</span
+            <label
+              class="time-picker"
+              :class="{ 'time-picker--muted': schedule[day.key].closed }"
+              :for="`time-open-${day.key}`"
             >
+              <Timer
+                :size="13"
+                class="time-picker-icon"
+              />
+              <span class="time-picker-value"
+                >{{ schedule[day.key].open }}</span
+              >
+              <ChevronDown
+                :size="14"
+                class="time-picker-chevron"
+              />
+              <input
+                :id="`time-open-${day.key}`"
+                v-model="schedule[day.key].open"
+                type="time"
+                class="time-picker-input"
+                :disabled="schedule[day.key].closed"
+              >
+            </label>
+            <span class="time-separator">to</span>
+            <label
+              class="time-picker"
+              :class="{ 'time-picker--muted': schedule[day.key].closed }"
+              :for="`time-close-${day.key}`"
+            >
+              <Timer
+                :size="13"
+                class="time-picker-icon"
+              />
+              <span class="time-picker-value"
+                >{{ schedule[day.key].close }}</span
+              >
+              <ChevronDown
+                :size="14"
+                class="time-picker-chevron"
+              />
+              <input
+                :id="`time-close-${day.key}`"
+                v-model="schedule[day.key].close"
+                type="time"
+                class="time-picker-input"
+                :disabled="schedule[day.key].closed"
+              >
+            </label>
           </div>
 
           <!-- Status toggle -->
@@ -476,6 +473,26 @@ function cancel() {
   opacity: 0;
 }
 
+/* ===== Muted (closed day) state ===== */
+.time-picker--muted {
+  cursor: default;
+  background: transparent;
+}
+
+.time-picker--muted:hover {
+  border-color: var(--border);
+}
+
+.time-picker--muted .time-picker-value,
+.time-picker--muted .time-picker-icon,
+.time-picker--muted .time-picker-chevron {
+  color: var(--muted-foreground);
+}
+
+.time-picker-input:disabled {
+  cursor: default;
+}
+
 /* ===== Action bar ===== */
 .action-bar {
   display: flex;
@@ -559,13 +576,6 @@ function cancel() {
   flex-shrink: 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  font-weight: 400;
-  color: var(--muted-foreground);
-}
-
-.closed-all-day {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
   font-weight: 400;
   color: var(--muted-foreground);
 }

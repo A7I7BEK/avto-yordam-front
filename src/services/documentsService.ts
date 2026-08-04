@@ -1,4 +1,5 @@
 import { apiClient } from '@/api/client';
+import { getMyOrgId } from '@/services/settingsService';
 
 export type OrganizationFileType = 'PHOTO' | 'DOCUMENT' | 'LICENSE' | 'LOGO';
 
@@ -59,33 +60,49 @@ export function updateOrganizationFile(
   return apiClient.put(`/organization/files/${fileId}`, formData);
 }
 
-// ── Batch upload (`/organization/files/add-list`) — DISABLED ──────────────────
-// The backend's `@ModelAttribute OrganizationFileListRequest` binding is not
-// resolving `fileRequests` yet, so the batch endpoint is commented out for now.
-// Multi-file creation falls back to the simple single-file upload API below.
-// Re-enable once the backend binding is confirmed working.
-//
-// /** A single entry for a batch organization file upload */
-// export interface OrganizationFileUploadItem {
-//   file: File;
-//   type: OrganizationFileType;
-//   isCover?: boolean;
-// }
-//
-// const FILE_LIST_ATTRIBUTE = 'request';
-//
-// export function uploadOrganizationFiles(
-//   items: OrganizationFileUploadItem[],
-// ): Promise<OrganizationFileResponse[]> {
-//   const formData = new FormData();
-//   for (const [index, item] of items.entries()) {
-//     const prefix = `${FILE_LIST_ATTRIBUTE}.fileRequests[${index}].`;
-//     formData.append(`${prefix}multipartFile`, item.file);
-//     formData.append(`${prefix}type`, item.type);
-//     formData.append(`${prefix}isCover`, String(item.isCover ?? false));
-//   }
-//   return apiClient.post('/organization/files/add-list', formData);
-// }
+// ── Batch upload (`/organization/files/add-list`) ─────────────────────────────
+
+/** A single entry for a batch organization file upload */
+export interface OrganizationFileUploadItem {
+  file: File;
+  type: OrganizationFileType;
+  isCover?: boolean;
+}
+
+/**
+ * Each nested `OrganizationFileRequest` is sent as an indexed field bound
+ * directly to the `OrganizationFileListRequest` model attribute:
+ *
+ *   fileRequests[0].multipartFile
+ *   fileRequests[0].type
+ *   fileRequests[0].isCover
+ *   fileRequests[0].organizationId
+ *
+ * Note: no model-attribute prefix (e.g. `request.`) is used. Spring binds
+ * `@ModelAttribute OrganizationFileListRequest request` from these property
+ * paths directly; a `request.` prefix would be treated as an unknown `request`
+ * property and silently ignored unless the backend configures
+ * `setFieldDefaultPrefix("request.")`.
+ */
+export async function uploadOrganizationFiles(
+  items: OrganizationFileUploadItem[],
+): Promise<OrganizationFileResponse[]> {
+  const organizationId = await getMyOrgId();
+
+  const formData = new FormData();
+  for (const [index, item] of items.entries()) {
+    const prefix = `fileRequests[${index}].`;
+    formData.append(`${prefix}multipartFile`, item.file);
+    formData.append(`${prefix}type`, item.type);
+    formData.append(`${prefix}isCover`, String(item.isCover ?? false));
+    // The org id is derived from the JWT on the backend; only send it when
+    // resolved, since an empty value would fail UUID binding.
+    if (organizationId) {
+      formData.append(`${prefix}organizationId`, organizationId);
+    }
+  }
+  return apiClient.post('/organization/files/add-list', formData);
+}
 
 export function deleteOrganizationFile(fileId: string): Promise<void> {
   return apiClient.delete(`/organization/files/${fileId}`);

@@ -53,7 +53,7 @@ export const operatingHours = {
   thursday: { open: '09:00', close: '18:00', closed: false },
   friday: { open: '09:00', close: '18:00', closed: false },
   saturday: { open: '10:00', close: '15:00', closed: false },
-  sunday: { open: '00:00', close: '00:00', closed: true },
+  sunday: { open: '09:00', close: '18:00', closed: true },
 };
 
 export const photos = [

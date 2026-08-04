@@ -19,10 +19,11 @@ import {
 import { computed, onMounted, ref } from 'vue';
 import {
   deleteOrganizationFile,
-  type FileResponse,
   getDownloadUrl,
   getOrganizationFilesByType,
-  uploadOrganizationFile,
+  type OrganizationFileResponse,
+  type OrganizationFileUploadItem,
+  uploadOrganizationFiles,
 } from '@/services/documentsService';
 import {
   getMyOrgId,
@@ -259,13 +260,13 @@ function save() {
 
 // ── Documents CRUD ─────────────────────────────────────────────────────────────
 
-const files = ref<FileResponse[]>([]);
+const files = ref<OrganizationFileResponse[]>([]);
 const loadingDocs = ref(false);
 const uploading = ref(false);
 const errorMsg = ref<string | null>(null);
 
 // Delete modal
-const deleteTarget = ref<FileResponse | null>(null);
+const deleteTarget = ref<OrganizationFileResponse | null>(null);
 const deleting = ref(false);
 
 // Upload input ref
@@ -276,7 +277,7 @@ async function loadFiles() {
   errorMsg.value = null;
   try {
     const responses = await getOrganizationFilesByType('DOCUMENT');
-    files.value = responses.map((r) => r.file);
+    files.value = responses;
   } catch (e) {
     errorMsg.value =
       e instanceof Error ? e.message : 'Failed to load documents';
@@ -299,10 +300,12 @@ async function onFilesSelected(event: Event) {
   uploading.value = true;
   errorMsg.value = null;
   try {
-    for (const file of picked) {
-      const saved = await uploadOrganizationFile(file, 'DOCUMENT');
-      files.value.unshift(saved.file);
-    }
+    const items: OrganizationFileUploadItem[] = picked.map((file) => ({
+      file,
+      type: 'DOCUMENT',
+    }));
+    const saved = await uploadOrganizationFiles(items);
+    files.value.unshift(...saved);
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : 'Upload failed';
   } finally {
@@ -311,7 +314,7 @@ async function onFilesSelected(event: Event) {
   }
 }
 
-function askDeleteOne(file: FileResponse) {
+function askDeleteOne(file: OrganizationFileResponse) {
   deleteTarget.value = file;
 }
 
@@ -337,8 +340,8 @@ async function confirmDeleteDocs() {
   }
 }
 
-function download(file: FileResponse) {
-  const url = getDownloadUrl(file.id);
+function download(file: OrganizationFileResponse) {
+  const url = getDownloadUrl(file.file.id);
   const token = localStorage.getItem('token');
   if (token) {
     fetch(url, { headers: { Authorization: `Bearer ${token}` } })
@@ -346,14 +349,14 @@ function download(file: FileResponse) {
       .then((blob) => {
         const anchor = document.createElement('a');
         anchor.href = URL.createObjectURL(blob);
-        anchor.download = file.originalName;
+        anchor.download = file.file.originalName;
         anchor.click();
         URL.revokeObjectURL(anchor.href);
       });
   } else {
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = file.originalName;
+    anchor.download = file.file.originalName;
     anchor.click();
   }
 }
@@ -396,7 +399,9 @@ function fileIcon(contentType: string): string {
   return 'file';
 }
 
-const deleteModalName = computed(() => deleteTarget.value?.originalName ?? '');
+const deleteModalName = computed(
+  () => deleteTarget.value?.file.originalName ?? '',
+);
 </script>
 
 <template>
@@ -817,18 +822,18 @@ const deleteModalName = computed(() => deleteTarget.value?.originalName ?? '');
         >
           <div
             class="file-type-badge"
-            :class="`type-${fileIcon(file.contentType)}`"
+            :class="`type-${fileIcon(file.file.contentType)}`"
           >
             <FileText :size="16" />
           </div>
           <div class="doc-info">
-            <span class="doc-name">{{ file.originalName }}</span>
+            <span class="doc-name">{{ file.file.originalName }}</span>
             <span class="doc-meta"
-              >{{ file.contentType }}
-              &middot; {{ formatSize(file.size) }}</span
+              >{{ file.file.contentType }}
+              &middot; {{ formatSize(file.file.size) }}</span
             >
           </div>
-          <span class="doc-date">{{ formatDate(file.createdDate) }}</span>
+          <span class="doc-date">{{ formatDate(file.file.createdDate) }}</span>
           <div class="doc-actions">
             <button
               type="button"

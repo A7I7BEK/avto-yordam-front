@@ -10,8 +10,10 @@ import {
   getFileUrl,
   getOrganizationFilesByType,
   type OrganizationFileResponse,
+  type OrganizationFileUploadItem,
   updateOrganizationFile,
   uploadOrganizationFile,
+  uploadOrganizationFiles,
 } from '@/services/documentsService';
 
 const MAX_GALLERY_PHOTOS = 12;
@@ -129,10 +131,13 @@ async function onGallerySelected(event: Event) {
   uploadingGallery.value = true;
   errorMsg.value = null;
   try {
-    for (const file of toUpload) {
-      const saved = await uploadOrganizationFile(file, 'PHOTO', false);
-      galleryPhotos.value.push(saved);
-    }
+    const items: OrganizationFileUploadItem[] = toUpload.map((file) => ({
+      file,
+      type: 'PHOTO',
+      isCover: false,
+    }));
+    const saved = await uploadOrganizationFiles(items);
+    galleryPhotos.value.push(...saved);
     if (files.length > availableSlots) {
       errorMsg.value = `Maximum gallery photos is ${MAX_GALLERY_PHOTOS}`;
     }

@@ -28,6 +28,8 @@ export type DayOfWeek =
   | 'SUNDAY';
 
 export interface DaySchedule {
+  /** Backend record ID (present when loaded from the API, absent for defaults). */
+  id?: string;
   open: string;
   close: string;
   closed: boolean;

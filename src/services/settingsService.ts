@@ -150,15 +150,21 @@ export async function getOrganizationDetails(
 
 const HOURS_BASE = '/organization-operating-hours';
 
+const DEFAULT_OPEN_TIME = '09:00';
+const DEFAULT_CLOSE_TIME = '18:00';
+
 /**
  * Convert a backend response record to the frontend DaySchedule shape.
+ * Closed days keep the default working times (09:00-18:00) so the times
+ * are always visible in the UI.
  */
 function responseToDaySchedule(
   resp: OrganizationOperatingHoursResponse,
 ): DaySchedule {
   return {
-    open: resp.openTime ?? '',
-    close: resp.closeTime ?? '',
+    id: resp.id,
+    open: resp.openTime ?? DEFAULT_OPEN_TIME,
+    close: resp.closeTime ?? DEFAULT_CLOSE_TIME,
     closed: !resp.isOpen,
   };
 }
@@ -217,7 +223,8 @@ export async function getSettingsHours(): Promise<Record<string, DaySchedule>> {
 
 /**
  * Save the weekly schedule via batch update.
- * Sends all days as a single PUT request to the /week endpoint with IDs included.
+ * Sends all days as a single PUT request to the /week endpoint, reusing the
+ * record IDs loaded by getSettingsHours so existing rows are updated in place.
  */
 export async function saveSettingsHours(
   orgId: string,
@@ -227,24 +234,9 @@ export async function saveSettingsHours(
     return;
   }
 
-  // 1. Fetch existing records to get their IDs
-  const existing: OrganizationOperatingHoursResponse[] = await apiClient.get(
-    `${HOURS_BASE}/organization/${orgId}`,
-  );
-
-  // 2. Build a lookup: dayOfWeek → existing record ID
-  const existingIdByDay: Record<string, string> = {};
-  for (const record of existing || []) {
-    const dayKey = DAY_OF_WEEK_TO_DAY_KEY[record.dayOfWeek];
-    if (dayKey) {
-      existingIdByDay[dayKey] = record.id;
-    }
-  }
-
-  // 3. Build requests with IDs included
   const dayKeys = Object.keys(schedule);
   const requests: OrganizationOperatingHoursRequest[] = dayKeys.map((dayKey) =>
-    toRequest(orgId, dayKey, schedule[dayKey], existingIdByDay[dayKey]),
+    toRequest(orgId, dayKey, schedule[dayKey], schedule[dayKey].id),
   );
 
   await apiClient.put(`${HOURS_BASE}/week`, requests);
