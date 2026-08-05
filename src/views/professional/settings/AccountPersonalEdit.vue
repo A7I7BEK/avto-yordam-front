@@ -12,12 +12,15 @@ import {
 } from '@lucide/vue';
 import { onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getFileUrl } from '@/services/documentsService';
 import {
+  deleteProfilePhoto,
   getAllMasterSpecializations,
   getOwnMasterInfo,
   getUserProfile,
   saveBirthday,
   saveMasterInfo,
+  uploadProfilePhoto,
 } from '@/services/userService';
 import type {
   MasterInfoResponse,
@@ -38,6 +41,10 @@ const workTo = ref('19:00');
 const bio = ref(
   'Master mechanic specializing in European brands. 8 years of hands-on garage experience in Tashkent.',
 );
+
+const profilePhotoUrl = ref('');
+const uploadingPhoto = ref(false);
+const photoInputRef = ref<HTMLInputElement | null>(null);
 
 const specializations = ref<MasterSpecializationResponse[]>([]);
 const selectedSpecializationId = ref('');
@@ -64,6 +71,48 @@ const days = reactive([
 
 function toggleDay(day: { key: string; label: string; active: boolean }) {
   day.active = !day.active;
+}
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function triggerUploadPhoto() {
+  photoInputRef.value?.click();
+}
+
+async function onPhotoSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  uploadingPhoto.value = true;
+  try {
+    const updated = await uploadProfilePhoto(file);
+    profilePhotoUrl.value = updated.profilePhoto?.path
+      ? getFileUrl(updated.profilePhoto.path)
+      : '';
+  } finally {
+    uploadingPhoto.value = false;
+    input.value = '';
+  }
+}
+
+async function removePhoto() {
+  uploadingPhoto.value = true;
+  try {
+    await deleteProfilePhoto();
+    profilePhotoUrl.value = '';
+  } finally {
+    uploadingPhoto.value = false;
+  }
 }
 
 function calcYearsToDate(years: string): string {
@@ -160,6 +209,9 @@ onMounted(async () => {
     ]);
     specializations.value = specs;
     fullName.value = user.fullName;
+    profilePhotoUrl.value = user.profilePhoto?.path
+      ? getFileUrl(user.profilePhoto.path)
+      : '';
     if (user.birthDay) {
       dateOfBirth.value = user.birthDay;
     }
@@ -226,7 +278,20 @@ onMounted(async () => {
     <template v-else>
       <!-- Profile Photo -->
       <div class="photo-section">
-        <div class="profile-avatar">AI</div>
+        <div
+          v-if="profilePhotoUrl"
+          class="profile-avatar"
+        >
+          <img
+            :src="profilePhotoUrl"
+            alt=""
+            class="photo-img"
+          >
+        </div>
+        <div
+          v-else
+          class="profile-avatar"
+        >{{ getInitials(fullName) }}</div>
         <div class="photo-info">
           <span class="photo-title">Profile photo</span>
           <span class="photo-desc"
@@ -234,16 +299,28 @@ onMounted(async () => {
           >
         </div>
         <div class="photo-actions">
+          <input
+            ref="photoInputRef"
+            class="photo-input"
+            type="file"
+            accept="image/*"
+            @change="onPhotoSelected"
+          >
           <button
             class="btn-outline btn-sm"
             type="button"
+            :disabled="uploadingPhoto"
+            @click="triggerUploadPhoto"
           >
             <Upload :size="12" />
-            <span>Replace</span>
+            <span>{{ uploadingPhoto ? 'Uploading...' : 'Replace' }}</span>
           </button>
           <button
+            v-if="profilePhotoUrl"
             class="btn-text"
             type="button"
+            :disabled="uploadingPhoto"
+            @click="removePhoto"
           >
             Remove
           </button>
@@ -536,12 +613,23 @@ onMounted(async () => {
   justify-content: center;
   width: 64px;
   height: 64px;
+  overflow: hidden;
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   background: #5749f4;
   border-radius: 999px;
+}
+
+.profile-avatar .photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-input {
+  display: none;
 }
 
 .photo-info {

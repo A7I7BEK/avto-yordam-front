@@ -1,4 +1,6 @@
+import { getAcceptLanguage } from '@/config/language';
 import router from '@/router';
+import { useErrorStore } from '@/stores/errorStore';
 
 const BASE_URL = import.meta.env.VITE_URL_API || 'http://localhost:8700/api';
 
@@ -40,6 +42,7 @@ async function request(
 
   const headers: Record<string, string> = {
     ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+    'Accept-Language': getAcceptLanguage(),
     ...(config?.headers ?? {}),
   };
 
@@ -64,9 +67,13 @@ async function request(
   if (!response.ok) {
     handleUnauthorized(response.status);
     const errorMsg = await parseErrorResponse(response);
-    throw new Error(
-      errorMsg || `Request failed with status ${response.status}`,
-    );
+    const fallback = `Request failed with status ${response.status}`;
+    const message = errorMsg || fallback;
+    // Surface backend errors to the user on every page via the global toasts
+    if (response.status !== 401) {
+      useErrorStore().showError(message);
+    }
+    throw new Error(message);
   }
 
   const contentType = response.headers.get('content-type');

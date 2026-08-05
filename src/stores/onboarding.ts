@@ -20,7 +20,7 @@ export const useProfessionalOnboardingStore = defineStore(
     });
 
     const professionalInfo = ref<ProfessionalInfoData>({
-      specializations: ['engine', 'electrical', 'diagnostics'],
+      specializationId: 'spec-001',
       yearsOfExperience: 12,
       workingHours: {
         from: '09:00',
@@ -47,7 +47,7 @@ export const useProfessionalOnboardingStore = defineStore(
         languages: ['uzbek', 'russian'],
       };
       professionalInfo.value = {
-        specializations: ['engine', 'electrical', 'diagnostics'],
+        specializationId: 'spec-001',
         yearsOfExperience: 12,
         workingHours: {
           from: '09:00',

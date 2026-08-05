@@ -5,7 +5,11 @@
 import { CheckCheck, Settings, Trash2 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
-import { getNotifications } from '@/services/notificationsService';
+import {
+  deleteNotification,
+  getNotifications,
+  markNotificationRead,
+} from '@/services/notificationsService';
 
 interface Notification {
   id: string;
@@ -67,16 +71,26 @@ function askDeleteNotification(id: string) {
   confirmDeleteId.value = id;
 }
 
-function performDeleteNotification() {
+async function performDeleteNotification() {
   const id = confirmDeleteId.value;
   if (!id) {
     return;
   }
-  notifications.value = notifications.value.filter((n) => n.id !== id);
-  confirmDeleteId.value = null;
+  try {
+    await deleteNotification(id);
+    notifications.value = notifications.value.filter((n) => n.id !== id);
+  } finally {
+    confirmDeleteId.value = null;
+  }
 }
 
-function markAllAsRead() {
+async function markAllAsRead() {
+  const unread = notifications.value.filter((n) => n.unread && n.id);
+  try {
+    await Promise.all(unread.map((n) => markNotificationRead(n.id)));
+  } catch {
+    // Global error toast surfaces the failure
+  }
   for (const n of notifications.value) {
     n.unread = false;
   }

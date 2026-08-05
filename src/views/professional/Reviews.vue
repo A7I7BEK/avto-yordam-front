@@ -7,76 +7,87 @@ import {
   ChevronRight,
   CornerDownRight,
   Flag,
+  Loader2,
   Star,
   ThumbsUp,
 } from '@lucide/vue';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
+import { getMyReviews } from '@/services/reviewsService';
+import type { ReviewResponse } from '@/types/user';
 
-const summary = {
-  averageRating: 4.8,
-  totalReviews: 327,
-  distribution: [
-    { stars: 5, pct: 82, barWidth: 82 },
-    { stars: 4, pct: 13, barWidth: 13 },
-    { stars: 3, pct: 3, barWidth: 3 },
-    { stars: 2, pct: 1, barWidth: 1 },
-    { stars: 1, pct: 1, barWidth: 1 },
-  ],
-};
+interface DisplayReview {
+  id: string;
+  author: string;
+  initials: string;
+  rating: number;
+  date: string;
+  service: string;
+  text: string;
+}
 
-const reviews = [
-  {
-    id: 1,
-    author: 'Nilufar Umarova',
-    initials: 'NU',
-    rating: 5,
-    date: '10 May',
-    service: 'Brake pads exchange',
-    text: "Akmal did a thorough job on my Cobalt's front brakes. He explained what was worn out and showed me the old pads before throwing them away. Honest pricing, fast turnaround. Will come back for the rear set when due.",
-    photos: 2,
-    helpfulCount: 12,
-  },
-  {
-    id: 2,
-    author: 'Bekzod Aliyev',
-    initials: 'BA',
-    rating: 5,
-    date: '8 May',
-    service: 'Engine diagnostic',
-    text: 'Very professional. Found the issue immediately and fixed it same day. Reasonable prices. Highly recommended.',
-    photos: 0,
-    helpfulCount: 8,
-  },
-  {
-    id: 3,
-    author: 'Sabina Rahimova',
-    initials: 'SR',
-    rating: 4,
-    date: '5 May',
-    service: 'A/C service',
-    text: 'Did a good job with the A/C recharge. Took a bit longer than expected but the result is perfect. Car is ice cold now.',
-    photos: 1,
-    helpfulCount: 3,
-  },
-  {
-    id: 4,
-    author: 'Jahongir Sotimov',
-    initials: 'JS',
-    rating: 5,
-    date: '2 May',
-    service: 'Transmission flush',
-    text: "Best mechanic I've worked with in Tashkent. Explained everything clearly and the price was fair. Will definitely return.",
-    photos: 0,
-    helpfulCount: 15,
-  },
-];
+const loading = ref(true);
 
+const reviews = ref<ReviewResponse[]>([]);
 const withTextOnly = ref(true);
+
+const displayReviews = computed<DisplayReview[]>(() => {
+  const filtered = withTextOnly.value
+    ? reviews.value.filter((r) => r.comment?.trim())
+    : reviews.value;
+  return filtered.map((r) => {
+    const author = r.order?.client?.fullName ?? 'Client';
+    const initials = author
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+    return {
+      id: r.id,
+      author,
+      initials: initials || 'CL',
+      rating: r.rating,
+      date: r.order?.createdDate
+        ? new Date(r.order.createdDate).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+          })
+        : '',
+      service: r.order?.organizationServices?.name ?? '',
+      text: r.comment || 'No comment provided.',
+    };
+  });
+});
+
+const summary = computed(() => {
+  const total = reviews.value.length;
+  const average = total
+    ? reviews.value.reduce((sum, r) => sum + r.rating, 0) / total
+    : 0;
+  const distribution = [5, 4, 3, 2, 1].map((stars) => {
+    const count = reviews.value.filter((r) => r.rating === stars).length;
+    const pct = total ? Math.round((count / total) * 100) : 0;
+    return { stars, pct, barWidth: pct };
+  });
+  return {
+    averageRating: Number(average.toFixed(1)),
+    totalReviews: total,
+    distribution,
+  };
+});
 
 function starArray(rating: number) {
   return Array.from({ length: 5 }, (_, i) => i < rating);
 }
+
+onMounted(async () => {
+  try {
+    reviews.value = await getMyReviews();
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <template>
@@ -159,10 +170,33 @@ function starArray(rating: number) {
       </div>
     </div>
 
+    <!-- Loading -->
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <Loader2
+        :size="24"
+        class="spin"
+      />
+      <span>Loading reviews…</span>
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="displayReviews.length === 0"
+      class="empty-state"
+    >
+      No reviews yet. When customers review your work, they'll appear here.
+    </div>
+
     <!-- Review Cards -->
-    <div class="reviews-list">
+    <div
+      v-else
+      class="reviews-list"
+    >
       <article
-        v-for="review in reviews"
+        v-for="review in displayReviews"
         :key="review.id"
         class="review-card"
       >
@@ -194,18 +228,6 @@ function starArray(rating: number) {
 
         <p class="review-text">{{ review.text }}</p>
 
-        <!-- Photos -->
-        <div
-          v-if="review.photos > 0"
-          class="photos-row"
-        >
-          <div
-            v-for="p in review.photos"
-            :key="p"
-            class="photo-thumb"
-          />
-        </div>
-
         <!-- Actions -->
         <div class="actions-row">
           <button
@@ -216,7 +238,7 @@ function starArray(rating: number) {
               :size="14"
               color="#616167"
             />
-            <span>Helpful ({{ review.helpfulCount }})</span>
+            <span>Helpful</span>
           </button>
           <button
             class="action-btn"
@@ -273,6 +295,34 @@ function starArray(rating: number) {
   font-family: Inter, sans-serif;
   font-size: 13px;
   color: #616167;
+}
+
+/* Loading / Empty */
+.loading-state {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  font-size: 14px;
+  color: #616167;
+}
+
+.empty-state {
+  padding: 60px 16px;
+  font-size: 13px;
+  color: #616167;
+  text-align: center;
+}
+
+.spin {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Summary */

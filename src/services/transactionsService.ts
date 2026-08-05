@@ -13,7 +13,7 @@ export async function getTransactions() {
     const completed = list.filter((o) => o.status === 'done');
 
     if (completed.length === 0) {
-      return mockTransactions;
+      return [];
     }
 
     return completed.map((o) => ({
@@ -30,7 +30,7 @@ export async function getTransactions() {
       date: o.date,
     }));
   } catch {
-    return mockTransactions;
+    return [];
   }
 }
 

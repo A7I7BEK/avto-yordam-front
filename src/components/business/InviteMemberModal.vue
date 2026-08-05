@@ -35,23 +35,25 @@ const emit = defineEmits<{
 const roleOptions = ref<{ id: string; name: string }[]>([]);
 
 const contactMethod = ref<'phone' | 'email'>('phone');
-const phone = ref('90 245-12-09');
+const phone = ref('');
 const email = ref('');
 const role = ref('');
 const message = ref(
   "Hi! We'd like you to join AutoFix MCHJ as a master. Your specialties match what we need on the floor right now.",
 );
+const contactError = ref('');
 
 watch(
   () => props.isOpen,
   (open) => {
     if (open) {
       contactMethod.value = 'phone';
-      phone.value = '90 245-12-09';
+      phone.value = '';
       email.value = '';
       role.value = roleOptions.value[0]?.name ?? '';
       message.value =
         "Hi! We'd like you to join AutoFix MCHJ as a master. Your specialties match what we need on the floor right now.";
+      contactError.value = '';
     }
   },
 );
@@ -71,6 +73,16 @@ function handleClose() {
 }
 
 function handleSend() {
+  const contactValue =
+    contactMethod.value === 'phone' ? phone.value.trim() : email.value.trim();
+  if (!contactValue) {
+    contactError.value =
+      contactMethod.value === 'phone'
+        ? 'Please enter a phone number'
+        : 'Please enter an email address';
+    return;
+  }
+  contactError.value = '';
   emit('send', {
     contactMethod: contactMethod.value,
     phone: phone.value,
@@ -153,6 +165,11 @@ function handleSend() {
                 class="invite-phone-input__field"
               >
             </div>
+            <span
+              v-if="contactError && contactMethod === 'phone'"
+              class="invite-error"
+              >{{ contactError }}</span
+            >
           </div>
 
           <!-- Email address -->
@@ -166,6 +183,11 @@ function handleSend() {
               type="email"
               class="invite-email-input"
               placeholder="member@example.com"
+            >
+            <span
+              v-if="contactError && contactMethod === 'email'"
+              class="invite-error"
+              >{{ contactError }}</span
             >
           </div>
 
@@ -342,6 +364,12 @@ function handleSend() {
   font-size: 13px;
   font-weight: 500;
   color: var(--foreground);
+}
+
+.invite-error {
+  font-size: 12px;
+  font-weight: 400;
+  color: #cc3314;
 }
 
 /* ── Segmented control ── */

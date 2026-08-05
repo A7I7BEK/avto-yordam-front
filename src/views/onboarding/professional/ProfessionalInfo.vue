@@ -3,33 +3,23 @@
   lang="ts"
 >
 import { ArrowRight, Check, ChevronDown, UserRound } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import OnboardingStepper from '@/components/onboarding/OnboardingStepper.vue';
+import {
+  getAllMasterSpecializations,
+  saveMasterInfo,
+} from '@/services/userService';
 import { useProfessionalOnboardingStore } from '@/stores/onboarding';
+import type { MasterSpecializationResponse } from '@/types/user';
 
 const router = useRouter();
 const store = useProfessionalOnboardingStore();
 
-const allSpecializations = [
-  'Engine',
-  'Transmission',
-  'Bodywork',
-  'Paint',
-  'Electrical',
-  'Diagnostics',
-  'Tires',
-  'A/C',
-  'Suspension',
-  'Glass',
-];
-
-const selectedSpecs = ref<string[]>([
-  ...store.professionalInfo.specializations.map(
-    (s) => s.charAt(0).toUpperCase() + s.slice(1),
-  ),
-]);
+const specializations = ref<MasterSpecializationResponse[]>([]);
+const loadingSpecializations = ref(true);
+const selectedSpecializationId = ref(store.professionalInfo.specializationId);
 
 const yearsOfExperience = ref(store.professionalInfo.yearsOfExperience);
 const workingFrom = ref(store.professionalInfo.workingHours.from);
@@ -47,15 +37,23 @@ const allDays = [
 
 const selectedDays = ref<string[]>([...store.professionalInfo.workingDays]);
 
-const selectedCount = computed(() => selectedSpecs.value.length);
+const selectedCount = computed(() => (selectedSpecializationId.value ? 1 : 0));
 
-function toggleSpecialization(spec: string) {
-  const idx = selectedSpecs.value.indexOf(spec);
-  if (idx >= 0) {
-    selectedSpecs.value.splice(idx, 1);
-  } else {
-    selectedSpecs.value.push(spec);
+onMounted(async () => {
+  try {
+    const specs = await getAllMasterSpecializations();
+    specializations.value = specs;
+    if (!specs.some((s) => s.id === selectedSpecializationId.value)) {
+      selectedSpecializationId.value = '';
+    }
+  } finally {
+    loadingSpecializations.value = false;
   }
+});
+
+function toggleSpecialization(spec: MasterSpecializationResponse) {
+  selectedSpecializationId.value =
+    selectedSpecializationId.value === spec.id ? '' : spec.id;
 }
 
 function toggleDay(day: string) {
@@ -67,13 +65,26 @@ function toggleDay(day: string) {
   }
 }
 
+function calcYearsToDate(years: number): string | null {
+  if (!years || years < 1) {
+    return null;
+  }
+  const now = new Date();
+  const start = new Date(
+    now.getFullYear() - years,
+    now.getMonth(),
+    now.getDate(),
+  );
+  return start.toISOString().split('T')[0] ?? null;
+}
+
 function goBack() {
   router.push({ name: 'professional-onboarding-step1' });
 }
 
-function goNext() {
+async function goNext() {
   store.updateProfessionalInfo({
-    specializations: selectedSpecs.value.map((s) => s.toLowerCase()),
+    specializationId: selectedSpecializationId.value,
     yearsOfExperience: yearsOfExperience.value,
     workingHours: {
       from: workingFrom.value,
@@ -81,6 +92,19 @@ function goNext() {
     },
     workingDays: selectedDays.value,
   });
+
+  try {
+    await saveMasterInfo({
+      experienceStartDate: calcYearsToDate(yearsOfExperience.value),
+      description: '',
+      specializationId: selectedSpecializationId.value,
+      workingTimeStart: workingFrom.value || null,
+      workingTimeEnd: workingTo.value || null,
+    });
+  } catch {
+    // Continue to the dashboard even if the API call fails
+  }
+
   // Navigate to dashboard after onboarding
   router.push({ name: 'pro-dashboard' });
 }
@@ -112,23 +136,33 @@ function goNext() {
           <span class="section-counter">{{ selectedCount }} selected</span>
         </div>
         <p class="section-hint">
-          Pick everything you confidently work on — you can always adjust later.
+          Choose your primary specialization. You can adjust it later from your
+          profile settings.
         </p>
-        <div class="chips-grid">
+        <div
+          v-if="loadingSpecializations"
+          class="chips-loading"
+        >
+          Loading specializations…
+        </div>
+        <div
+          v-else
+          class="chips-grid"
+        >
           <button
-            v-for="spec in allSpecializations"
-            :key="spec"
+            v-for="spec in specializations"
+            :key="spec.id"
             class="chip"
-            :class="{ selected: selectedSpecs.includes(spec) }"
+            :class="{ selected: selectedSpecializationId === spec.id }"
             type="button"
             @click="toggleSpecialization(spec)"
           >
             <Check
-              v-if="selectedSpecs.includes(spec)"
+              v-if="selectedSpecializationId === spec.id"
               :size="12"
               color="#FFFFFF"
             />
-            {{ spec }}
+            {{ spec.name }}
           </button>
         </div>
       </div>
@@ -330,6 +364,13 @@ function goNext() {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
+}
+
+.chips-loading {
+  margin-top: 8px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  color: #616167;
 }
 
 .chip {

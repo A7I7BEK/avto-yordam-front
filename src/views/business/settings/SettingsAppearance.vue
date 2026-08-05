@@ -7,9 +7,18 @@ import { ref } from 'vue';
 import flagEn from '@/assets/flags/flag-en.png';
 import flagRu from '@/assets/flags/flag-ru.png';
 import flagUz from '@/assets/flags/flag-uz.png';
+import {
+  getStoredLanguage,
+  setStoredLanguage,
+} from '@/config/language';
 
 const selectedTheme = ref<'light' | 'dark' | 'system'>('light');
-const selectedLanguage = ref('english');
+const selectedLanguage = ref(getStoredLanguage());
+
+function selectLanguage(languageKey: string) {
+  selectedLanguage.value = languageKey;
+  setStoredLanguage(languageKey);
+}
 
 const themes = [
   {
@@ -148,8 +157,8 @@ const languages = [
         :class="{ selected: selectedLanguage === lang.key }"
         role="button"
         tabindex="0"
-        @click="selectedLanguage = lang.key"
-        @keydown.enter="selectedLanguage = lang.key"
+        @click="selectLanguage(lang.key)"
+        @keydown.enter="selectLanguage(lang.key)"
       >
         <img
           :src="lang.flagImage"

@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Eye, Plus, Search, UserPlus } from '@lucide/vue';
+import { Eye, Plus, Search } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getOrders } from '@/services/ordersService';
@@ -100,8 +100,8 @@ function viewOrder(id: string) {
   router.push(`/business/orders/${encodeURIComponent(id)}`);
 }
 
-function goToAddWalkIn() {
-  // Navigate to add walk-in
+function goToCreateOrder() {
+  // Navigate to the create order flow
 }
 </script>
 
@@ -143,10 +143,10 @@ function goToAddWalkIn() {
           v-if="viewMode === 'list'"
           type="button"
           class="btn btn--outline"
-          @click="goToAddWalkIn"
+          @click="goToCreateOrder"
         >
-          <UserPlus :size="16" />
-          Add walk-in
+          <Plus :size="16" />
+          Create order
         </button>
       </div>
     </div>

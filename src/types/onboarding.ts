@@ -8,7 +8,8 @@ export interface ProfessionalOnboardingData {
 }
 
 export interface ProfessionalInfoData {
-  specializations: string[];
+  /** Id of the chosen specialization (from the master-specialization list). */
+  specializationId: string;
   yearsOfExperience: number;
   workingHours: {
     from: string;

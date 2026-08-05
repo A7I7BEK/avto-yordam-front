@@ -23,8 +23,13 @@ import CopyInviteLinkModal from '@/components/business/CopyInviteLinkModal.vue';
 import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
 import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
 import ResendInvitationModal from '@/components/business/ResendInvitationModal.vue';
+import { createInvitation } from '@/services/invitationsService';
 import { getMembers } from '@/services/membersService';
-import type { TeamMember } from '@/types/business';
+import { getRoles } from '@/services/rolesService';
+import type {
+  OrganizationInvitationRequest,
+  TeamMember,
+} from '@/types/business';
 
 const router = useRouter();
 
@@ -258,7 +263,12 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 // ── Invite modal ──────────────────────────────────────────
 const showInviteModal = ref(false);
 
-function onInviteSend(data: {
+function formatPhoneWithPrefix(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  return digits.startsWith('998') ? `+${digits}` : `+998${digits}`;
+}
+
+async function onInviteSend(data: {
   contactMethod: 'phone' | 'email';
   phone: string;
   email: string;
@@ -266,10 +276,7 @@ function onInviteSend(data: {
   message: string;
 }) {
   showInviteModal.value = false;
-  const emailAddr =
-    data.contactMethod === 'email'
-      ? data.email
-      : `user${members.value.length + 1}@autofix.uz`;
+  const emailAddr = data.contactMethod === 'email' ? data.email : '';
   const displayName =
     data.contactMethod === 'email'
       ? (data.email.split('@')[0] ?? '')
@@ -296,6 +303,22 @@ function onInviteSend(data: {
     status: 'Invited',
     joined: 'Just now',
   });
+
+  // Send the invitation to the backend (keeps the optimistic row above too)
+  try {
+    const roleOptions = await getRoles();
+    const roleId = roleOptions.find((r) => r.name === data.role)?.id ?? '';
+    const request: OrganizationInvitationRequest = {
+      roleId,
+      inviteMessage: data.message,
+      ...(data.contactMethod === 'email'
+        ? { email: data.email }
+        : { phoneNumber: formatPhoneWithPrefix(data.phone) }),
+    };
+    await createInvitation(request);
+  } catch {
+    // The optimistic member row stays; the error can be surfaced later
+  }
 }
 </script>
 

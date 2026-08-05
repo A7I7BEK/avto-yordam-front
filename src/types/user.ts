@@ -1,3 +1,5 @@
+import type { FileResponse } from '@/services/documentsService';
+
 export interface LanguageResponse {
   id: string;
   name: string;
@@ -13,6 +15,8 @@ export interface UserResponse {
   type: string;
   birthDay: string | null;
   languages: LanguageResponse[];
+  /** Profile photo returned by the user APIs (absent when not set). */
+  profilePhoto?: FileResponse | null;
 }
 
 export interface MasterInfoResponse {
@@ -24,6 +28,10 @@ export interface MasterInfoResponse {
   specializationName: string;
   workingTimeStart: string | null;
   workingTimeEnd: string | null;
+  /** Auto-tracked platform stats. */
+  experienceYears?: number | null;
+  completedOrders?: number | null;
+  rating?: number | null;
 }
 
 export interface MasterInfoRequest {
@@ -124,4 +132,13 @@ export interface ReviewResponse {
   masterId: string;
   rating: number;
   comment: string;
+}
+
+export interface NotificationResponse {
+  id?: string;
+  message: string;
+  type?: string;
+  userId?: string;
+  createdDate?: string;
+  isRead?: boolean;
 }

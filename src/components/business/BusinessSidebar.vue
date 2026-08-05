@@ -10,6 +10,7 @@ import {
   DollarSign,
   Grid3X3,
   LayoutDashboard,
+  Mail,
   Settings,
   ShieldCheck,
   ShoppingCart,
@@ -35,6 +36,9 @@ const isEmployeeActive = computed(() =>
 );
 const isMemberActive = computed(() =>
   route.path.startsWith('/business/team/members'),
+);
+const isInvitationActive = computed(() =>
+  route.path.startsWith('/business/team/invitations'),
 );
 </script>
 
@@ -118,6 +122,14 @@ const isMemberActive = computed(() =>
           >
             <UserPlus :size="16" />
             <span>Members</span>
+          </router-link>
+          <router-link
+            to="/business/team/invitations"
+            class="sidebar__sub-item"
+            :class="{ active: isInvitationActive }"
+          >
+            <Mail :size="16" />
+            <span>Invitations</span>
           </router-link>
         </div>
       </div>

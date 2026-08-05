@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import {
+  getStoredLanguageCode,
+  type LanguageCode,
+  setStoredLanguageCode,
+} from '@/config/language';
 
 export const useProfessionalAppStore = defineStore('professional-app', () => {
   const activeNavItem = ref<
@@ -12,7 +17,7 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
   const organizations = ref(['AutoFix MCHJ', 'Something MCHJ']);
   const activeOrganization = ref('AutoFix MCHJ');
   const notificationCount = ref(3);
-  const language = ref<'EN' | 'UZ' | 'RU'>('EN');
+  const language = ref<LanguageCode>(getStoredLanguageCode());
   const theme = ref<'light' | 'dark'>('light');
 
   function setActiveNavItem(item: typeof activeNavItem.value) {
@@ -25,8 +30,9 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
     }
   }
 
-  function setLanguage(lang: typeof language.value) {
+  function setLanguage(lang: LanguageCode) {
     language.value = lang;
+    setStoredLanguageCode(lang);
   }
 
   function toggleTheme() {

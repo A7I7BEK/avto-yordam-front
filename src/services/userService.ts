@@ -41,6 +41,32 @@ export async function getUserProfile(): Promise<UserResponse> {
   return await apiClient.get('/user/me');
 }
 
+export async function uploadProfilePhoto(file: File): Promise<UserResponse> {
+  if (isMockMode()) {
+    return {
+      ...mockUser,
+      profilePhoto: {
+        id: 'profile-photo-001',
+        originalName: file.name,
+        contentType: file.type,
+        size: file.size,
+        path: '',
+        createdDate: new Date().toISOString(),
+      },
+    };
+  }
+  const formData = new FormData();
+  formData.append('file', file);
+  return await apiClient.post('/user/upload-photo', formData);
+}
+
+export async function deleteProfilePhoto(): Promise<void> {
+  if (isMockMode()) {
+    return;
+  }
+  await apiClient.delete('/user/photo');
+}
+
 export async function getAllLanguages(): Promise<LanguageResponse[]> {
   if (isMockMode()) {
     return mockLanguages;
@@ -112,6 +138,9 @@ const mockMasterInfo: MasterInfoResponse = {
   specializationName: 'Engine',
   workingTimeStart: '09:00',
   workingTimeEnd: '19:00',
+  experienceYears: 8,
+  completedOrders: 342,
+  rating: 4.9,
 };
 
 export async function getOwnMasterInfo(): Promise<MasterInfoResponse | null> {

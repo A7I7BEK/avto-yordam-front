@@ -3,8 +3,9 @@
   lang="ts"
 >
 import { BadgeCheck, Loader2, Lock, Pencil, Star } from '@lucide/vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getFileUrl } from '@/services/documentsService';
 import { getOwnMasterInfo, getUserProfile } from '@/services/userService';
 import type { MasterInfoResponse, UserResponse } from '@/types/user';
 
@@ -14,6 +15,7 @@ const route = useRoute();
 const user = ref<UserResponse | null>(null);
 const masterInfo = ref<MasterInfoResponse | null>(null);
 const loading = ref(true);
+const profilePhotoUrl = ref('');
 
 function goToEdit() {
   router.push({
@@ -64,6 +66,18 @@ function formatWorkingTime(start: string | null, end: string | null): string {
   return `${start.slice(0, 5)}–${end.slice(0, 5)}`;
 }
 
+function formatExperienceYears(years: number | null | undefined): string {
+  if (years === null || years === undefined) {
+    return '—';
+  }
+  return `${years} yr${years === 1 ? '' : 's'}`;
+}
+
+const starCount = computed(() => {
+  const rating = masterInfo.value?.rating;
+  return rating ? Math.max(0, Math.min(5, Math.round(rating))) : 0;
+});
+
 onMounted(async () => {
   try {
     const [userData, masterInfoData] = await Promise.all([
@@ -72,6 +86,9 @@ onMounted(async () => {
     ]);
     user.value = userData;
     masterInfo.value = masterInfoData;
+    profilePhotoUrl.value = userData.profilePhoto?.path
+      ? getFileUrl(userData.profilePhoto.path)
+      : '';
   } finally {
     loading.value = false;
   }
@@ -115,7 +132,20 @@ onMounted(async () => {
     <template v-else>
       <!-- Profile Header -->
       <div class="profile-header">
-        <div class="profile-avatar">
+        <div
+          v-if="profilePhotoUrl"
+          class="profile-avatar"
+        >
+          <img
+            :src="profilePhotoUrl"
+            alt=""
+            class="photo-img"
+          >
+        </div>
+        <div
+          v-else
+          class="profile-avatar"
+        >
           {{ user ? getInitials(user.fullName) : 'AI' }}
         </div>
         <div class="profile-info">
@@ -204,7 +234,9 @@ onMounted(async () => {
                 color="#616167"
               />
             </div>
-            <span class="verified-stat-value">1 yr 2 mo</span>
+            <span class="verified-stat-value"
+              >{{ masterInfo ? formatExperienceYears(masterInfo.experienceYears) : '—' }}</span
+            >
           </div>
           <div class="detail-card">
             <div class="verified-stat-header">
@@ -214,7 +246,9 @@ onMounted(async () => {
                 color="#616167"
               />
             </div>
-            <span class="verified-stat-value">342</span>
+            <span class="verified-stat-value"
+              >{{ masterInfo?.completedOrders ?? '—' }}</span
+            >
           </div>
           <div class="detail-card">
             <div class="verified-stat-header">
@@ -225,28 +259,16 @@ onMounted(async () => {
               />
             </div>
             <div class="verified-stat-row">
-              <span class="verified-stat-value">4.9</span>
+              <span class="verified-stat-value"
+                >{{ masterInfo?.rating?.toFixed(1) ?? '—' }}</span
+              >
               <div class="stars-row">
-                <Star
-                  :size="12"
-                  color="#FFD9B2"
-                />
-                <Star
-                  :size="12"
-                  color="#FFD9B2"
-                />
-                <Star
-                  :size="12"
-                  color="#FFD9B2"
-                />
-                <Star
-                  :size="12"
-                  color="#FFD9B2"
-                />
-                <Star
-                  :size="12"
-                  color="#FFD9B2"
-                />
+                <template v-for="i in 5" :key="i">
+                  <Star
+                    :size="12"
+                    :color="i <= starCount ? '#FFB800' : '#D9D9DB'"
+                  />
+                </template>
               </div>
               <span class="rating-max">/ 5.0</span>
             </div>
@@ -345,12 +367,19 @@ onMounted(async () => {
   justify-content: center;
   width: 64px;
   height: 64px;
+  overflow: hidden;
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   background: #5749f4;
   border-radius: 999px;
+}
+
+.profile-avatar .photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-info {

@@ -106,7 +106,7 @@ export async function getSettingsLegal() {
   try {
     const orgId = await getMyOrgId();
     if (!orgId) {
-      return legalInfo;
+      return null;
     }
 
     const org = (await apiClient.get(
@@ -131,7 +131,7 @@ export async function getSettingsLegal() {
       documents: legalInfo.documents,
     };
   } catch (_) {
-    return legalInfo;
+    return null;
   }
 }
 
@@ -189,7 +189,9 @@ function toRequest(
   };
 }
 
-export async function getSettingsHours(): Promise<Record<string, DaySchedule>> {
+export async function getSettingsHours(): Promise<
+  Record<string, DaySchedule> | null
+> {
   if (isMockMode()) {
     return operatingHours;
   }
@@ -197,7 +199,7 @@ export async function getSettingsHours(): Promise<Record<string, DaySchedule>> {
   try {
     const orgId = await getMyOrgId();
     if (!orgId) {
-      return operatingHours;
+      return null;
     }
 
     const records: OrganizationOperatingHoursResponse[] = await apiClient.get(
@@ -205,7 +207,7 @@ export async function getSettingsHours(): Promise<Record<string, DaySchedule>> {
     );
 
     if (!records || records.length === 0) {
-      return operatingHours;
+      return null;
     }
 
     const schedule: Record<string, DaySchedule> = {};
@@ -217,7 +219,7 @@ export async function getSettingsHours(): Promise<Record<string, DaySchedule>> {
     }
     return schedule;
   } catch {
-    return operatingHours;
+    return null;
   }
 }
 
@@ -254,7 +256,7 @@ export async function getSettingsBankInfo() {
   try {
     const orgId = await getMyOrgId();
     if (!orgId) {
-      return bankInfo;
+      return null;
     }
 
     const org = (await apiClient.get(
@@ -269,7 +271,7 @@ export async function getSettingsBankInfo() {
       currency: 'UZS',
     };
   } catch (_) {
-    return bankInfo;
+    return null;
   }
 }
 

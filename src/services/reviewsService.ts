@@ -171,6 +171,18 @@ export async function getReviews(): Promise<ReviewResponse[]> {
   }
 }
 
+export async function getMyReviews(): Promise<ReviewResponse[]> {
+  if (isMockMode()) {
+    return mockReviews;
+  }
+  try {
+    const data: ReviewResponse[] = await apiClient.get('/review/get-by-master');
+    return data;
+  } catch {
+    return [];
+  }
+}
+
 export async function getReviewById(
   id: string,
 ): Promise<ReviewResponse | null> {

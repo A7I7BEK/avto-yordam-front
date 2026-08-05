@@ -4,16 +4,19 @@
 >
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { createInvitation } from '@/services/invitationsService';
 import { getRoles } from '@/services/rolesService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 
 const router = useRouter();
+const store = useBusinessAppStore();
 
 const roles = ref<{ id: string; name: string }[]>([]);
 
 const form = ref({
   email: '',
   role: '',
-  organization: '',
+  organization: store.orgName,
 });
 
 const errors = ref<Record<string, string>>({});
@@ -40,18 +43,22 @@ function validate() {
   return Object.keys(errs).length === 0;
 }
 
-function handleSend() {
+async function handleSend() {
   if (!validate()) {
     return;
   }
 
   submitted.value = true;
-  // biome-ignore lint/suspicious/noConsole: allowed in handler
-  console.log('Send invitation', form.value);
-
-  setTimeout(() => {
+  try {
+    const role = roles.value.find((r) => r.name === form.value.role);
+    await createInvitation({
+      email: form.value.email.trim(),
+      roleId: role?.id ?? '',
+    });
     router.push('/business/team/members');
-  }, 300);
+  } catch {
+    submitted.value = false;
+  }
 }
 
 function handleCancel() {

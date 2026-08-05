@@ -92,3 +92,30 @@ export interface RoleRequestDto {
   code: string;
   permissions: string[];
 }
+
+export type InvitationStatus = 'PENDING' | 'RESOLVED';
+
+export interface OrganizationInvitation {
+  id: string;
+  organizationId: string;
+  organizationName?: string;
+  userId?: string;
+  userName?: string;
+  phoneNumber?: string;
+  email?: string;
+  roleId?: string;
+  roleName: string;
+  roleCode?: string;
+  inviteMessage?: string;
+  canReject: boolean;
+  canAccept: boolean;
+  canDelete: boolean;
+}
+
+export interface OrganizationInvitationRequest {
+  /** At least one of email / phoneNumber should be provided. */
+  phoneNumber?: string;
+  email?: string;
+  roleId: string;
+  inviteMessage?: string;
+}
