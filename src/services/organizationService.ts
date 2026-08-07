@@ -56,14 +56,14 @@ const mockOrgServices: OrganizationServiceResponse[] = [
 ];
 
 export async function getOrganizationServices(
-  organizationId: string,
+  orgId: string,
 ): Promise<OrganizationServiceResponse[]> {
   if (isMockMode()) {
     return mockOrgServices;
   }
   try {
     return await apiClient.get(
-      `/organization-catalog/get-by-organization-id/${organizationId}`,
+      `/organization-catalog/get-by-organization-id/${orgId}`,
     );
   } catch {
     return [];

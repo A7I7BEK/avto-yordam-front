@@ -154,6 +154,10 @@ function goToNext() {
 const openDropdownId = ref<string | null>(null);
 const dropdownStyle = ref({ top: '0px', left: '0px' });
 
+const openMember = computed<TeamMember | null>(
+  () => members.value.find((m) => m.id === openDropdownId.value) ?? null,
+);
+
 function toggleDropdown(id: string, event: MouseEvent) {
   if (openDropdownId.value === id) {
     openDropdownId.value = null;
@@ -176,7 +180,11 @@ function closeDropdown() {
 
 function viewMember(id: string) {
   closeDropdown();
-  router.push(`/business/team/members/${id}`);
+  const target = members.value.find((m) => m.id === id);
+  if (!target?.userId) {
+    return;
+  }
+  router.push(`/business/team/members/${target.userId}`);
 }
 
 // ── Remove modal ──────────────────────────────────────────
@@ -609,6 +617,7 @@ async function onInviteSend(data: {
           <button
             type="button"
             class="action-dropdown__item"
+            :disabled="!openMember?.userId"
             @click="viewMember(openDropdownId)"
           >
             <UserRound :size="15" />
@@ -1138,6 +1147,16 @@ async function onInviteSend(data: {
 
 .action-dropdown__item:hover {
   background: var(--accent);
+}
+
+.action-dropdown__item:disabled {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-dropdown__item:disabled:hover {
+  background: transparent;
 }
 
 .action-dropdown__item--danger {

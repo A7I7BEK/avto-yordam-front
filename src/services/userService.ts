@@ -41,6 +41,21 @@ export async function getUserProfile(): Promise<UserResponse> {
   return await apiClient.get('/user/me');
 }
 
+/**
+ * Fetch a user by id (e.g. the master whose profile is viewed from the
+ * Members page).
+ */
+export async function getUserById(id: string): Promise<UserResponse | null> {
+  if (isMockMode()) {
+    return mockUser;
+  }
+  try {
+    return await apiClient.get(`/user/get-by-id/${id}`);
+  } catch {
+    return null;
+  }
+}
+
 export async function uploadProfilePhoto(file: File): Promise<UserResponse> {
   if (isMockMode()) {
     return {

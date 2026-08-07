@@ -16,7 +16,6 @@ import {
 import { computed, onMounted, ref } from 'vue';
 import {
   createSettingsPayment,
-  getMyOrgId,
   getPaymentProviders,
   getSettingsPayment,
   updateSettingsPayment,
@@ -59,8 +58,7 @@ interface ProviderTypeInfo {
 }
 
 const providers = ref<Provider[]>([]);
-const orgId = ref<string | null>(null);
-const loading = ref(true);
+const orgId = ref<string | null>(null);const loading = ref(true);
 const savingProviders = ref<Record<string, boolean>>({});
 const addingProviderKey = ref<string | null>(null);
 const addingFieldValues = ref<Record<string, string>>({});
@@ -168,8 +166,6 @@ function buildFields(
 }
 
 onMounted(async () => {
-  orgId.value = await getMyOrgId();
-
   const [masterProviders, orgProviders] = await Promise.all([
     getPaymentProviders(),
     getSettingsPayment(),
@@ -224,7 +220,7 @@ function cancelAddingProvider() {
 }
 
 async function confirmAddingProvider(typeInfo: ProviderTypeInfo) {
-  if (!orgId.value || addingProviderKey.value !== typeInfo.typeKey || savingAdd.value) {
+  if (addingProviderKey.value !== typeInfo.typeKey || savingAdd.value) {
     return;
   }
 
@@ -234,7 +230,6 @@ async function confirmAddingProvider(typeInfo: ProviderTypeInfo) {
     const credentials = JSON.stringify(addingFieldValues.value);
 
     const response = await createSettingsPayment({
-      organizationId: orgId.value,
       type: typeInfo.type,
       credentials,
       enabled: true,
@@ -266,7 +261,7 @@ async function confirmAddingProvider(typeInfo: ProviderTypeInfo) {
 
 async function toggleProvider(id: string) {
   const provider = providers.value.find((p) => p.id === id);
-  if (!provider || !orgId.value) {
+  if (!provider) {
     return;
   }
 
@@ -279,7 +274,6 @@ async function toggleProvider(id: string) {
   savingProviders.value[id] = true;
   try {
     await updateSettingsPayment(id, {
-      organizationId: orgId.value,
       type: provider.type,
       credentials: fieldsToCredentials(provider.fields),
       enabled: newEnabled,
@@ -339,7 +333,7 @@ function cancelEditing(providerId: string) {
 
 async function saveEditing(providerId: string) {
   const provider = providers.value.find((p) => p.id === providerId);
-  if (!provider || !orgId.value) {
+  if (!provider) {
     return;
   }
 
@@ -347,7 +341,6 @@ async function saveEditing(providerId: string) {
 
   try {
     await updateSettingsPayment(provider.id, {
-      organizationId: orgId.value,
       type: provider.type,
       credentials: fieldsToCredentials(provider.fields),
       enabled: provider.enabled,

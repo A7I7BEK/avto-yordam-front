@@ -7,7 +7,6 @@ import { onMounted, ref } from 'vue';
 import {
   activateOrganization,
   deactivateOrganization,
-  getMyOrgId,
   getOrganizationActiveState,
   transferOrganizationOwnership,
 } from '@/services/settingsService';
@@ -16,14 +15,12 @@ type ModalType = 'transfer' | 'activate' | 'deactivate' | 'delete' | null;
 
 const activeModal = ref<ModalType>(null);
 const newOwnerPhone = ref('');
-const orgId = ref<string | null>(null);
 const actionLoading = ref(false);
 const orgActive = ref(true);
 const statusLoading = ref(true);
 
 onMounted(async () => {
-  orgId.value = await getMyOrgId();
-  orgActive.value = await getOrganizationActiveState(orgId.value);
+  orgActive.value = await getOrganizationActiveState();
   statusLoading.value = false;
 });
 
@@ -38,7 +35,7 @@ function closeModal() {
 }
 
 async function confirmTransfer() {
-  if (!(newOwnerPhone.value.trim() && orgId.value) || actionLoading.value) {
+  if (!newOwnerPhone.value.trim() || actionLoading.value) {
     return;
   }
 
@@ -46,7 +43,6 @@ async function confirmTransfer() {
   try {
     await transferOrganizationOwnership({
       newOwnerPhoneNumber: newOwnerPhone.value.trim(),
-      organizationId: orgId.value,
     });
     closeModal();
   } catch {
@@ -57,13 +53,13 @@ async function confirmTransfer() {
 }
 
 async function confirmActivate() {
-  if (!orgId.value || actionLoading.value) {
+  if (actionLoading.value) {
     return;
   }
 
   actionLoading.value = true;
   try {
-    await activateOrganization(orgId.value);
+    await activateOrganization();
     orgActive.value = true;
     closeModal();
   } catch {
@@ -74,13 +70,13 @@ async function confirmActivate() {
 }
 
 async function confirmDeactivate() {
-  if (!orgId.value || actionLoading.value) {
+  if (actionLoading.value) {
     return;
   }
 
   actionLoading.value = true;
   try {
-    await deactivateOrganization(orgId.value);
+    await deactivateOrganization();
     orgActive.value = false;
     closeModal();
   } catch {

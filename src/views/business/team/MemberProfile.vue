@@ -2,22 +2,53 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Clock, Pencil, Star, Trash2 } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { ArrowLeft, Clock, Star, Trash2 } from '@lucide/vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
-import { members as rawMembers } from '@/data/members';
-import type { TeamMember } from '@/types/business';
+import { getUserById } from '@/services/userService';
+import type { UserResponse } from '@/types/user';
 
 const route = useRoute();
 const router = useRouter();
 
-const member = computed<TeamMember | null>(() => {
-  const id = route.params.id as string;
-  return rawMembers.find((m) => m.id === id) ?? null;
+const user = ref<UserResponse | null>(null);
+const loading = ref(true);
+const activeTab = ref('Overview');
+
+const userId = computed(() => String(route.params.id ?? ''));
+
+const initials = computed(() => {
+  const fullName = user.value?.fullName || '';
+  return (
+    fullName
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || '?'
+  );
 });
 
-const activeTab = ref('Overview');
+function formatDate(value: string | null | undefined): string {
+  return value || '—';
+}
+
+function languagesLabel(): string {
+  const langs = user.value?.languages ?? [];
+  return langs.map((l) => l.name).join(', ') || '—';
+}
+
+async function loadProfile() {
+  loading.value = true;
+  try {
+    user.value = await getUserById(userId.value);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(loadProfile);
 
 function goBack() {
   router.push('/business/team/members');
@@ -28,17 +59,20 @@ const showRemoveModal = ref(false);
 
 function confirmRemove() {
   showRemoveModal.value = false;
-  const idx = rawMembers.findIndex((m) => m.id === member.value?.id);
-  if (idx >= 0) {
-    rawMembers.splice(idx, 1);
-  }
   router.push('/business/team/members');
 }
 </script>
 
 <template>
   <div
-    v-if="!member"
+    v-if="loading"
+    class="profile-not-found"
+  >
+    Loading…
+  </div>
+
+  <div
+    v-else-if="!user"
     class="profile-not-found"
   >
     Member not found
@@ -59,10 +93,10 @@ function confirmRemove() {
           <ArrowLeft :size="16" />
         </button>
         <div>
-          <h1 class="profile-header__name">{{ member.name }}</h1>
+          <h1 class="profile-header__name">{{ user.fullName }}</h1>
           <p class="profile-header__subtitle">
-            {{ member.role }}
-            · Joined {{ member.joined }}
+            {{ user.type }}
+            · {{ user.isVerified ? 'Verified' : 'Not verified' }}
           </p>
         </div>
       </div>
@@ -83,41 +117,38 @@ function confirmRemove() {
         <!-- Profile Card -->
         <div class="profile-card">
           <div class="profile-card__avatar">
-            {{ member.initials }}
+            {{ initials }}
           </div>
           <div class="profile-card__name-block">
-            <span class="profile-card__display-name">{{ member.name }}</span>
-            <span class="profile-card__email">{{ member.email }}</span>
+            <span class="profile-card__display-name">{{ user.fullName }}</span>
+            <span class="profile-card__email">{{ user.email }}</span>
           </div>
           <div class="profile-card__badges">
-            <span class="profile-badge profile-badge--role"
-              >{{ member.role }}</span
-            >
+            <span class="profile-badge profile-badge--role">{{ user.type }}</span>
             <span
-              class="profile-badge profile-badge--status"
-              :class="{
-                'profile-badge--accepted': member.status === 'Accepted',
-                'profile-badge--invited': member.status === 'Invited',
-                'profile-badge--declined': member.status === 'Declined',
-                'profile-badge--expired': member.status === 'Expired',
-              }"
+              class="profile-badge"
+              :class="
+                user.isVerified
+                  ? 'profile-badge--accepted'
+                  : 'profile-badge--invited'
+              "
             >
-              {{ member.status }}
+              {{ user.isVerified ? 'Verified' : 'Unverified' }}
             </span>
           </div>
           <div class="profile-card__divider" />
           <div class="profile-card__meta">
             <div class="profile-meta-row">
               <span class="profile-meta-row__label">Phone</span>
-              <span class="profile-meta-row__value">+998 90 234 56 78</span>
+              <span class="profile-meta-row__value">{{ user.phone || '—' }}</span>
             </div>
             <div class="profile-meta-row">
-              <span class="profile-meta-row__label">Location</span>
-              <span class="profile-meta-row__value">Tashkent</span>
+              <span class="profile-meta-row__label">Languages</span>
+              <span class="profile-meta-row__value">{{ languagesLabel() }}</span>
             </div>
             <div class="profile-meta-row">
-              <span class="profile-meta-row__label">Hired</span>
-              <span class="profile-meta-row__value">{{ member.joined }}</span>
+              <span class="profile-meta-row__label">Birth date</span>
+              <span class="profile-meta-row__value">{{ formatDate(user.birthDay) }}</span>
             </div>
           </div>
         </div>
@@ -127,7 +158,7 @@ function confirmRemove() {
           <h3 class="stats-card__title">Performance</h3>
           <div class="stats-row">
             <span class="stats-row__label">Bookings completed</span>
-            <span class="stats-row__value">{{ member.orders }}</span>
+            <span class="stats-row__value">—</span>
           </div>
           <div class="stats-row">
             <span class="stats-row__label">Avg rating</span>
@@ -136,12 +167,12 @@ function confirmRemove() {
                 :size="14"
                 class="stats-row__star"
               />
-              {{ member.rating.toFixed(1) }}
+              —
             </span>
           </div>
           <div class="stats-row">
             <span class="stats-row__label">Customer reviews</span>
-            <span class="stats-row__value">132</span>
+            <span class="stats-row__value">—</span>
           </div>
         </div>
       </div>
@@ -171,33 +202,31 @@ function confirmRemove() {
             <div class="personal-field-row">
               <div class="personal-field">
                 <span class="personal-field__label">Full name</span>
-                <span class="personal-field__value">{{ member.name }}</span>
+                <span class="personal-field__value">{{ user.fullName }}</span>
               </div>
               <div class="personal-field">
                 <span class="personal-field__label">Email</span>
-                <span class="personal-field__value">{{ member.email }}</span>
+                <span class="personal-field__value">{{ user.email }}</span>
               </div>
             </div>
             <div class="personal-field-row">
               <div class="personal-field">
                 <span class="personal-field__label">Phone</span>
-                <span class="personal-field__value">+998 90 234 56 78</span>
+                <span class="personal-field__value">{{ user.phone || '—' }}</span>
               </div>
               <div class="personal-field">
-                <span class="personal-field__label">Role</span>
-                <span class="personal-field__value">{{ member.role }}</span>
+                <span class="personal-field__label">Type</span>
+                <span class="personal-field__value">{{ user.type }}</span>
               </div>
             </div>
             <div class="personal-field-row">
               <div class="personal-field">
-                <span class="personal-field__label">Specialty</span>
-                <span class="personal-field__value"
-                  >{{ member.specialties.join(', ') || '—' }}</span
-                >
+                <span class="personal-field__label">Birth date</span>
+                <span class="personal-field__value">{{ formatDate(user.birthDay) }}</span>
               </div>
               <div class="personal-field">
-                <span class="personal-field__label">Workspace access</span>
-                <span class="personal-field__value">AutoFix MCHJ</span>
+                <span class="personal-field__label">Languages</span>
+                <span class="personal-field__value">{{ languagesLabel() }}</span>
               </div>
             </div>
           </div>
@@ -237,7 +266,7 @@ function confirmRemove() {
               <div class="activity-row__icon"><Clock :size="14" /></div>
               <div class="activity-row__text">
                 <span class="activity-row__title">Joined AutoFix MCHJ</span>
-                <span class="activity-row__time">{{ member.joined }}</span>
+                <span class="activity-row__time">—</span>
               </div>
             </div>
           </div>
@@ -247,7 +276,7 @@ function confirmRemove() {
 
     <RemoveMemberModal
       :is-open="showRemoveModal"
-      :member-name="member.name"
+      :member-name="user.fullName"
       org-name="AutoFix MCHJ"
       @cancel="showRemoveModal = false"
       @confirm="confirmRemove"

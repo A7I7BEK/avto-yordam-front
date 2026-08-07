@@ -5,7 +5,6 @@
 import { ChevronDown, Globe, LoaderCircle, Timer } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import {
-  getMyOrgId,
   getSettingsHours,
   saveSettingsHours,
 } from '@/services/settingsService';
@@ -42,7 +41,6 @@ const initialSchedule = ref<Record<string, DaySchedule>>({
 });
 const loading = ref(true);
 const saving = ref(false);
-const orgId = ref<string | null>(null);
 
 const timezones: TimezoneOption[] = [
   { value: 'Asia/Tashkent', label: 'Asia/Tashkent  (GMT +05:00)' },
@@ -55,9 +53,6 @@ const timezones: TimezoneOption[] = [
 const selectedTimezone = ref('Asia/Tashkent');
 
 onMounted(async () => {
-  const id = await getMyOrgId();
-  orgId.value = id;
-
   const data = await getSettingsHours();
   if (data) {
     schedule.value = { ...data };
@@ -77,13 +72,13 @@ function hasChanges(): boolean {
 }
 
 async function save() {
-  if (!orgId.value || saving.value) {
+  if (saving.value) {
     return;
   }
 
   saving.value = true;
   try {
-    await saveSettingsHours(orgId.value, schedule.value);
+    await saveSettingsHours(schedule.value);
     initialSchedule.value = JSON.parse(JSON.stringify(schedule.value));
   } catch {
     // Error toast could be added here

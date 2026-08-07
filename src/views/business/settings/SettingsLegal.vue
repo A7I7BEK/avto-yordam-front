@@ -26,9 +26,10 @@ import {
   uploadOrganizationFiles,
 } from '@/services/documentsService';
 import {
-  getMyOrgId,
+  getOrganization,
   getOrganizationDetails,
   getSettingsLegal,
+  updateOrganization,
 } from '@/services/settingsService';
 import type {
   OrganizationCompanyDetailsResponse,
@@ -36,6 +37,7 @@ import type {
   OrganizationSelfEmployedDetailsResponse,
   OrganizationYattDetailsResponse,
 } from '@/types/settings';
+import type { ServiceCenterType } from '@/types/user';
 
 interface LegalInfoData {
   orgType: string;
@@ -52,6 +54,7 @@ interface LegalInfoData {
 }
 
 const isEditing = ref(false);
+const saving = ref(false);
 const data = ref<LegalInfoData | null>(null);
 const form = ref({
   orgType: 'mchj',
@@ -199,10 +202,7 @@ const detailFields = computed<DetailField[]>(() => {
 async function loadDetails() {
   loadingDetails.value = true;
   try {
-    const orgId = await getMyOrgId();
-    if (orgId) {
-      details.value = await getOrganizationDetails(orgId);
-    }
+    details.value = await getOrganizationDetails();
   } finally {
     loadingDetails.value = false;
   }
@@ -253,7 +253,40 @@ function cancelEditing() {
   }
 }
 
-function save() {
+function orgTypeToBackend(type: string): ServiceCenterType {
+  if (type === 'ytt') {
+    return 'YTT';
+  }
+  if (type === 'self-employed') {
+    return 'SELF_EMPLOYED';
+  }
+  return 'MCHJ';
+}
+
+async function save() {
+  saving.value = true;
+  try {
+    const org = await getOrganization();
+    await updateOrganization({
+      type: orgTypeToBackend(form.value.orgType),
+      name: form.value.legalEntityName,
+      description: org?.description ?? null,
+      phone: org?.phone ?? '',
+      email: org?.email ?? null,
+      latitude: org?.latitude ?? null,
+      longitude: org?.longitude ?? null,
+      address: form.value.street,
+      ownerId: org?.ownerId ?? '',
+      inn: form.value.taxId,
+      bankAccount: org?.bankAccount ?? null,
+      mfo: org?.mfo ?? null,
+      bankName: org?.bankName ?? null,
+    });
+  } catch {
+    // Global error toast surfaces the failure
+  } finally {
+    saving.value = false;
+  }
   data.value = { ...form.value };
   isEditing.value = false;
 }
@@ -441,10 +474,19 @@ const deleteModalName = computed(
         <button
           type="button"
           class="btn btn-primary"
+          :disabled="saving"
           @click="save"
         >
-          <Check :size="14"></Check>
-          Save changes
+          <Loader2
+            v-if="saving"
+            :size="14"
+            class="spin"
+          />
+          <Check
+            v-else
+            :size="14"
+          ></Check>
+          {{ saving ? 'Saving...' : 'Save changes' }}
         </button>
       </div>
     </div>

@@ -1,16 +1,28 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import {
+  decodeUserToken,
+  formatRoleLabel,
+  initialsFromName,
+} from '@/config';
+import {
   getStoredLanguageCode,
   type LanguageCode,
   setStoredLanguageCode,
 } from '@/config/language';
 
 export const useBusinessAppStore = defineStore('businessApp', () => {
-  const userName = ref('Rustam Karimov');
-  const userRole = ref('Owner');
-  const orgName = ref('AutoFix MCHJ');
-  const userInitials = ref('RK');
+  const tokenUser = decodeUserToken();
+  const tokenName = String(tokenUser.fullName ?? tokenUser.name ?? '');
+  const tokenRole = String(tokenUser.organizationRole ?? '');
+  const tokenOrgName = String(tokenUser.organizationName ?? '');
+
+  const userName = ref(tokenName || 'Rustam Karimov');
+  const userRole = ref(formatRoleLabel(tokenRole) || 'Owner');
+  const orgName = ref(tokenOrgName || 'AutoFix MCHJ');
+  const userInitials = ref(
+    tokenName ? initialsFromName(tokenName) : 'RK',
+  );
   const language = ref<LanguageCode>(getStoredLanguageCode());
   const notificationCount = ref(3);
   const ordersBadgeCount = ref(7);

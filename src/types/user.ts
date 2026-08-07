@@ -81,6 +81,22 @@ export interface OrganizationResponse {
   isActive?: boolean;
 }
 
+export interface OrganizationRequest {
+  type: ServiceCenterType;
+  name: string;
+  description?: string | null;
+  phone: string;
+  email?: string | null;
+  latitude?: string | null;
+  longitude?: string | null;
+  address: string;
+  ownerId: string;
+  inn: string;
+  bankAccount?: string | null;
+  mfo?: string | null;
+  bankName?: string | null;
+}
+
 export interface OrganizationMemberResponse {
   id: string;
   master: UserResponse;

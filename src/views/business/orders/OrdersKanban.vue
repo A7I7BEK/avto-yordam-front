@@ -32,20 +32,19 @@ import {
   startOrder,
 } from '@/services/ordersService';
 import { getOrganizationServices } from '@/services/organizationService';
+import { getMyOrg } from '@/services/settingsService';
 import type { Order } from '@/types/business';
 import type { OrganizationServiceResponse } from '@/types/user';
 
 const router = useRouter();
 
-// Authentication role/org details (mock or decoded from token)
-const orgId = ref<any>('1');
+// Authentication role details (mock or decoded from token)
 const isOwner = ref(true);
 const isMaster = ref(false);
 
 function decodeUserToken() {
   const token = localStorage.getItem('token');
   if (!token || isMockMode()) {
-    orgId.value = '1';
     isOwner.value = true;
     isMaster.value = false;
     return;
@@ -57,7 +56,6 @@ function decodeUserToken() {
       const payload = JSON.parse(
         atob(payloadPart.replace(/-/g, '+').replace(/_/g, '/')),
       );
-      orgId.value = payload.organizationId || '1';
       isOwner.value =
         payload.organizationRole === 'OWNER' ||
         payload.platformRole === 'OWNER';
@@ -66,7 +64,6 @@ function decodeUserToken() {
         payload.platformRole === 'MASTER';
     }
   } catch (_) {
-    orgId.value = '1';
     isOwner.value = true;
     isMaster.value = false;
   }
@@ -194,7 +191,8 @@ async function load() {
 // Fetch helper items (services/masters) for creation modal
 async function loadModalHelpers() {
   try {
-    const svcList = await getOrganizationServices(orgId.value);
+    const org = await getMyOrg();
+    const svcList = await getOrganizationServices(org?.id ?? '');
     services.value = svcList || [];
     const empList = await getEmployees();
     masters.value = empList || [];
@@ -360,7 +358,6 @@ async function handleCreateOrder() {
   createLoading.value = true;
   try {
     const slotData = {
-      organizationId: Number(orgId.value) || 1,
       slotDate: f.slotDate,
       startTime: f.startTime + ':00',
       endTime: f.endTime + ':00',
@@ -369,11 +366,10 @@ async function handleCreateOrder() {
 
     if (isOwner.value) {
       await createOrderByOwner({
-        organizationId: Number(orgId.value) || 1,
         masterId: f.masterId,
         clientName: f.clientName.trim(),
         clientNumber: f.clientNumber.trim(),
-        organizationServicesId: f.serviceId,
+        organizationCatalogId: f.serviceId,
         slot: slotData,
         status: 'CREATED',
         estimatedPrice: f.estimatedPrice ? Number(f.estimatedPrice) : undefined,
@@ -382,10 +378,9 @@ async function handleCreateOrder() {
       });
     } else {
       await createOrderWithMaster({
-        organizationId: Number(orgId.value) || 1,
         clientName: f.clientName.trim(),
         clientNumber: f.clientNumber.trim(),
-        organizationServicesId: f.serviceId,
+        organizationCatalogId: f.serviceId,
         slot: slotData,
         status: 'CREATED',
         estimatedPrice: f.estimatedPrice ? Number(f.estimatedPrice) : undefined,

@@ -3,6 +3,7 @@ import type { TeamMember } from '@/types/business';
 export const members: TeamMember[] = [
   {
     id: 'm1',
+    userId: 'pro-001',
     name: 'Akmal Ismoilov',
     email: 'akmal@autofix.uz',
     initials: 'AI',
@@ -16,6 +17,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm2',
+    userId: 'pro-001',
     name: 'Bekzod Rakhimov',
     email: 'bekzod@autofix.uz',
     initials: 'BR',
@@ -29,6 +31,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm3',
+    userId: 'pro-001',
     name: 'Saida Karimova',
     email: 'saida@autofix.uz',
     initials: 'SK',
@@ -42,6 +45,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm4',
+    userId: 'pro-001',
     name: 'Doniyor Mahmudov',
     email: 'doniyor@autofix.uz',
     initials: 'DM',
@@ -55,6 +59,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm5',
+    userId: 'pro-001',
     name: 'Nilufar Khasanova',
     email: 'nilufar@autofix.uz',
     initials: 'NK',
@@ -68,6 +73,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm6',
+    userId: 'pro-001',
     name: 'Jamshid Tursunov',
     email: 'jamshid@autofix.uz',
     initials: 'JT',
@@ -81,6 +87,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm7',
+    userId: 'pro-001',
     name: 'Gulnara Abdullaeva',
     email: 'gulnara@autofix.uz',
     initials: 'GA',
@@ -94,6 +101,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm8',
+    userId: 'pro-001',
     name: 'Rustam Aliyev',
     email: 'rustam@autofix.uz',
     initials: 'RA',
@@ -107,6 +115,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm9',
+    userId: 'pro-001',
     name: 'Shahnoza Usmanova',
     email: 'shahnoza@autofix.uz',
     initials: 'SU',
@@ -120,6 +129,7 @@ export const members: TeamMember[] = [
   },
   {
     id: 'm10',
+    userId: 'pro-001',
     name: 'Farrukh Norboev',
     email: 'farrukh@autofix.uz',
     initials: 'FN',

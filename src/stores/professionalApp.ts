@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import {
+  decodeUserToken,
+  formatRoleLabel,
+  initialsFromName,
+} from '@/config';
+import {
   getStoredLanguageCode,
   type LanguageCode,
   setStoredLanguageCode,
@@ -11,9 +16,17 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
     'dashboard' | 'organizations' | 'invitations' | 'reviews' | 'settings'
   >('invitations');
   const invitationCount = ref(2);
-  const userName = ref('Rustam Karimov');
-  const userInitials = ref('AI');
-  const userSpecialization = ref('Electric');
+  const tokenUser = decodeUserToken();
+  const tokenName = String(tokenUser.fullName ?? tokenUser.name ?? '');
+  const tokenRole = String(
+    tokenUser.specialization ?? tokenUser.platformRole ?? '',
+  );
+
+  const userName = ref(tokenName || 'Rustam Karimov');
+  const userInitials = ref(
+    tokenName ? initialsFromName(tokenName) : 'AI',
+  );
+  const userSpecialization = ref(formatRoleLabel(tokenRole) || 'Electric');
   const organizations = ref(['AutoFix MCHJ', 'Something MCHJ']);
   const activeOrganization = ref('AutoFix MCHJ');
   const notificationCount = ref(3);

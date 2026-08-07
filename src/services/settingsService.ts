@@ -26,16 +26,24 @@ import {
   DAY_KEY_TO_DAY_OF_WEEK,
   DAY_OF_WEEK_TO_DAY_KEY,
 } from '@/types/settings';
-import type { OrganizationResponse } from '@/types/user';
+import type {
+  OrganizationRequest,
+  OrganizationResponse,
+} from '@/types/user';
 
-export async function getMyOrgId(): Promise<string | null> {
+/**
+ * Fetch the authenticated user's current organization. The backend derives
+ * the organization from the JWT, so no org id is sent from the client.
+ */
+export async function getMyOrg(): Promise<OrganizationResponse | null> {
+  if (isMockMode()) {
+    return null;
+  }
   try {
-    const members = await apiClient.get('/organization-member/get-by-user');
-    if (members && members.length > 0) {
-      return members[0].organizationId;
-    }
-  } catch (_) {}
-  return null;
+    return await apiClient.get('/organization/get-user-current-organization');
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -104,30 +112,25 @@ export async function getSettingsLegal() {
   }
 
   try {
-    const orgId = await getMyOrgId();
-    if (!orgId) {
+    const org = await getMyOrg();
+    if (!org) {
       return null;
     }
-
-    const org = (await apiClient.get(
-      `/organization/${orgId}`,
-    )) as OrganizationResponse;
-    const details = await getOrganizationDetails(orgId);
+    const details = await getOrganizationDetails();
     const registered = registeredLegalDetails(org.type, details);
 
     return {
-      orgType: normalizeOrgType(org.type) || legalInfo.orgType,
-      legalEntityName: org.name || legalInfo.legalEntityName,
-      stateRegNumber:
-        registered?.registrationNumber || legalInfo.stateRegNumber,
-      taxId: org.inn || legalInfo.taxId,
-      vatStatus: legalInfo.vatStatus,
-      foundingDate: registered?.registeredDate || legalInfo.foundingDate,
-      country: legalInfo.country,
-      region: legalInfo.region,
-      city: legalInfo.city,
-      postalCode: legalInfo.postalCode,
-      street: org.address || legalInfo.street,
+      orgType: normalizeOrgType(org.type) || '',
+      legalEntityName: org.name || '',
+      stateRegNumber: registered?.registrationNumber ?? '',
+      taxId: org.inn || '',
+      vatStatus: '',
+      foundingDate: registered?.registeredDate ?? '',
+      country: '',
+      region: '',
+      city: '',
+      postalCode: '',
+      street: org.address || '',
       documents: legalInfo.documents,
     };
   } catch (_) {
@@ -135,17 +138,21 @@ export async function getSettingsLegal() {
   }
 }
 
-export async function getOrganizationDetails(
-  orgId: string,
-): Promise<OrganizationDetailsResponse | null> {
+export async function getOrganizationDetails(): Promise<
+  OrganizationDetailsResponse | null
+> {
   if (isMockMode()) {
     return null;
   }
   try {
-    return await apiClient.get(`/organization/${orgId}/details`);
+    return await apiClient.get('/organization/details');
   } catch {
     return null;
   }
+}
+
+export async function getOrganization(): Promise<OrganizationResponse | null> {
+  return getMyOrg();
 }
 
 const HOURS_BASE = '/organization-operating-hours';
@@ -173,14 +180,12 @@ function responseToDaySchedule(
  * Convert a day key + DaySchedule to a backend request DTO.
  */
 function toRequest(
-  organizationId: string,
   dayKey: string,
   schedule: DaySchedule,
   id?: string,
 ): OrganizationOperatingHoursRequest {
   return {
     id,
-    organizationId,
     dayOfWeek: DAY_KEY_TO_DAY_OF_WEEK[dayKey] as DayOfWeek,
     isOpen: !schedule.closed,
     openTime: schedule.closed ? null : schedule.open || null,
@@ -197,13 +202,8 @@ export async function getSettingsHours(): Promise<
   }
 
   try {
-    const orgId = await getMyOrgId();
-    if (!orgId) {
-      return null;
-    }
-
     const records: OrganizationOperatingHoursResponse[] = await apiClient.get(
-      `${HOURS_BASE}/organization/${orgId}`,
+      `${HOURS_BASE}/get-by-organization`,
     );
 
     if (!records || records.length === 0) {
@@ -229,7 +229,6 @@ export async function getSettingsHours(): Promise<
  * record IDs loaded by getSettingsHours so existing rows are updated in place.
  */
 export async function saveSettingsHours(
-  orgId: string,
   schedule: Record<string, DaySchedule>,
 ): Promise<void> {
   if (isMockMode()) {
@@ -238,7 +237,7 @@ export async function saveSettingsHours(
 
   const dayKeys = Object.keys(schedule);
   const requests: OrganizationOperatingHoursRequest[] = dayKeys.map((dayKey) =>
-    toRequest(orgId, dayKey, schedule[dayKey], schedule[dayKey].id),
+    toRequest(dayKey, schedule[dayKey], schedule[dayKey].id),
   );
 
   await apiClient.put(`${HOURS_BASE}/week`, requests);
@@ -254,20 +253,16 @@ export async function getSettingsBankInfo() {
   }
 
   try {
-    const orgId = await getMyOrgId();
-    if (!orgId) {
+    const org = await getMyOrg();
+    if (!org) {
       return null;
     }
-
-    const org = (await apiClient.get(
-      `/organization/${orgId}`,
-    )) as OrganizationResponse;
     return {
-      accountHolder: org.name || bankInfo.accountHolder,
-      bank: org.bankName || bankInfo.bank,
-      mfo: org.mfo || bankInfo.mfo,
-      inn: org.inn || bankInfo.inn,
-      accountNumber: org.bankAccount || bankInfo.accountNumber,
+      accountHolder: org.name || '',
+      bank: org.bankName || '',
+      mfo: org.mfo || '',
+      inn: org.inn || '',
+      accountNumber: org.bankAccount || '',
       currency: 'UZS',
     };
   } catch (_) {
@@ -456,18 +451,29 @@ export async function getSettingsDangerZone() {
 
 const ORG_BASE = '/organization';
 
+/**
+ * Update the organization's information.
+ * Sends a PUT to /organization/{id} with the full OrganizationRequest DTO
+ * (required fields such as phone/ownerId must be included).
+ */
+export async function updateOrganization(
+  data: OrganizationRequest,
+): Promise<OrganizationResponse> {
+  return await apiClient.put(ORG_BASE, data);
+}
+
 export async function transferOrganizationOwnership(
   request: OrganizationTransferOwnerShipRequest,
 ): Promise<unknown> {
   return await apiClient.put(`${ORG_BASE}/transfer-ownership`, request);
 }
 
-export async function activateOrganization(id: string): Promise<unknown> {
-  return await apiClient.put(`${ORG_BASE}/activate/${id}`);
+export async function activateOrganization(): Promise<unknown> {
+  return await apiClient.put(`${ORG_BASE}/activate`);
 }
 
-export async function deactivateOrganization(id: string): Promise<unknown> {
-  return await apiClient.put(`${ORG_BASE}/deactivate/${id}`);
+export async function deactivateOrganization(): Promise<unknown> {
+  return await apiClient.put(`${ORG_BASE}/deactivate`);
 }
 
 /**
@@ -475,19 +481,23 @@ export async function deactivateOrganization(id: string): Promise<unknown> {
  * Prefers the boolean `active` flag; falls back to a `status` enum where
  * anything other than `INACTIVE` is treated as active.
  */
-export async function getOrganizationActiveState(
-  orgId?: string | null,
-): Promise<boolean> {
-  const id = orgId ?? (await getMyOrgId());
-  if (!id) {
-    return true;
-  }
+export async function getOrganizationActiveState(): Promise<boolean> {
   try {
-    const org = await apiClient.get(`/organization/${id}`);
-    if (typeof org.active === 'boolean') {
-      return org.active;
+    const org = await getMyOrg();
+    if (!org) {
+      return true;
     }
-    return String(org.status ?? '').toUpperCase() !== 'INACTIVE';
+    const record = org as OrganizationResponse & {
+      active?: boolean;
+      status?: string;
+    };
+    if (typeof record.active === 'boolean') {
+      return record.active;
+    }
+    if (typeof record.isActive === 'boolean') {
+      return record.isActive;
+    }
+    return String(record.status ?? '').toUpperCase() !== 'INACTIVE';
   } catch {
     return true;
   }

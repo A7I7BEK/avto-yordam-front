@@ -7,6 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 import { apiClient } from '@/api/client';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import { isMockMode } from '@/config';
+import { getMyOrg } from '@/services/settingsService';
 
 interface BaseServiceType {
   id: string;
@@ -26,6 +27,7 @@ interface OrganizationServiceType {
   id: string;
   organizationId: string;
   serviceId: string;
+  catalogName?: string;
   minPrice: number;
   maxPrice: number;
   minDurationMinutes: number;
@@ -111,27 +113,9 @@ const mockMembers: MemberType[] = [
   { id: 'm3', userName: 'Rustam Karimov' },
 ];
 
-async function getMyOrgId(): Promise<string | null> {
-  if (isMockMode()) {
-    return 'af-org-uuid';
-  }
-  try {
-    const members = await apiClient.get('/organization-member/get-by-user');
-    if (members && members.length > 0) {
-      return members[0].organizationId;
-    }
-  } catch {
-    // Silent fail
-  }
-  return null;
-}
-
 async function loadData() {
   loading.value = true;
   try {
-    const orgId = await getMyOrgId();
-    activeOrgId.value = orgId;
-
     if (isMockMode()) {
       baseServices.value = mockBaseServices;
       orgMembers.value = mockMembers;
@@ -139,10 +123,12 @@ async function loadData() {
       return;
     }
 
-    if (!orgId) {
+    const org = await getMyOrg();
+    if (!org) {
       orgServices.value = [];
       return;
     }
+    activeOrgId.value = org.id;
 
     // Load base catalog
     const baseList = await apiClient.get('/catalog');
@@ -152,7 +138,7 @@ async function loadData() {
 
     // Load organization members
     const membersList = await apiClient.get(
-      `/organization-member/get-by-organization-id/${orgId}`,
+      '/organization-member/get-for-organization/',
     );
     if (Array.isArray(membersList)) {
       orgMembers.value = membersList.map((m: unknown) => {
@@ -166,10 +152,24 @@ async function loadData() {
 
     // Load organization catalog
     const servicesList = await apiClient.get(
-      `/organization-catalog/get-by-organization-id/${orgId}`,
+      `/organization-catalog/get-by-organization-id/${org.id}`,
     );
     if (Array.isArray(servicesList)) {
-      orgServices.value = servicesList;
+      orgServices.value = servicesList.map((item: any) => ({
+        id: item.id,
+        organizationId: item.organizationId,
+        serviceId: item.catalogId ?? item.serviceId,
+        catalogName: item.catalogName ?? '',
+        minPrice: item.minPrice,
+        maxPrice: item.maxPrice,
+        minDurationMinutes: item.minDurationMinutes,
+        maxDurationMinutes: item.maxDurationMinutes,
+        masters: (item.masters ?? []).map((m: any) => ({
+          id: m.id ?? m.userId ?? '',
+          userName:
+            m.userName ?? m.name ?? m.fullName ?? 'Unknown Specialist',
+        })),
+      }));
     }
   } catch {
     // Silent fail
@@ -178,13 +178,17 @@ async function loadData() {
   }
 }
 
+function orgServiceName(s: OrganizationServiceType): string {
+  return s.catalogName || getServiceName(s.serviceId);
+}
+
 const filteredServices = computed(() => {
   let list = orgServices.value;
 
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase();
     list = list.filter((s) => {
-      const name = getServiceName(s.serviceId).toLowerCase();
+      const name = orgServiceName(s).toLowerCase();
       const desc = getServiceDescription(s.serviceId).toLowerCase();
       return name.includes(q) || desc.includes(q);
     });
@@ -465,7 +469,7 @@ onMounted(() => {
         <div class="service-main">
           <div class="service-info">
             <span class="service-name"
-              >{{ getServiceName(service.serviceId) }}</span
+              >{{ orgServiceName(service) }}</span
             >
             <span class="service-desc"
               >{{ getServiceDescription(service.serviceId) }}</span
@@ -574,7 +578,6 @@ onMounted(() => {
             <select
               v-model="formServiceId"
               class="form-select"
-              :disabled="!!editingServiceId"
               @change="onServiceChange"
             >
               <option

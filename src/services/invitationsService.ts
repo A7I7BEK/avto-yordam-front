@@ -1,6 +1,5 @@
 import { apiClient } from '@/api/client';
 import { isMockMode } from '@/config';
-import { getMyOrgId } from '@/services/settingsService';
 import type {
   OrganizationInvitation,
   OrganizationInvitationRequest,
@@ -66,12 +65,8 @@ export async function getOrganizationInvitations(): Promise<
   if (isMockMode()) {
     return mockInvitations;
   }
-  const orgId = await getMyOrgId();
-  if (!orgId) {
-    return [];
-  }
   try {
-    const data = await apiClient.get(`${BASE}/get-by-organization-id/${orgId}`);
+    const data = await apiClient.get(`${BASE}/get-for-organization`);
     return (data ?? []).map(mapInvitation);
   } catch {
     return [];

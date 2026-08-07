@@ -21,6 +21,8 @@ export interface Employee {
 
 export interface TeamMember {
   id: string;
+  /** The master's user id (used to fetch their profile via /user/get-by-id). */
+  userId?: string;
   name: string;
   email: string;
   initials: string;

@@ -1,6 +1,5 @@
 export interface OrganizationOperatingHoursRequest {
   id?: string;
-  organizationId: string;
   dayOfWeek: DayOfWeek;
   isOpen: boolean;
   openTime: string | null;
@@ -66,7 +65,8 @@ export type PaymentProviderType =
 
 export interface OrganizationPaymentProviderRequest {
   id?: string;
-  organizationId: string;
+  /** Omitted — derived from the authenticated user on the backend. */
+  organizationId?: string;
   type: PaymentProviderType;
   credentials: string | null;
   enabled: boolean;
@@ -105,7 +105,8 @@ export interface PaymentProviderResponse {
 
 export interface OrganizationTransferOwnerShipRequest {
   newOwnerPhoneNumber: string;
-  organizationId: string;
+  /** Omitted — derived from the authenticated user on the backend. */
+  organizationId?: string;
 }
 
 /* ───── Organization Details (GET /organization/{id}/details) ───── */

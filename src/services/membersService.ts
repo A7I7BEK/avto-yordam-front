@@ -13,12 +13,13 @@ export async function getMembers(): Promise<TeamMember[]> {
       '/organization-member/get-organization-masters',
     );
     return apiMembers.map((m: any) => {
-      const user = m.master ?? m.user ?? m;
-      const fullName = user.fullName ?? m.userName ?? 'Unknown Member';
+      const user = m.master ?? m.user;
+      const fullName = user?.fullName ?? m.userName ?? 'Unknown Member';
       return {
-        id: m.id ?? user.id,
+        id: m.id ?? user?.id,
+        userId: m.userId ?? user?.id,
         name: fullName,
-        email: user.email ?? m.email ?? '',
+        email: user?.email ?? m.email ?? '',
         initials: (fullName || 'UM')
           .split(' ')
           .map((n: string) => n[0])

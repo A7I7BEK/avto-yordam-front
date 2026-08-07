@@ -164,8 +164,10 @@ export async function getReviews(): Promise<ReviewResponse[]> {
     return mockReviews;
   }
   try {
-    const data: ReviewResponse[] = await apiClient.get('/review/page');
-    return data;
+    const data = await apiClient.get('/review/page');
+    // /review/page returns a Spring Page wrapper ({ content: [...] }).
+    const list = Array.isArray(data) ? data : (data?.content ?? []);
+    return Array.isArray(list) ? list : [];
   } catch {
     return [];
   }
@@ -176,8 +178,9 @@ export async function getMyReviews(): Promise<ReviewResponse[]> {
     return mockReviews;
   }
   try {
-    const data: ReviewResponse[] = await apiClient.get('/review/get-by-master');
-    return data;
+    const data = await apiClient.get('/review/get-by-master');
+    const list = Array.isArray(data) ? data : (data?.content ?? []);
+    return Array.isArray(list) ? list : [];
   } catch {
     return [];
   }

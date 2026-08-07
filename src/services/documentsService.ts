@@ -1,5 +1,4 @@
 import { apiClient } from '@/api/client';
-import { getMyOrgId } from '@/services/settingsService';
 
 export type OrganizationFileType = 'PHOTO' | 'DOCUMENT' | 'LICENSE' | 'LOGO';
 
@@ -76,30 +75,26 @@ export interface OrganizationFileUploadItem {
  *   fileRequests[0].multipartFile
  *   fileRequests[0].type
  *   fileRequests[0].isCover
- *   fileRequests[0].organizationId
  *
  * Note: no model-attribute prefix (e.g. `request.`) is used. Spring binds
  * `@ModelAttribute OrganizationFileListRequest request` from these property
  * paths directly; a `request.` prefix would be treated as an unknown `request`
  * property and silently ignored unless the backend configures
  * `setFieldDefaultPrefix("request.")`.
+ *
+ * `organizationId` is not sent — the backend derives it from the JWT.
  */
 export async function uploadOrganizationFiles(
   items: OrganizationFileUploadItem[],
 ): Promise<OrganizationFileResponse[]> {
-  const organizationId = await getMyOrgId();
-
   const formData = new FormData();
   for (const [index, item] of items.entries()) {
     const prefix = `fileRequests[${index}].`;
     formData.append(`${prefix}multipartFile`, item.file);
     formData.append(`${prefix}type`, item.type);
     formData.append(`${prefix}isCover`, String(item.isCover ?? false));
-    // The org id is derived from the JWT on the backend; only send it when
-    // resolved, since an empty value would fail UUID binding.
-    if (organizationId) {
-      formData.append(`${prefix}organizationId`, organizationId);
-    }
+    // organizationId is omitted — derived from the authenticated user on the
+    // backend.
   }
   return apiClient.post('/organization/files/add-list', formData);
 }
