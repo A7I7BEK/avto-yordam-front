@@ -16,7 +16,7 @@ import {
   UserRound,
   X,
 } from '@lucide/vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 import {
   deleteOrganizationFile,
   getDownloadUrl,
@@ -29,13 +29,18 @@ import {
   getOrganization,
   getOrganizationDetails,
   getSettingsLegal,
+  saveNewOrganizationDetails,
   updateOrganization,
 } from '@/services/settingsService';
 import type {
+  CompanyDetailsRequest,
   OrganizationCompanyDetailsResponse,
+  OrganizationDetailsChangeRequest,
   OrganizationDetailsResponse,
   OrganizationSelfEmployedDetailsResponse,
   OrganizationYattDetailsResponse,
+  SelfEmployedDetailsRequest,
+  YattDetailsRequest,
 } from '@/types/settings';
 import type { ServiceCenterType } from '@/types/user';
 
@@ -69,6 +74,89 @@ const form = ref({
   postalCode: '',
   street: '',
 });
+
+// Details entered for a *new* org type (only used when the type is changed).
+// Sent to POST /organization/save-new-details.
+const detailsForm = reactive({
+  companyDetails: {
+    directorFullName: '',
+    directorPinfl: '',
+    registrationNumber: '',
+    registeredDate: '',
+    oked: '',
+    charterCapital: null as number | string | null,
+  },
+  yattDetails: {
+    fullName: '',
+    passport: '',
+    pinfl: '',
+    registrationNumber: '',
+    registeredDate: '',
+  },
+  selfEmployedDetails: {
+    fullName: '',
+    pinfl: '',
+    passportSeries: '',
+    passportGivenDate: '',
+    activityType: '',
+    phoneNumber: '',
+    address: '',
+  },
+});
+
+const detailsErrors = reactive<Record<string, string>>({});
+
+const PINFL_REGEX = /^\d{14}$/;
+const PASSPORT_REGEX = /^[A-Z]{2}\d{7}$/;
+const OKED_REGEX = /^\d{4,5}$/;
+const PHONE_REGEX = /^\+998\d{9}$/;
+const NON_DIGIT_REGEX = /[^0-9+]/g;
+
+// ── Location map (Leaflet) ────────────────────────────────────────────────────
+
+const mapLocation = ref<{ lat: number; lng: number } | null>(null);
+let mapInstance: any = null;
+
+const loadLeaflet = () =>
+  new Promise<void>((resolve) => {
+    if ((window as any).L) {
+      resolve();
+      return;
+    }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = () => resolve();
+    document.head.appendChild(script);
+  });
+
+async function initMap() {
+  const loc = mapLocation.value;
+  if (!loc) {
+    return;
+  }
+  await loadLeaflet();
+  const L = (window as any).L;
+  if (!L) {
+    return;
+  }
+  if (mapInstance) {
+    try {
+      mapInstance.remove();
+    } catch {
+      // Ignore cleanup failures
+    }
+    mapInstance = null;
+  }
+  mapInstance = L.map('legal-info-map').setView([loc.lat, loc.lng], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+  }).addTo(mapInstance);
+  L.marker([loc.lat, loc.lng]).addTo(mapInstance);
+}
 
 const orgTypeOptions = [
   {
@@ -228,6 +316,16 @@ onMounted(async () => {
   }
   await loadFiles();
   await loadDetails();
+
+  const org = await getOrganization();
+  if (org?.latitude && org?.longitude) {
+    mapLocation.value = {
+      lat: Number.parseFloat(org.latitude),
+      lng: Number.parseFloat(org.longitude),
+    };
+  }
+  await nextTick();
+  await initMap();
 });
 
 function startEditing() {
@@ -236,6 +334,8 @@ function startEditing() {
 
 function cancelEditing() {
   isEditing.value = false;
+  clearDetailsErrors();
+  resetDetailsForm();
   if (data.value) {
     form.value = {
       orgType: data.value.orgType,
@@ -255,7 +355,7 @@ function cancelEditing() {
 
 function orgTypeToBackend(type: string): ServiceCenterType {
   if (type === 'ytt') {
-    return 'YTT';
+    return 'YATT';
   }
   if (type === 'self-employed') {
     return 'SELF_EMPLOYED';
@@ -263,10 +363,209 @@ function orgTypeToBackend(type: string): ServiceCenterType {
   return 'MCHJ';
 }
 
+// ── Org type change (POST /organization/save-new-details) ─────────────────────
+
+/** True when the user picked a different org type than the current one. */
+const typeChanged = computed(() => form.value.orgType !== data.value?.orgType);
+
+function resetDetailsForm() {
+  detailsForm.companyDetails = {
+    directorFullName: '',
+    directorPinfl: '',
+    registrationNumber: '',
+    registeredDate: '',
+    oked: '',
+    charterCapital: null,
+  };
+  detailsForm.yattDetails = {
+    fullName: '',
+    passport: '',
+    pinfl: '',
+    registrationNumber: '',
+    registeredDate: '',
+  };
+  detailsForm.selfEmployedDetails = {
+    fullName: '',
+    pinfl: '',
+    passportSeries: '',
+    passportGivenDate: '',
+    activityType: '',
+    phoneNumber: '',
+    address: '',
+  };
+}
+
+/** Id of the currently registered details record for the given type. */
+function currentDetailsId(type: ServiceCenterType): string {
+  const d = details.value;
+  if (!d) {
+    return '';
+  }
+  if (type === 'YATT') {
+    return d.yattDetails?.id ?? '';
+  }
+  if (type === 'SELF_EMPLOYED') {
+    return d.selfEmployedDetails?.id ?? '';
+  }
+  return d.companyDetails?.id ?? '';
+}
+
+function buildCompanyRequest(): CompanyDetailsRequest {
+  const c = detailsForm.companyDetails;
+  return {
+    directorFullName: c.directorFullName.trim(),
+    directorPinfl: c.directorPinfl.trim(),
+    registrationNumber: c.registrationNumber.trim(),
+    registeredDate: c.registeredDate || null,
+    oked: c.oked.trim() || null,
+    charterCapital:
+      c.charterCapital == null || c.charterCapital === ''
+        ? null
+        : Number(c.charterCapital),
+  };
+}
+
+function buildYattRequest(): YattDetailsRequest {
+  const y = detailsForm.yattDetails;
+  return {
+    fullName: y.fullName.trim(),
+    passport: y.passport.trim(),
+    pinfl: y.pinfl.trim(),
+    registrationNumber: y.registrationNumber.trim(),
+    registeredDate: y.registeredDate || null,
+  };
+}
+
+function buildSelfEmployedRequest(): SelfEmployedDetailsRequest {
+  const s = detailsForm.selfEmployedDetails;
+  const cleanPhone = s.phoneNumber.replace(NON_DIGIT_REGEX, '');
+  return {
+    fullName: s.fullName.trim(),
+    pinfl: s.pinfl.trim(),
+    passportSeries: s.passportSeries.trim(),
+    passportGivenDate: s.passportGivenDate || null,
+    activityType: s.activityType.trim(),
+    phoneNumber: cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`,
+    address: s.address.trim() || null,
+  };
+}
+
+function buildDetailsChangeRequest(): OrganizationDetailsChangeRequest {
+  const newType = orgTypeToBackend(form.value.orgType);
+  const oldType = orgTypeToBackend(data.value?.orgType ?? 'mchj');
+  return {
+    yattDetails: newType === 'YATT' ? buildYattRequest() : null,
+    companyDetails: newType === 'MCHJ' ? buildCompanyRequest() : null,
+    selfEmployedDetails:
+      newType === 'SELF_EMPLOYED' ? buildSelfEmployedRequest() : null,
+    oldDetailsId: currentDetailsId(oldType),
+    oldDetailsType: oldType,
+    type: newType,
+  };
+}
+
+function clearDetailsErrors(): void {
+  for (const key of Object.keys(detailsErrors)) {
+    delete detailsErrors[key];
+  }
+}
+
+function validateCompanyDetails(): void {
+  const c = detailsForm.companyDetails;
+  if (!c.directorFullName.trim()) {
+    detailsErrors.directorFullName = 'Director full name is required.';
+  }
+  if (!c.directorPinfl.trim()) {
+    detailsErrors.directorPinfl = 'Director PINFL is required.';
+  } else if (!PINFL_REGEX.test(c.directorPinfl.trim())) {
+    detailsErrors.directorPinfl = 'PINFL must be exactly 14 digits.';
+  }
+  if (!c.registrationNumber.trim()) {
+    detailsErrors.registrationNumber = 'Registration number is required.';
+  }
+  if (c.oked.trim() && !OKED_REGEX.test(c.oked.trim())) {
+    detailsErrors.oked = 'OKED must be 4 or 5 digits.';
+  }
+  if (
+    c.charterCapital !== null &&
+    c.charterCapital !== '' &&
+    Number(c.charterCapital) <= 0
+  ) {
+    detailsErrors.charterCapital = 'Charter capital must be positive.';
+  }
+}
+
+function validateYattDetails(): void {
+  const y = detailsForm.yattDetails;
+  if (!y.fullName.trim()) {
+    detailsErrors.yattFullName = 'Full name is required.';
+  }
+  if (!y.passport.trim()) {
+    detailsErrors.yattPassport = 'Passport is required.';
+  } else if (!PASSPORT_REGEX.test(y.passport.trim())) {
+    detailsErrors.yattPassport = 'Passport must be in format AB1234567.';
+  }
+  if (!y.pinfl.trim()) {
+    detailsErrors.yattPinfl = 'PINFL is required.';
+  } else if (!PINFL_REGEX.test(y.pinfl.trim())) {
+    detailsErrors.yattPinfl = 'PINFL must be exactly 14 digits.';
+  }
+  if (!y.registrationNumber.trim()) {
+    detailsErrors.yattRegistrationNumber = 'Registration number is required.';
+  }
+}
+
+function validateSelfEmployedDetails(): void {
+  const s = detailsForm.selfEmployedDetails;
+  if (!s.fullName.trim()) {
+    detailsErrors.seFullName = 'Full name is required.';
+  }
+  if (!s.pinfl.trim()) {
+    detailsErrors.sePinfl = 'PINFL is required.';
+  } else if (!PINFL_REGEX.test(s.pinfl.trim())) {
+    detailsErrors.sePinfl = 'PINFL must be exactly 14 digits.';
+  }
+  if (!s.passportSeries.trim()) {
+    detailsErrors.sePassportSeries = 'Passport series is required.';
+  } else if (!PASSPORT_REGEX.test(s.passportSeries.trim())) {
+    detailsErrors.sePassportSeries = 'Passport must be in format AB1234567.';
+  }
+  if (!s.passportGivenDate) {
+    detailsErrors.sePassportGivenDate = 'Passport given date is required.';
+  }
+  if (!s.activityType.trim()) {
+    detailsErrors.seActivityType = 'Activity type is required.';
+  }
+  const cleanPhone = s.phoneNumber.replace(NON_DIGIT_REGEX, '');
+  if (!cleanPhone) {
+    detailsErrors.sePhone = 'Phone number is required.';
+  } else if (!PHONE_REGEX.test(cleanPhone)) {
+    detailsErrors.sePhone = 'Phone must be in format +998XXXXXXXXX.';
+  }
+}
+
+function validateDetails(): boolean {
+  clearDetailsErrors();
+  if (form.value.orgType === 'mchj') {
+    validateCompanyDetails();
+  } else if (form.value.orgType === 'ytt') {
+    validateYattDetails();
+  } else {
+    validateSelfEmployedDetails();
+  }
+  return Object.keys(detailsErrors).length === 0;
+}
+
 async function save() {
+  if (typeChanged.value && !validateDetails()) {
+    return;
+  }
   saving.value = true;
   try {
     const org = await getOrganization();
+    if (typeChanged.value) {
+      await saveNewOrganizationDetails(buildDetailsChangeRequest());
+    }
     await updateOrganization({
       type: orgTypeToBackend(form.value.orgType),
       name: form.value.legalEntityName,
@@ -289,6 +588,9 @@ async function save() {
   }
   data.value = { ...form.value };
   isEditing.value = false;
+  clearDetailsErrors();
+  resetDetailsForm();
+  await loadDetails();
 }
 
 // ── Documents CRUD ─────────────────────────────────────────────────────────────
@@ -664,6 +966,272 @@ const deleteModalName = computed(
     </div>
 
     <div
+      v-if="isEditing && typeChanged"
+      class="section-card"
+    >
+      <div class="section-header">
+        <h2 class="section-title">New type details</h2>
+        <p class="section-desc">
+          Fill in the registration details for the newly selected organization
+          type. They are submitted together with the type change.
+        </p>
+      </div>
+
+      <template v-if="form.orgType === 'mchj'">
+        <div class="field-group">
+          <label class="field-label">Director full name</label>
+          <input
+            v-model="detailsForm.companyDetails.directorFullName"
+            type="text"
+            class="field-input field-input-full"
+            placeholder="e.g. Rustam Karimov"
+          >
+          <span
+            v-if="detailsErrors.directorFullName"
+            class="field-error"
+            >{{ detailsErrors.directorFullName }}</span
+          >
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Director PINFL (14 digits)</label>
+            <input
+              v-model="detailsForm.companyDetails.directorPinfl"
+              type="text"
+              class="field-input"
+              placeholder="e.g. 31402914820192"
+            >
+            <span
+              v-if="detailsErrors.directorPinfl"
+              class="field-error"
+              >{{ detailsErrors.directorPinfl }}</span
+            >
+          </div>
+          <div class="field-group">
+            <label class="field-label">Registration number</label>
+            <input
+              v-model="detailsForm.companyDetails.registrationNumber"
+              type="text"
+              class="field-input"
+              placeholder="e.g. REG-847291"
+            >
+            <span
+              v-if="detailsErrors.registrationNumber"
+              class="field-error"
+              >{{ detailsErrors.registrationNumber }}</span
+            >
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Registration date</label>
+            <input
+              v-model="detailsForm.companyDetails.registeredDate"
+              type="date"
+              class="field-input"
+            >
+          </div>
+          <div class="field-group">
+            <label class="field-label">OKED (4-5 digits, optional)</label>
+            <input
+              v-model="detailsForm.companyDetails.oked"
+              type="text"
+              class="field-input"
+              placeholder="e.g. 45200"
+            >
+            <span
+              v-if="detailsErrors.oked"
+              class="field-error"
+              >{{ detailsErrors.oked }}</span
+            >
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Charter capital (UZS, optional)</label>
+          <input
+            v-model.number="detailsForm.companyDetails.charterCapital"
+            type="number"
+            class="field-input"
+            placeholder="e.g. 10000000"
+          >
+          <span
+            v-if="detailsErrors.charterCapital"
+            class="field-error"
+            >{{ detailsErrors.charterCapital }}</span
+          >
+        </div>
+      </template>
+
+      <template v-else-if="form.orgType === 'ytt'">
+        <div class="field-group">
+          <label class="field-label">Full name</label>
+          <input
+            v-model="detailsForm.yattDetails.fullName"
+            type="text"
+            class="field-input field-input-full"
+            placeholder="e.g. Sherzod Alimov"
+          >
+          <span
+            v-if="detailsErrors.yattFullName"
+            class="field-error"
+            >{{ detailsErrors.yattFullName }}</span
+          >
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Passport series &amp; number</label>
+            <input
+              v-model="detailsForm.yattDetails.passport"
+              type="text"
+              class="field-input"
+              placeholder="e.g. AA1234567"
+            >
+            <span
+              v-if="detailsErrors.yattPassport"
+              class="field-error"
+              >{{ detailsErrors.yattPassport }}</span
+            >
+          </div>
+          <div class="field-group">
+            <label class="field-label">PINFL (14 digits)</label>
+            <input
+              v-model="detailsForm.yattDetails.pinfl"
+              type="text"
+              class="field-input"
+              placeholder="e.g. 31402914820192"
+            >
+            <span
+              v-if="detailsErrors.yattPinfl"
+              class="field-error"
+              >{{ detailsErrors.yattPinfl }}</span
+            >
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Registration number</label>
+            <input
+              v-model="detailsForm.yattDetails.registrationNumber"
+              type="text"
+              class="field-input"
+              placeholder="e.g. YTT-948291"
+            >
+            <span
+              v-if="detailsErrors.yattRegistrationNumber"
+              class="field-error"
+              >{{ detailsErrors.yattRegistrationNumber }}</span
+            >
+          </div>
+          <div class="field-group">
+            <label class="field-label">Registration date</label>
+            <input
+              v-model="detailsForm.yattDetails.registeredDate"
+              type="date"
+              class="field-input"
+            >
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="field-group">
+          <label class="field-label">Full name</label>
+          <input
+            v-model="detailsForm.selfEmployedDetails.fullName"
+            type="text"
+            class="field-input field-input-full"
+            placeholder="e.g. Aziz Karimov"
+          >
+          <span
+            v-if="detailsErrors.seFullName"
+            class="field-error"
+            >{{ detailsErrors.seFullName }}</span
+          >
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Passport series &amp; number</label>
+            <input
+              v-model="detailsForm.selfEmployedDetails.passportSeries"
+              type="text"
+              class="field-input"
+              placeholder="e.g. AA1234567"
+            >
+            <span
+              v-if="detailsErrors.sePassportSeries"
+              class="field-error"
+              >{{ detailsErrors.sePassportSeries }}</span
+            >
+          </div>
+          <div class="field-group">
+            <label class="field-label">Passport given date</label>
+            <input
+              v-model="detailsForm.selfEmployedDetails.passportGivenDate"
+              type="date"
+              class="field-input"
+            >
+            <span
+              v-if="detailsErrors.sePassportGivenDate"
+              class="field-error"
+              >{{ detailsErrors.sePassportGivenDate }}</span
+            >
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">PINFL (14 digits)</label>
+          <input
+            v-model="detailsForm.selfEmployedDetails.pinfl"
+            type="text"
+            class="field-input"
+            placeholder="e.g. 31402914820192"
+          >
+          <span
+            v-if="detailsErrors.sePinfl"
+            class="field-error"
+            >{{ detailsErrors.sePinfl }}</span
+          >
+        </div>
+        <div class="field-group">
+          <label class="field-label">Activity type</label>
+          <input
+            v-model="detailsForm.selfEmployedDetails.activityType"
+            type="text"
+            class="field-input"
+            placeholder="e.g. Auto repair service, diagnostics"
+          >
+          <span
+            v-if="detailsErrors.seActivityType"
+            class="field-error"
+            >{{ detailsErrors.seActivityType }}</span
+          >
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phone number</label>
+          <input
+            v-model="detailsForm.selfEmployedDetails.phoneNumber"
+            type="text"
+            class="field-input"
+            placeholder="+998 90 123 45 67"
+          >
+          <span
+            v-if="detailsErrors.sePhone"
+            class="field-error"
+            >{{ detailsErrors.sePhone }}</span
+          >
+        </div>
+        <div class="field-group">
+          <label class="field-label">Address (optional)</label>
+          <input
+            v-model="detailsForm.selfEmployedDetails.address"
+            type="text"
+            class="field-input"
+            placeholder="e.g. Tashkent, Yunusabad district"
+          >
+        </div>
+      </template>
+    </div>
+
+    <div
       v-if="loadingDetails"
       class="section-card"
     >
@@ -771,6 +1339,22 @@ const deleteModalName = computed(
           class="field-input field-input-full"
         >
       </div>
+    </div>
+
+    <div
+      v-if="mapLocation"
+      class="section-card"
+    >
+      <div class="section-header">
+        <h2 class="section-title">Location on map</h2>
+        <p class="section-desc">
+          Where your business is registered and located.
+        </p>
+      </div>
+      <div
+        id="legal-info-map"
+        class="map-container"
+      />
     </div>
 
     <div class="section-card">
@@ -1198,6 +1782,19 @@ const deleteModalName = computed(
 }
 .field-input-full {
   width: 100%;
+}
+.field-error {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  color: #d32f2f;
+}
+.map-container {
+  z-index: 1;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  border: 1px solid #c5c5cb;
+  border-radius: 24px;
 }
 .field-row {
   display: flex;

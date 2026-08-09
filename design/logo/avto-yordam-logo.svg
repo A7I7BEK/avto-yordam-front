@@ -16,6 +16,7 @@
     </mask>
   </defs>
 
+  <!-- Mark -->
   <svg x="28" y="28" width="200" height="200" viewBox="0 0 1024 1024">
     <rect x="48" y="48" width="928" height="928" rx="224" fill="url(#brandGrad)"/>
     <rect x="0" y="0" width="1024" height="1024" fill="#FFFFFF" mask="url(#wrenchMask)"/>
@@ -30,6 +31,7 @@
     </g>
   </svg>
 
+  <!-- Wordmark -->
   <text x="264" y="118" font-size="88" font-weight="600" fill="#2A2933">Avto Yordam</text>
   <text x="266" y="174" font-size="24" font-weight="600" letter-spacing="6" fill="#5749F4">AUTO SERVICE PLATFORM</text>
 </svg>

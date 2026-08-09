@@ -13,6 +13,7 @@ import {
 import type {
   DayOfWeek,
   DaySchedule,
+  OrganizationDetailsChangeRequest,
   OrganizationDetailsResponse,
   OrganizationOperatingHoursRequest,
   OrganizationOperatingHoursResponse,
@@ -460,6 +461,17 @@ export async function updateOrganization(
   data: OrganizationRequest,
 ): Promise<OrganizationResponse> {
   return await apiClient.put(ORG_BASE, data);
+}
+
+/**
+ * Change the organization's service center type together with its registered
+ * details. POSTs to /organization/save-new-details with the details for the
+ * new type plus the id/type of the details record being replaced.
+ */
+export async function saveNewOrganizationDetails(
+  request: OrganizationDetailsChangeRequest,
+): Promise<OrganizationResponse> {
+  return await apiClient.post(`${ORG_BASE}/save-new-details`, request);
 }
 
 export async function transferOrganizationOwnership(

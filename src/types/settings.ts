@@ -1,3 +1,5 @@
+import type { ServiceCenterType } from '@/types/user';
+
 export interface OrganizationOperatingHoursRequest {
   id?: string;
   dayOfWeek: DayOfWeek;
@@ -145,4 +147,42 @@ export interface OrganizationDetailsResponse {
   companyDetails: OrganizationCompanyDetailsResponse | null;
   yattDetails: OrganizationYattDetailsResponse | null;
   selfEmployedDetails: OrganizationSelfEmployedDetailsResponse | null;
+}
+
+/* ───── Organization Details Change (POST /organization/save-new-details) ───── */
+
+export interface YattDetailsRequest {
+  fullName: string;
+  passport: string;
+  pinfl: string;
+  registrationNumber: string;
+  registeredDate: string | null;
+}
+
+export interface CompanyDetailsRequest {
+  directorFullName: string;
+  directorPinfl: string;
+  registrationNumber: string;
+  registeredDate: string | null;
+  oked: string | null;
+  charterCapital: number | null;
+}
+
+export interface SelfEmployedDetailsRequest {
+  fullName: string;
+  pinfl: string;
+  passportSeries: string;
+  passportGivenDate: string | null;
+  activityType: string;
+  phoneNumber: string;
+  address: string | null;
+}
+
+export interface OrganizationDetailsChangeRequest {
+  yattDetails: YattDetailsRequest | null;
+  companyDetails: CompanyDetailsRequest | null;
+  selfEmployedDetails: SelfEmployedDetailsRequest | null;
+  oldDetailsId: string;
+  oldDetailsType: ServiceCenterType;
+  type: ServiceCenterType;
 }
