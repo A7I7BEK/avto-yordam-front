@@ -81,6 +81,20 @@ const rejectReason = ref('');
 const activeRejectOrderId = ref<string | null>(null);
 const confirmDeleteOrder = ref<Order | null>(null);
 
+// Complete-order (payment method) modal
+const completeModalOpen = ref(false);
+const completeLoading = ref(false);
+const activeCompleteOrderId = ref<string | null>(null);
+const paymentMethod = ref<'CASH' | 'PAYME' | 'CLICK' | 'PAYNET'>('CASH');
+const completeError = ref('');
+const PAYMENT_METHOD_OPTIONS: { value: 'CASH' | 'PAYME' | 'CLICK' | 'PAYNET'; label: string }[] = [
+  { value: 'CASH', label: 'Cash' },
+  { value: 'PAYME', label: 'Payme' },
+  { value: 'CLICK', label: 'Click' },
+  { value: 'PAYNET', label: 'Paynet' },
+];
+const EXISTING_TRANSACTION_REGEX = /already has.*transaction/i;
+
 const createModalOpen = ref(false);
 const createLoading = ref(false);
 const services = ref<OrganizationServiceResponse[]>([]);
@@ -259,8 +273,8 @@ async function handleAction(
       await startOrder(backendId);
       triggerToast('Order started');
     } else if (action === 'complete') {
-      await completeOrder(backendId);
-      triggerToast('Order completed');
+      openCompleteModal(order);
+      return;
     } else if (action === 'cancel') {
       await cancelOrder(backendId);
       triggerToast('Order cancelled');
@@ -274,6 +288,48 @@ async function handleAction(
     await load();
   } catch (err: any) {
     triggerToast(err.message || 'Operation failed', 'error');
+  }
+}
+
+// Open the payment-method picker before completing an order
+function openCompleteModal(order: Order) {
+  activeCompleteOrderId.value = order.backendId || order.id;
+  paymentMethod.value = 'CASH';
+  completeError.value = '';
+  completeModalOpen.value = true;
+}
+
+async function confirmComplete() {
+  if (!activeCompleteOrderId.value) {
+    return;
+  }
+  completeLoading.value = true;
+  completeError.value = '';
+  try {
+    const response: any = await completeOrder(
+      activeCompleteOrderId.value,
+      paymentMethod.value,
+    );
+    const message =
+      response?.message ??
+      (paymentMethod.value === 'CASH'
+        ? 'Order completed and payment recorded as cash'
+        : 'Order completed and payment transaction created');
+    triggerToast(message);
+    completeModalOpen.value = false;
+    await load();
+  } catch (err: any) {
+    if (
+      err?.message?.includes('400') ||
+      EXISTING_TRANSACTION_REGEX.test(err?.message ?? '')
+    ) {
+      completeError.value =
+        'This order already has a payment transaction. It cannot be completed again.';
+    } else {
+      completeError.value = err?.message || 'Failed to complete order.';
+    }
+  } finally {
+    completeLoading.value = false;
   }
 }
 
@@ -767,6 +823,64 @@ function viewOrder(id: string) {
             @click="confirmReject"
           >
             Reject Order
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complete Order — Payment method modal -->
+    <div
+      v-if="completeModalOpen"
+      class="modal-backdrop"
+      @click="completeModalOpen = false"
+    >
+      <div
+        class="modal-content"
+        @click.stop
+      >
+        <h3 class="modal-title">Complete Order — Payment</h3>
+        <p class="modal-desc">
+          Choose the payment method used for this order. A paid payment
+          transaction will be created automatically.
+        </p>
+        <div
+          v-if="completeError"
+          class="modal-error"
+        >
+          {{ completeError }}
+        </div>
+        <div class="payment-methods">
+          <label
+            v-for="option in PAYMENT_METHOD_OPTIONS"
+            :key="option.value"
+            class="payment-method"
+            :class="{ 'payment-method--selected': paymentMethod === option.value }"
+          >
+            <input
+              v-model="paymentMethod"
+              type="radio"
+              name="payment-method"
+              :value="option.value"
+            >
+            <span class="payment-method__label">{{ option.label }}</span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn btn--outline"
+            :disabled="completeLoading"
+            @click="completeModalOpen = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn--primary"
+            :disabled="completeLoading"
+            @click="confirmComplete"
+          >
+            {{ completeLoading ? 'Completing...' : 'Complete Order' }}
           </button>
         </div>
       </div>
@@ -1391,6 +1505,58 @@ function viewOrder(id: string) {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+}
+
+/* Payment method picker */
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.payment-method {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+  cursor: pointer;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s;
+}
+
+.payment-method input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.payment-method--selected {
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.payment-method__label {
+  pointer-events: none;
+}
+
+.modal-error {
+  padding: 10px 14px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: var(--destructive-foreground, #ffffff);
+  background: var(--destructive, #d64545);
+  border-radius: var(--radius-md);
 }
 
 /* Form grid */

@@ -71,8 +71,8 @@ export interface OrganizationResponse {
   mfo?: string;
   bankName?: string;
   email: string;
-  latitude?: string;
-  longitude?: string;
+  latitude?: number;
+  longitude?: number;
   address: string;
   ratingAvg?: number;
   ratingCount?: number;
@@ -87,8 +87,8 @@ export interface OrganizationRequest {
   description?: string | null;
   phone: string;
   email?: string | null;
-  latitude?: string | null;
-  longitude?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   address: string;
   ownerId: string;
   inn: string;

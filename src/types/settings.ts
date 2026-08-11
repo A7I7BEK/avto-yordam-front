@@ -126,7 +126,7 @@ export interface OrganizationCompanyDetailsResponse {
 export interface OrganizationYattDetailsResponse {
   id: string;
   fullName: string;
-  passport: string;
+  passportSeries: string;
   pinfl: string;
   registrationNumber: string;
   registeredDate: string | null;
@@ -137,10 +137,7 @@ export interface OrganizationSelfEmployedDetailsResponse {
   fullName: string;
   pinfl: string;
   passportSeries: string;
-  passportGivenDate: string | null;
   activityType: string;
-  phoneNumber: string;
-  address: string;
 }
 
 export interface OrganizationDetailsResponse {
@@ -153,7 +150,7 @@ export interface OrganizationDetailsResponse {
 
 export interface YattDetailsRequest {
   fullName: string;
-  passport: string;
+  passportSeries: string;
   pinfl: string;
   registrationNumber: string;
   registeredDate: string | null;
@@ -172,10 +169,7 @@ export interface SelfEmployedDetailsRequest {
   fullName: string;
   pinfl: string;
   passportSeries: string;
-  passportGivenDate: string | null;
   activityType: string;
-  phoneNumber: string;
-  address: string | null;
 }
 
 export interface OrganizationDetailsChangeRequest {

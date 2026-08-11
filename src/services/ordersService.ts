@@ -100,8 +100,18 @@ export async function startOrder(id: string) {
   return await apiClient.post(`/order/${id}/start`);
 }
 
-export async function completeOrder(id: string) {
-  return await apiClient.post(`/order/${id}/complete`);
+/**
+ * Complete an order. Optionally pass a payment method; the backend defaults
+ * to CASH when omitted, marks the order COMPLETED and auto-creates a PAID
+ * PaymentTransaction. Returns 400 when the order already has a transaction.
+ */
+export async function completeOrder(
+  id: string,
+  method?: 'CASH' | 'PAYME' | 'CLICK' | 'PAYNET',
+) {
+  return await apiClient.post(`/order/${id}/complete`, undefined, {
+    params: method ? { method } : {},
+  });
 }
 
 export async function cancelOrder(id: string) {

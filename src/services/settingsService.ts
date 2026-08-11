@@ -93,8 +93,9 @@ function registeredLegalDetails(
     if (!s) {
       return null;
     }
+    // Self-employed details no longer carry a registered date.
     return {
-      registeredDate: s.passportGivenDate ?? undefined,
+      registrationNumber: s.passportSeries ?? undefined,
     };
   }
   const c = details.companyDetails;

@@ -88,7 +88,7 @@ const detailsForm = reactive({
   },
   yattDetails: {
     fullName: '',
-    passport: '',
+    passportSeries: '',
     pinfl: '',
     registrationNumber: '',
     registeredDate: '',
@@ -97,10 +97,7 @@ const detailsForm = reactive({
     fullName: '',
     pinfl: '',
     passportSeries: '',
-    passportGivenDate: '',
     activityType: '',
-    phoneNumber: '',
-    address: '',
   },
 });
 
@@ -109,8 +106,6 @@ const detailsErrors = reactive<Record<string, string>>({});
 const PINFL_REGEX = /^\d{14}$/;
 const PASSPORT_REGEX = /^[A-Z]{2}\d{7}$/;
 const OKED_REGEX = /^\d{4,5}$/;
-const PHONE_REGEX = /^\+998\d{9}$/;
-const NON_DIGIT_REGEX = /[^0-9+]/g;
 
 // ── Location map (Leaflet) ────────────────────────────────────────────────────
 
@@ -239,7 +234,7 @@ function yattFields(y: OrganizationYattDetailsResponse | null): DetailField[] {
   }
   return [
     { label: 'Full name', value: y.fullName ?? '' },
-    { label: 'Passport', value: y.passport ?? '' },
+    { label: 'Passport series', value: y.passportSeries ?? '' },
     { label: 'PINFL', value: y.pinfl ?? '' },
     { label: 'Registration number', value: y.registrationNumber ?? '' },
     { label: 'Registered date', value: formatOptionalDate(y.registeredDate) },
@@ -256,13 +251,7 @@ function selfEmployedFields(
     { label: 'Full name', value: s.fullName ?? '' },
     { label: 'PINFL', value: s.pinfl ?? '' },
     { label: 'Passport series', value: s.passportSeries ?? '' },
-    {
-      label: 'Passport given date',
-      value: formatOptionalDate(s.passportGivenDate),
-    },
     { label: 'Activity type', value: s.activityType ?? '' },
-    { label: 'Phone number', value: s.phoneNumber ?? '' },
-    { label: 'Address', value: s.address ?? '' },
   ];
 }
 
@@ -318,10 +307,10 @@ onMounted(async () => {
   await loadDetails();
 
   const org = await getOrganization();
-  if (org?.latitude && org?.longitude) {
+  if (org?.latitude != null && org?.longitude != null) {
     mapLocation.value = {
-      lat: Number.parseFloat(org.latitude),
-      lng: Number.parseFloat(org.longitude),
+      lat: Number(org.latitude),
+      lng: Number(org.longitude),
     };
   }
   await nextTick();
@@ -379,7 +368,7 @@ function resetDetailsForm() {
   };
   detailsForm.yattDetails = {
     fullName: '',
-    passport: '',
+    passportSeries: '',
     pinfl: '',
     registrationNumber: '',
     registeredDate: '',
@@ -388,10 +377,7 @@ function resetDetailsForm() {
     fullName: '',
     pinfl: '',
     passportSeries: '',
-    passportGivenDate: '',
     activityType: '',
-    phoneNumber: '',
-    address: '',
   };
 }
 
@@ -429,7 +415,7 @@ function buildYattRequest(): YattDetailsRequest {
   const y = detailsForm.yattDetails;
   return {
     fullName: y.fullName.trim(),
-    passport: y.passport.trim(),
+    passportSeries: y.passportSeries.trim(),
     pinfl: y.pinfl.trim(),
     registrationNumber: y.registrationNumber.trim(),
     registeredDate: y.registeredDate || null,
@@ -438,15 +424,11 @@ function buildYattRequest(): YattDetailsRequest {
 
 function buildSelfEmployedRequest(): SelfEmployedDetailsRequest {
   const s = detailsForm.selfEmployedDetails;
-  const cleanPhone = s.phoneNumber.replace(NON_DIGIT_REGEX, '');
   return {
     fullName: s.fullName.trim(),
     pinfl: s.pinfl.trim(),
     passportSeries: s.passportSeries.trim(),
-    passportGivenDate: s.passportGivenDate || null,
     activityType: s.activityType.trim(),
-    phoneNumber: cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`,
-    address: s.address.trim() || null,
   };
 }
 
@@ -500,9 +482,9 @@ function validateYattDetails(): void {
   if (!y.fullName.trim()) {
     detailsErrors.yattFullName = 'Full name is required.';
   }
-  if (!y.passport.trim()) {
-    detailsErrors.yattPassport = 'Passport is required.';
-  } else if (!PASSPORT_REGEX.test(y.passport.trim())) {
+  if (!y.passportSeries.trim()) {
+    detailsErrors.yattPassport = 'Passport series is required.';
+  } else if (!PASSPORT_REGEX.test(y.passportSeries.trim())) {
     detailsErrors.yattPassport = 'Passport must be in format AB1234567.';
   }
   if (!y.pinfl.trim()) {
@@ -530,17 +512,8 @@ function validateSelfEmployedDetails(): void {
   } else if (!PASSPORT_REGEX.test(s.passportSeries.trim())) {
     detailsErrors.sePassportSeries = 'Passport must be in format AB1234567.';
   }
-  if (!s.passportGivenDate) {
-    detailsErrors.sePassportGivenDate = 'Passport given date is required.';
-  }
   if (!s.activityType.trim()) {
     detailsErrors.seActivityType = 'Activity type is required.';
-  }
-  const cleanPhone = s.phoneNumber.replace(NON_DIGIT_REGEX, '');
-  if (!cleanPhone) {
-    detailsErrors.sePhone = 'Phone number is required.';
-  } else if (!PHONE_REGEX.test(cleanPhone)) {
-    detailsErrors.sePhone = 'Phone must be in format +998XXXXXXXXX.';
   }
 }
 
@@ -1081,7 +1054,7 @@ const deleteModalName = computed(
           <div class="field-group">
             <label class="field-label">Passport series &amp; number</label>
             <input
-              v-model="detailsForm.yattDetails.passport"
+              v-model="detailsForm.yattDetails.passportSeries"
               type="text"
               class="field-input"
               placeholder="e.g. AA1234567"
@@ -1164,32 +1137,19 @@ const deleteModalName = computed(
             >
           </div>
           <div class="field-group">
-            <label class="field-label">Passport given date</label>
+            <label class="field-label">PINFL (14 digits)</label>
             <input
-              v-model="detailsForm.selfEmployedDetails.passportGivenDate"
-              type="date"
+              v-model="detailsForm.selfEmployedDetails.pinfl"
+              type="text"
               class="field-input"
+              placeholder="e.g. 31402914820192"
             >
             <span
-              v-if="detailsErrors.sePassportGivenDate"
+              v-if="detailsErrors.sePinfl"
               class="field-error"
-              >{{ detailsErrors.sePassportGivenDate }}</span
+              >{{ detailsErrors.sePinfl }}</span
             >
           </div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">PINFL (14 digits)</label>
-          <input
-            v-model="detailsForm.selfEmployedDetails.pinfl"
-            type="text"
-            class="field-input"
-            placeholder="e.g. 31402914820192"
-          >
-          <span
-            v-if="detailsErrors.sePinfl"
-            class="field-error"
-            >{{ detailsErrors.sePinfl }}</span
-          >
         </div>
         <div class="field-group">
           <label class="field-label">Activity type</label>
@@ -1203,29 +1163,6 @@ const deleteModalName = computed(
             v-if="detailsErrors.seActivityType"
             class="field-error"
             >{{ detailsErrors.seActivityType }}</span
-          >
-        </div>
-        <div class="field-group">
-          <label class="field-label">Phone number</label>
-          <input
-            v-model="detailsForm.selfEmployedDetails.phoneNumber"
-            type="text"
-            class="field-input"
-            placeholder="+998 90 123 45 67"
-          >
-          <span
-            v-if="detailsErrors.sePhone"
-            class="field-error"
-            >{{ detailsErrors.sePhone }}</span
-          >
-        </div>
-        <div class="field-group">
-          <label class="field-label">Address (optional)</label>
-          <input
-            v-model="detailsForm.selfEmployedDetails.address"
-            type="text"
-            class="field-input"
-            placeholder="e.g. Tashkent, Yunusabad district"
           >
         </div>
       </template>

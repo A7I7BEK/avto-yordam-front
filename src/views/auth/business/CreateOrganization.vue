@@ -38,7 +38,7 @@ const form = reactive({
   bankName: '',
   yattDetails: {
     fullName: '',
-    passport: '',
+    passportSeries: '',
     pinfl: '',
     registrationNumber: '',
     registeredDate: '',
@@ -55,10 +55,7 @@ const form = reactive({
     fullName: '',
     pinfl: '',
     passportSeries: '',
-    passportGivenDate: '',
     activityType: '',
-    phoneNumber: '',
-    address: '',
   },
 });
 
@@ -170,7 +167,6 @@ onMounted(async () => {
     userId.value = userRes.id;
     if (userRes.phone) {
       form.phone = userRes.phone;
-      form.selfEmployedDetails.phoneNumber = userRes.phone;
     }
   } catch (_) {
     router.push({ name: 'auth-login', query: { type: 'business' } });
@@ -247,9 +243,9 @@ function validateStep2(): boolean {
     if (!details.fullName.trim()) {
       errors.yattFullName = 'Full name is required.';
     }
-    if (!details.passport.trim()) {
-      errors.yattPassport = 'Passport is required.';
-    } else if (!passportRegex.test(details.passport.trim())) {
+    if (!details.passportSeries.trim()) {
+      errors.yattPassport = 'Passport series is required.';
+    } else if (!passportRegex.test(details.passportSeries.trim())) {
       errors.yattPassport = 'Passport must be in format AB1234567.';
     }
     if (!details.pinfl.trim()) {
@@ -277,17 +273,8 @@ function validateStep2(): boolean {
     } else if (!passportRegex.test(details.passportSeries.trim())) {
       errors.sePassportSeries = 'Passport must be in format AB1234567.';
     }
-    if (!details.passportGivenDate) {
-      errors.sePassportGivenDate = 'Passport given date is required.';
-    }
     if (!details.activityType.trim()) {
       errors.seActivityType = 'Activity type is required.';
-    }
-    const cleanSePhone = details.phoneNumber.replace(/[^0-9+]/g, '');
-    if (!cleanSePhone) {
-      errors.sePhone = 'Phone number is required.';
-    } else if (!/^\+998\d{9}$/.test(cleanSePhone)) {
-      errors.sePhone = 'Phone must be in format +998XXXXXXXXX.';
     }
   }
 
@@ -342,8 +329,8 @@ async function submit() {
     description: form.description || null,
     phone: cleanPhoneFormatted,
     email: form.email || null,
-    latitude: form.latitude || null,
-    longitude: form.longitude || null,
+    latitude: form.latitude ? Number(form.latitude) : null,
+    longitude: form.longitude ? Number(form.longitude) : null,
     address: form.address,
     ownerId: userId.value,
     inn: form.inn,
@@ -364,26 +351,17 @@ async function submit() {
   } else if (form.type === 'YATT') {
     payload.yattDetails = {
       fullName: form.yattDetails.fullName,
-      passport: form.yattDetails.passport,
+      passportSeries: form.yattDetails.passportSeries,
       pinfl: form.yattDetails.pinfl,
       registrationNumber: form.yattDetails.registrationNumber,
       registeredDate: form.yattDetails.registeredDate || null,
     };
   } else if (form.type === 'SELF_EMPLOYED') {
-    const cleanSePhone = form.selfEmployedDetails.phoneNumber.replace(
-      /[^0-9+]/g,
-      '',
-    );
     payload.selfEmployedDetails = {
       fullName: form.selfEmployedDetails.fullName,
       pinfl: form.selfEmployedDetails.pinfl,
       passportSeries: form.selfEmployedDetails.passportSeries,
-      passportGivenDate: form.selfEmployedDetails.passportGivenDate || null,
       activityType: form.selfEmployedDetails.activityType,
-      phoneNumber: cleanSePhone.startsWith('+')
-        ? cleanSePhone
-        : `+${cleanSePhone}`,
-      address: form.selfEmployedDetails.address || null,
     };
   }
 
@@ -719,7 +697,7 @@ async function submit() {
             <div class="field-group">
               <label class="field-label">Passport series & number</label>
               <input
-                v-model="form.yattDetails.passport"
+                v-model="form.yattDetails.passportSeries"
                 class="field-input"
                 type="text"
                 placeholder="e.g. AA1234567"
@@ -811,33 +789,19 @@ async function submit() {
             </div>
 
             <div class="field-group">
-              <label class="field-label">Passport given date</label>
+              <label class="field-label">PINFL (14 digits)</label>
               <input
-                v-model="form.selfEmployedDetails.passportGivenDate"
-                class="field-input date-input"
-                type="date"
+                v-model="form.selfEmployedDetails.pinfl"
+                class="field-input"
+                type="text"
+                placeholder="e.g. 31402914820192"
               >
               <span
-                v-if="errors.sePassportGivenDate"
+                v-if="errors.sePinfl"
                 class="field-error"
-                >{{ errors.sePassportGivenDate }}</span
+                >{{ errors.sePinfl }}</span
               >
             </div>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">PINFL (14 digits)</label>
-            <input
-              v-model="form.selfEmployedDetails.pinfl"
-              class="field-input"
-              type="text"
-              placeholder="e.g. 31402914820192"
-            >
-            <span
-              v-if="errors.sePinfl"
-              class="field-error"
-              >{{ errors.sePinfl }}</span
-            >
           </div>
 
           <div class="field-group">
@@ -852,31 +816,6 @@ async function submit() {
               v-if="errors.seActivityType"
               class="field-error"
               >{{ errors.seActivityType }}</span
-            >
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Phone number</label>
-            <input
-              v-model="form.selfEmployedDetails.phoneNumber"
-              class="field-input"
-              type="text"
-              placeholder="+998 90 123 45 67"
-            >
-            <span
-              v-if="errors.sePhone"
-              class="field-error"
-              >{{ errors.sePhone }}</span
-            >
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Address (optional)</label>
-            <input
-              v-model="form.selfEmployedDetails.address"
-              class="field-input"
-              type="text"
-              placeholder="e.g. Tashkent, Yunusabad district"
             >
           </div>
         </div>

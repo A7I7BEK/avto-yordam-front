@@ -3,182 +3,260 @@
   lang="ts"
 >
 import {
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   CircleDollarSign,
-  Download,
   Eye,
+  Loader2,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  X,
 } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import clickLogo from '@/assets/payment-providers/brand/click.png';
-import paymeLogo from '@/assets/payment-providers/brand/payme.svg';
-import paynetLogo from '@/assets/payment-providers/brand/paynet.svg';
-import { getTransactions } from '@/services/transactionsService';
-
-interface Transaction {
-  id: string | null;
-  orderId: string;
-  customerName: string;
-  customerInitials: string;
-  avatarColor: string;
-  amount: string;
-  provider: string;
-  status: string;
-  date: string;
-}
+import {
+  createPaymentTransaction,
+  deletePaymentTransaction,
+  getPaymentTransactionPage,
+  updatePaymentTransaction,
+} from '@/services/transactionsService';
+import { getOrders } from '@/services/ordersService';
+import type {
+  PaymentMethod,
+  PaymentStatus,
+  PaymentTransaction,
+  PaymentTransactionRequest,
+} from '@/types/payment';
+import { PAYMENT_METHODS } from '@/types/payment';
 
 const router = useRouter();
-const transactions = ref<Transaction[]>([]);
+
+// ── List state ──
+const transactions = ref<PaymentTransaction[]>([]);
 const loading = ref(true);
-const statusFilter = ref('');
-const providerFilter = ref('');
-const dateFilter = ref('');
-const currentPage = ref(1);
-const pageSize = 6;
+const searchQuery = ref('');
+const currentPage = ref(0);
+const pageSize = 10;
+const totalElements = ref(0);
+const totalPages = ref(1);
 
-const dateOptions = [
-  { label: 'All time', value: '' },
-  { label: 'Today', value: 'today' },
-  { label: 'Yesterday', value: 'yesterday' },
-  { label: 'This week', value: 'this-week' },
-  { label: 'Last week', value: 'last-week' },
-  { label: 'This month', value: 'this-month' },
-  { label: 'Last month', value: 'last-month' },
-  { label: 'This year', value: 'this-year' },
-  { label: 'Last year', value: 'last-year' },
-  { label: 'Last 30 days', value: 'last-30' },
-];
+// ── Dialog state ──
+const showDialog = ref(false);
+const editingId = ref<string | null>(null);
+const saving = ref(false);
+const formError = ref('');
+const orders = ref<{ id: string; label: string }[]>([]);
+const loadingOrders = ref(false);
 
+const form = ref<PaymentTransactionRequest>({
+  orderId: '',
+  amount: 0,
+  method: 'PAYME',
+  status: undefined,
+  externalTransactionId: '',
+  paidAt: '',
+});
+
+// ── Load list from /api/payment-transaction/page ──
 async function loadTransactions() {
+  loading.value = true;
   try {
-    loading.value = true;
-    const data = await getTransactions();
-    transactions.value = (data ?? []).map((t) => ({
-      ...t,
-    }));
+    const pageData = await getPaymentTransactionPage({
+      page: currentPage.value,
+      size: pageSize,
+      search: searchQuery.value.trim(),
+    });
+    transactions.value = pageData?.content ?? [];
+    totalElements.value = pageData?.totalElements ?? 0;
+    totalPages.value = Math.max(1, pageData?.totalPages ?? 1);
   } finally {
     loading.value = false;
   }
 }
 
-loadTransactions();
-
-const providerLogos: Record<string, string> = {
-  PayMe: paymeLogo,
-  Click: clickLogo,
-  Paynet: paynetLogo,
-};
-
-function getProviderLogo(provider: string): string | undefined {
-  return providerLogos[provider];
+// ── Load orders for the create/edit dropdown ──
+async function loadOrders() {
+  loadingOrders.value = true;
+  try {
+    const list = await getOrders();
+    orders.value = (list ?? []).map((o: any) => ({
+      id: o.backendId ?? o.id ?? '',
+      label: `${o.id ?? o.backendId ?? ''} — ${o.customer ?? 'Client'}`,
+    }));
+  } finally {
+    loadingOrders.value = false;
+  }
 }
 
-const statuses = computed(() => {
-  const unique = new Set(transactions.value.map((t) => t.status));
-  return Array.from(unique);
-});
+function openCreate() {
+  editingId.value = null;
+  form.value = {
+    orderId: '',
+    amount: 0,
+    method: 'PAYME',
+    status: undefined,
+    externalTransactionId: '',
+    paidAt: '',
+  };
+  formError.value = '';
+  showDialog.value = true;
+}
 
-const providers = computed(() => {
-  const unique = new Set(transactions.value.map((t) => t.provider));
-  return Array.from(unique);
-});
+function openEdit(tx: PaymentTransaction) {
+  editingId.value = tx.id;
+  form.value = {
+    id: tx.id,
+    orderId: tx.orderId,
+    amount: tx.amount,
+    method: tx.method,
+    status: tx.status,
+    externalTransactionId: tx.externalTransactionId ?? '',
+    paidAt: tx.paidAt ?? '',
+  };
+  formError.value = '';
+  showDialog.value = true;
+}
 
-const filteredTransactions = computed(() =>
-  transactions.value.filter((t) => {
-    const matchStatus = !statusFilter.value || t.status === statusFilter.value;
-    const matchProvider =
-      !providerFilter.value || t.provider === providerFilter.value;
-    const matchDate = matchesDateFilter(t.date);
-    return matchStatus && matchProvider && matchDate;
-  }),
-);
+function closeDialog() {
+  showDialog.value = false;
+}
 
-function matchesDateFilter(dateStr: string): boolean {
-  if (!dateFilter.value) {
-    return true;
+function validateForm(): boolean {
+  if (!form.value.orderId) {
+    formError.value = 'Please select an order.';
+    return false;
   }
-  const now = new Date();
-  const txDate = new Date(dateStr);
-
-  if (Number.isNaN(txDate.getTime())) {
-    return true;
+  if (
+    form.value.amount == null ||
+    Number.isNaN(Number(form.value.amount)) ||
+    Number(form.value.amount) <= 0
+  ) {
+    formError.value = 'Amount must be a positive number.';
+    return false;
   }
+  if (!form.value.method) {
+    formError.value = 'Please select a payment method.';
+    return false;
+  }
+  return true;
+}
 
-  const startOfDay = (d: Date) =>
-    new Date(d.getFullYear(), d.getMonth(), d.getDate());
+async function save() {
+  if (!validateForm()) {
+    return;
+  }
+  saving.value = true;
+  formError.value = '';
+  try {
+    const payload: PaymentTransactionRequest = {
+      id: form.value.id,
+      orderId: form.value.orderId,
+      amount: Number(form.value.amount),
+      method: form.value.method as PaymentMethod,
+      status: form.value.status as PaymentStatus | undefined,
+      externalTransactionId:
+        form.value.externalTransactionId?.trim() || undefined,
+      paidAt: form.value.paidAt || undefined,
+    };
+    if (editingId.value) {
+      await updatePaymentTransaction(editingId.value, payload);
+    } else {
+      await createPaymentTransaction(payload);
+    }
+    showDialog.value = false;
+    await loadTransactions();
+  } catch (e: any) {
+    formError.value =
+      e.message || 'Failed to save transaction. Please review the fields.';
+  } finally {
+    saving.value = false;
+  }
+}
 
-  switch (dateFilter.value) {
-    case 'today': {
-      const today = startOfDay(now);
-      return txDate >= today;
-    }
-    case 'yesterday': {
-      const yesterday = startOfDay(now);
-      yesterday.setDate(yesterday.getDate() - 1);
-      const today = startOfDay(now);
-      return txDate >= yesterday && txDate < today;
-    }
-    case 'this-week': {
-      const start = startOfDay(now);
-      start.setDate(start.getDate() - start.getDay());
-      return txDate >= start;
-    }
-    case 'last-week': {
-      const thisWeekStart = startOfDay(now);
-      thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
-      const lastWeekStart = new Date(thisWeekStart);
-      lastWeekStart.setDate(lastWeekStart.getDate() - 7);
-      return txDate >= lastWeekStart && txDate < thisWeekStart;
-    }
-    case 'this-month': {
-      const start = new Date(now.getFullYear(), now.getMonth(), 1);
-      return txDate >= start;
-    }
-    case 'last-month': {
-      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      return txDate >= lastMonthStart && txDate < thisMonthStart;
-    }
-    case 'this-year': {
-      const start = new Date(now.getFullYear(), 0, 1);
-      return txDate >= start;
-    }
-    case 'last-year': {
-      const start = new Date(now.getFullYear() - 1, 0, 1);
-      const end = new Date(now.getFullYear(), 0, 1);
-      return txDate >= start && txDate < end;
-    }
-    case 'last-30': {
-      const thirtyDaysAgo = new Date(now);
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      return txDate >= thirtyDaysAgo;
-    }
+async function handleDelete(tx: PaymentTransaction) {
+  if (!tx.id) {
+    return;
+  }
+  try {
+    await deletePaymentTransaction(tx.id);
+    await loadTransactions();
+  } catch (e: any) {
+    formError.value = e.message || 'Failed to delete transaction.';
+  }
+}
+
+function goToPage(page: number) {
+  if (page < 0 || page >= totalPages.value) {
+    return;
+  }
+  currentPage.value = page;
+  loadTransactions();
+}
+
+function viewTransaction(id: string) {
+  if (id) {
+    router.push(`/business/transactions/${id}`);
+  }
+}
+
+// ── Formatting helpers ──
+function formatAmount(amount: number): string {
+  return `${Number(amount || 0).toLocaleString('uz-UZ', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} UZS`;
+}
+
+function formatDate(iso: string | null | undefined): string {
+  if (!iso) {
+    return '—';
+  }
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) {
+    return '—';
+  }
+  return d.toLocaleString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function statusClass(status: PaymentStatus): string {
+  switch (status) {
+    case 'PAID':
+      return 'status-badge--success';
+    case 'PENDING':
+      return 'status-badge--warning';
+    case 'FAILED':
+    case 'CANCELLED':
+    case 'EXPIRED':
+      return 'status-badge--error';
+    case 'REFUNDED':
+      return 'status-badge--info';
     default:
-      return true;
+      return '';
   }
 }
 
-// Pagination (copied from EmployeesList)
-const totalPages = computed(() =>
-  Math.max(1, Math.ceil(filteredTransactions.value.length / pageSize)),
-);
+function methodLabel(method: PaymentMethod): string {
+  return method.charAt(0) + method.slice(1).toLowerCase();
+}
 
-const pagedTransactions = computed(() => {
-  const start = (currentPage.value - 1) * pageSize;
-  return filteredTransactions.value.slice(start, start + pageSize);
-});
-
+// Pagination helpers
 const showingStart = computed(() => {
-  if (filteredTransactions.value.length === 0) {
+  if (totalElements.value === 0) {
     return 0;
   }
-  return (currentPage.value - 1) * pageSize + 1;
+  return currentPage.value * pageSize + 1;
 });
 
 const showingEnd = computed(() =>
-  Math.min(currentPage.value * pageSize, filteredTransactions.value.length),
+  Math.min((currentPage.value + 1) * pageSize, totalElements.value),
 );
 
 const visiblePages = computed(() => {
@@ -187,64 +265,39 @@ const visiblePages = computed(() => {
   const current = currentPage.value;
 
   if (total <= 5) {
-    for (let i = 1; i <= total; i++) {
+    for (let i = 0; i < total; i++) {
       pages.push(i);
     }
     return pages;
   }
 
-  pages.push(1);
-  const start = Math.max(2, current - 1);
-  const end = Math.min(total - 1, current + 1);
+  pages.push(0);
+  const start = Math.max(1, current - 1);
+  const end = Math.min(total - 2, current + 1);
 
-  if (start > 2) {
+  if (start > 1) {
     pages.push(-1);
   }
   for (let i = start; i <= end; i++) {
     pages.push(i);
   }
-  if (end < total - 1) {
+  if (end < total - 2) {
     pages.push(-1);
   }
-  pages.push(total);
+  pages.push(total - 1);
 
   return pages;
 });
 
-function goToPage(page: number) {
-  if (page < 1 || page > totalPages.value) {
-    return;
-  }
-  currentPage.value = page;
+function runSearch() {
+  currentPage.value = 0;
+  loadTransactions();
 }
 
-function goToPrev() {
-  goToPage(currentPage.value - 1);
-}
-
-function goToNext() {
-  goToPage(currentPage.value + 1);
-}
-
-function viewTransaction(id: string | null) {
-  if (id) {
-    router.push(`/business/transactions/${id}`);
-  }
-}
-
-function statusClass(status: string): string {
-  switch (status) {
-    case 'Paid':
-    case 'Collected':
-      return 'status-badge--success';
-    case 'Pending':
-      return 'status-badge--warning';
-    case 'Failed':
-      return 'status-badge--error';
-    default:
-      return '';
-  }
-}
+onMounted(() => {
+  loadTransactions();
+  loadOrders();
+});
 </script>
 
 <template>
@@ -254,75 +307,32 @@ function statusClass(status: string): string {
       <div class="header-text">
         <h1 class="page-title">Transactions</h1>
         <p class="page-subtitle">
-          Online and cash payments tied to your orders.
+          Payments tied to your orders.
         </p>
       </div>
       <button
         type="button"
         class="btn-export"
+        @click="openCreate"
       >
-        <Download :size="14" />
-        Export CSV
+        <Plus :size="14" />
+        New transaction
       </button>
     </div>
 
-    <!-- Filter bar -->
-    <div class="filter-bar">
-      <div class="filter-pill">
-        <span class="filter-label">Status:</span>
-        <span class="filter-value">{{ statusFilter || 'All' }}</span>
-        <ChevronDown :size="12" />
-        <select
-          v-model="statusFilter"
-          class="filter-select"
-        >
-          <option value="">All</option>
-          <option
-            v-for="s in statuses"
-            :key="s"
-            :value="s"
-          >
-            {{ s }}
-          </option>
-        </select>
-      </div>
-      <div class="filter-pill">
-        <span class="filter-label">Provider:</span>
-        <span class="filter-value">{{ providerFilter || 'All' }}</span>
-        <ChevronDown :size="12" />
-        <select
-          v-model="providerFilter"
-          class="filter-select"
-        >
-          <option value="">All</option>
-          <option
-            v-for="p in providers"
-            :key="p"
-            :value="p"
-          >
-            {{ p }}
-          </option>
-        </select>
-      </div>
-      <div class="filter-pill">
-        <span class="filter-label">Date:</span>
-        <span class="filter-value"
-          >{{ dateOptions.find((d) => d.value === dateFilter)?.label ?? 'All time' }}</span
-        >
-        <ChevronDown :size="12" />
-        <select
-          v-model="dateFilter"
-          class="filter-select"
-        >
-          <option
-            v-for="d in dateOptions"
-            :key="d.value"
-            :value="d.value"
-          >
-            {{ d.label }}
-          </option>
-        </select>
-      </div>
+    <!-- Search bar -->
+    <div class="search-bar">
+      <Search
+        :size="15"
+        class="search-bar__icon"
+      />
+      <input
+        v-model="searchQuery"
+        type="text"
+        class="search-bar__input"
+        placeholder="Search transactions..."
+        @keyup.enter="runSearch"
+      >
     </div>
 
     <!-- Table card -->
@@ -332,17 +342,32 @@ function statusClass(status: string): string {
           <tr class="column-headers">
             <th>Transaction</th>
             <th>Order</th>
-            <th>Customer</th>
             <th>Amount</th>
-            <th>Provider</th>
+            <th>Method</th>
             <th>Status</th>
-            <th>Date</th>
+            <th>Paid at</th>
+            <th>Created</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-if="!loading && pagedTransactions.length === 0"
+            v-if="loading"
+            class="empty-row"
+          >
+            <td
+              colspan="8"
+              class="empty-state"
+            >
+              <Loader2
+                :size="16"
+                class="spin"
+              />
+              Loading transactions...
+            </td>
+          </tr>
+          <tr
+            v-else-if="transactions.length === 0"
             class="empty-row"
           >
             <td
@@ -353,13 +378,13 @@ function statusClass(status: string): string {
             </td>
           </tr>
           <tr
-            v-for="tx in pagedTransactions"
-            :key="tx.id ?? tx.orderId"
+            v-for="tx in transactions"
+            :key="tx.id"
             class="data-row"
           >
             <!-- Transaction ID -->
             <td class="cell-transaction">
-              {{ tx.id ?? '—' }}
+              {{ tx.id }}
             </td>
 
             <!-- Order -->
@@ -367,42 +392,16 @@ function statusClass(status: string): string {
               {{ tx.orderId }}
             </td>
 
-            <!-- Customer -->
-            <td>
-              <div class="customer-cell">
-                <div
-                  class="avatar"
-                  :style="{ background: tx.avatarColor }"
-                >
-                  {{ tx.customerInitials }}
-                </div>
-                <span class="customer-name">{{ tx.customerName }}</span>
-              </div>
-            </td>
-
             <!-- Amount -->
             <td class="cell-amount">
-              {{ tx.amount }}
+              {{ formatAmount(tx.amount) }}
             </td>
 
-            <!-- Provider -->
+            <!-- Method -->
             <td>
-              <div
-                v-if="getProviderLogo(tx.provider)"
-                class="provider-pill-has-logo"
-              >
-                <img
-                  :src="getProviderLogo(tx.provider)"
-                  :alt="tx.provider"
-                  class="provider-pill__logo"
-                >
-              </div>
-              <div
-                v-else
-                class="provider-pill"
-              >
+              <div class="provider-pill">
                 <CircleDollarSign :size="14" />
-                {{ tx.provider }}
+                {{ methodLabel(tx.method) }}
               </div>
             </td>
 
@@ -416,21 +415,44 @@ function statusClass(status: string): string {
               </span>
             </td>
 
-            <!-- Date -->
+            <!-- Paid at -->
             <td class="cell-date">
-              {{ tx.date }}
+              {{ formatDate(tx.paidAt) }}
+            </td>
+
+            <!-- Created -->
+            <td class="cell-date">
+              {{ formatDate(tx.createdDate) }}
             </td>
 
             <!-- Actions -->
             <td>
-              <button
-                type="button"
-                class="action-btn"
-                title="View transaction"
-                @click="viewTransaction(tx.id)"
-              >
-                <Eye :size="16" />
-              </button>
+              <div class="actions-cell">
+                <button
+                  type="button"
+                  class="action-btn"
+                  title="Edit transaction"
+                  @click="openEdit(tx)"
+                >
+                  <Pencil :size="15" />
+                </button>
+                <button
+                  type="button"
+                  class="action-btn"
+                  title="View transaction"
+                  @click="viewTransaction(tx.id)"
+                >
+                  <Eye :size="15" />
+                </button>
+                <button
+                  type="button"
+                  class="action-btn action-btn--danger"
+                  title="Delete transaction"
+                  @click="handleDelete(tx)"
+                >
+                  <Trash2 :size="15" />
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -440,15 +462,15 @@ function statusClass(status: string): string {
       <div class="table-footer">
         <span class="table-footer__text">
           Showing {{ showingStart }}–{{ showingEnd }}
-          of {{ filteredTransactions.length }} transactions
+          of {{ totalElements }} transactions
         </span>
         <div class="pagination">
           <button
             type="button"
             class="page-btn"
-            :disabled="currentPage === 1"
+            :disabled="currentPage === 0"
             aria-label="Previous page"
-            @click="goToPrev"
+            @click="goToPage(currentPage - 1)"
           >
             <ChevronLeft :size="14" />
           </button>
@@ -468,21 +490,166 @@ function statusClass(status: string): string {
               :class="{ 'page-btn--active': page === currentPage }"
               @click="goToPage(page)"
             >
-              {{ page }}
+              {{ page + 1 }}
             </button>
           </template>
           <button
             type="button"
             class="page-btn"
-            :disabled="currentPage === totalPages"
+            :disabled="currentPage >= totalPages - 1"
             aria-label="Next page"
-            @click="goToNext"
+            @click="goToPage(currentPage + 1)"
           >
             <ChevronRight :size="14" />
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Create / Edit Dialog -->
+    <Teleport to="body">
+      <div
+        v-if="showDialog"
+        class="modal-backdrop"
+        @click.self="closeDialog"
+      >
+        <div class="modal">
+          <div class="modal__header">
+            <h2 class="modal__title">
+              {{ editingId ? 'Edit transaction' : 'New transaction' }}
+            </h2>
+            <button
+              type="button"
+              class="modal__close"
+              aria-label="Close"
+              @click="closeDialog"
+            >
+              <X :size="18" />
+            </button>
+          </div>
+
+          <div class="modal__body">
+            <div
+              v-if="formError"
+              class="form-error"
+            >
+              {{ formError }}
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Order</label>
+              <select
+                v-model="form.orderId"
+                class="field-input"
+                :disabled="loadingOrders"
+              >
+                <option value="">
+                  {{ loadingOrders ? 'Loading orders...' : 'Select an order' }}
+                </option>
+                <option
+                  v-for="o in orders"
+                  :key="o.id"
+                  :value="o.id"
+                >
+                  {{ o.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label">Amount (UZS)</label>
+                <input
+                  v-model.number="form.amount"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="field-input"
+                  placeholder="250000.00"
+                >
+              </div>
+              <div class="field-group">
+                <label class="field-label">Payment method</label>
+                <select
+                  v-model="form.method"
+                  class="field-input"
+                >
+                  <option
+                    v-for="m in PAYMENT_METHODS"
+                    :key="m"
+                    :value="m"
+                  >
+                    {{ methodLabel(m) }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label">Status</label>
+                <select
+                  v-model="form.status"
+                  class="field-input"
+                >
+                  <option value="">
+                    Default (PENDING)
+                  </option>
+                  <option value="PENDING">PENDING</option>
+                  <option value="PAID">PAID</option>
+                  <option value="FAILED">FAILED</option>
+                  <option value="CANCELLED">CANCELLED</option>
+                  <option value="EXPIRED">EXPIRED</option>
+                  <option value="REFUNDED">REFUNDED</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Paid at</label>
+                <input
+                  v-model="form.paidAt"
+                  type="datetime-local"
+                  class="field-input"
+                >
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">External transaction ID (optional)</label>
+              <input
+                v-model="form.externalTransactionId"
+                type="text"
+                class="field-input"
+                placeholder="e.g. provider reference"
+              >
+            </div>
+          </div>
+
+          <div class="modal__footer">
+            <button
+              type="button"
+              class="btn-modal btn-modal--cancel"
+              :disabled="saving"
+              @click="closeDialog"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn-modal btn-modal--primary"
+              :disabled="saving"
+              @click="save"
+            >
+              <Loader2
+                v-if="saving"
+                :size="14"
+                class="spin"
+              />
+              {{ saving ? 'Saving…' : 'Save' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -522,7 +689,7 @@ function statusClass(status: string): string {
   color: var(--muted-foreground);
 }
 
-/* ===== Export button ===== */
+/* ===== New transaction button ===== */
 .btn-export {
   display: inline-flex;
   gap: 6px;
@@ -531,73 +698,46 @@ function statusClass(status: string): string {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: var(--foreground);
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--primary);
+  border: 1px solid var(--primary);
   border-radius: var(--radius-pill);
   transition: opacity 0.15s;
 }
 
 .btn-export:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
-/* ===== Filter bar ===== */
-.filter-bar {
+/* ===== Search bar ===== */
+.search-bar {
+  position: relative;
   display: flex;
-  gap: 8px;
+  align-items: center;
   margin-bottom: 18px;
 }
 
-.filter-pill {
-  position: relative;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  padding: 8px 14px;
-  color: var(--foreground);
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-}
-
-.filter-label {
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
+.search-bar__icon {
+  position: absolute;
+  left: 14px;
   color: var(--muted-foreground);
 }
 
-.filter-value {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--foreground);
-}
-
-.filter-select {
-  position: absolute;
-  inset: 0;
+.search-bar__input {
   width: 100%;
-  padding: 0;
+  padding: 10px 14px 10px 40px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  border: none;
-  border-radius: var(--radius-pill);
-  opacity: 0;
-}
-
-.filter-select option {
-  padding: 8px 14px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
   color: var(--foreground);
   background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  outline: none;
+}
+
+.search-bar__input:focus {
+  border-color: var(--primary);
 }
 
 /* ===== Table card ===== */
@@ -645,6 +785,7 @@ function statusClass(status: string): string {
   font-size: 12px;
   font-weight: 500;
   color: var(--foreground);
+  white-space: nowrap;
 }
 
 /* ===== Order cell ===== */
@@ -653,34 +794,7 @@ function statusClass(status: string): string {
   font-size: 12px;
   font-weight: 500;
   color: var(--primary);
-}
-
-/* ===== Customer cell ===== */
-.customer-cell {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.avatar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-family: Inter, sans-serif;
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--primary-foreground);
-  border-radius: var(--radius-pill);
-}
-
-.customer-name {
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--foreground);
+  white-space: nowrap;
 }
 
 /* ===== Amount cell ===== */
@@ -689,6 +803,7 @@ function statusClass(status: string): string {
   font-size: 12px;
   font-weight: 600;
   color: var(--foreground);
+  white-space: nowrap;
 }
 
 /* ===== Provider pill ===== */
@@ -704,18 +819,6 @@ function statusClass(status: string): string {
   background: var(--accent);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-}
-
-.provider-pill-has-logo {
-  display: inline-flex;
-  padding: 6px 10px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-}
-
-.provider-pill__logo {
-  height: 14px;
 }
 
 /* ===== Status badge ===== */
@@ -745,6 +848,11 @@ function statusClass(status: string): string {
   background: var(--color-error);
 }
 
+.status-badge--info {
+  color: #ffffff;
+  background: #3b82f6;
+}
+
 /* ===== Date cell ===== */
 .cell-date {
   font-family: Inter, sans-serif;
@@ -755,6 +863,12 @@ function statusClass(status: string): string {
 }
 
 /* ===== Actions cell ===== */
+.actions-cell {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
 .action-btn {
   display: inline-flex;
   align-items: center;
@@ -777,6 +891,12 @@ function statusClass(status: string): string {
   color: var(--foreground);
   background: var(--accent);
   border-color: var(--foreground);
+}
+
+.action-btn--danger:hover {
+  color: var(--color-error-foreground);
+  background: var(--color-error);
+  border-color: var(--color-error);
 }
 
 /* ===== Table footer ===== */
@@ -849,10 +969,177 @@ function statusClass(status: string): string {
 
 /* ===== Empty state ===== */
 .empty-state {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
   padding: 40px 18px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   color: var(--muted-foreground);
   text-align: center;
+}
+
+/* ===== Modal ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal__title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+}
+
+.modal__close:hover {
+  background: var(--accent);
+}
+
+.modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+}
+
+.modal__footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+}
+
+/* ===== Form fields ===== */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.field-label {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.field-input {
+  width: 100%;
+  padding: 9px 12px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  outline: none;
+}
+
+.field-input:focus {
+  border-color: var(--primary);
+}
+
+.form-error {
+  padding: 10px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: var(--color-error-foreground);
+  background: var(--color-error);
+  border-radius: var(--radius-m);
+}
+
+.btn-modal {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 9px 18px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.15s;
+}
+
+.btn-modal:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-modal--cancel {
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+}
+
+.btn-modal--primary {
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+/* ===== Spinner ===== */
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .field-row {
+    flex-direction: column;
+  }
 }
 </style>
