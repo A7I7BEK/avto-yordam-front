@@ -4,18 +4,13 @@ export interface ProfessionalOnboardingData {
   dateOfBirth: string;
   phone: string;
   email: string;
+  yearsOfExperience: number;
   languages: string[];
 }
 
 export interface ProfessionalInfoData {
   /** Id of the chosen specialization (from the master-specialization list). */
   specializationId: string;
-  yearsOfExperience: number;
-  workingHours: {
-    from: string;
-    to: string;
-  };
-  workingDays: string[];
 }
 
 export type OrganizationType = 'MCHJ' | 'YATT' | 'SELF_EMPLOYED';

@@ -3,10 +3,11 @@
   lang="ts"
 >
 import { ArrowRight, BadgeCheck, UserRound } from '@lucide/vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import OnboardingStepper from '@/components/onboarding/OnboardingStepper.vue';
+import { getUserProfile } from '@/services/userService';
 import { useProfessionalOnboardingStore } from '@/stores/onboarding';
 
 const router = useRouter();
@@ -18,11 +19,59 @@ const languages = [
   { value: 'english', label: 'English' },
 ];
 
+const languageCodeToValue: Record<string, string> = {
+  uz: 'uzbek',
+  ru: 'russian',
+  en: 'english',
+};
+
 const selectedLanguages = ref<string[]>([...store.personalInfo.languages]);
 const fullName = ref(store.personalInfo.fullName);
 const dateOfBirth = ref(store.personalInfo.dateOfBirth);
 const phone = ref(store.personalInfo.phone);
 const email = ref(store.personalInfo.email);
+const yearsOfExperience = ref(store.personalInfo.yearsOfExperience);
+
+/** Convert an ISO date (YYYY-MM-DD) to the DD / MM / YYYY display format. */
+function formatBirthDay(iso: string | null | undefined): string {
+  if (!iso) {
+    return '';
+  }
+  const [year, month, day] = iso.split('-');
+  if (!(year && month && day)) {
+    return iso;
+  }
+  return `${day} / ${month} / ${year}`;
+}
+
+onMounted(async () => {
+  try {
+    const user = await getUserProfile();
+    if (!user) {
+      return;
+    }
+    if (user.fullName) {
+      fullName.value = user.fullName;
+    }
+    if (user.birthDay) {
+      dateOfBirth.value = formatBirthDay(user.birthDay);
+    }
+    if (user.phone) {
+      phone.value = user.phone;
+    }
+    if (user.email) {
+      email.value = user.email;
+    }
+    const userLanguages = (user.languages ?? [])
+      .map((lang) => languageCodeToValue[lang.code])
+      .filter((value): value is string => Boolean(value));
+    if (userLanguages.length > 0) {
+      selectedLanguages.value = userLanguages;
+    }
+  } catch {
+    // Keep the store values when the profile cannot be loaded
+  }
+});
 
 function toggleLanguage(lang: string) {
   const idx = selectedLanguages.value.indexOf(lang);
@@ -41,6 +90,9 @@ function goNext() {
   store.updatePersonalInfo({
     fullName: fullName.value,
     dateOfBirth: dateOfBirth.value,
+    phone: phone.value,
+    email: email.value,
+    yearsOfExperience: Number(yearsOfExperience.value) || 0,
     languages: selectedLanguages.value,
   });
   router.push({ name: 'professional-onboarding-step2' });
@@ -100,6 +152,24 @@ function goNext() {
           type="text"
           placeholder="DD / MM / YYYY"
         >
+      </div>
+
+      <!-- Years of Experience -->
+      <div class="field-group">
+        <label class="field-label">Years of experience</label>
+        <div class="experience-row">
+          <div class="experience-input">
+            <input
+              v-model.number="yearsOfExperience"
+              class="exp-number"
+              type="number"
+              min="0"
+              max="70"
+            >
+            <span class="exp-label">years</span>
+          </div>
+          <span class="exp-hint">How long have you been doing this work?</span>
+        </div>
       </div>
 
       <!-- Phone (verified) -->
@@ -308,6 +378,53 @@ function goNext() {
 .field-input-readonly {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.experience-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.experience-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 18px;
+  background: #f5f5f5;
+  border: 1px solid #c5c5cb;
+  border-radius: 999px;
+}
+
+.exp-number {
+  width: 50px;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2a2933;
+  text-align: center;
+  outline: none;
+  background: transparent;
+  border: none;
+}
+
+.exp-number::-webkit-inner-spin-button,
+.exp-number::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+.exp-label {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #616167;
+}
+
+.exp-hint {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #616167;
 }
 
 .chips-row {

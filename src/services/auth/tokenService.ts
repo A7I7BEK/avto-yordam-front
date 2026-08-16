@@ -7,11 +7,13 @@ const REFRESH_TOKEN_KEY = 'refreshToken';
 
 export function saveAuthTokens(result: {
   accessToken?: string;
+  token?: string;
   refreshToken?: string;
   type?: string;
 }): void {
-  if (result.accessToken) {
-    localStorage.setItem(TOKEN_KEY, result.accessToken);
+  const accessToken = result.accessToken ?? result.token;
+  if (accessToken) {
+    localStorage.setItem(TOKEN_KEY, accessToken);
   }
   if (result.refreshToken) {
     localStorage.setItem(REFRESH_TOKEN_KEY, result.refreshToken);
