@@ -4,12 +4,14 @@
 >
 import { CheckCheck, Settings, Trash2 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import {
   deleteNotification,
   getNotifications,
   markNotificationRead,
 } from '@/services/notificationsService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 
 interface Notification {
   id: string;
@@ -24,9 +26,24 @@ interface Notification {
   unread: boolean;
 }
 
+const router = useRouter();
+
 const notifications = ref<Notification[]>([]);
 const activeTab = ref('All');
 const confirmDeleteId = ref<string | null>(null);
+
+const businessStore = useBusinessAppStore();
+
+/** Keep the header bell badge in sync with this page's unread count. */
+function syncUnreadCount() {
+  businessStore.setNotificationCount(
+    notifications.value.filter((n) => n.unread).length,
+  );
+}
+
+function goToPreferences() {
+  router.push('/business/settings/notifications');
+}
 
 onMounted(async () => {
   notifications.value = await getNotifications();
@@ -79,6 +96,7 @@ async function performDeleteNotification() {
   try {
     await deleteNotification(id);
     notifications.value = notifications.value.filter((n) => n.id !== id);
+    syncUnreadCount();
   } finally {
     confirmDeleteId.value = null;
   }
@@ -94,6 +112,7 @@ async function markAllAsRead() {
   for (const n of notifications.value) {
     n.unread = false;
   }
+  syncUnreadCount();
 }
 </script>
 
@@ -127,6 +146,7 @@ async function markAllAsRead() {
         <button
           type="button"
           class="btn btn--outline"
+          @click="goToPreferences"
         >
           <Settings :size="16" />
           <span class="btn__text">Preferences</span>

@@ -8,11 +8,17 @@ import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import OnboardingStepper from '@/components/onboarding/OnboardingStepper.vue';
 import {
+  addUserLanguage,
+  getAllLanguages,
   getAllMasterSpecializations,
+  getUserProfile,
   saveMasterInfo,
 } from '@/services/userService';
 import { useProfessionalOnboardingStore } from '@/stores/onboarding';
-import type { MasterSpecializationResponse } from '@/types/user';
+import type {
+  LanguageResponse,
+  MasterSpecializationResponse,
+} from '@/types/user';
 
 const router = useRouter();
 const store = useProfessionalOnboardingStore();
@@ -21,23 +27,57 @@ const specializations = ref<MasterSpecializationResponse[]>([]);
 const loadingSpecializations = ref(true);
 const selectedSpecializationId = ref(store.professionalInfo.specializationId);
 
+const languages = ref<LanguageResponse[]>([]);
+const loadingLanguages = ref(true);
+const selectedLanguageIds = ref<string[]>([
+  ...store.professionalInfo.languages,
+]);
+
 const selectedCount = computed(() => (selectedSpecializationId.value ? 1 : 0));
+const selectedLanguagesCount = computed(() => selectedLanguageIds.value.length);
 
 onMounted(async () => {
   try {
-    const specs = await getAllMasterSpecializations();
+    const [specs, allLanguages] = await Promise.all([
+      getAllMasterSpecializations(),
+      getAllLanguages(),
+    ]);
     specializations.value = specs;
+    languages.value = allLanguages;
     if (!specs.some((s) => s.id === selectedSpecializationId.value)) {
       selectedSpecializationId.value = '';
     }
   } finally {
     loadingSpecializations.value = false;
+    loadingLanguages.value = false;
+  }
+
+  try {
+    // Prefill the languages the user already has on their profile
+    const user = await getUserProfile();
+    const userLanguageIds = (user.languages ?? [])
+      .map((lang) => lang.id)
+      .filter((id): id is string => Boolean(id));
+    if (userLanguageIds.length > 0) {
+      selectedLanguageIds.value = userLanguageIds;
+    }
+  } catch {
+    // Keep the store values when the profile cannot be loaded
   }
 });
 
 function toggleSpecialization(spec: MasterSpecializationResponse) {
   selectedSpecializationId.value =
     selectedSpecializationId.value === spec.id ? '' : spec.id;
+}
+
+function toggleLanguage(lang: LanguageResponse) {
+  const idx = selectedLanguageIds.value.indexOf(lang.id);
+  if (idx >= 0) {
+    selectedLanguageIds.value.splice(idx, 1);
+  } else {
+    selectedLanguageIds.value.push(lang.id);
+  }
 }
 
 function calcYearsToDate(years: number): string | null {
@@ -60,6 +100,7 @@ function goBack() {
 async function goNext() {
   store.updateProfessionalInfo({
     specializationId: selectedSpecializationId.value,
+    languages: selectedLanguageIds.value,
   });
 
   try {
@@ -74,6 +115,16 @@ async function goNext() {
     });
   } catch {
     // Continue to the dashboard even if the API call fails
+  }
+
+  // Persist newly selected languages (already-present ones are skipped)
+  try {
+    const user = await getUserProfile();
+    const currentIds = new Set((user.languages ?? []).map((l) => l.id));
+    const toAdd = selectedLanguageIds.value.filter((id) => !currentIds.has(id));
+    await Promise.all(toAdd.map((id) => addUserLanguage(id)));
+  } catch {
+    // Language persistence failure should not block onboarding
   }
 
   // Navigate to dashboard after onboarding
@@ -134,6 +185,47 @@ async function goNext() {
               color="#FFFFFF"
             />
             {{ spec.name }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-label">Languages</span>
+          <span class="section-counter"
+            >{{ selectedLanguagesCount }}
+            selected</span
+          >
+        </div>
+        <p class="section-hint">
+          Select the languages you speak. Shown to customers on your public
+          profile.
+        </p>
+        <div
+          v-if="loadingLanguages"
+          class="chips-loading"
+        >
+          Loading languages…
+        </div>
+        <div
+          v-else
+          class="chips-grid"
+        >
+          <button
+            v-for="lang in languages"
+            :key="lang.id"
+            class="chip"
+            :class="{ selected: selectedLanguageIds.includes(lang.id) }"
+            type="button"
+            @click="toggleLanguage(lang)"
+          >
+            <Check
+              v-if="selectedLanguageIds.includes(lang.id)"
+              :size="12"
+              color="#FFFFFF"
+            />
+            {{ lang.name }}
           </button>
         </div>
       </div>

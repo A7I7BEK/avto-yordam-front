@@ -121,3 +121,18 @@ export async function cancelOrder(id: string) {
 export async function deleteOrder(id: string) {
   return await apiClient.delete(`/order/${id}`);
 }
+
+/** Order statuses that count as "new" / needing attention (sidebar badge). */
+const NEW_ORDER_STATUSES = new Set([
+  'new',
+  'created',
+  'pending_master_confirmation',
+  'pending_user_confirmation',
+]);
+
+/** Number of orders in a "new" (pre-confirmation) state. */
+export function countNewOrders(orders: Array<{ status?: string }>): number {
+  return orders.filter((o) =>
+    NEW_ORDER_STATUSES.has(String(o.status ?? '').toLowerCase()),
+  ).length;
+}

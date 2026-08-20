@@ -5,12 +5,13 @@ export interface ProfessionalOnboardingData {
   phone: string;
   email: string;
   yearsOfExperience: number;
-  languages: string[];
 }
 
 export interface ProfessionalInfoData {
   /** Id of the chosen specialization (from the master-specialization list). */
   specializationId: string;
+  /** Ids of the selected languages (from the /language list). */
+  languages: string[];
 }
 
 export type OrganizationType = 'MCHJ' | 'YATT' | 'SELF_EMPLOYED';

@@ -162,8 +162,18 @@ async function handleReschedule() {
 // ── Lifecycle ──
 async function loadOrder() {
   try {
-    const id = route.params.id as string;
+    // `route` can be undefined if the component is ever mounted outside the
+    // router context (e.g. transient HMR state) — fail gracefully instead of
+    // throwing "Cannot read properties of undefined (reading 'params')".
+    const id = route?.params?.id as string | undefined;
+    if (!id) {
+      order.value = null;
+      return;
+    }
     order.value = await getOrder(id);
+  } catch {
+    // Invalid/unknown id (400/404) → show the "Order not found" state.
+    order.value = null;
   } finally {
     loading.value = false;
   }
@@ -173,7 +183,9 @@ decodeUserToken();
 onMounted(loadOrder);
 
 function goBack() {
-  router.push('/business/orders');
+  if (router) {
+    router.push('/business/orders');
+  }
 }
 </script>
 

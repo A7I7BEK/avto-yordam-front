@@ -19,15 +19,26 @@ import {
   UserPlus,
   Users,
 } from '@lucide/vue';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import SidebarNavItem from '@/components/app/SidebarNavItem.vue';
+import { countNewOrders, getOrders } from '@/services/ordersService';
 import { useBusinessAppStore } from '@/stores/businessApp';
 
 const route = useRoute();
 const store = useBusinessAppStore();
 
 const isActive = (path: string) => route.path.startsWith(path);
+
+// Load the real "new orders" count for the sidebar badge.
+onMounted(async () => {
+  try {
+    const orders = await getOrders();
+    store.setOrdersBadgeCount(countNewOrders(orders));
+  } catch {
+    // Keep the last known count if the fetch fails.
+  }
+});
 
 const isTeamOpen = computed(() => store.teamSubmenuOpen);
 

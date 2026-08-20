@@ -1,4 +1,9 @@
 import type { FileResponse } from '@/services/documentsService';
+import type {
+  NotificationChannel,
+  NotificationEvent,
+  NotificationStatus,
+} from './notification';
 
 export interface LanguageResponse {
   id: string;
@@ -152,9 +157,22 @@ export interface ReviewResponse {
 
 export interface NotificationResponse {
   id?: string;
-  message: string;
-  type?: string;
+  organizationId?: string;
   userId?: string;
-  createdDate?: string;
+  eventType?: NotificationEvent;
+  channel?: NotificationChannel;
+  /** Localized title, resolved by the current user language. */
+  title?: string;
+  /** Localized message, resolved by the current user language. */
+  message?: string;
+  /** Legacy free-form type tag, kept for backward compatibility. */
+  type?: string;
+  /** Whether the recipient has read this in-app notification. */
   isRead?: boolean;
+  status?: NotificationStatus;
+  providerResponse?: string;
+  errorMessage?: string;
+  createdAt?: string;
+  sentAt?: string;
+  retryCount?: number;
 }

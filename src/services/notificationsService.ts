@@ -51,9 +51,7 @@ function formatTime(iso?: string): string {
   if (!iso) {
     return 'Just now';
   }
-  const mins = Math.floor(
-    (Date.now() - new Date(iso).getTime()) / 60_000,
-  );
+  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60_000);
   if (mins < 1) {
     return 'Just now';
   }
@@ -98,10 +96,10 @@ function mapNotification(n: NotificationResponse): AppNotification {
     icon: visual.icon,
     iconBg: visual.iconBg,
     iconColor: visual.iconColor,
-    title: category,
-    desc: n.message,
-    time: formatTime(n.createdDate),
-    timeGroup: timeGroupFor(n.createdDate),
+    title: n.title ?? category,
+    desc: n.message ?? '',
+    time: formatTime(n.createdAt),
+    timeGroup: timeGroupFor(n.createdAt),
     category,
     unread: n.isRead === false,
   };

@@ -23,6 +23,7 @@ import {
   acceptOrder,
   cancelOrder,
   completeOrder,
+  countNewOrders,
   createOrderByOwner,
   createOrderWithMaster,
   deleteOrder,
@@ -33,10 +34,12 @@ import {
 } from '@/services/ordersService';
 import { getOrganizationServices } from '@/services/organizationService';
 import { getMyOrg } from '@/services/settingsService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 import type { Order } from '@/types/business';
 import type { OrganizationServiceResponse } from '@/types/user';
 
 const router = useRouter();
+const store = useBusinessAppStore();
 
 // Authentication role details (mock or decoded from token)
 const isOwner = ref(true);
@@ -63,7 +66,7 @@ function decodeUserToken() {
         payload.organizationRole === 'MASTER' ||
         payload.platformRole === 'MASTER';
     }
-  } catch (_) {
+  } catch {
     isOwner.value = true;
     isMaster.value = false;
   }
@@ -87,7 +90,10 @@ const completeLoading = ref(false);
 const activeCompleteOrderId = ref<string | null>(null);
 const paymentMethod = ref<'CASH' | 'PAYME' | 'CLICK' | 'PAYNET'>('CASH');
 const completeError = ref('');
-const PAYMENT_METHOD_OPTIONS: { value: 'CASH' | 'PAYME' | 'CLICK' | 'PAYNET'; label: string }[] = [
+const PAYMENT_METHOD_OPTIONS: {
+  value: 'CASH' | 'PAYME' | 'CLICK' | 'PAYNET';
+  label: string;
+}[] = [
   { value: 'CASH', label: 'Cash' },
   { value: 'PAYME', label: 'Payme' },
   { value: 'CLICK', label: 'Click' },
@@ -195,6 +201,7 @@ async function load() {
   try {
     const list = await getOrders();
     orders.value = list;
+    store.setOrdersBadgeCount(countNewOrders(list));
   } catch (err: any) {
     triggerToast(err.message || 'Failed to load orders', 'error');
   } finally {
@@ -210,7 +217,9 @@ async function loadModalHelpers() {
     services.value = svcList || [];
     const empList = await getEmployees();
     masters.value = empList || [];
-  } catch (_) {}
+  } catch {
+    // Helper data is optional; the modal still works without it.
+  }
 }
 
 onMounted(() => {
@@ -415,8 +424,8 @@ async function handleCreateOrder() {
   try {
     const slotData = {
       slotDate: f.slotDate,
-      startTime: f.startTime + ':00',
-      endTime: f.endTime + ':00',
+      startTime: `${f.startTime}:00`,
+      endTime: `${f.endTime}:00`,
       isBooked: true,
     };
 
@@ -523,7 +532,7 @@ async function onDrop(event: DragEvent, targetColId: ColumnId) {
 
   try {
     await handleAction(order, action);
-  } catch (_) {
+  } catch {
     // revert
     order.status = previousStatus;
   }
@@ -1536,8 +1545,8 @@ function viewOrder(id: string) {
 
 .payment-method input {
   position: absolute;
-  opacity: 0;
   pointer-events: none;
+  opacity: 0;
 }
 
 .payment-method--selected {

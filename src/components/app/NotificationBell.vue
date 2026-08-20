@@ -11,13 +11,7 @@ import {
   Trash2,
   UserRound,
 } from '@lucide/vue';
-import {
-  type Component,
-  computed,
-  onMounted,
-  onUnmounted,
-  ref,
-} from 'vue';
+import { type Component, computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {
   type AppNotification,
@@ -25,11 +19,22 @@ import {
   getNotifications,
   markNotificationRead,
 } from '@/services/notificationsService';
+import { notificationSocket } from '@/services/websocketService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 
-const store = useProfessionalAppStore();
 const route = useRoute();
 const router = useRouter();
+
+const professionalStore = useProfessionalAppStore();
+const businessStore = useBusinessAppStore();
+
+// Use the store that matches the current layout (business vs professional).
+const activeStore = computed(() =>
+  route.path.startsWith('/business') ? businessStore : professionalStore,
+);
+
+let unsubscribeFromSocket: (() => void) | undefined;
 
 const open = ref(false);
 const loading = ref(false);
@@ -53,13 +58,21 @@ const unreadCount = computed(
   () => notifications.value.filter((n) => n.unread).length,
 );
 const badgeCount = computed(
-  () => unreadCount.value || store.notificationCount,
+  () => unreadCount.value || activeStore.value.notificationCount,
 );
+
+/** Keep the store badge count in sync with the local unread count. */
+function syncUnreadCount() {
+  const unread = notifications.value.filter((n) => n.unread).length;
+  activeStore.value.setNotificationCount(unread);
+}
 
 async function loadNotifications() {
   loading.value = true;
   try {
     notifications.value = await getNotifications();
+    const unread = notifications.value.filter((n) => n.unread).length;
+    activeStore.value.setNotificationCount(unread);
   } finally {
     loading.value = false;
   }
@@ -91,6 +104,7 @@ async function handleItemClick(n: AppNotification) {
       // Global error toast surfaces the failure
     }
     n.unread = false;
+    syncUnreadCount();
   }
 }
 
@@ -101,6 +115,7 @@ async function removeNotification(n: AppNotification) {
   try {
     await deleteNotification(n.id);
     notifications.value = notifications.value.filter((x) => x.id !== n.id);
+    syncUnreadCount();
   } catch {
     // Global error toast surfaces the failure
   }
@@ -116,6 +131,7 @@ async function markAllRead() {
   for (const n of notifications.value) {
     n.unread = false;
   }
+  syncUnreadCount();
 }
 
 function goToAll() {
@@ -139,14 +155,40 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
+// Fallback refresh when the tab regains focus — covers the case where a
+// notification was created while the page was backgrounded or a WS message
+// was missed (e.g. the socket was reconnecting).
+function onWindowFocus() {
+  loadNotifications();
+}
+
+function onVisibilityChange() {
+  if (document.visibilityState === 'visible') {
+    loadNotifications();
+  }
+}
+
 onMounted(() => {
   document.addEventListener('click', onDocumentClick);
   document.addEventListener('keydown', onKeydown);
+  window.addEventListener('focus', onWindowFocus);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
+  // Load the current unread count from the server and stay in sync via WS.
+  loadNotifications();
+  notificationSocket.connect();
+  unsubscribeFromSocket = notificationSocket.onNotification(() => {
+    loadNotifications();
+  });
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', onDocumentClick);
   document.removeEventListener('keydown', onKeydown);
+  window.removeEventListener('focus', onWindowFocus);
+  document.removeEventListener('visibilitychange', onVisibilityChange);
+  unsubscribeFromSocket?.();
+  unsubscribeFromSocket = undefined;
 });
 </script>
 

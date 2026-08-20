@@ -3,45 +3,82 @@
   lang="ts"
 >
 import { ArrowRight, BadgeCheck, UserRound } from '@lucide/vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import OnboardingStepper from '@/components/onboarding/OnboardingStepper.vue';
-import { getUserProfile } from '@/services/userService';
+import { getFileUrl } from '@/services/documentsService';
+import {
+  deleteProfilePhoto,
+  getUserProfile,
+  uploadProfilePhoto,
+} from '@/services/userService';
 import { useProfessionalOnboardingStore } from '@/stores/onboarding';
 
 const router = useRouter();
 const store = useProfessionalOnboardingStore();
 
-const languages = [
-  { value: 'uzbek', label: 'Uzbek' },
-  { value: 'russian', label: 'Russian' },
-  { value: 'english', label: 'English' },
-];
-
-const languageCodeToValue: Record<string, string> = {
-  uz: 'uzbek',
-  ru: 'russian',
-  en: 'english',
-};
-
-const selectedLanguages = ref<string[]>([...store.personalInfo.languages]);
 const fullName = ref(store.personalInfo.fullName);
 const dateOfBirth = ref(store.personalInfo.dateOfBirth);
 const phone = ref(store.personalInfo.phone);
 const email = ref(store.personalInfo.email);
 const yearsOfExperience = ref(store.personalInfo.yearsOfExperience);
 
-/** Convert an ISO date (YYYY-MM-DD) to the DD / MM / YYYY display format. */
-function formatBirthDay(iso: string | null | undefined): string {
-  if (!iso) {
-    return '';
+const profilePhotoUrl = ref('');
+const uploadingPhoto = ref(false);
+const photoInputRef = ref<HTMLInputElement | null>(null);
+
+const uploadLabel = computed(() => {
+  if (uploadingPhoto.value) {
+    return 'Uploading...';
   }
-  const [year, month, day] = iso.split('-');
-  if (!(year && month && day)) {
-    return iso;
+  return profilePhotoUrl.value ? 'Replace photo' : 'Upload photo';
+});
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function triggerUploadPhoto() {
+  photoInputRef.value?.click();
+}
+
+async function onPhotoSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) {
+    return;
   }
-  return `${day} / ${month} / ${year}`;
+
+  uploadingPhoto.value = true;
+  try {
+    const updated = await uploadProfilePhoto(file);
+    profilePhotoUrl.value = updated.profilePhoto?.path
+      ? getFileUrl(updated.profilePhoto.path)
+      : '';
+  } catch {
+    // Upload failed — keep the current photo
+  } finally {
+    uploadingPhoto.value = false;
+    input.value = '';
+  }
+}
+
+async function removePhoto() {
+  uploadingPhoto.value = true;
+  try {
+    await deleteProfilePhoto();
+    profilePhotoUrl.value = '';
+  } catch {
+    // Removal failed — keep the current photo
+  } finally {
+    uploadingPhoto.value = false;
+  }
 }
 
 onMounted(async () => {
@@ -54,7 +91,7 @@ onMounted(async () => {
       fullName.value = user.fullName;
     }
     if (user.birthDay) {
-      dateOfBirth.value = formatBirthDay(user.birthDay);
+      dateOfBirth.value = user.birthDay;
     }
     if (user.phone) {
       phone.value = user.phone;
@@ -62,25 +99,13 @@ onMounted(async () => {
     if (user.email) {
       email.value = user.email;
     }
-    const userLanguages = (user.languages ?? [])
-      .map((lang) => languageCodeToValue[lang.code])
-      .filter((value): value is string => Boolean(value));
-    if (userLanguages.length > 0) {
-      selectedLanguages.value = userLanguages;
-    }
+    profilePhotoUrl.value = user.profilePhoto?.path
+      ? getFileUrl(user.profilePhoto.path)
+      : '';
   } catch {
     // Keep the store values when the profile cannot be loaded
   }
 });
-
-function toggleLanguage(lang: string) {
-  const idx = selectedLanguages.value.indexOf(lang);
-  if (idx >= 0) {
-    selectedLanguages.value.splice(idx, 1);
-  } else {
-    selectedLanguages.value.push(lang);
-  }
-}
 
 function goBack() {
   router.push({ name: 'auth-register' });
@@ -93,7 +118,6 @@ function goNext() {
     phone: phone.value,
     email: email.value,
     yearsOfExperience: Number(yearsOfExperience.value) || 0,
-    languages: selectedLanguages.value,
   });
   router.push({ name: 'professional-onboarding-step2' });
 }
@@ -119,17 +143,48 @@ function goNext() {
 
       <!-- Avatar -->
       <div class="avatar-row">
-        <div class="avatar">
-          <span>AI</span>
+        <div
+          v-if="profilePhotoUrl"
+          class="avatar avatar--image"
+        >
+          <img
+            :src="profilePhotoUrl"
+            alt=""
+            class="avatar-img"
+          >
+        </div>
+        <div
+          v-else
+          class="avatar"
+        >
+          <span>{{ getInitials(fullName || 'Unknown User') }}</span>
         </div>
         <div class="upload-column">
+          <input
+            ref="photoInputRef"
+            class="photo-input"
+            type="file"
+            accept="image/*"
+            @change="onPhotoSelected"
+          >
           <button
             class="btn-upload"
             type="button"
+            :disabled="uploadingPhoto"
+            @click="triggerUploadPhoto"
           >
-            Upload photo
+            {{ uploadLabel }}
           </button>
           <span class="upload-hint">JPG or PNG, max 4 MB</span>
+          <button
+            v-if="profilePhotoUrl"
+            class="btn-remove"
+            type="button"
+            :disabled="uploadingPhoto"
+            @click="removePhoto"
+          >
+            Remove photo
+          </button>
         </div>
       </div>
 
@@ -149,8 +204,7 @@ function goNext() {
         <input
           v-model="dateOfBirth"
           class="field-input"
-          type="text"
-          placeholder="DD / MM / YYYY"
+          type="date"
         >
       </div>
 
@@ -199,23 +253,6 @@ function goNext() {
           type="email"
           readonly
         >
-      </div>
-
-      <!-- Languages -->
-      <div class="field-group">
-        <label class="field-label">Languages</label>
-        <div class="chips-row">
-          <button
-            v-for="lang in languages"
-            :key="lang.value"
-            class="chip"
-            :class="{ selected: selectedLanguages.includes(lang.value) }"
-            type="button"
-            @click="toggleLanguage(lang.value)"
-          >
-            {{ lang.label }}
-          </button>
-        </div>
       </div>
 
       <!-- Footer -->
@@ -332,6 +369,46 @@ function goNext() {
   font-size: 12px;
   font-weight: 400;
   color: #616167;
+}
+
+.avatar--image {
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-input {
+  display: none;
+}
+
+.btn-upload:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.btn-remove {
+  align-self: flex-start;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #cc3314;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.btn-remove:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.btn-remove:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
 
 .field-group {

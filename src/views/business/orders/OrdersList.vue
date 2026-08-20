@@ -5,11 +5,13 @@
 import { Eye, Plus, Search } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { getOrders } from '@/services/ordersService';
+import { countNewOrders, getOrders } from '@/services/ordersService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 import type { Order } from '@/types/business';
 import OrdersKanban from './OrdersKanban.vue';
 
 const router = useRouter();
+const store = useBusinessAppStore();
 const orders = ref<Order[]>([]);
 const activeTab = ref('all');
 const searchQuery = ref('');
@@ -17,8 +19,11 @@ const viewMode = ref<'list' | 'board'>('list');
 
 async function loadOrders() {
   orders.value = await getOrders();
+  store.setOrdersBadgeCount(countNewOrders(orders.value));
 }
 loadOrders();
+
+const newOrdersCount = computed(() => countNewOrders(orders.value));
 
 const tabs = [
   { key: 'all', label: 'All', count: orders.value.length },
@@ -112,7 +117,12 @@ function goToCreateOrder() {
       <div class="header-row__left">
         <h1 class="page-title">
           Orders
-          <span class="badge-new">7 new</span>
+          <span
+            v-if="newOrdersCount > 0"
+            class="badge-new"
+            >{{ newOrdersCount }}
+            new</span
+          >
         </h1>
         <p class="page-subtitle">Manage and track all bookings</p>
       </div>

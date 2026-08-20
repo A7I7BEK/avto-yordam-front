@@ -17,11 +17,11 @@ export const useProfessionalOnboardingStore = defineStore(
       phone: '',
       email: '',
       yearsOfExperience: 0,
-      languages: [],
     });
 
     const professionalInfo = ref<ProfessionalInfoData>({
       specializationId: '',
+      languages: [],
     });
 
     function updatePersonalInfo(data: Partial<ProfessionalOnboardingData>) {
@@ -40,10 +40,10 @@ export const useProfessionalOnboardingStore = defineStore(
         phone: '',
         email: '',
         yearsOfExperience: 0,
-        languages: [],
       };
       professionalInfo.value = {
         specializationId: '',
+        languages: [],
       };
     }
 
