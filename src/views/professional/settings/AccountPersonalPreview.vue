@@ -2,11 +2,20 @@
   setup
   lang="ts"
 >
-import { BadgeCheck, Lock, Pencil, Star } from '@lucide/vue';
+import { BadgeCheck, Loader2, Lock, Pencil, Star } from '@lucide/vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getFileUrl } from '@/services/documentsService';
+import { getOwnMasterInfo, getUserProfile } from '@/services/userService';
+import type { MasterInfoResponse, UserResponse } from '@/types/user';
 
 const router = useRouter();
 const route = useRoute();
+
+const user = ref<UserResponse | null>(null);
+const masterInfo = ref<MasterInfoResponse | null>(null);
+const loading = ref(true);
+const profilePhotoUrl = ref('');
 
 function goToEdit() {
   router.push({
@@ -14,6 +23,76 @@ function goToEdit() {
     query: { tab: 'personal', mode: 'edit' },
   });
 }
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) {
+    return '—';
+  }
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day} / ${month} / ${year}`;
+}
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function calcYearsOfExperience(startDate: string | null): string {
+  if (!startDate) {
+    return '—';
+  }
+  const start = new Date(startDate);
+  const now = new Date();
+  const years = now.getFullYear() - start.getFullYear();
+  const months = now.getMonth() - start.getMonth();
+  const totalYears = months < 0 ? years - 1 : years;
+  if (totalYears < 1) {
+    return '< 1 year';
+  }
+  return `${totalYears} years`;
+}
+
+function formatWorkingTime(start: string | null, end: string | null): string {
+  if (!(start && end)) {
+    return '—';
+  }
+  return `${start.slice(0, 5)}–${end.slice(0, 5)}`;
+}
+
+function formatExperienceYears(years: number | null | undefined): string {
+  if (years === null || years === undefined) {
+    return '—';
+  }
+  return `${years} yr${years === 1 ? '' : 's'}`;
+}
+
+const starCount = computed(() => {
+  const rating = masterInfo.value?.rating;
+  return rating ? Math.max(0, Math.min(5, Math.round(rating))) : 0;
+});
+
+onMounted(async () => {
+  try {
+    const [userData, masterInfoData] = await Promise.all([
+      getUserProfile(),
+      getOwnMasterInfo(),
+    ]);
+    user.value = userData;
+    masterInfo.value = masterInfoData;
+    profilePhotoUrl.value = userData.profilePhoto?.path
+      ? getFileUrl(userData.profilePhoto.path)
+      : '';
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <template>
@@ -36,133 +115,167 @@ function goToEdit() {
       </button>
     </div>
 
-    <!-- Profile Header -->
-    <div class="profile-header">
-      <div class="profile-avatar">AI</div>
-      <div class="profile-info">
-        <span class="profile-name">Aziz Ismoilov</span>
-        <span class="profile-role">Master mechanic · Tashkent, Uzbekistan</span>
-      </div>
-      <div class="verified-badge">
-        <BadgeCheck :size="13" />
-        <span>Verified master</span>
-      </div>
+    <!-- Loading State -->
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <Loader2
+        :size="20"
+        color="#616167"
+        class="spin"
+      />
+      <span>Loading profile...</span>
     </div>
 
-    <div class="divider" />
-
-    <!-- Profile Details -->
-    <div class="details-section">
-      <div class="section-heading">
-        <Pencil :size="13" />
-        <span>Profile details</span>
-      </div>
-
-      <div class="details-grid">
-        <div class="detail-card">
-          <span class="detail-label">Full name</span>
-          <span class="detail-value">Aziz Ismoilov</span>
-        </div>
-        <div class="detail-card">
-          <span class="detail-label">Date of birth</span>
-          <span class="detail-value">14 / 02 / 1991</span>
-        </div>
-        <div class="detail-card">
-          <span class="detail-label">Specialization</span>
-          <span class="detail-value"
-            >European brands · Engine &amp; diagnostics</span
+    <!-- Profile Content -->
+    <template v-else>
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div
+          v-if="profilePhotoUrl"
+          class="profile-avatar"
+        >
+          <img
+            :src="profilePhotoUrl"
+            alt=""
+            class="photo-img"
           >
         </div>
-        <div class="detail-card">
-          <span class="detail-label">Working time</span>
-          <span class="detail-value">Mon–Sat · 09:00–19:00</span>
-        </div>
-      </div>
-
-      <div class="detail-card full-width">
-        <span class="detail-label">Years of experience (self-reported)</span>
-        <span class="detail-value">8 years</span>
-      </div>
-
-      <div class="detail-card full-width bio-card">
-        <span class="detail-label">Short bio</span>
-        <span class="detail-value bio-text"
-          >Master mechanic specializing in European brands. 8 years of hands-on
-          garage experience in Tashkent.</span
+        <div
+          v-else
+          class="profile-avatar"
         >
+          {{ user ? getInitials(user.fullName) : 'AI' }}
+        </div>
+        <div class="profile-info">
+          <span class="profile-name"
+            >{{ user?.fullName ?? 'Aziz Ismoilov' }}</span
+          >
+          <span class="profile-role"
+            >Master mechanic · Tashkent, Uzbekistan</span
+          >
+        </div>
+        <div class="verified-badge">
+          <BadgeCheck :size="13" />
+          <span>Verified master</span>
+        </div>
       </div>
-    </div>
 
-    <div class="divider" />
+      <div class="divider" />
 
-    <!-- Verified by Platform -->
-    <div class="verified-section">
-      <div class="verified-header">
+      <!-- Profile Details -->
+      <div class="details-section">
         <div class="section-heading">
-          <Lock :size="13" />
-          <span>Verified by platform</span>
+          <Pencil :size="13" />
+          <span>Profile details</span>
         </div>
-        <span class="verified-sub">Auto-tracked · not editable</span>
+
+        <div class="details-grid">
+          <div class="detail-card">
+            <span class="detail-label">Full name</span>
+            <span class="detail-value"
+              >{{ user?.fullName ?? 'Aziz Ismoilov' }}</span
+            >
+          </div>
+          <div class="detail-card">
+            <span class="detail-label">Date of birth</span>
+            <span class="detail-value"
+              >{{ user ? formatDate(user.birthDay) : '14 / 02 / 1991' }}</span
+            >
+          </div>
+          <div class="detail-card">
+            <span class="detail-label">Specialization</span>
+            <span class="detail-value"
+              >{{ masterInfo?.specializationName ?? '—' }}</span
+            >
+          </div>
+          <div class="detail-card">
+            <span class="detail-label">Working time</span>
+            <span class="detail-value"
+              >{{ masterInfo ? formatWorkingTime(masterInfo.workingTimeStart, masterInfo.workingTimeEnd) : 'Mon–Sat · 09:00–19:00' }}</span
+            >
+          </div>
+        </div>
+
+        <div class="detail-card full-width">
+          <span class="detail-label">Years of experience (self-reported)</span>
+          <span class="detail-value"
+            >{{ masterInfo ? calcYearsOfExperience(masterInfo.experienceStartDate) : '8 years' }}</span
+          >
+        </div>
+
+        <div class="detail-card full-width bio-card">
+          <span class="detail-label">Short bio</span>
+          <span class="detail-value bio-text"
+            >{{ masterInfo?.description || 'Master mechanic specializing in European brands. 8 years of hands-on garage experience in Tashkent.' }}</span
+          >
+        </div>
       </div>
 
-      <div class="verified-grid">
-        <div class="detail-card">
-          <div class="verified-stat-header">
-            <span class="detail-label">Experience on platform</span>
-            <Lock
-              :size="12"
-              color="#616167"
-            />
+      <div class="divider" />
+
+      <!-- Verified by Platform -->
+      <div class="verified-section">
+        <div class="verified-header">
+          <div class="section-heading">
+            <Lock :size="13" />
+            <span>Verified by platform</span>
           </div>
-          <span class="verified-stat-value">1 yr 2 mo</span>
+          <span class="verified-sub">Auto-tracked · not editable</span>
         </div>
-        <div class="detail-card">
-          <div class="verified-stat-header">
-            <span class="detail-label">Completed orders</span>
-            <Lock
-              :size="12"
-              color="#616167"
-            />
-          </div>
-          <span class="verified-stat-value">342</span>
-        </div>
-        <div class="detail-card">
-          <div class="verified-stat-header">
-            <span class="detail-label">Rating</span>
-            <Lock
-              :size="12"
-              color="#616167"
-            />
-          </div>
-          <div class="verified-stat-row">
-            <span class="verified-stat-value">4.9</span>
-            <div class="stars-row">
-              <Star
+
+        <div class="verified-grid">
+          <div class="detail-card">
+            <div class="verified-stat-header">
+              <span class="detail-label">Experience on platform</span>
+              <Lock
                 :size="12"
-                color="#FFD9B2"
-              />
-              <Star
-                :size="12"
-                color="#FFD9B2"
-              />
-              <Star
-                :size="12"
-                color="#FFD9B2"
-              />
-              <Star
-                :size="12"
-                color="#FFD9B2"
-              />
-              <Star
-                :size="12"
-                color="#FFD9B2"
+                color="#616167"
               />
             </div>
-            <span class="rating-max">/ 5.0</span>
+            <span class="verified-stat-value"
+              >{{ masterInfo ? formatExperienceYears(masterInfo.experienceYears) : '—' }}</span
+            >
+          </div>
+          <div class="detail-card">
+            <div class="verified-stat-header">
+              <span class="detail-label">Completed orders</span>
+              <Lock
+                :size="12"
+                color="#616167"
+              />
+            </div>
+            <span class="verified-stat-value"
+              >{{ masterInfo?.completedOrders ?? '—' }}</span
+            >
+          </div>
+          <div class="detail-card">
+            <div class="verified-stat-header">
+              <span class="detail-label">Rating</span>
+              <Lock
+                :size="12"
+                color="#616167"
+              />
+            </div>
+            <div class="verified-stat-row">
+              <span class="verified-stat-value"
+                >{{ masterInfo?.rating?.toFixed(1) ?? '—' }}</span
+              >
+              <div class="stars-row">
+                <template v-for="i in 5" :key="i">
+                  <Star
+                    :size="12"
+                    :color="i <= starCount ? '#FFB800' : '#D9D9DB'"
+                  />
+                </template>
+              </div>
+              <span class="rating-max">/ 5.0</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -194,6 +307,30 @@ function goToEdit() {
   font-size: 16px;
   font-weight: 600;
   color: #2a2933;
+}
+
+.loading-state {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #616167;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .card-desc {
@@ -230,12 +367,19 @@ function goToEdit() {
   justify-content: center;
   width: 64px;
   height: 64px;
+  overflow: hidden;
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   background: #5749f4;
   border-radius: 999px;
+}
+
+.profile-avatar .photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-info {

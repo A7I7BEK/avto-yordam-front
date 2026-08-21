@@ -116,6 +116,13 @@ export const businessRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/business/team/MemberProfile.vue'),
       },
 
+      // === Team / Invitations ===
+      {
+        path: 'team/invitations',
+        name: 'biz-invitations-list',
+        component: () => import('@/views/business/team/InvitationsList.vue'),
+      },
+
       // === Earnings ===
       {
         path: 'earnings',

@@ -11,7 +11,8 @@ import {
   UserPlus,
   X,
 } from '@lucide/vue';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { getRoles } from '@/services/rolesService';
 
 const props = defineProps<{
   isOpen: boolean;
@@ -31,33 +32,57 @@ const emit = defineEmits<{
   ];
 }>();
 
+const roleOptions = ref<{ id: string; name: string }[]>([]);
+
 const contactMethod = ref<'phone' | 'email'>('phone');
-const phone = ref('90 245-12-09');
+const phone = ref('');
 const email = ref('');
-const role = ref('Master');
+const role = ref('');
 const message = ref(
   "Hi! We'd like you to join AutoFix MCHJ as a master. Your specialties match what we need on the floor right now.",
 );
+const contactError = ref('');
 
 watch(
   () => props.isOpen,
   (open) => {
     if (open) {
       contactMethod.value = 'phone';
-      phone.value = '90 245-12-09';
+      phone.value = '';
       email.value = '';
-      role.value = 'Master';
+      role.value = roleOptions.value[0]?.name ?? '';
       message.value =
         "Hi! We'd like you to join AutoFix MCHJ as a master. Your specialties match what we need on the floor right now.";
+      contactError.value = '';
     }
   },
 );
+
+onMounted(async () => {
+  try {
+    const data = await getRoles();
+    roleOptions.value = data.map((r) => ({ id: r.name, name: r.name }));
+    role.value = roleOptions.value[0]?.name ?? '';
+  } catch {
+    // keep empty
+  }
+});
 
 function handleClose() {
   emit('close');
 }
 
 function handleSend() {
+  const contactValue =
+    contactMethod.value === 'phone' ? phone.value.trim() : email.value.trim();
+  if (!contactValue) {
+    contactError.value =
+      contactMethod.value === 'phone'
+        ? 'Please enter a phone number'
+        : 'Please enter an email address';
+    return;
+  }
+  contactError.value = '';
   emit('send', {
     contactMethod: contactMethod.value,
     phone: phone.value,
@@ -140,6 +165,11 @@ function handleSend() {
                 class="invite-phone-input__field"
               >
             </div>
+            <span
+              v-if="contactError && contactMethod === 'phone'"
+              class="invite-error"
+              >{{ contactError }}</span
+            >
           </div>
 
           <!-- Email address -->
@@ -154,6 +184,11 @@ function handleSend() {
               class="invite-email-input"
               placeholder="member@example.com"
             >
+            <span
+              v-if="contactError && contactMethod === 'email'"
+              class="invite-error"
+              >{{ contactError }}</span
+            >
           </div>
 
           <!-- Role -->
@@ -164,12 +199,17 @@ function handleSend() {
                 v-model="role"
                 class="invite-select__native"
               >
-                <option value="Master">Master</option>
-                <option value="Receptionist">Receptionist</option>
-                <option value="Admin">Admin</option>
-                <option value="Manager">Manager</option>
+                <option
+                  v-for="opt in roleOptions"
+                  :key="opt.id"
+                  :value="opt.name"
+                >
+                  {{ opt.name }}
+                </option>
               </select>
-              <span class="invite-select__text">{{ role }}</span>
+              <span class="invite-select__text"
+                >{{ role || 'Select role' }}</span
+              >
               <ChevronRight
                 :size="14"
                 class="invite-select__chevron"
@@ -324,6 +364,12 @@ function handleSend() {
   font-size: 13px;
   font-weight: 500;
   color: var(--foreground);
+}
+
+.invite-error {
+  font-size: 12px;
+  font-weight: 400;
+  color: #cc3314;
 }
 
 /* ── Segmented control ── */

@@ -12,7 +12,7 @@ import {
   TrendingUp,
   Wallet,
 } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { getEarnings } from '@/services/earningsService';
 
 interface KpiCard {
@@ -73,7 +73,7 @@ const kpiIcons: Record<string, typeof Wallet> = {
 async function loadEarnings() {
   try {
     loading.value = true;
-    const data = await getEarnings('30d');
+    const data = await getEarnings(dateFilter.value || 'all');
     kpiCards.value = data.kpi;
     weeklyRevenue.value = data.weekly;
     categoryBreakdown.value = data.categories;
@@ -84,6 +84,10 @@ async function loadEarnings() {
 }
 
 loadEarnings();
+
+watch(dateFilter, () => {
+  loadEarnings();
+});
 
 function formatAmount(amount: number): string {
   return `${(amount / 1000).toFixed(0)}K UZS`;

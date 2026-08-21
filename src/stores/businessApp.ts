@@ -1,23 +1,41 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { decodeUserToken, formatRoleLabel, initialsFromName } from '@/config';
+import {
+  getStoredLanguageCode,
+  type LanguageCode,
+  setStoredLanguageCode,
+} from '@/config/language';
 
 export const useBusinessAppStore = defineStore('businessApp', () => {
-  const userName = ref('Rustam Karimov');
-  const userRole = ref('Owner');
-  const orgName = ref('AutoFix MCHJ');
-  const userInitials = ref('RK');
-  const language = ref<'EN' | 'UZ' | 'RU'>('EN');
-  const notificationCount = ref(3);
-  const ordersBadgeCount = ref(7);
-  const teamSubmenuOpen = ref(false);
-  const activeTeamSubItem = ref<'employees' | 'members' | null>(null);
+  const tokenUser = decodeUserToken();
+  const tokenName = String(tokenUser.fullName ?? tokenUser.name ?? '');
+  const tokenRole = String(tokenUser.organizationRole ?? '');
+  const tokenOrgName = String(tokenUser.organizationName ?? '');
 
-  function setLanguage(lang: 'EN' | 'UZ' | 'RU') {
+  const userName = ref(tokenName || 'Rustam Karimov');
+  const userRole = ref(formatRoleLabel(tokenRole) || 'Owner');
+  const orgName = ref(tokenOrgName || 'AutoFix MCHJ');
+  const userInitials = ref(tokenName ? initialsFromName(tokenName) : 'RK');
+  const language = ref<LanguageCode>(getStoredLanguageCode());
+  const notificationCount = ref(3);
+  const ordersBadgeCount = ref(0);
+  const teamSubmenuOpen = ref(false);
+  const activeTeamSubItem = ref<'employees' | 'members' | 'invitations' | null>(
+    null,
+  );
+
+  function setLanguage(lang: LanguageCode) {
     language.value = lang;
+    setStoredLanguageCode(lang);
   }
 
   function setNotificationCount(count: number) {
     notificationCount.value = count;
+  }
+
+  function setOrdersBadgeCount(count: number) {
+    ordersBadgeCount.value = count;
   }
 
   function toggleTeamSubmenu() {
@@ -36,6 +54,7 @@ export const useBusinessAppStore = defineStore('businessApp', () => {
     activeTeamSubItem,
     setLanguage,
     setNotificationCount,
+    setOrdersBadgeCount,
     toggleTeamSubmenu,
   };
 });

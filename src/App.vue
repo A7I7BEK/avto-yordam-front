@@ -3,10 +3,12 @@
   lang="ts"
 >
 import { RouterView } from 'vue-router';
+import ErrorToasts from '@/components/app/ErrorToasts.vue';
 </script>
 
 <template>
   <RouterView />
+  <ErrorToasts />
 </template>
 
 <style>

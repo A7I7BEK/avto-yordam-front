@@ -12,6 +12,7 @@ import {
 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import { deleteRole, getRoles } from '@/services/rolesService';
 import type { Role } from '@/types/business';
 
@@ -21,6 +22,7 @@ const roles = ref<Role[]>([]);
 const loading = ref(true);
 const currentPage = ref(1);
 const pageSize = 5;
+const confirmDeleteRole = ref<Role | null>(null);
 
 onMounted(async () => {
   try {
@@ -103,15 +105,24 @@ function editRole(id: string) {
   router.push(`/business/roles-permissions/${id}/edit`);
 }
 
-function handleDelete(role: Role) {
+function askDelete(role: Role) {
   if (role.isSystem) {
     return;
   }
-  deleteRole(role.id);
-  roles.value = roles.value.filter((r) => r.id !== role.id);
+  confirmDeleteRole.value = role;
+}
+
+async function performDelete() {
+  const role = confirmDeleteRole.value;
+  if (!role) {
+    return;
+  }
+  await deleteRole(role.id);
+  roles.value = await getRoles();
   if (paginatedRoles.value.length === 0 && currentPage.value > 1) {
     currentPage.value--;
   }
+  confirmDeleteRole.value = null;
 }
 </script>
 
@@ -206,7 +217,7 @@ function handleDelete(role: Role) {
                     type="button"
                     class="icon-btn icon-btn--danger"
                     title="Delete"
-                    @click="handleDelete(role)"
+                    @click="askDelete(role)"
                   >
                     <Trash2 :size="16" />
                   </button>
@@ -272,6 +283,16 @@ function handleDelete(role: Role) {
         </div>
       </template>
     </div>
+
+    <!-- Delete role confirmation -->
+    <ConfirmDialog
+      :is-open="confirmDeleteRole !== null"
+      title="Delete this role?"
+      :message="`This permanently deletes the “${confirmDeleteRole?.name ?? ''}” role and removes it from all members. This action can't be undone.`"
+      confirm-label="Delete"
+      @cancel="confirmDeleteRole = null"
+      @confirm="performDelete"
+    />
   </div>
 </template>
 

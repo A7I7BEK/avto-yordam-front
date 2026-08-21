@@ -23,14 +23,19 @@ import CopyInviteLinkModal from '@/components/business/CopyInviteLinkModal.vue';
 import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
 import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
 import ResendInvitationModal from '@/components/business/ResendInvitationModal.vue';
-import { members as rawMembers } from '@/data/members';
-import type { TeamMember } from '@/types/business';
+import { createInvitation } from '@/services/invitationsService';
+import { getMembers } from '@/services/membersService';
+import { getRoles } from '@/services/rolesService';
+import type {
+  OrganizationInvitationRequest,
+  TeamMember,
+} from '@/types/business';
 
 const router = useRouter();
 
-// ── Mock data ──────────────────────────────────────────────
-const members = ref<TeamMember[]>(rawMembers);
-const loading = ref(false);
+// ── Data ──────────────────────────────────────────────────
+const members = ref<TeamMember[]>([]);
+const loading = ref(true);
 
 // ── Filters ────────────────────────────────────────────────
 const searchQuery = ref('');
@@ -149,6 +154,10 @@ function goToNext() {
 const openDropdownId = ref<string | null>(null);
 const dropdownStyle = ref({ top: '0px', left: '0px' });
 
+const openMember = computed<TeamMember | null>(
+  () => members.value.find((m) => m.id === openDropdownId.value) ?? null,
+);
+
 function toggleDropdown(id: string, event: MouseEvent) {
   if (openDropdownId.value === id) {
     openDropdownId.value = null;
@@ -171,7 +180,11 @@ function closeDropdown() {
 
 function viewMember(id: string) {
   closeDropdown();
-  router.push(`/business/team/members/${id}`);
+  const target = members.value.find((m) => m.id === id);
+  if (!target?.userId) {
+    return;
+  }
+  router.push(`/business/team/members/${target.userId}`);
 }
 
 // ── Remove modal ──────────────────────────────────────────
@@ -237,13 +250,33 @@ function onDocumentClick() {
   closeDropdown();
 }
 
-onMounted(() => document.addEventListener('click', onDocumentClick));
+async function loadMembers() {
+  try {
+    loading.value = true;
+    const data = await getMembers();
+    members.value = data ?? [];
+  } catch {
+    members.value = [];
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  loadMembers();
+  document.addEventListener('click', onDocumentClick);
+});
 onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 
 // ── Invite modal ──────────────────────────────────────────
 const showInviteModal = ref(false);
 
-function onInviteSend(data: {
+function formatPhoneWithPrefix(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  return digits.startsWith('998') ? `+${digits}` : `+998${digits}`;
+}
+
+async function onInviteSend(data: {
   contactMethod: 'phone' | 'email';
   phone: string;
   email: string;
@@ -251,10 +284,7 @@ function onInviteSend(data: {
   message: string;
 }) {
   showInviteModal.value = false;
-  const emailAddr =
-    data.contactMethod === 'email'
-      ? data.email
-      : `user${members.value.length + 1}@autofix.uz`;
+  const emailAddr = data.contactMethod === 'email' ? data.email : '';
   const displayName =
     data.contactMethod === 'email'
       ? (data.email.split('@')[0] ?? '')
@@ -281,6 +311,22 @@ function onInviteSend(data: {
     status: 'Invited',
     joined: 'Just now',
   });
+
+  // Send the invitation to the backend (keeps the optimistic row above too)
+  try {
+    const roleOptions = await getRoles();
+    const roleId = roleOptions.find((r) => r.name === data.role)?.id ?? '';
+    const request: OrganizationInvitationRequest = {
+      roleId,
+      inviteMessage: data.message,
+      ...(data.contactMethod === 'email'
+        ? { email: data.email }
+        : { phoneNumber: formatPhoneWithPrefix(data.phone) }),
+    };
+    await createInvitation(request);
+  } catch {
+    // The optimistic member row stays; the error can be surfaced later
+  }
 }
 </script>
 
@@ -571,6 +617,7 @@ function onInviteSend(data: {
           <button
             type="button"
             class="action-dropdown__item"
+            :disabled="!openMember?.userId"
             @click="viewMember(openDropdownId)"
           >
             <UserRound :size="15" />
@@ -1100,6 +1147,16 @@ function onInviteSend(data: {
 
 .action-dropdown__item:hover {
   background: var(--accent);
+}
+
+.action-dropdown__item:disabled {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-dropdown__item:disabled:hover {
+  background: transparent;
 }
 
 .action-dropdown__item--danger {

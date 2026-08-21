@@ -4,7 +4,11 @@
 >
 import { History, Pencil, ShieldAlert } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
-import { getSettingsBankInfo } from '@/services/settingsService';
+import {
+  getOrganization,
+  getSettingsBankInfo,
+  updateOrganization,
+} from '@/services/settingsService';
 
 interface BankInfo {
   accountHolder: string;
@@ -15,6 +19,7 @@ interface BankInfo {
 }
 
 const isEditing = ref(false);
+const saving = ref(false);
 
 const bankInfo = ref<BankInfo>({
   accountHolder: '',
@@ -57,9 +62,35 @@ function cancel() {
   isEditing.value = false;
 }
 
-function saveChanges() {
-  savedValues.value = { ...bankInfo.value };
-  isEditing.value = false;
+async function saveChanges() {
+  if (saving.value) {
+    return;
+  }
+  saving.value = true;
+  try {
+    const org = await getOrganization();
+    await updateOrganization({
+      type: org?.type ?? 'MCHJ',
+      name: bankInfo.value.accountHolder,
+      description: org?.description ?? null,
+      phone: org?.phone ?? '',
+      email: org?.email ?? null,
+      latitude: org?.latitude ?? null,
+      longitude: org?.longitude ?? null,
+      address: org?.address ?? '',
+      ownerId: org?.ownerId ?? '',
+      inn: bankInfo.value.inn,
+      bankAccount: bankInfo.value.accountNumber,
+      mfo: bankInfo.value.mfo,
+      bankName: bankInfo.value.bank,
+    });
+    savedValues.value = { ...bankInfo.value };
+    isEditing.value = false;
+  } catch {
+    // Global error toast surfaces the failure
+  } finally {
+    saving.value = false;
+  }
 }
 </script>
 
@@ -200,9 +231,10 @@ function saveChanges() {
           <button
             type="button"
             class="btn btn--primary"
+            :disabled="saving"
             @click="saveChanges"
           >
-            Save changes
+            {{ saving ? 'Saving…' : 'Save changes' }}
           </button>
         </div>
         <button

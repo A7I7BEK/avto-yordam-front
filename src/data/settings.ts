@@ -53,7 +53,7 @@ export const operatingHours = {
   thursday: { open: '09:00', close: '18:00', closed: false },
   friday: { open: '09:00', close: '18:00', closed: false },
   saturday: { open: '10:00', close: '15:00', closed: false },
-  sunday: { open: '00:00', close: '00:00', closed: true },
+  sunday: { open: '09:00', close: '18:00', closed: true },
 };
 
 export const photos = [
@@ -77,6 +77,7 @@ export const paymentProviders = [
   { id: 'payme', name: 'PayMe', enabled: true, fee: '2.5%', type: 'online' },
   { id: 'click', name: 'Click', enabled: true, fee: '2.0%', type: 'online' },
   { id: 'paynet', name: 'Paynet', enabled: false, fee: '3.0%', type: 'online' },
+  { id: 'uzum', name: 'Uzum', enabled: false, fee: '2.0%', type: 'online' },
   { id: 'cash', name: 'Cash', enabled: true, fee: '0%', type: 'offline' },
 ];
 

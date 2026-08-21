@@ -3,35 +3,109 @@
   lang="ts"
 >
 import { ArrowRight, BadgeCheck, UserRound } from '@lucide/vue';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
 import OnboardingStepper from '@/components/onboarding/OnboardingStepper.vue';
+import { getFileUrl } from '@/services/documentsService';
+import {
+  deleteProfilePhoto,
+  getUserProfile,
+  uploadProfilePhoto,
+} from '@/services/userService';
 import { useProfessionalOnboardingStore } from '@/stores/onboarding';
 
 const router = useRouter();
 const store = useProfessionalOnboardingStore();
 
-const languages = [
-  { value: 'uzbek', label: 'Uzbek' },
-  { value: 'russian', label: 'Russian' },
-  { value: 'english', label: 'English' },
-];
-
-const selectedLanguages = ref<string[]>([...store.personalInfo.languages]);
 const fullName = ref(store.personalInfo.fullName);
 const dateOfBirth = ref(store.personalInfo.dateOfBirth);
 const phone = ref(store.personalInfo.phone);
 const email = ref(store.personalInfo.email);
+const yearsOfExperience = ref(store.personalInfo.yearsOfExperience);
 
-function toggleLanguage(lang: string) {
-  const idx = selectedLanguages.value.indexOf(lang);
-  if (idx >= 0) {
-    selectedLanguages.value.splice(idx, 1);
-  } else {
-    selectedLanguages.value.push(lang);
+const profilePhotoUrl = ref('');
+const uploadingPhoto = ref(false);
+const photoInputRef = ref<HTMLInputElement | null>(null);
+
+const uploadLabel = computed(() => {
+  if (uploadingPhoto.value) {
+    return 'Uploading...';
+  }
+  return profilePhotoUrl.value ? 'Replace photo' : 'Upload photo';
+});
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function triggerUploadPhoto() {
+  photoInputRef.value?.click();
+}
+
+async function onPhotoSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  uploadingPhoto.value = true;
+  try {
+    const updated = await uploadProfilePhoto(file);
+    profilePhotoUrl.value = updated.profilePhoto?.path
+      ? getFileUrl(updated.profilePhoto.path)
+      : '';
+  } catch {
+    // Upload failed — keep the current photo
+  } finally {
+    uploadingPhoto.value = false;
+    input.value = '';
   }
 }
+
+async function removePhoto() {
+  uploadingPhoto.value = true;
+  try {
+    await deleteProfilePhoto();
+    profilePhotoUrl.value = '';
+  } catch {
+    // Removal failed — keep the current photo
+  } finally {
+    uploadingPhoto.value = false;
+  }
+}
+
+onMounted(async () => {
+  try {
+    const user = await getUserProfile();
+    if (!user) {
+      return;
+    }
+    if (user.fullName) {
+      fullName.value = user.fullName;
+    }
+    if (user.birthDay) {
+      dateOfBirth.value = user.birthDay;
+    }
+    if (user.phone) {
+      phone.value = user.phone;
+    }
+    if (user.email) {
+      email.value = user.email;
+    }
+    profilePhotoUrl.value = user.profilePhoto?.path
+      ? getFileUrl(user.profilePhoto.path)
+      : '';
+  } catch {
+    // Keep the store values when the profile cannot be loaded
+  }
+});
 
 function goBack() {
   router.push({ name: 'auth-register' });
@@ -41,7 +115,9 @@ function goNext() {
   store.updatePersonalInfo({
     fullName: fullName.value,
     dateOfBirth: dateOfBirth.value,
-    languages: selectedLanguages.value,
+    phone: phone.value,
+    email: email.value,
+    yearsOfExperience: Number(yearsOfExperience.value) || 0,
   });
   router.push({ name: 'professional-onboarding-step2' });
 }
@@ -67,17 +143,48 @@ function goNext() {
 
       <!-- Avatar -->
       <div class="avatar-row">
-        <div class="avatar">
-          <span>AI</span>
+        <div
+          v-if="profilePhotoUrl"
+          class="avatar avatar--image"
+        >
+          <img
+            :src="profilePhotoUrl"
+            alt=""
+            class="avatar-img"
+          >
+        </div>
+        <div
+          v-else
+          class="avatar"
+        >
+          <span>{{ getInitials(fullName || 'Unknown User') }}</span>
         </div>
         <div class="upload-column">
+          <input
+            ref="photoInputRef"
+            class="photo-input"
+            type="file"
+            accept="image/*"
+            @change="onPhotoSelected"
+          >
           <button
             class="btn-upload"
             type="button"
+            :disabled="uploadingPhoto"
+            @click="triggerUploadPhoto"
           >
-            Upload photo
+            {{ uploadLabel }}
           </button>
           <span class="upload-hint">JPG or PNG, max 4 MB</span>
+          <button
+            v-if="profilePhotoUrl"
+            class="btn-remove"
+            type="button"
+            :disabled="uploadingPhoto"
+            @click="removePhoto"
+          >
+            Remove photo
+          </button>
         </div>
       </div>
 
@@ -97,9 +204,26 @@ function goNext() {
         <input
           v-model="dateOfBirth"
           class="field-input"
-          type="text"
-          placeholder="DD / MM / YYYY"
+          type="date"
         >
+      </div>
+
+      <!-- Years of Experience -->
+      <div class="field-group">
+        <label class="field-label">Years of experience</label>
+        <div class="experience-row">
+          <div class="experience-input">
+            <input
+              v-model.number="yearsOfExperience"
+              class="exp-number"
+              type="number"
+              min="0"
+              max="70"
+            >
+            <span class="exp-label">years</span>
+          </div>
+          <span class="exp-hint">How long have you been doing this work?</span>
+        </div>
       </div>
 
       <!-- Phone (verified) -->
@@ -129,23 +253,6 @@ function goNext() {
           type="email"
           readonly
         >
-      </div>
-
-      <!-- Languages -->
-      <div class="field-group">
-        <label class="field-label">Languages</label>
-        <div class="chips-row">
-          <button
-            v-for="lang in languages"
-            :key="lang.value"
-            class="chip"
-            :class="{ selected: selectedLanguages.includes(lang.value) }"
-            type="button"
-            @click="toggleLanguage(lang.value)"
-          >
-            {{ lang.label }}
-          </button>
-        </div>
       </div>
 
       <!-- Footer -->
@@ -264,6 +371,46 @@ function goNext() {
   color: #616167;
 }
 
+.avatar--image {
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-input {
+  display: none;
+}
+
+.btn-upload:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.btn-remove {
+  align-self: flex-start;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #cc3314;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.btn-remove:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.btn-remove:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
 .field-group {
   display: flex;
   flex-direction: column;
@@ -308,6 +455,53 @@ function goNext() {
 .field-input-readonly {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.experience-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.experience-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 18px;
+  background: #f5f5f5;
+  border: 1px solid #c5c5cb;
+  border-radius: 999px;
+}
+
+.exp-number {
+  width: 50px;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2a2933;
+  text-align: center;
+  outline: none;
+  background: transparent;
+  border: none;
+}
+
+.exp-number::-webkit-inner-spin-button,
+.exp-number::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+.exp-label {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #616167;
+}
+
+.exp-hint {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #616167;
 }
 
 .chips-row {

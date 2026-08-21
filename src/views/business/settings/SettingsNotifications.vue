@@ -4,7 +4,14 @@
 >
 import { Bell, Info, Lock, Mail, MessageSquare, Send } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
-import { getSettingsNotifications } from '@/services/settingsService';
+import {
+  getOrganizationNotificationChannels,
+  updateOrganizationNotificationChannel,
+} from '@/services/notificationSettingsService';
+import type {
+  NotificationChannel,
+  OrganizationChannelResponse,
+} from '@/types/notification';
 
 interface Channel {
   id: string;
@@ -15,48 +22,105 @@ interface Channel {
 }
 
 const channels = ref<Channel[]>([]);
+const saving = ref(false);
+
+const channelDefs: Omit<Channel, 'enabled'>[] = [
+  {
+    id: 'in-app',
+    name: 'In-app',
+    description: 'Bell menu inside Masters. Not configurable.',
+    configurable: false,
+  },
+  {
+    id: 'sms',
+    name: 'SMS',
+    description:
+      'Sent to the phone number on file. Telecom fees apply at standard rates.',
+    configurable: true,
+  },
+  {
+    id: 'telegram',
+    name: 'Telegram',
+    description: 'Members link their Telegram once. Free to use.',
+    configurable: true,
+  },
+  {
+    id: 'email',
+    name: 'Email',
+    description: "Sent to the email address on each member's profile.",
+    configurable: true,
+  },
+];
+
+function defaultEnabled(channelId: string): boolean {
+  // In-app is always on; sensible defaults for the rest when nothing is stored.
+  if (channelId === 'in-app') {
+    return true;
+  }
+  if (channelId === 'sms') {
+    return true;
+  }
+  return false;
+}
+
+function toBackendChannel(channelId: string): NotificationChannel | null {
+  const map: Record<string, NotificationChannel> = {
+    'in-app': 'IN_APP',
+    sms: 'SMS',
+    telegram: 'TELEGRAM',
+    email: 'EMAIL',
+  };
+  return map[channelId] ?? null;
+}
+
+function buildChannels(apiChannels: OrganizationChannelResponse[]) {
+  const enabledByChannel = new Map<string, boolean>();
+  for (const item of apiChannels) {
+    enabledByChannel.set(item.channel, item.enabled);
+  }
+  channels.value = channelDefs.map((def) => {
+    const backend = toBackendChannel(def.id);
+    const fromApi =
+      backend === null ? undefined : enabledByChannel.get(backend);
+    return {
+      ...def,
+      enabled: fromApi ?? defaultEnabled(def.id),
+    };
+  });
+}
 
 onMounted(async () => {
-  const data = await getSettingsNotifications();
-  if (data) {
-    channels.value = [
-      {
-        id: 'in-app',
-        name: 'In-app',
-        description: 'Bell menu inside Masters. Not configurable.',
-        enabled: true,
-        configurable: false,
-      },
-      {
-        id: 'sms',
-        name: 'SMS',
-        description:
-          'Sent to the phone number on file. Telecom fees apply at standard rates.',
-        enabled: data.sms?.sms ?? true,
-        configurable: true,
-      },
-      {
-        id: 'telegram',
-        name: 'Telegram',
-        description: 'Members link their Telegram once. Free to use.',
-        enabled: false,
-        configurable: true,
-      },
-      {
-        id: 'email',
-        name: 'Email',
-        description: "Sent to the email address on each member's profile.",
-        enabled: data.email?.email ?? false,
-        configurable: true,
-      },
-    ];
+  const apiChannels = await getOrganizationNotificationChannels();
+  if (apiChannels && apiChannels.length > 0) {
+    buildChannels(apiChannels);
+  } else {
+    buildChannels([]);
   }
 });
 
-function toggleChannel(id: string) {
+async function toggleChannel(id: string) {
   const channel = channels.value.find((c) => c.id === id);
-  if (channel?.configurable) {
-    channel.enabled = !channel.enabled;
+  if (!channel?.configurable || saving.value) {
+    return;
+  }
+  const backend = toBackendChannel(id);
+  if (!backend) {
+    return;
+  }
+
+  const newEnabled = !channel.enabled;
+  channel.enabled = newEnabled;
+  saving.value = true;
+  try {
+    await updateOrganizationNotificationChannel({
+      channel: backend,
+      enabled: newEnabled,
+    });
+  } catch {
+    // Revert on failure
+    channel.enabled = !newEnabled;
+  } finally {
+    saving.value = false;
   }
 }
 </script>

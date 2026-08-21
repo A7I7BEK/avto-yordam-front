@@ -10,30 +10,24 @@ import {
   UserPlus,
   UserRound,
 } from '@lucide/vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-
-interface RoleOption {
-  id: string;
-  name: string;
-}
+import { createEmployee as apiCreateEmployee } from '@/services/employeesService';
+import { getRoles } from '@/services/rolesService';
 
 const router = useRouter();
 
-const roles = ref<RoleOption[]>([
-  { id: 'role-master', name: 'Master' },
-  { id: 'role-receptionist', name: 'Receptionist' },
-  { id: 'role-admin', name: 'Admin' },
-  { id: 'role-manager', name: 'Manager' },
-  { id: 'role-accountant', name: 'Accountant' },
-  { id: 'role-mechanic', name: 'Mechanic' },
-]);
+const roles = ref<{ id: string; name: string }[]>([]);
+const rolesLoading = ref(true);
 
 const fullName = ref('');
+const phone = ref('');
 const email = ref('');
 const password = ref('');
 const selectedRole = ref('');
 const fileInput = ref<HTMLInputElement | null>(null);
+const saving = ref(false);
+const createError = ref('');
 
 function triggerFileUpload() {
   fileInput.value?.click();
@@ -52,10 +46,45 @@ function generatePassword() {
   password.value = result;
 }
 
-function createEmployee() {
-  // Create logic
-  router.push('/business/team/employees');
+async function createEmployee() {
+  createError.value = '';
+  if (!fullName.value.trim()) {
+    createError.value = 'Full name is required';
+    return;
+  }
+  if (!password.value.trim()) {
+    createError.value = 'Password is required';
+    return;
+  }
+  if (!selectedRole.value) {
+    createError.value = 'Role is required';
+    return;
+  }
+  saving.value = true;
+  try {
+    await apiCreateEmployee({
+      fullName: fullName.value,
+      phone: phone.value || undefined,
+      email: email.value || undefined,
+      password: password.value,
+      roleId: selectedRole.value,
+    });
+    router.push('/business/team/employees');
+  } catch (e: any) {
+    createError.value = e.message ?? 'Failed to create employee';
+  } finally {
+    saving.value = false;
+  }
 }
+
+onMounted(async () => {
+  try {
+    const data = await getRoles();
+    roles.value = data.map((r) => ({ id: r.id, name: r.name }));
+  } finally {
+    rolesLoading.value = false;
+  }
+});
 </script>
 
 <template>
@@ -81,10 +110,14 @@ function createEmployee() {
       <button
         type="button"
         class="btn btn--primary"
+        :disabled="saving"
         @click="createEmployee"
       >
-        <UserPlus :size="15" />
-        Create employee
+        <UserPlus
+          v-if="!saving"
+          :size="15"
+        />
+        <span>{{ saving ? 'Creating...' : 'Create employee' }}</span>
       </button>
     </div>
 
@@ -171,6 +204,25 @@ function createEmployee() {
           </span>
         </div>
 
+        <!-- Phone -->
+        <div class="field-group">
+          <label
+            class="field-label"
+            for="phone"
+            >Phone number</label
+          >
+          <input
+            id="phone"
+            v-model="phone"
+            type="tel"
+            class="field-input"
+            placeholder="+998 90 123 45 67"
+          >
+          <span class="field-hint">
+            Optional. Used for account recovery and notifications.
+          </span>
+        </div>
+
         <!-- Password -->
         <div class="field-group">
           <label
@@ -193,6 +245,14 @@ function createEmployee() {
             <Sparkles :size="13" />
             Generate a strong password
           </button>
+        </div>
+
+        <!-- Error -->
+        <div
+          v-if="createError"
+          class="field-error"
+        >
+          {{ createError }}
         </div>
 
         <!-- Role -->
@@ -317,6 +377,11 @@ function createEmployee() {
 
 .btn--primary:hover {
   opacity: 0.9;
+}
+
+.btn--primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .btn--outline {
@@ -495,6 +560,16 @@ function createEmployee() {
 
 .file-input-hidden {
   display: none;
+}
+
+.field-error {
+  padding: 10px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  color: #cc3314;
+  background: #fff5f5;
+  border: 1px solid #cc3314;
+  border-radius: 6px;
 }
 
 .field-hint {

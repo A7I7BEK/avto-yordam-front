@@ -2,15 +2,39 @@
   setup
   lang="ts"
 >
-import { Calendar, Check, ChevronDown, Pencil, Upload } from '@lucide/vue';
-import { reactive, ref } from 'vue';
+import {
+  Calendar,
+  Check,
+  ChevronDown,
+  Loader2,
+  Pencil,
+  Upload,
+} from '@lucide/vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getFileUrl } from '@/services/documentsService';
+import {
+  deleteProfilePhoto,
+  getAllMasterSpecializations,
+  getOwnMasterInfo,
+  getUserProfile,
+  saveBirthday,
+  saveMasterInfo,
+  uploadProfilePhoto,
+} from '@/services/userService';
+import type {
+  MasterInfoResponse,
+  MasterSpecializationResponse,
+} from '@/types/user';
 
 const router = useRouter();
 const route = useRoute();
 
+const loading = ref(true);
+const saving = ref(false);
+
 const fullName = ref('Aziz Ismoilov');
-const dateOfBirth = ref('14 / 02 / 1991');
+const dateOfBirth = ref('');
 const yearsOfExperience = ref('8');
 const workFrom = ref('09:00');
 const workTo = ref('19:00');
@@ -18,30 +42,21 @@ const bio = ref(
   'Master mechanic specializing in European brands. 8 years of hands-on garage experience in Tashkent.',
 );
 
-const specializationOptions = [
-  { value: 'engine', label: 'Engine', selected: true },
-  { value: 'transmission', label: 'Transmission', selected: false },
-  { value: 'bodywork', label: 'Bodywork', selected: false },
-  { value: 'paint', label: 'Paint', selected: false },
-  { value: 'electrical', label: 'Electrical', selected: true },
-  { value: 'diagnostics', label: 'Diagnostics', selected: true },
-  { value: 'tires', label: 'Tires', selected: false },
-  { value: 'ac', label: 'A/C', selected: false },
-  { value: 'suspension', label: 'Suspension', selected: false },
-  { value: 'glass', label: 'Glass', selected: false },
-];
+const profilePhotoUrl = ref('');
+const uploadingPhoto = ref(false);
+const photoInputRef = ref<HTMLInputElement | null>(null);
 
-const selectedCount = ref(
-  specializationOptions.filter((o) => o.selected).length,
-);
+const specializations = ref<MasterSpecializationResponse[]>([]);
+const selectedSpecializationId = ref('');
 
-function toggleSpecialization(opt: {
-  value: string;
-  label: string;
-  selected: boolean;
-}) {
-  opt.selected = !opt.selected;
-  selectedCount.value = specializationOptions.filter((o) => o.selected).length;
+let existingMasterInfoId: string | undefined;
+
+const selectedCount = ref(0);
+
+function toggleSpecialization(spec: MasterSpecializationResponse) {
+  selectedSpecializationId.value =
+    selectedSpecializationId.value === spec.id ? '' : spec.id;
+  selectedCount.value = selectedSpecializationId.value ? 1 : 0;
 }
 
 const days = reactive([
@@ -58,6 +73,74 @@ function toggleDay(day: { key: string; label: string; active: boolean }) {
   day.active = !day.active;
 }
 
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function triggerUploadPhoto() {
+  photoInputRef.value?.click();
+}
+
+async function onPhotoSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  uploadingPhoto.value = true;
+  try {
+    const updated = await uploadProfilePhoto(file);
+    profilePhotoUrl.value = updated.profilePhoto?.path
+      ? getFileUrl(updated.profilePhoto.path)
+      : '';
+  } finally {
+    uploadingPhoto.value = false;
+    input.value = '';
+  }
+}
+
+async function removePhoto() {
+  uploadingPhoto.value = true;
+  try {
+    await deleteProfilePhoto();
+    profilePhotoUrl.value = '';
+  } finally {
+    uploadingPhoto.value = false;
+  }
+}
+
+function calcYearsToDate(years: string): string {
+  const num = Number(years);
+  if (!num || num < 1) {
+    return '';
+  }
+  const now = new Date();
+  const start = new Date(
+    now.getFullYear() - num,
+    now.getMonth(),
+    now.getDate(),
+  );
+  return start.toISOString().split('T')[0] ?? '';
+}
+
+function calcDateToYears(dateStr: string | null): string {
+  if (!dateStr) {
+    return '';
+  }
+  const start = new Date(dateStr);
+  const now = new Date();
+  const years = now.getFullYear() - start.getFullYear();
+  const months = now.getMonth() - start.getMonth();
+  const totalYears = months < 0 ? years - 1 : years;
+  return String(Math.max(1, totalYears));
+}
+
 function goToPreview() {
   router.push({
     path: route.path,
@@ -65,9 +148,80 @@ function goToPreview() {
   });
 }
 
-function saveChanges() {
-  goToPreview();
+async function saveChanges() {
+  saving.value = true;
+  try {
+    if (dateOfBirth.value) {
+      await saveBirthday(dateOfBirth.value);
+    }
+
+    await saveMasterInfo(
+      {
+        experienceStartDate: calcYearsToDate(yearsOfExperience.value),
+        description: bio.value,
+        specializationId: selectedSpecializationId.value,
+        workingTimeStart: workFrom.value || null,
+        workingTimeEnd: workTo.value || null,
+      },
+      existingMasterInfoId,
+    );
+
+    await goToPreview();
+  } finally {
+    saving.value = false;
+  }
 }
+
+function applyMasterInfo(masterInfoData: MasterInfoResponse) {
+  // Match specialization by name
+  const match = specializations.value.find(
+    (s) =>
+      s.name.toLowerCase() === masterInfoData.specializationName.toLowerCase(),
+  );
+  selectedSpecializationId.value = match?.id ?? '';
+  selectedCount.value = selectedSpecializationId.value ? 1 : 0;
+
+  // Experience
+  yearsOfExperience.value = calcDateToYears(masterInfoData.experienceStartDate);
+
+  // Working hours
+  if (masterInfoData.workingTimeStart) {
+    workFrom.value = masterInfoData.workingTimeStart.slice(0, 5);
+  }
+  if (masterInfoData.workingTimeEnd) {
+    workTo.value = masterInfoData.workingTimeEnd.slice(0, 5);
+  }
+
+  // Bio
+  if (masterInfoData.description) {
+    bio.value = masterInfoData.description;
+  }
+
+  existingMasterInfoId = masterInfoData.id;
+}
+
+onMounted(async () => {
+  try {
+    const [user, masterInfoData, specs] = await Promise.all([
+      getUserProfile(),
+      getOwnMasterInfo(),
+      getAllMasterSpecializations(),
+    ]);
+    specializations.value = specs;
+    fullName.value = user.fullName;
+    profilePhotoUrl.value = user.profilePhoto?.path
+      ? getFileUrl(user.profilePhoto.path)
+      : '';
+    if (user.birthDay) {
+      dateOfBirth.value = user.birthDay;
+    }
+    if (masterInfoData) {
+      applyMasterInfo(masterInfoData);
+    }
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 
 <template>
@@ -90,207 +244,257 @@ function saveChanges() {
         </button>
         <button
           class="btn-primary"
+          :disabled="saving"
           type="button"
           @click="saveChanges"
         >
-          <Check :size="13" />
-          <span>Save changes</span>
+          <Loader2
+            v-if="saving"
+            :size="13"
+            class="spin"
+          />
+          <Check
+            v-else
+            :size="13"
+          />
+          <span>{{ saving ? 'Saving...' : 'Save changes' }}</span>
         </button>
       </div>
     </div>
 
-    <!-- Profile Photo -->
-    <div class="photo-section">
-      <div class="profile-avatar">AI</div>
-      <div class="photo-info">
-        <span class="photo-title">Profile photo</span>
-        <span class="photo-desc"
-          >JPG or PNG, max 4 MB. Shown to customers and team members.</span
-        >
-      </div>
-      <div class="photo-actions">
-        <button
-          class="btn-outline btn-sm"
-          type="button"
-        >
-          <Upload :size="12" />
-          <span>Replace</span>
-        </button>
-        <button
-          class="btn-text"
-          type="button"
-        >
-          Remove
-        </button>
-      </div>
+    <!-- Loading State -->
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <Loader2
+        :size="20"
+        color="#616167"
+        class="spin"
+      />
+      <span>Loading profile...</span>
     </div>
 
-    <div class="divider" />
-
-    <!-- Editable Details -->
-    <div class="edit-section">
-      <div class="section-heading">
-        <Pencil :size="13" />
-        <span>Editable details</span>
-      </div>
-
-      <!-- Full name & Date of birth -->
-      <div class="two-col">
-        <div class="field-vertical">
-          <span class="field-label-sm">Full name</span>
-          <input
-            v-model="fullName"
-            class="input-pill"
-            type="text"
+    <template v-else>
+      <!-- Profile Photo -->
+      <div class="photo-section">
+        <div
+          v-if="profilePhotoUrl"
+          class="profile-avatar"
+        >
+          <img
+            :src="profilePhotoUrl"
+            alt=""
+            class="photo-img"
           >
         </div>
-        <div class="field-vertical">
-          <span class="field-label-sm">Date of birth</span>
-          <div class="input-pill-wrapper">
+        <div
+          v-else
+          class="profile-avatar"
+        >{{ getInitials(fullName) }}</div>
+        <div class="photo-info">
+          <span class="photo-title">Profile photo</span>
+          <span class="photo-desc"
+            >JPG or PNG, max 4 MB. Shown to customers and team members.</span
+          >
+        </div>
+        <div class="photo-actions">
+          <input
+            ref="photoInputRef"
+            class="photo-input"
+            type="file"
+            accept="image/*"
+            @change="onPhotoSelected"
+          >
+          <button
+            class="btn-outline btn-sm"
+            type="button"
+            :disabled="uploadingPhoto"
+            @click="triggerUploadPhoto"
+          >
+            <Upload :size="12" />
+            <span>{{ uploadingPhoto ? 'Uploading...' : 'Replace' }}</span>
+          </button>
+          <button
+            v-if="profilePhotoUrl"
+            class="btn-text"
+            type="button"
+            :disabled="uploadingPhoto"
+            @click="removePhoto"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+
+      <div class="divider" />
+
+      <!-- Editable Details -->
+      <div class="edit-section">
+        <div class="section-heading">
+          <Pencil :size="13" />
+          <span>Editable details</span>
+        </div>
+
+        <!-- Full name & Date of birth -->
+        <div class="two-col">
+          <div class="field-vertical">
+            <span class="field-label-sm">Full name</span>
             <input
-              v-model="dateOfBirth"
-              class="input-pill date-input"
+              v-model="fullName"
+              class="input-pill"
               type="text"
             >
-            <Calendar
-              :size="14"
-              color="#616167"
-              class="input-icon"
-            />
           </div>
-        </div>
-      </div>
-
-      <!-- Specialization -->
-      <div class="field-block">
-        <div class="field-block-header">
-          <div class="field-block-title">
-            <span class="field-title">Specialization</span>
-            <span class="field-desc"
-              >Pick everything you confidently work on — you can adjust anytime.</span
-            >
-          </div>
-          <span class="selected-count">{{ selectedCount }} selected</span>
-        </div>
-        <div class="chips-row">
-          <button
-            v-for="opt in specializationOptions.slice(0, 5)"
-            :key="opt.value"
-            class="chip"
-            :class="{ active: opt.selected }"
-            type="button"
-            @click="toggleSpecialization(opt)"
-          >
-            <Check
-              v-if="opt.selected"
-              :size="12"
-            />
-            {{ opt.label }}
-          </button>
-        </div>
-        <div class="chips-row">
-          <button
-            v-for="opt in specializationOptions.slice(5)"
-            :key="opt.value"
-            class="chip"
-            :class="{ active: opt.selected }"
-            type="button"
-            @click="toggleSpecialization(opt)"
-          >
-            <Check
-              v-if="opt.selected"
-              :size="12"
-            />
-            {{ opt.label }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Years of experience -->
-      <div class="field-block">
-        <div class="field-block-title">
-          <span class="field-title">Years of experience (self-reported)</span>
-          <span class="field-desc"
-            >Verified time on the platform is tracked separately and shown on
-            your public profile.</span
-          >
-        </div>
-        <div class="exp-pill">
-          <input
-            v-model="yearsOfExperience"
-            class="exp-input"
-            type="text"
-          >
-          <span class="exp-unit">years</span>
-        </div>
-      </div>
-
-      <!-- Working time -->
-      <div class="field-block">
-        <div class="field-block-title">
-          <span class="field-title">Working time</span>
-          <span class="field-desc"
-            >Your default working hours. Each organization you work for can
-            override these on its own schedule.</span
-          >
-        </div>
-        <div class="time-range">
-          <div class="time-field">
-            <span class="time-label">FROM</span>
-            <div class="time-pill">
+          <div class="field-vertical">
+            <span class="field-label-sm">Date of birth</span>
+            <div class="input-pill-wrapper">
               <input
-                v-model="workFrom"
-                class="time-input"
-                type="time"
+                v-model="dateOfBirth"
+                class="input-pill date-input"
+                type="date"
               >
-              <ChevronDown
+              <Calendar
                 :size="14"
                 color="#616167"
-              />
-            </div>
-          </div>
-          <span class="time-sep">&mdash;</span>
-          <div class="time-field">
-            <span class="time-label">TO</span>
-            <div class="time-pill">
-              <input
-                v-model="workTo"
-                class="time-input"
-                type="time"
-              >
-              <ChevronDown
-                :size="14"
-                color="#616167"
+                class="input-icon"
               />
             </div>
           </div>
         </div>
-        <div class="days-block">
-          <span class="days-label">DAYS</span>
-          <div class="days-row">
+
+        <!-- Specialization -->
+        <div class="field-block">
+          <div class="field-block-header">
+            <div class="field-block-title">
+              <span class="field-title">Specialization</span>
+              <span class="field-desc"
+                >Pick everything you confidently work on — you can adjust
+                anytime.</span
+              >
+            </div>
+            <span class="selected-count">{{ selectedCount }} selected</span>
+          </div>
+          <div class="chips-row">
             <button
-              v-for="day in days"
-              :key="day.key"
-              class="day-chip"
-              :class="{ active: day.active }"
+              v-for="spec in specializations.slice(0, 5)"
+              :key="spec.id"
+              class="chip"
+              :class="{ active: selectedSpecializationId === spec.id }"
               type="button"
-              @click="toggleDay(day)"
+              @click="toggleSpecialization(spec)"
             >
-              {{ day.label }}
+              <Check
+                v-if="selectedSpecializationId === spec.id"
+                :size="12"
+              />
+              {{ spec.name }}
+            </button>
+          </div>
+          <div class="chips-row">
+            <button
+              v-for="spec in specializations.slice(5)"
+              :key="spec.id"
+              class="chip"
+              :class="{ active: selectedSpecializationId === spec.id }"
+              type="button"
+              @click="toggleSpecialization(spec)"
+            >
+              <Check
+                v-if="selectedSpecializationId === spec.id"
+                :size="12"
+              />
+              {{ spec.name }}
             </button>
           </div>
         </div>
-      </div>
 
-      <!-- Short bio -->
-      <div class="field-vertical">
-        <span class="field-label-sm">Short bio</span>
-        <textarea
-          v-model="bio"
-          class="bio-input"
-        />
+        <!-- Years of experience -->
+        <div class="field-block">
+          <div class="field-block-title">
+            <span class="field-title">Years of experience (self-reported)</span>
+            <span class="field-desc"
+              >Verified time on the platform is tracked separately and shown on
+              your public profile.</span
+            >
+          </div>
+          <div class="exp-pill">
+            <input
+              v-model="yearsOfExperience"
+              class="exp-input"
+              type="text"
+            >
+            <span class="exp-unit">years</span>
+          </div>
+        </div>
+
+        <!-- Working time -->
+        <div class="field-block">
+          <div class="field-block-title">
+            <span class="field-title">Working time</span>
+            <span class="field-desc"
+              >Your default working hours. Each organization you work for can
+              override these on its own schedule.</span
+            >
+          </div>
+          <div class="time-range">
+            <div class="time-field">
+              <span class="time-label">FROM</span>
+              <div class="time-pill">
+                <input
+                  v-model="workFrom"
+                  class="time-input"
+                  type="time"
+                >
+                <ChevronDown
+                  :size="14"
+                  color="#616167"
+                />
+              </div>
+            </div>
+            <span class="time-sep">&mdash;</span>
+            <div class="time-field">
+              <span class="time-label">TO</span>
+              <div class="time-pill">
+                <input
+                  v-model="workTo"
+                  class="time-input"
+                  type="time"
+                >
+                <ChevronDown
+                  :size="14"
+                  color="#616167"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="days-block">
+            <span class="days-label">DAYS</span>
+            <div class="days-row">
+              <button
+                v-for="day in days"
+                :key="day.key"
+                class="day-chip"
+                :class="{ active: day.active }"
+                type="button"
+                @click="toggleDay(day)"
+              >
+                {{ day.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Short bio -->
+        <div class="field-vertical">
+          <span class="field-label-sm">Short bio</span>
+          <textarea
+            v-model="bio"
+            class="bio-input"
+          />
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -303,6 +507,18 @@ function saveChanges() {
   background: #ffffff;
   border: 1px solid #c5c5cb;
   border-radius: 24px;
+}
+
+/* Loading state */
+.loading-state {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #616167;
 }
 
 /* Header */
@@ -397,12 +613,23 @@ function saveChanges() {
   justify-content: center;
   width: 64px;
   height: 64px;
+  overflow: hidden;
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   background: #5749f4;
   border-radius: 999px;
+}
+
+.profile-avatar .photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-input {
+  display: none;
 }
 
 .photo-info {
@@ -724,5 +951,18 @@ function saveChanges() {
 
 .bio-input:focus {
   border-color: #5749f4;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

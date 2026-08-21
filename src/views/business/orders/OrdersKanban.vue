@@ -16,13 +16,14 @@ import {
 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
 import { isMockMode } from '@/config';
-import { getCategories } from '@/services/categoriesService';
 import { getEmployees } from '@/services/employeesService';
 import {
   acceptOrder,
   cancelOrder,
   completeOrder,
+  countNewOrders,
   createOrderByOwner,
   createOrderWithMaster,
   deleteOrder,
@@ -31,19 +32,22 @@ import {
   sendOrderToMaster,
   startOrder,
 } from '@/services/ordersService';
+import { getOrganizationServices } from '@/services/organizationService';
+import { getMyOrg } from '@/services/settingsService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 import type { Order } from '@/types/business';
+import type { OrganizationServiceResponse } from '@/types/user';
 
 const router = useRouter();
+const store = useBusinessAppStore();
 
-// Authentication role/org details (mock or decoded from token)
-const orgId = ref<any>('1');
+// Authentication role details (mock or decoded from token)
 const isOwner = ref(true);
 const isMaster = ref(false);
 
 function decodeUserToken() {
   const token = localStorage.getItem('token');
   if (!token || isMockMode()) {
-    orgId.value = '1';
     isOwner.value = true;
     isMaster.value = false;
     return;
@@ -55,7 +59,6 @@ function decodeUserToken() {
       const payload = JSON.parse(
         atob(payloadPart.replace(/-/g, '+').replace(/_/g, '/')),
       );
-      orgId.value = payload.organizationId || '1';
       isOwner.value =
         payload.organizationRole === 'OWNER' ||
         payload.platformRole === 'OWNER';
@@ -63,8 +66,7 @@ function decodeUserToken() {
         payload.organizationRole === 'MASTER' ||
         payload.platformRole === 'MASTER';
     }
-  } catch (_) {
-    orgId.value = '1';
+  } catch {
     isOwner.value = true;
     isMaster.value = false;
   }
@@ -80,10 +82,28 @@ const draggedOrderId = ref<string | null>(null);
 const rejectModalOpen = ref(false);
 const rejectReason = ref('');
 const activeRejectOrderId = ref<string | null>(null);
+const confirmDeleteOrder = ref<Order | null>(null);
+
+// Complete-order (payment method) modal
+const completeModalOpen = ref(false);
+const completeLoading = ref(false);
+const activeCompleteOrderId = ref<string | null>(null);
+const paymentMethod = ref<'CASH' | 'PAYME' | 'CLICK' | 'PAYNET'>('CASH');
+const completeError = ref('');
+const PAYMENT_METHOD_OPTIONS: {
+  value: 'CASH' | 'PAYME' | 'CLICK' | 'PAYNET';
+  label: string;
+}[] = [
+  { value: 'CASH', label: 'Cash' },
+  { value: 'PAYME', label: 'Payme' },
+  { value: 'CLICK', label: 'Click' },
+  { value: 'PAYNET', label: 'Paynet' },
+];
+const EXISTING_TRANSACTION_REGEX = /already has.*transaction/i;
 
 const createModalOpen = ref(false);
 const createLoading = ref(false);
-const services = ref<any[]>([]);
+const services = ref<OrganizationServiceResponse[]>([]);
 const masters = ref<any[]>([]);
 const searchQuery = ref('');
 
@@ -181,6 +201,7 @@ async function load() {
   try {
     const list = await getOrders();
     orders.value = list;
+    store.setOrdersBadgeCount(countNewOrders(list));
   } catch (err: any) {
     triggerToast(err.message || 'Failed to load orders', 'error');
   } finally {
@@ -191,11 +212,14 @@ async function load() {
 // Fetch helper items (services/masters) for creation modal
 async function loadModalHelpers() {
   try {
-    const { services: svcList } = await getCategories();
+    const org = await getMyOrg();
+    const svcList = await getOrganizationServices(org?.id ?? '');
     services.value = svcList || [];
     const empList = await getEmployees();
     masters.value = empList || [];
-  } catch (_) {}
+  } catch {
+    // Helper data is optional; the modal still works without it.
+  }
 }
 
 onMounted(() => {
@@ -240,7 +264,7 @@ const groupedOrders = computed(() => {
 
 // Action triggers
 async function handleAction(
-  orderId: string,
+  order: Order,
   action:
     | 'accept'
     | 'start'
@@ -250,32 +274,25 @@ async function handleAction(
     | 'delete',
 ) {
   try {
-    let rawId = orderId;
-    if (orderId.startsWith('#BK-')) {
-      // In real backend mode, we might need to strip or map back the BK prefix or use the real numeric id if available
-      // For fallback/mock we keep it as is
-    }
+    const backendId = order.backendId || order.id;
     if (action === 'accept') {
-      await acceptOrder(rawId);
+      await acceptOrder(backendId);
       triggerToast('Order accepted');
     } else if (action === 'start') {
-      await startOrder(rawId);
+      await startOrder(backendId);
       triggerToast('Order started');
     } else if (action === 'complete') {
-      await completeOrder(rawId);
-      triggerToast('Order completed');
+      openCompleteModal(order);
+      return;
     } else if (action === 'cancel') {
-      await cancelOrder(rawId);
+      await cancelOrder(backendId);
       triggerToast('Order cancelled');
     } else if (action === 'sendToMaster') {
-      await sendOrderToMaster(rawId);
+      await sendOrderToMaster(backendId);
       triggerToast('Order sent to master');
     } else if (action === 'delete') {
-      if (!confirm('Are you sure you want to delete this order?')) {
-        return;
-      }
-      await deleteOrder(rawId);
-      triggerToast('Order deleted');
+      confirmDeleteOrder.value = order;
+      return;
     }
     await load();
   } catch (err: any) {
@@ -283,9 +300,67 @@ async function handleAction(
   }
 }
 
+// Open the payment-method picker before completing an order
+function openCompleteModal(order: Order) {
+  activeCompleteOrderId.value = order.backendId || order.id;
+  paymentMethod.value = 'CASH';
+  completeError.value = '';
+  completeModalOpen.value = true;
+}
+
+async function confirmComplete() {
+  if (!activeCompleteOrderId.value) {
+    return;
+  }
+  completeLoading.value = true;
+  completeError.value = '';
+  try {
+    const response: any = await completeOrder(
+      activeCompleteOrderId.value,
+      paymentMethod.value,
+    );
+    const message =
+      response?.message ??
+      (paymentMethod.value === 'CASH'
+        ? 'Order completed and payment recorded as cash'
+        : 'Order completed and payment transaction created');
+    triggerToast(message);
+    completeModalOpen.value = false;
+    await load();
+  } catch (err: any) {
+    if (
+      err?.message?.includes('400') ||
+      EXISTING_TRANSACTION_REGEX.test(err?.message ?? '')
+    ) {
+      completeError.value =
+        'This order already has a payment transaction. It cannot be completed again.';
+    } else {
+      completeError.value = err?.message || 'Failed to complete order.';
+    }
+  } finally {
+    completeLoading.value = false;
+  }
+}
+
+async function performDeleteOrder() {
+  const order = confirmDeleteOrder.value;
+  if (!order) {
+    return;
+  }
+  try {
+    const backendId = order.backendId || order.id;
+    await deleteOrder(backendId);
+    triggerToast('Order deleted');
+    confirmDeleteOrder.value = null;
+    await load();
+  } catch (err: any) {
+    triggerToast(err.message || 'Operation failed', 'error');
+  }
+}
+
 // Reject logic
-function openRejectModal(orderId: string) {
-  activeRejectOrderId.value = orderId;
+function openRejectModal(order: Order) {
+  activeRejectOrderId.value = order.backendId || order.id;
   rejectReason.value = '';
   rejectModalOpen.value = true;
 }
@@ -348,20 +423,18 @@ async function handleCreateOrder() {
   createLoading.value = true;
   try {
     const slotData = {
-      organizationId: Number(orgId.value) || 1,
       slotDate: f.slotDate,
-      startTime: f.startTime + ':00',
-      endTime: f.endTime + ':00',
+      startTime: `${f.startTime}:00`,
+      endTime: `${f.endTime}:00`,
       isBooked: true,
     };
 
     if (isOwner.value) {
       await createOrderByOwner({
-        organizationId: Number(orgId.value) || 1,
         masterId: f.masterId,
         clientName: f.clientName.trim(),
         clientNumber: f.clientNumber.trim(),
-        organizationServicesId: f.serviceId,
+        organizationCatalogId: f.serviceId,
         slot: slotData,
         status: 'CREATED',
         estimatedPrice: f.estimatedPrice ? Number(f.estimatedPrice) : undefined,
@@ -370,10 +443,9 @@ async function handleCreateOrder() {
       });
     } else {
       await createOrderWithMaster({
-        organizationId: Number(orgId.value) || 1,
         clientName: f.clientName.trim(),
         clientNumber: f.clientNumber.trim(),
-        organizationServicesId: f.serviceId,
+        organizationCatalogId: f.serviceId,
         slot: slotData,
         status: 'CREATED',
         estimatedPrice: f.estimatedPrice ? Number(f.estimatedPrice) : undefined,
@@ -444,7 +516,7 @@ async function onDrop(event: DragEvent, targetColId: ColumnId) {
   };
 
   if (targetColId === 'REJECTED') {
-    openRejectModal(orderId);
+    openRejectModal(order);
     return;
   }
 
@@ -459,8 +531,8 @@ async function onDrop(event: DragEvent, targetColId: ColumnId) {
   order.status = targetColId.toLowerCase(); // update locally
 
   try {
-    await handleAction(orderId, action);
-  } catch (_) {
+    await handleAction(order, action);
+  } catch {
     // revert
     order.status = previousStatus;
   }
@@ -550,12 +622,12 @@ function viewOrder(id: string) {
             class="order-card"
             draggable="true"
             @dragstart="onDragStart($event, order.id)"
-            @dblclick="viewOrder(order.id)"
+            @dblclick="viewOrder(order.backendId || order.id)"
           >
             <div class="order-card__header">
               <span
                 class="order-card__id"
-                @click="viewOrder(order.id)"
+                @click="viewOrder(order.backendId || order.id)"
                 >{{ order.id }}</span
               >
               <span class="order-card__amount">{{ order.amount }}</span>
@@ -586,7 +658,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn"
                   title="Send to Master"
-                  @click="handleAction(order.id, 'sendToMaster')"
+                  @click="handleAction(order, 'sendToMaster')"
                 >
                   <Send :size="12" />
                 </button>
@@ -594,7 +666,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -602,7 +674,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-danger"
                   title="Delete"
-                  @click="handleAction(order.id, 'delete')"
+                  @click="handleAction(order, 'delete')"
                 >
                   <Trash2 :size="12" />
                 </button>
@@ -616,7 +688,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-success"
                   title="Accept"
-                  @click="handleAction(order.id, 'accept')"
+                  @click="handleAction(order, 'accept')"
                 >
                   <Check :size="12" />
                 </button>
@@ -624,7 +696,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-danger"
                   title="Reject"
-                  @click="openRejectModal(order.id)"
+                  @click="openRejectModal(order)"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -632,7 +704,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -646,7 +718,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -658,7 +730,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-primary"
                   title="Start Job"
-                  @click="handleAction(order.id, 'start')"
+                  @click="handleAction(order, 'start')"
                 >
                   <Play :size="12" />
                 </button>
@@ -666,7 +738,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -678,7 +750,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-success"
                   title="Complete"
-                  @click="handleAction(order.id, 'complete')"
+                  @click="handleAction(order, 'complete')"
                 >
                   <CheckCircle :size="12" />
                 </button>
@@ -686,7 +758,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-warning"
                   title="Cancel"
-                  @click="handleAction(order.id, 'cancel')"
+                  @click="handleAction(order, 'cancel')"
                 >
                   <XCircle :size="12" />
                 </button>
@@ -698,7 +770,7 @@ function viewOrder(id: string) {
                   type="button"
                   class="action-btn text-danger"
                   title="Delete"
-                  @click="handleAction(order.id, 'delete')"
+                  @click="handleAction(order, 'delete')"
                 >
                   <Trash2 :size="12" />
                 </button>
@@ -709,7 +781,7 @@ function viewOrder(id: string) {
                 type="button"
                 class="action-btn ml-auto"
                 title="View details"
-                @click="viewOrder(order.id)"
+                @click="viewOrder(order.backendId || order.id)"
               >
                 <Eye :size="12" />
               </button>
@@ -734,7 +806,7 @@ function viewOrder(id: string) {
     >
       <div
         class="modal-content"
-        @click.stopPropagation
+        @click.stop
       >
         <h3 class="modal-title">Reject Order</h3>
         <p class="modal-desc">
@@ -765,6 +837,64 @@ function viewOrder(id: string) {
       </div>
     </div>
 
+    <!-- Complete Order — Payment method modal -->
+    <div
+      v-if="completeModalOpen"
+      class="modal-backdrop"
+      @click="completeModalOpen = false"
+    >
+      <div
+        class="modal-content"
+        @click.stop
+      >
+        <h3 class="modal-title">Complete Order — Payment</h3>
+        <p class="modal-desc">
+          Choose the payment method used for this order. A paid payment
+          transaction will be created automatically.
+        </p>
+        <div
+          v-if="completeError"
+          class="modal-error"
+        >
+          {{ completeError }}
+        </div>
+        <div class="payment-methods">
+          <label
+            v-for="option in PAYMENT_METHOD_OPTIONS"
+            :key="option.value"
+            class="payment-method"
+            :class="{ 'payment-method--selected': paymentMethod === option.value }"
+          >
+            <input
+              v-model="paymentMethod"
+              type="radio"
+              name="payment-method"
+              :value="option.value"
+            >
+            <span class="payment-method__label">{{ option.label }}</span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn btn--outline"
+            :disabled="completeLoading"
+            @click="completeModalOpen = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn--primary"
+            :disabled="completeLoading"
+            @click="confirmComplete"
+          >
+            {{ completeLoading ? 'Completing...' : 'Complete Order' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Create Order Modal -->
     <div
       v-if="createModalOpen"
@@ -773,7 +903,7 @@ function viewOrder(id: string) {
     >
       <div
         class="modal-content modal-content--wide"
-        @click.stopPropagation
+        @click.stop
       >
         <h3 class="modal-title">Create New Order</h3>
         <div class="create-form-grid">
@@ -808,7 +938,7 @@ function viewOrder(id: string) {
                 :value="s.id"
               >
                 {{ s.name }}
-                (UZS {{ (s.price || 0).toLocaleString() }})
+                ({{ s.minPrice || s.maxPrice ? `UZS ${(s.minPrice ?? 0).toLocaleString()} – ${(s.maxPrice ?? 0).toLocaleString()}` : '—' }})
               </option>
             </select>
           </div>
@@ -909,6 +1039,16 @@ function viewOrder(id: string) {
         </div>
       </div>
     </div>
+
+    <!-- Delete Order confirmation -->
+    <ConfirmDialog
+      :is-open="confirmDeleteOrder !== null"
+      title="Delete this order?"
+      message="This permanently removes the order and all its details. This action can't be undone."
+      confirm-label="Delete"
+      @cancel="confirmDeleteOrder = null"
+      @confirm="performDeleteOrder"
+    />
 
     <!-- Success Toast -->
     <div
@@ -1374,6 +1514,58 @@ function viewOrder(id: string) {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+}
+
+/* Payment method picker */
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.payment-method {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+  cursor: pointer;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s;
+}
+
+.payment-method input {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.payment-method--selected {
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.payment-method__label {
+  pointer-events: none;
+}
+
+.modal-error {
+  padding: 10px 14px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: var(--destructive-foreground, #ffffff);
+  background: var(--destructive, #d64545);
+  border-radius: var(--radius-md);
 }
 
 /* Form grid */

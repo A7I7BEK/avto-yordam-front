@@ -12,21 +12,16 @@ export const useProfessionalOnboardingStore = defineStore(
   () => {
     const personalInfo = ref<ProfessionalOnboardingData>({
       avatar: null,
-      fullName: 'Aziz Ismoilov',
-      dateOfBirth: '14 / 02 / 1991',
-      phone: '+998 90 123 45 67',
-      email: 'aziz.karimov@masters.uz',
-      languages: ['uzbek', 'russian'],
+      fullName: '',
+      dateOfBirth: '',
+      phone: '',
+      email: '',
+      yearsOfExperience: 0,
     });
 
     const professionalInfo = ref<ProfessionalInfoData>({
-      specializations: ['engine', 'electrical', 'diagnostics'],
-      yearsOfExperience: 12,
-      workingHours: {
-        from: '09:00',
-        to: '18:00',
-      },
-      workingDays: ['mon', 'tue', 'wed', 'thu', 'fri'],
+      specializationId: '',
+      languages: [],
     });
 
     function updatePersonalInfo(data: Partial<ProfessionalOnboardingData>) {
@@ -40,20 +35,15 @@ export const useProfessionalOnboardingStore = defineStore(
     function $reset() {
       personalInfo.value = {
         avatar: null,
-        fullName: 'Aziz Ismoilov',
-        dateOfBirth: '14 / 02 / 1991',
-        phone: '+998 90 123 45 67',
-        email: 'aziz.karimov@masters.uz',
-        languages: ['uzbek', 'russian'],
+        fullName: '',
+        dateOfBirth: '',
+        phone: '',
+        email: '',
+        yearsOfExperience: 0,
       };
       professionalInfo.value = {
-        specializations: ['engine', 'electrical', 'diagnostics'],
-        yearsOfExperience: 12,
-        workingHours: {
-          from: '09:00',
-          to: '18:00',
-        },
-        workingDays: ['mon', 'tue', 'wed', 'thu', 'fri'],
+        specializationId: '',
+        languages: [],
       };
     }
 

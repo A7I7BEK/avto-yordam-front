@@ -2,36 +2,88 @@
   setup
   lang="ts"
 >
-import { ref } from 'vue';
-import { members } from '@/data/members';
+import { LoaderCircle } from '@lucide/vue';
+import { onMounted, ref } from 'vue';
+import {
+  activateOrganization,
+  deactivateOrganization,
+  getOrganizationActiveState,
+  transferOrganizationOwnership,
+} from '@/services/settingsService';
 
-type ModalType = 'transfer' | 'deactivate' | 'delete' | null;
+type ModalType = 'transfer' | 'activate' | 'deactivate' | 'delete' | null;
 
 const activeModal = ref<ModalType>(null);
-const selectedMemberId = ref<string | null>(null);
+const newOwnerPhone = ref('');
+const actionLoading = ref(false);
+const orgActive = ref(true);
+const statusLoading = ref(true);
 
-const eligibleMembers = members.filter(
-  (m) => m.status === 'Active' && m.role !== 'Owner',
-);
+onMounted(async () => {
+  orgActive.value = await getOrganizationActiveState();
+  statusLoading.value = false;
+});
 
 function openModal(type: ModalType) {
-  selectedMemberId.value = null;
+  newOwnerPhone.value = '';
   activeModal.value = type;
 }
 
 function closeModal() {
   activeModal.value = null;
-  selectedMemberId.value = null;
+  newOwnerPhone.value = '';
 }
 
-function confirmTransfer() {
-  if (selectedMemberId.value) {
+async function confirmTransfer() {
+  if (!newOwnerPhone.value.trim() || actionLoading.value) {
+    return;
+  }
+
+  actionLoading.value = true;
+  try {
+    await transferOrganizationOwnership({
+      newOwnerPhoneNumber: newOwnerPhone.value.trim(),
+    });
     closeModal();
+  } catch {
+    // Error toast could be added here
+  } finally {
+    actionLoading.value = false;
   }
 }
 
-function confirmDeactivate() {
-  closeModal();
+async function confirmActivate() {
+  if (actionLoading.value) {
+    return;
+  }
+
+  actionLoading.value = true;
+  try {
+    await activateOrganization();
+    orgActive.value = true;
+    closeModal();
+  } catch {
+    // Error toast could be added here
+  } finally {
+    actionLoading.value = false;
+  }
+}
+
+async function confirmDeactivate() {
+  if (actionLoading.value) {
+    return;
+  }
+
+  actionLoading.value = true;
+  try {
+    await deactivateOrganization();
+    orgActive.value = false;
+    closeModal();
+  } catch {
+    // Error toast could be added here
+  } finally {
+    actionLoading.value = false;
+  }
 }
 
 function confirmDelete() {
@@ -70,22 +122,41 @@ function confirmDelete() {
         </button>
       </div>
 
-      <!-- Row 2: Deactivate organization -->
+      <!-- Row 2: Organization activation state -->
       <div class="danger-row danger-row--bordered">
         <div class="danger-row-text">
-          <span class="danger-row-title">Deactivate organization</span>
+          <span class="danger-row-title">
+            {{ orgActive
+                ? 'Deactivate organization'
+                : 'Activate organization' }}
+          </span>
           <span class="danger-row-desc">
-            Temporarily hide the organization from customers. Bookings are
-            paused; you can reactivate anytime.
+            {{ orgActive
+                ? 'Temporarily hide the organization from customers. Bookings are paused; you can reactivate anytime.'
+                : 'Make your organization visible to customers again and resume taking bookings.' }}
           </span>
         </div>
-        <button
-          type="button"
-          class="btn btn--outline-destructive"
-          @click="openModal('deactivate')"
-        >
-          Deactivate
-        </button>
+        <div class="danger-row-actions">
+          <span
+            class="status-pill"
+            :class="orgActive ? 'status-pill--active' : 'status-pill--inactive'"
+          >
+            {{ orgActive ? 'Active' : 'Inactive' }}
+          </span>
+          <button
+            type="button"
+            :class="orgActive ? 'btn btn--outline-destructive' : 'btn btn--primary'"
+            :disabled="statusLoading || actionLoading"
+            @click="openModal(orgActive ? 'deactivate' : 'activate')"
+          >
+            <LoaderCircle
+              v-if="actionLoading"
+              :size="13"
+              class="btn-spinner"
+            />
+            {{ orgActive ? 'Deactivate' : 'Activate' }}
+          </button>
+        </div>
       </div>
 
       <!-- Row 3: Delete organization -->
@@ -119,43 +190,31 @@ function confirmDelete() {
         <div class="modal-card">
           <h3 class="modal-title">Transfer ownership</h3>
           <p class="modal-desc">
-            Select a team member to transfer ownership to. You will become an
-            admin.
+            Enter the phone number of the new owner. You will become an admin
+            after the transfer.
           </p>
 
-          <div class="member-list">
+          <div class="transfer-field">
             <label
-              v-for="member in eligibleMembers"
-              :key="member.id"
-              class="member-item"
-              :class="{ 'member-item--selected': selectedMemberId === member.id }"
+              class="transfer-label"
+              for="new-owner-phone"
+              >New owner phone number</label
             >
-              <div class="member-item-left">
-                <div
-                  class="member-avatar"
-                  :style="{ background: member.avatarColor }"
-                >
-                  {{ member.initials }}
-                </div>
-                <div class="member-info">
-                  <span class="member-name">{{ member.name }}</span>
-                  <span class="member-role">{{ member.role }}</span>
-                </div>
-              </div>
-              <input
-                v-model="selectedMemberId"
-                type="radio"
-                :value="member.id"
-                name="transfer-member"
-                class="member-radio"
-              >
-            </label>
+            <input
+              id="new-owner-phone"
+              v-model="newOwnerPhone"
+              type="tel"
+              class="transfer-input"
+              placeholder="+998 90 123 45 67"
+              :disabled="actionLoading"
+            >
           </div>
 
           <div class="modal-actions">
             <button
               type="button"
               class="btn btn--outline"
+              :disabled="actionLoading"
               @click="closeModal"
             >
               Cancel
@@ -163,10 +222,15 @@ function confirmDelete() {
             <button
               type="button"
               class="btn btn--filled-destructive"
-              :disabled="!selectedMemberId"
+              :disabled="!newOwnerPhone.trim() || actionLoading"
               @click="confirmTransfer"
             >
-              Transfer ownership
+              <LoaderCircle
+                v-if="actionLoading"
+                :size="13"
+                class="btn-spinner"
+              />
+              {{ actionLoading ? 'Transferring…' : 'Transfer ownership' }}
             </button>
           </div>
         </div>
@@ -192,6 +256,7 @@ function confirmDelete() {
             <button
               type="button"
               class="btn btn--outline"
+              :disabled="actionLoading"
               @click="closeModal"
             >
               Cancel
@@ -199,9 +264,56 @@ function confirmDelete() {
             <button
               type="button"
               class="btn btn--outline-destructive"
+              :disabled="actionLoading"
               @click="confirmDeactivate"
             >
-              Deactivate
+              <LoaderCircle
+                v-if="actionLoading"
+                :size="13"
+                class="btn-spinner"
+              />
+              {{ actionLoading ? 'Deactivating…' : 'Deactivate' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Activate confirmation modal -->
+    <Teleport to="body">
+      <div
+        v-if="activeModal === 'activate'"
+        class="modal-overlay"
+        @click.self="closeModal"
+      >
+        <div class="modal-card">
+          <h3 class="modal-title">Activate organization</h3>
+          <p class="modal-desc">
+            Are you sure you want to activate this organization? It will become
+            visible to customers again and bookings will resume.
+          </p>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn btn--outline"
+              :disabled="actionLoading"
+              @click="closeModal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn--primary"
+              :disabled="actionLoading"
+              @click="confirmActivate"
+            >
+              <LoaderCircle
+                v-if="actionLoading"
+                :size="13"
+                class="btn-spinner"
+              />
+              {{ actionLoading ? 'Activating…' : 'Activate' }}
             </button>
           </div>
         </div>
@@ -306,6 +418,31 @@ function confirmDelete() {
   min-width: 0;
 }
 
+.danger-row-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+.status-pill--active {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-pill--inactive {
+  color: #7f1d1d;
+  background: #fee2e2;
+}
+
 .danger-row-title {
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -372,6 +509,20 @@ function confirmDelete() {
   border-color: var(--primary);
 }
 
+.btn--primary {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn--primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.btn--primary:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
 /* ===== Modal overlay ===== */
 .modal-overlay {
   position: fixed;
@@ -423,78 +574,51 @@ function confirmDelete() {
   padding-top: 4px;
 }
 
-/* ===== Member list (transfer modal) ===== */
-.member-list {
+/* ===== Transfer ownership input ===== */
+.transfer-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.member-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  transition:
-    border-color 0.15s,
-    background 0.15s;
-}
-
-.member-item:hover {
-  border-color: var(--primary);
-}
-
-.member-item--selected {
-  background: #f5f3ff;
-  border-color: var(--primary);
-}
-
-.member-item-left {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.member-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
+.transfer-label {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  color: #ffffff;
-  border-radius: var(--radius-pill);
-}
-
-.member-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.member-name {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--foreground);
-}
-
-.member-role {
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--muted-foreground);
 }
 
-.member-radio {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--primary);
-  cursor: pointer;
+.transfer-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--foreground);
+  outline: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s;
+}
+
+.transfer-input:focus {
+  border-color: var(--primary);
+}
+
+.transfer-input:disabled {
+  cursor: default;
+  background: var(--accent);
+  opacity: 1;
+}
+
+/* ===== Button spinner ===== */
+.btn-spinner {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

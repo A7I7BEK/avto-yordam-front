@@ -21,6 +21,8 @@ export interface Employee {
 
 export interface TeamMember {
   id: string;
+  /** The master's user id (used to fetch their profile via /user/get-by-id). */
+  userId?: string;
   name: string;
   email: string;
   initials: string;
@@ -35,6 +37,7 @@ export interface TeamMember {
 
 export interface Order {
   id: string;
+  backendId: string;
   customer: string;
   initials: string;
   service: string;
@@ -69,4 +72,52 @@ export interface Role {
   createdBy: string;
   lastEditedDate: string;
   lastEditedBy: string;
+}
+
+// ── Backend API types ──
+
+export interface PermissionResponse {
+  id: string;
+  name: string;
+  code: string;
+}
+
+export interface RoleResponse {
+  id: string;
+  name: string;
+  code: string;
+  permissions: PermissionResponse[];
+}
+
+export interface RoleRequestDto {
+  name: string;
+  code: string;
+  permissions: string[];
+}
+
+export type InvitationStatus = 'PENDING' | 'RESOLVED';
+
+export interface OrganizationInvitation {
+  id: string;
+  organizationId: string;
+  organizationName?: string;
+  userId?: string;
+  userName?: string;
+  phoneNumber?: string;
+  email?: string;
+  roleId?: string;
+  roleName: string;
+  roleCode?: string;
+  inviteMessage?: string;
+  canReject: boolean;
+  canAccept: boolean;
+  canDelete: boolean;
+}
+
+export interface OrganizationInvitationRequest {
+  /** At least one of email / phoneNumber should be provided. */
+  phoneNumber?: string;
+  email?: string;
+  roleId: string;
+  inviteMessage?: string;
 }

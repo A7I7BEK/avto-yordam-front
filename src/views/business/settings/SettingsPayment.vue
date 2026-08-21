@@ -8,68 +8,100 @@ import {
   Eye,
   EyeOff,
   Info,
+  LoaderCircle,
   Pencil,
   Play,
+  Plus,
 } from '@lucide/vue';
-import { onMounted, ref } from 'vue';
-import clickLogo from '@/assets/payment-providers/logo/click.png';
-import paymeLogo from '@/assets/payment-providers/logo/payme.jpg';
-import paynetLogo from '@/assets/payment-providers/logo/paynet.png';
-import { getSettingsPayment } from '@/services/settingsService';
+import { computed, onMounted, ref } from 'vue';
+import {
+  createSettingsPayment,
+  getPaymentProviders,
+  getSettingsPayment,
+  updateSettingsPayment,
+} from '@/services/settingsService';
+import type {
+  OrganizationPaymentProviderRequest,
+  PaymentProviderFieldResponse,
+  PaymentProviderResponse,
+  PaymentProviderType,
+} from '@/types/settings';
 
 interface ProviderField {
+  name: string;
   label: string;
   value: string;
   secret?: boolean;
+  required?: boolean;
+  placeHolder?: string;
 }
 
 interface Provider {
   id: string;
+  type: PaymentProviderType;
+  typeKey: string;
   name: string;
   enabled: boolean;
-  fee: string;
-  color: string;
+  logoUrl: string;
   fields: ProviderField[];
   lastCharge: string;
   hasActivity: boolean;
 }
 
-const providers = ref<Provider[]>([]);
+interface ProviderTypeInfo {
+  typeKey: string;
+  type: PaymentProviderType;
+  name: string;
+  logoUrl: string;
+  fee: string;
+  fieldDefs: PaymentProviderFieldResponse[];
+}
 
-const fieldConfigs: Record<string, ProviderField[]> = {
-  payme: [
-    { label: 'Merchant ID', value: '680e8a7c2f9d1b3c4e5a6789' },
-    {
-      label: 'Secret key',
-      value: 'sk_live_payme_8a7c2f9d1b3c4e5a',
-      secret: true,
-    },
-  ],
-  click: [
-    { label: 'Service ID', value: '31247' },
-    {
-      label: 'Secret key',
-      value: 'sk_live_click_b3c4e5a6789d1b3c',
-      secret: true,
-    },
-  ],
-  paynet: [
-    { label: 'Terminal ID', value: 'Not configured' },
-    { label: 'API token', value: 'Not configured' },
-  ],
+const providers = ref<Provider[]>([]);
+const orgId = ref<string | null>(null);const loading = ref(true);
+const savingProviders = ref<Record<string, boolean>>({});
+const addingProviderKey = ref<string | null>(null);
+const addingFieldValues = ref<Record<string, string>>({});
+const savingAdd = ref(false);
+
+const providerFees: Record<string, string> = {
+  payme: '2.5%',
+  click: '2.0%',
+  paynet: '3.0%',
+  uzum: '2.0%',
 };
 
 const lastChargeTexts: Record<string, string> = {
   payme: 'Last charge: 2 min ago',
   click: 'Last charge: 27 min ago',
   paynet: 'Never used',
+  uzum: 'Never used',
 };
 
-const providerLogos: Record<string, string> = {
-  payme: paymeLogo,
-  click: clickLogo,
-  paynet: paynetLogo,
-};
+const providersList = ref<PaymentProviderResponse[]>([]);
+
+const allProviderTypes = computed<ProviderTypeInfo[]>(() =>
+  providersList.value
+    .filter((p) => p.code !== 'CASH')
+    .map((p) => ({
+      typeKey: p.code.toLowerCase(),
+      type: p.code as PaymentProviderType,
+      name: p.displayName,
+      logoUrl: p.logoUrl,
+      fee: providerFees[p.code.toLowerCase()] ?? '',
+      fieldDefs: p.fields,
+    })),
+);
+
+const configuredTypes = computed(() => new Set(providers.value.map((p) => p.typeKey)));
+
+const availableTypes = computed(() =>
+  allProviderTypes.value.filter((t) => !configuredTypes.value.has(t.typeKey)),
+);
+
+const addingProviderData = computed(() =>
+  allProviderTypes.value.find((t) => t.typeKey === addingProviderKey.value) ?? null,
+);
 
 const MASKED_VALUE = '•••••••••••••••••••';
 
@@ -89,31 +121,168 @@ const revealedKeys = ref<Record<string, boolean>>({});
 const editingProviders = ref<Record<string, boolean>>({});
 const savedFields = ref<Record<string, string>>({});
 
-onMounted(async () => {
-  const data = await getSettingsPayment();
-  if (data) {
-    providers.value = data
-      .filter((p) => p.type === 'online')
-      .map((p) => ({
-        id: p.id,
-        name: p.name,
-        enabled: p.enabled,
-        fee: p.fee,
-        color: providerLogos[p.id] ?? '',
-        fields: (fieldConfigs[p.id] ?? []).map((f) => ({ ...f })),
-        lastCharge: lastChargeTexts[p.id] ?? 'Never used',
-        hasActivity: p.enabled && p.id !== 'paynet',
-      }));
+/**
+ * Parse the credentials JSON string from the API into a record of field values.
+ */
+function parseCredentials(credentials: string | null): Record<string, string> {
+  if (!credentials) {
+    return {};
   }
+  try {
+    return JSON.parse(credentials);
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Serialize an array of fields into a credentials JSON string using field names as keys.
+ */
+function fieldsToCredentials(fields: ProviderField[]): string {
+  const obj: Record<string, string> = {};
+  for (const field of fields) {
+    obj[field.name] = field.value;
+  }
+  return JSON.stringify(obj);
+}
+
+/**
+ * Build ProviderField[] from field definitions + parsed credentials.
+ */
+function buildFields(
+  fieldDefs: PaymentProviderFieldResponse[],
+  parsedCredentials: Record<string, string>,
+): ProviderField[] {
+  return fieldDefs
+    .sort((a, b) => a.orderNo - b.orderNo)
+    .map((def) => ({
+      name: def.name,
+      label: def.label,
+      value: parsedCredentials[def.name] ?? '',
+      secret: def.type === 'password',
+      required: def.required,
+      placeHolder: def.placeHolder,
+    }));
+}
+
+onMounted(async () => {
+  const [masterProviders, orgProviders] = await Promise.all([
+    getPaymentProviders(),
+    getSettingsPayment(),
+  ]);
+
+  providersList.value = masterProviders;
+
+  if (orgProviders) {
+    providers.value = orgProviders
+      .filter((p) => p.type !== 'CASH')
+      .map((p) => {
+        const typeKey = p.type.toLowerCase();
+        const master = masterProviders.find(
+          (m) => m.code === p.type,
+        );
+        const parsedCredentials = parseCredentials(p.credentials);
+        const fields = buildFields(
+          master?.fields ?? [],
+          parsedCredentials,
+        );
+
+        return {
+          id: p.id,
+          type: p.type,
+          typeKey,
+          name: master?.displayName ?? typeKey.charAt(0).toUpperCase() + typeKey.slice(1),
+          enabled: p.enabled,
+          logoUrl: master?.logoUrl ?? '',
+          fields,
+          lastCharge: lastChargeTexts[typeKey] ?? 'Never used',
+          hasActivity: p.enabled && typeKey !== 'paynet',
+        };
+      });
+  }
+
+  loading.value = false;
 });
 
-function toggleProvider(id: string) {
+function startAddingProvider(typeInfo: ProviderTypeInfo) {
+  addingProviderKey.value = typeInfo.typeKey;
+  // Initialize field values from field definitions (all empty)
+  const initial: Record<string, string> = {};
+  for (const def of typeInfo.fieldDefs) {
+    initial[def.name] = '';
+  }
+  addingFieldValues.value = initial;
+}
+
+function cancelAddingProvider() {
+  addingProviderKey.value = null;
+  addingFieldValues.value = {};
+}
+
+async function confirmAddingProvider(typeInfo: ProviderTypeInfo) {
+  if (addingProviderKey.value !== typeInfo.typeKey || savingAdd.value) {
+    return;
+  }
+
+  savingAdd.value = true;
+
+  try {
+    const credentials = JSON.stringify(addingFieldValues.value);
+
+    const response = await createSettingsPayment({
+      type: typeInfo.type,
+      credentials,
+      enabled: true,
+    });
+
+    const parsedCredentials = parseCredentials(response.credentials);
+    const fields = buildFields(typeInfo.fieldDefs, parsedCredentials);
+
+    providers.value.push({
+      id: response.id,
+      type: response.type,
+      typeKey: typeInfo.typeKey,
+      name: typeInfo.name,
+      enabled: response.enabled,
+      logoUrl: typeInfo.logoUrl,
+      fields,
+      lastCharge: lastChargeTexts[typeInfo.typeKey] ?? 'Never used',
+      hasActivity: false,
+    });
+
+    addingProviderKey.value = null;
+    addingFieldValues.value = {};
+  } catch {
+    // Error toast could be added here
+  } finally {
+    savingAdd.value = false;
+  }
+}
+
+async function toggleProvider(id: string) {
   const provider = providers.value.find((p) => p.id === id);
-  if (provider) {
-    provider.enabled = !provider.enabled;
-    if (provider.id === 'paynet') {
-      provider.hasActivity = provider.enabled;
-    }
+  if (!provider) {
+    return;
+  }
+
+  const newEnabled = !provider.enabled;
+  provider.enabled = newEnabled;
+  if (provider.typeKey === 'paynet') {
+    provider.hasActivity = newEnabled;
+  }
+
+  savingProviders.value[id] = true;
+  try {
+    await updateSettingsPayment(id, {
+      type: provider.type,
+      credentials: fieldsToCredentials(provider.fields),
+      enabled: newEnabled,
+    });
+  } catch {
+    // Revert on failure
+    provider.enabled = !newEnabled;
+  } finally {
+    savingProviders.value[id] = false;
   }
 }
 
@@ -162,16 +331,32 @@ function cancelEditing(providerId: string) {
   editingProviders.value[providerId] = false;
 }
 
-function saveEditing(providerId: string) {
+async function saveEditing(providerId: string) {
   const provider = providers.value.find((p) => p.id === providerId);
-  if (provider) {
+  if (!provider) {
+    return;
+  }
+
+  savingProviders.value[providerId] = true;
+
+  try {
+    await updateSettingsPayment(provider.id, {
+      type: provider.type,
+      credentials: fieldsToCredentials(provider.fields),
+      enabled: provider.enabled,
+    });
+
     for (const [index, field] of provider.fields.entries()) {
       if (field.secret) {
         revealedKeys.value[`${providerId}-${index}`] = false;
       }
     }
+    editingProviders.value[providerId] = false;
+  } catch {
+    // Error toast could be added here
+  } finally {
+    savingProviders.value[providerId] = false;
   }
-  editingProviders.value[providerId] = false;
 }
 </script>
 
@@ -198,7 +383,7 @@ function saveEditing(providerId: string) {
           <div class="provider-header-left">
             <div class="provider-icon">
               <img
-                :src="provider.color"
+                :src="provider.logoUrl"
                 :alt="provider.name"
                 class="provider-icon-img"
               >
@@ -216,6 +401,7 @@ function saveEditing(providerId: string) {
             class="toggle-switch"
             :class="{ 'toggle-switch--on': provider.enabled }"
             :aria-label="`Toggle ${provider.name}`"
+            :disabled="savingProviders[provider.id]"
             @click="toggleProvider(provider.id)"
           >
             <span class="toggle-knob" />
@@ -311,6 +497,7 @@ function saveEditing(providerId: string) {
               <button
                 type="button"
                 class="btn btn--outline"
+                :disabled="savingProviders[provider.id]"
                 @click="cancelEditing(provider.id)"
               >
                 <CircleX :size="13" />
@@ -319,10 +506,19 @@ function saveEditing(providerId: string) {
               <button
                 type="button"
                 class="btn btn--primary"
+                :disabled="savingProviders[provider.id]"
                 @click="saveEditing(provider.id)"
               >
-                <CircleCheck :size="13" />
-                Save
+                <LoaderCircle
+                  v-if="savingProviders[provider.id]"
+                  :size="13"
+                  class="btn-spinner"
+                />
+                <CircleCheck
+                  v-else
+                  :size="13"
+                />
+                {{ savingProviders[provider.id] ? 'Saving…' : 'Save' }}
               </button>
             </template>
             <button
@@ -337,7 +533,136 @@ function saveEditing(providerId: string) {
           </div>
         </div>
       </div>
+
+      <!-- Add provider cards for unconfigured types -->
+      <div
+        v-for="typeInfo in availableTypes"
+        :key="typeInfo.typeKey"
+        class="provider-card provider-card--add"
+      >
+        <div class="provider-add-content">
+          <div class="provider-icon">
+            <img
+              :src="typeInfo.logoUrl"
+              :alt="typeInfo.name"
+              class="provider-icon-img"
+            >
+          </div>
+          <span class="provider-name">{{ typeInfo.name }}</span>
+          <span class="provider-fee">{{ typeInfo.fee }} per transaction</span>
+          <button
+            type="button"
+            class="btn btn--primary btn--add"
+            @click="startAddingProvider(typeInfo)"
+          >
+            <Plus :size="14" />
+            Add
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Modal: Add provider credentials -->
+    <Teleport to="body">
+      <div
+        v-if="addingProviderData"
+        class="modal-overlay"
+        @click.self="cancelAddingProvider"
+      >
+        <div class="modal-content">
+          <!-- Modal header -->
+          <div class="modal-header">
+            <div class="modal-header-left">
+              <div class="provider-icon">
+                <img
+                  :src="addingProviderData.logoUrl"
+                  :alt="addingProviderData.name"
+                  class="provider-icon-img"
+                >
+              </div>
+              <div class="provider-info">
+                <span class="provider-name">{{ addingProviderData.name }}</span>
+                <span class="provider-fee">{{ addingProviderData.fee }} per transaction</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="modal-close-btn"
+              :disabled="savingAdd"
+              @click="cancelAddingProvider"
+            >
+              <CircleX :size="18" />
+            </button>
+          </div>
+
+          <div class="modal-divider" />
+
+          <!-- Credential fields -->
+          <div class="modal-body">
+            <p class="modal-body-title">Configure credentials</p>
+            <div
+              v-for="def in addingProviderData.fieldDefs"
+              :key="def.id"
+              class="provider-field"
+            >
+              <label
+                class="field-label"
+                :for="`modal-${def.name}`"
+              >{{ def.label }} <span v-if="def.required" class="field-required">*</span></label>
+              <div
+                v-if="def.type === 'password'"
+                class="field-input-wrap"
+              >
+                <input
+                  :id="`modal-${def.name}`"
+                  v-model="addingFieldValues[def.name]"
+                  type="text"
+                  class="field-input"
+                  :placeholder="def.placeHolder"
+                >
+              </div>
+              <input
+                v-else
+                :id="`modal-${def.name}`"
+                v-model="addingFieldValues[def.name]"
+                type="text"
+                class="field-input"
+                :placeholder="def.placeHolder"
+              >
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn--outline"
+              :disabled="savingAdd"
+              @click="cancelAddingProvider"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn--primary"
+              :disabled="savingAdd"
+              @click="confirmAddingProvider(addingProviderData)"
+            >
+              <LoaderCircle
+                v-if="savingAdd"
+                :size="14"
+                class="btn-spinner"
+              />
+              <CircleCheck
+                v-else
+                :size="14"
+              />
+              {{ savingAdd ? 'Adding…' : 'Add provider' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Refunds banner -->
     <div class="info-banner">
@@ -399,6 +724,27 @@ function saveEditing(providerId: string) {
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+}
+
+.provider-card--add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  border-style: dashed;
+  background: var(--accent);
+}
+
+.provider-add-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  text-align: center;
+}
+
+.btn--add {
+  margin-top: 4px;
 }
 
 /* ===== Provider header ===== */
@@ -707,5 +1053,104 @@ function saveEditing(providerId: string) {
   font-size: 12px;
   font-weight: 400;
   color: #001133;
+}
+
+/* ===== Button spinner ===== */
+.btn-spinner {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.modal-header-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 4px;
+}
+
+.modal-close-btn:hover:not(:disabled) {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+.modal-divider {
+  height: 1px;
+  background: var(--border);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.modal-body-title {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.field-required {
+  color: #e53e3e;
 }
 </style>

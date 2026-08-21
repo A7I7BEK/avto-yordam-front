@@ -2,81 +2,37 @@
   setup
   lang="ts"
 >
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  CheckCircle2,
-  ExternalLink,
-  Info,
-  Undo2,
-} from '@lucide/vue';
+import { ArrowLeft, CheckCircle2, ExternalLink } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import clickLogo from '@/assets/payment-providers/brand/click.png';
-import paymeLogo from '@/assets/payment-providers/brand/payme.svg';
-import paynetLogo from '@/assets/payment-providers/brand/paynet.svg';
-import { getTransactionDetail } from '@/services/transactionsService';
-
-interface TimelineItem {
-  title: string;
-  description: string;
-  time: string;
-  isLast: boolean;
-}
-
-interface TransactionDetailData {
-  id: string;
-  orderId: string;
-  orderTitle: string;
-  customerName: string;
-  customerInitials: string;
-  amount: number;
-  amountFormatted: string;
-  provider: string;
-  providerColor: string;
-  status: string;
-  date: string;
-  time: string;
-  providerTransactionId: string;
-  merchantId: string;
-  payerName: string;
-  payerPhone: string;
-  cardType: string;
-  cardLast4: string;
-  receiptUrl: string;
-  feePercentage: string;
-  feeAmount: string;
-  netAmount: string;
-  platformFee: string;
-  platformFeePct: string;
-  providerFee: string;
-  providerFeePct: string;
-  netPayout: string;
-  settlementDate: string;
-  completedDate: string;
-  completedTime: string;
-  initiatedTime: string;
-  timeline: TimelineItem[];
-}
+import { getPaymentTransaction } from '@/services/transactionsService';
+import type {
+  PaymentMethod,
+  PaymentStatus,
+  PaymentTransaction,
+} from '@/types/payment';
 
 const route = useRoute();
 const router = useRouter();
-const detail = ref<TransactionDetailData | null>(null);
+const detail = ref<PaymentTransaction | null>(null);
 const loading = ref(true);
 
 function goBack() {
   router.push('/business/transactions');
 }
 
-function statusClass(status: string): string {
+function statusClass(status: PaymentStatus): string {
   switch (status) {
-    case 'Paid':
-    case 'Collected':
+    case 'PAID':
       return 'status-badge--success';
-    case 'Pending':
+    case 'PENDING':
       return 'status-badge--warning';
-    case 'Failed':
+    case 'FAILED':
+    case 'CANCELLED':
+    case 'EXPIRED':
       return 'status-badge--error';
+    case 'REFUNDED':
+      return 'status-badge--info';
     default:
       return '';
   }
@@ -84,29 +40,44 @@ function statusClass(status: string): string {
 
 const statusIcon = computed(() => {
   const s = detail.value?.status;
-  if (s === 'Paid' || s === 'Collected') {
+  if (s === 'PAID') {
     return CheckCircle2;
   }
   return CheckCircle2;
 });
 
-const providerLogos: Record<string, string> = {
-  PayMe: paymeLogo,
-  Click: clickLogo,
-  Paynet: paynetLogo,
-};
+function formatAmount(amount: number): string {
+  return `${Number(amount || 0).toLocaleString('uz-UZ', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} UZS`;
+}
 
-const providerLogo = computed(() => {
-  if (!detail.value) {
-    return null;
+function formatDate(iso: string | null | undefined): string {
+  if (!iso) {
+    return '—';
   }
-  return providerLogos[detail.value.provider] ?? null;
-});
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) {
+    return '—';
+  }
+  return d.toLocaleString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function methodLabel(method: PaymentMethod): string {
+  return method.charAt(0) + method.slice(1).toLowerCase();
+}
 
 onMounted(async () => {
   try {
     const id = route.params.id as string;
-    detail.value = (await getTransactionDetail(id)) as TransactionDetailData;
+    detail.value = await getPaymentTransaction(id);
   } finally {
     loading.value = false;
   }
@@ -160,107 +131,73 @@ onMounted(async () => {
               </span>
             </div>
             <p class="detail-header__meta">
-              Initiated {{ detail.date }} • {{ detail.time }} • Order
-              {{ detail.orderId }}
+              Order {{ detail.orderId }} • {{ methodLabel(detail.method) }}
             </p>
           </div>
         </div>
-
-        <button
-          type="button"
-          class="btn-refund"
-        >
-          <Undo2 :size="14" />
-          Refund
-        </button>
       </div>
 
       <div class="detail-grid">
         <!-- Left Column -->
         <div class="detail-left">
-          <!-- Provider response card -->
+          <!-- Transaction details card -->
           <div class="info-card">
-            <h2 class="info-card__title">Provider response</h2>
+            <h2 class="info-card__title">Transaction details</h2>
             <div class="info-rows">
               <div class="info-row">
-                <span class="info-row__label">Provider</span>
-                <span class="provider-pill">
-                  <img
-                    v-if="providerLogo"
-                    :src="providerLogo"
-                    :alt="detail.provider"
-                    :title="detail.provider"
-                    class="provider-pill__logo"
-                  >
-                </span>
-              </div>
-              <div class="info-row">
-                <span class="info-row__label">Provider transaction ID</span>
+                <span class="info-row__label">Transaction ID</span>
                 <span class="info-row__value info-row__value--mono"
-                  >{{ detail.providerTransactionId }}</span
+                  >{{ detail.id }}</span
                 >
               </div>
               <div class="info-row">
-                <span class="info-row__label">Merchant ID</span>
+                <span class="info-row__label">Order</span>
+                <span class="info-row__value"
+                  >{{ detail.orderId }}</span
+                >
+              </div>
+              <div class="info-row">
+                <span class="info-row__label">Payment method</span>
+                <span class="info-row__value"
+                  >{{ methodLabel(detail.method) }}</span
+                >
+              </div>
+              <div class="info-row">
+                <span class="info-row__label">External transaction ID</span>
                 <span class="info-row__value info-row__value--mono"
-                  >{{ detail.merchantId }}</span
+                  >{{ detail.externalTransactionId ?? '—' }}</span
                 >
               </div>
               <div class="info-row">
-                <span class="info-row__label">Payer</span>
+                <span class="info-row__label">Paid at</span>
                 <span class="info-row__value"
-                  >{{ detail.payerName }}
-                  • {{ detail.payerPhone }}</span
+                  >{{ formatDate(detail.paidAt) }}</span
                 >
               </div>
               <div class="info-row">
-                <span class="info-row__label">Card</span>
+                <span class="info-row__label">Created</span>
                 <span class="info-row__value"
-                  >{{ detail.cardType }}
-                  •••• {{ detail.cardLast4 }}</span
+                  >{{ formatDate(detail.createdDate) }}</span
                 >
-              </div>
-              <div class="info-row">
-                <span class="info-row__label">Receipt</span>
-                <span class="info-row__value">
-                  <a
-                    :href="detail.receiptUrl"
-                    class="receipt-link"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Open in {{ detail.provider }}
-                    <ExternalLink :size="11" />
-                  </a>
-                </span>
               </div>
             </div>
           </div>
 
-          <!-- Timeline card -->
-          <div class="info-card">
-            <h2 class="info-card__title">Timeline</h2>
-            <div class="timeline">
-              <div
-                v-for="(item, i) in detail.timeline"
-                :key="i"
-                class="timeline-item"
-                :class="{ 'timeline-item--last': item.isLast }"
-              >
-                <div class="timeline-item__dot-line">
-                  <div class="timeline-dot" />
-                  <div
-                    v-if="!item.isLast"
-                    class="timeline-line"
-                  />
-                </div>
-                <div class="timeline-item__content">
-                  <span class="timeline-item__title">{{ item.title }}</span>
-                  <span class="timeline-item__desc"
-                    >{{ item.description }}
-                    • {{ item.time }}</span
-                  >
-                </div>
+          <!-- Receipt link (optional) -->
+          <div
+            v-if="detail.externalTransactionId"
+            class="info-card"
+          >
+            <h2 class="info-card__title">Reference</h2>
+            <div class="info-rows">
+              <div class="info-row">
+                <span class="info-row__label">Receipt reference</span>
+                <span class="info-row__value">
+                  <span class="receipt-link">
+                    {{ detail.externalTransactionId }}
+                    <ExternalLink :size="11" />
+                  </span>
+                </span>
               </div>
             </div>
           </div>
@@ -271,7 +208,7 @@ onMounted(async () => {
           <div class="summary-card">
             <span class="summary-card__label">Summary</span>
             <span class="summary-card__amount"
-              >{{ detail.amountFormatted }}</span
+              >{{ formatAmount(detail.amount) }}</span
             >
             <div class="summary-card__status">
               <span class="summary-card__status-label">Status</span>
@@ -282,88 +219,29 @@ onMounted(async () => {
                 {{ detail.status }}
               </span>
             </div>
-            <div class="summary-card__row">
-              <span class="summary-card__row-label">Fee</span>
-              <span class="summary-card__row-value"
-                >{{ detail.feePercentage }}
-                • {{ detail.feeAmount }}</span
-              >
-            </div>
-            <div class="summary-card__row">
-              <span class="summary-card__row-label">Net</span>
-              <span class="summary-card__row-value"
-                >{{ detail.netAmount }}</span
-              >
-            </div>
             <div class="summary-card__divider" />
             <div class="summary-card__section">
               <span class="summary-card__section-label">Related order</span>
-              <a
-                class="summary-card__order-link"
-                href="#"
-              >
-                {{ detail.orderId }}
-                — {{ detail.orderTitle }}
-                <ArrowUpRight :size="12" />
-              </a>
-            </div>
-            <div class="summary-card__section">
-              <span class="summary-card__section-label">Initiated</span>
               <span class="summary-card__section-value"
-                >{{ detail.date }}
-                • {{ detail.initiatedTime }}</span
+                >{{ detail.orderId }}</span
               >
             </div>
             <div class="summary-card__section">
-              <span class="summary-card__section-label">Completed</span>
+              <span class="summary-card__section-label">Method</span>
               <span class="summary-card__section-value"
-                >{{ detail.completedDate }}
-                • {{ detail.completedTime }}</span
+                >{{ methodLabel(detail.method) }}</span
               >
             </div>
             <div class="summary-card__section">
-              <span class="summary-card__section-label">Settlement date</span>
+              <span class="summary-card__section-label">Paid at</span>
               <span class="summary-card__section-value"
-                >{{ detail.settlementDate }}
-                (T+2)</span
+                >{{ formatDate(detail.paidAt) }}</span
               >
             </div>
             <div class="summary-card__section">
-              <span class="summary-card__section-label"
-                >Provider fee ({{ detail.providerFeePct }})</span
-              >
+              <span class="summary-card__section-label">Created</span>
               <span class="summary-card__section-value"
-                >−{{ detail.providerFee }}</span
-              >
-            </div>
-            <div class="summary-card__section">
-              <span class="summary-card__section-label"
-                >Platform fee ({{ detail.platformFeePct }})</span
-              >
-              <span class="summary-card__section-value"
-                >−{{ detail.platformFee }}</span
-              >
-            </div>
-            <div class="summary-card__section summary-card__section--net">
-              <span
-                class="summary-card__section-label summary-card__section-label--net"
-                >Net payout</span
-              >
-              <span
-                class="summary-card__section-value summary-card__section-value--net"
-                >{{ detail.netPayout }}</span
-              >
-            </div>
-          </div>
-
-          <!-- Refunds notice -->
-          <div class="info-notice">
-            <Info :size="16" />
-            <div class="info-notice__text">
-              <span class="info-notice__title">Refunds coming soon</span>
-              <span class="info-notice__desc"
-                >Automated refund processing will be available in the next
-                update.</span
+                >{{ formatDate(detail.createdDate) }}</span
               >
             </div>
           </div>
@@ -669,6 +547,11 @@ onMounted(async () => {
 .status-badge--error {
   color: var(--color-error-foreground);
   background: var(--color-error);
+}
+
+.status-badge--info {
+  color: #ffffff;
+  background: #3b82f6;
 }
 
 /* ===== Summary card ===== */

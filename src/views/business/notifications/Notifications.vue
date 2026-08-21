@@ -4,7 +4,14 @@
 >
 import { CheckCheck, Settings, Trash2 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
-import { getNotifications } from '@/services/notificationsService';
+import { useRouter } from 'vue-router';
+import ConfirmDialog from '@/components/app/ConfirmDialog.vue';
+import {
+  deleteNotification,
+  getNotifications,
+  markNotificationRead,
+} from '@/services/notificationsService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 
 interface Notification {
   id: string;
@@ -19,8 +26,24 @@ interface Notification {
   unread: boolean;
 }
 
+const router = useRouter();
+
 const notifications = ref<Notification[]>([]);
 const activeTab = ref('All');
+const confirmDeleteId = ref<string | null>(null);
+
+const businessStore = useBusinessAppStore();
+
+/** Keep the header bell badge in sync with this page's unread count. */
+function syncUnreadCount() {
+  businessStore.setNotificationCount(
+    notifications.value.filter((n) => n.unread).length,
+  );
+}
+
+function goToPreferences() {
+  router.push('/business/settings/notifications');
+}
 
 onMounted(async () => {
   notifications.value = await getNotifications();
@@ -61,14 +84,35 @@ const groupedNotifications = computed(() => {
   return groups;
 });
 
-function deleteNotification(id: string) {
-  notifications.value = notifications.value.filter((n) => n.id !== id);
+function askDeleteNotification(id: string) {
+  confirmDeleteId.value = id;
 }
 
-function markAllAsRead() {
+async function performDeleteNotification() {
+  const id = confirmDeleteId.value;
+  if (!id) {
+    return;
+  }
+  try {
+    await deleteNotification(id);
+    notifications.value = notifications.value.filter((n) => n.id !== id);
+    syncUnreadCount();
+  } finally {
+    confirmDeleteId.value = null;
+  }
+}
+
+async function markAllAsRead() {
+  const unread = notifications.value.filter((n) => n.unread && n.id);
+  try {
+    await Promise.all(unread.map((n) => markNotificationRead(n.id)));
+  } catch {
+    // Global error toast surfaces the failure
+  }
   for (const n of notifications.value) {
     n.unread = false;
   }
+  syncUnreadCount();
 }
 </script>
 
@@ -102,6 +146,7 @@ function markAllAsRead() {
         <button
           type="button"
           class="btn btn--outline"
+          @click="goToPreferences"
         >
           <Settings :size="16" />
           <span class="btn__text">Preferences</span>
@@ -275,7 +320,7 @@ function markAllAsRead() {
                 type="button"
                 class="notification-item__delete"
                 title="Delete"
-                @click="deleteNotification(item.id)"
+                @click="askDeleteNotification(item.id)"
               >
                 <Trash2
                   :size="14"
@@ -309,6 +354,16 @@ function markAllAsRead() {
         <p>No notifications to show for this category.</p>
       </div>
     </div>
+
+    <!-- Delete notification confirmation -->
+    <ConfirmDialog
+      :is-open="confirmDeleteId !== null"
+      title="Delete this notification?"
+      message="This removes the notification from your list. This action can't be undone."
+      confirm-label="Delete"
+      @cancel="confirmDeleteId = null"
+      @confirm="performDeleteNotification"
+    />
   </div>
 </template>
 

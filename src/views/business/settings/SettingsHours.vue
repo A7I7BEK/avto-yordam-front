@@ -2,15 +2,13 @@
   setup
   lang="ts"
 >
-import { ChevronDown, Globe, Timer } from '@lucide/vue';
+import { ChevronDown, Globe, LoaderCircle, Timer } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
-import { getSettingsHours } from '@/services/settingsService';
-
-interface DaySchedule {
-  open: string;
-  close: string;
-  closed: boolean;
-}
+import {
+  getSettingsHours,
+  saveSettingsHours,
+} from '@/services/settingsService';
+import type { DaySchedule } from '@/types/settings';
 
 interface TimezoneOption {
   value: string;
@@ -27,15 +25,22 @@ const days = [
   { key: 'sunday', label: 'Sunday' },
 ];
 
-const schedule = ref<Record<string, DaySchedule>>({
+const defaultSchedule: Record<string, DaySchedule> = {
   monday: { open: '09:00', close: '18:00', closed: false },
   tuesday: { open: '09:00', close: '18:00', closed: false },
   wednesday: { open: '09:00', close: '18:00', closed: false },
   thursday: { open: '09:00', close: '18:00', closed: false },
   friday: { open: '09:00', close: '18:00', closed: false },
-  saturday: { open: '', close: '', closed: true },
-  sunday: { open: '', close: '', closed: true },
+  saturday: { open: '09:00', close: '18:00', closed: true },
+  sunday: { open: '09:00', close: '18:00', closed: true },
+};
+
+const schedule = ref<Record<string, DaySchedule>>({ ...defaultSchedule });
+const initialSchedule = ref<Record<string, DaySchedule>>({
+  ...defaultSchedule,
 });
+const loading = ref(true);
+const saving = ref(false);
 
 const timezones: TimezoneOption[] = [
   { value: 'Asia/Tashkent', label: 'Asia/Tashkent  (GMT +05:00)' },
@@ -51,11 +56,39 @@ onMounted(async () => {
   const data = await getSettingsHours();
   if (data) {
     schedule.value = { ...data };
+    initialSchedule.value = JSON.parse(JSON.stringify(data));
   }
+  loading.value = false;
 });
 
 function toggleDay(dayKey: string) {
   schedule.value[dayKey].closed = !schedule.value[dayKey].closed;
+}
+
+function hasChanges(): boolean {
+  return (
+    JSON.stringify(schedule.value) !== JSON.stringify(initialSchedule.value)
+  );
+}
+
+async function save() {
+  if (saving.value) {
+    return;
+  }
+
+  saving.value = true;
+  try {
+    await saveSettingsHours(schedule.value);
+    initialSchedule.value = JSON.parse(JSON.stringify(schedule.value));
+  } catch {
+    // Error toast could be added here
+  } finally {
+    saving.value = false;
+  }
+}
+
+function cancel() {
+  schedule.value = JSON.parse(JSON.stringify(initialSchedule.value));
 }
 </script>
 
@@ -106,58 +139,55 @@ function toggleDay(dayKey: string) {
 
           <!-- Hours area -->
           <div class="col col--hours">
-            <template v-if="!schedule[day.key].closed">
-              <label
-                class="time-picker"
-                :for="`time-open-${day.key}`"
-              >
-                <Timer
-                  :size="13"
-                  class="time-picker-icon"
-                />
-                <span class="time-picker-value"
-                  >{{ schedule[day.key].open }}</span
-                >
-                <ChevronDown
-                  :size="14"
-                  class="time-picker-chevron"
-                />
-                <input
-                  :id="`time-open-${day.key}`"
-                  v-model="schedule[day.key].open"
-                  type="time"
-                  class="time-picker-input"
-                >
-              </label>
-              <span class="time-separator">to</span>
-              <label
-                class="time-picker"
-                :for="`time-close-${day.key}`"
-              >
-                <Timer
-                  :size="13"
-                  class="time-picker-icon"
-                />
-                <span class="time-picker-value"
-                  >{{ schedule[day.key].close }}</span
-                >
-                <ChevronDown
-                  :size="14"
-                  class="time-picker-chevron"
-                />
-                <input
-                  :id="`time-close-${day.key}`"
-                  v-model="schedule[day.key].close"
-                  type="time"
-                  class="time-picker-input"
-                >
-              </label>
-            </template>
-            <span
-              v-else
-              class="closed-all-day"
-              >Closed all day</span
+            <label
+              class="time-picker"
+              :class="{ 'time-picker--muted': schedule[day.key].closed }"
+              :for="`time-open-${day.key}`"
             >
+              <Timer
+                :size="13"
+                class="time-picker-icon"
+              />
+              <span class="time-picker-value"
+                >{{ schedule[day.key].open }}</span
+              >
+              <ChevronDown
+                :size="14"
+                class="time-picker-chevron"
+              />
+              <input
+                :id="`time-open-${day.key}`"
+                v-model="schedule[day.key].open"
+                type="time"
+                class="time-picker-input"
+                :disabled="schedule[day.key].closed"
+              >
+            </label>
+            <span class="time-separator">to</span>
+            <label
+              class="time-picker"
+              :class="{ 'time-picker--muted': schedule[day.key].closed }"
+              :for="`time-close-${day.key}`"
+            >
+              <Timer
+                :size="13"
+                class="time-picker-icon"
+              />
+              <span class="time-picker-value"
+                >{{ schedule[day.key].close }}</span
+              >
+              <ChevronDown
+                :size="14"
+                class="time-picker-chevron"
+              />
+              <input
+                :id="`time-close-${day.key}`"
+                v-model="schedule[day.key].close"
+                type="time"
+                class="time-picker-input"
+                :disabled="schedule[day.key].closed"
+              >
+            </label>
           </div>
 
           <!-- Status toggle -->
@@ -213,6 +243,46 @@ function toggleDay(dayKey: string) {
           with their own schedules.
         </p>
       </div>
+
+      <!-- Action bar -->
+      <div
+        v-if="!loading"
+        class="action-bar"
+      >
+        <button
+          type="button"
+          class="btn btn--secondary"
+          :disabled="!hasChanges() || saving"
+          @click="cancel"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn--primary"
+          :disabled="!hasChanges() || saving"
+          @click="save"
+        >
+          <LoaderCircle
+            v-if="saving"
+            :size="16"
+            class="btn-spinner"
+          />
+          {{ saving ? 'Saving…' : 'Save changes' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div
+      v-if="loading"
+      class="loading-state"
+    >
+      <LoaderCircle
+        :size="24"
+        class="loading-spinner"
+      />
+      <span>Loading operating hours…</span>
     </div>
   </div>
 </template>
@@ -398,17 +468,109 @@ function toggleDay(dayKey: string) {
   opacity: 0;
 }
 
+/* ===== Muted (closed day) state ===== */
+.time-picker--muted {
+  cursor: default;
+  background: transparent;
+}
+
+.time-picker--muted:hover {
+  border-color: var(--border);
+}
+
+.time-picker--muted .time-picker-value,
+.time-picker--muted .time-picker-icon,
+.time-picker--muted .time-picker-chevron {
+  color: var(--muted-foreground);
+}
+
+.time-picker-input:disabled {
+  cursor: default;
+}
+
+/* ===== Action bar ===== */
+.action-bar {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 20px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    opacity 0.15s;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn--primary {
+  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--primary-hover, #2563eb);
+}
+
+.btn--secondary {
+  color: var(--foreground);
+  background: transparent;
+  border-color: var(--border);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: var(--accent);
+}
+
+.btn-spinner {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Loading state ===== */
+.loading-state {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+.loading-spinner {
+  color: var(--primary);
+  animation: spin 0.7s linear infinite;
+}
+
 .time-separator {
   flex-shrink: 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  font-weight: 400;
-  color: var(--muted-foreground);
-}
-
-.closed-all-day {
-  font-family: Inter, sans-serif;
-  font-size: 13px;
   font-weight: 400;
   color: var(--muted-foreground);
 }

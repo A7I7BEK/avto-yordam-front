@@ -10,6 +10,7 @@ import {
   DollarSign,
   Grid3X3,
   LayoutDashboard,
+  Mail,
   Settings,
   ShieldCheck,
   ShoppingCart,
@@ -18,15 +19,26 @@ import {
   UserPlus,
   Users,
 } from '@lucide/vue';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import SidebarNavItem from '@/components/app/SidebarNavItem.vue';
+import { countNewOrders, getOrders } from '@/services/ordersService';
 import { useBusinessAppStore } from '@/stores/businessApp';
 
 const route = useRoute();
 const store = useBusinessAppStore();
 
 const isActive = (path: string) => route.path.startsWith(path);
+
+// Load the real "new orders" count for the sidebar badge.
+onMounted(async () => {
+  try {
+    const orders = await getOrders();
+    store.setOrdersBadgeCount(countNewOrders(orders));
+  } catch {
+    // Keep the last known count if the fetch fails.
+  }
+});
 
 const isTeamOpen = computed(() => store.teamSubmenuOpen);
 
@@ -35,6 +47,9 @@ const isEmployeeActive = computed(() =>
 );
 const isMemberActive = computed(() =>
   route.path.startsWith('/business/team/members'),
+);
+const isInvitationActive = computed(() =>
+  route.path.startsWith('/business/team/invitations'),
 );
 </script>
 
@@ -118,6 +133,14 @@ const isMemberActive = computed(() =>
           >
             <UserPlus :size="16" />
             <span>Members</span>
+          </router-link>
+          <router-link
+            to="/business/team/invitations"
+            class="sidebar__sub-item"
+            :class="{ active: isInvitationActive }"
+          >
+            <Mail :size="16" />
+            <span>Invitations</span>
           </router-link>
         </div>
       </div>

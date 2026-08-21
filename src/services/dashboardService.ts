@@ -1,3 +1,4 @@
+import { apiClient } from '@/api/client';
 import { isMockMode } from '@/config';
 import {
   alerts,
@@ -27,13 +28,13 @@ export async function getReceptionistDashboard() {
 
   try {
     const list = await getOrders();
-    const activeCount = list.filter(
+    const _activeCount = list.filter(
       (o) =>
         o.status === 'new' ||
         o.status === 'pending' ||
         o.status === 'confirmed',
     ).length;
-    const completedCount = list.filter((o) => o.status === 'done').length;
+    const _completedCount = list.filter((o) => o.status === 'done').length;
 
     const dynamicKpi = {
       ...kpiStats,
@@ -48,7 +49,7 @@ export async function getReceptionistDashboard() {
       queue: queueBookings,
       schedules: masterSchedules,
     };
-  } catch (_) {
+  } catch {
     return { kpi: kpiStats, queue: queueBookings, schedules: masterSchedules };
   }
 }
@@ -65,31 +66,8 @@ export async function getOverviewDashboard() {
   }
 
   try {
-    const list = await getOrders();
-    const totalCount = list.length;
-    const revenueSum = list
-      .filter((o) => o.status === 'done')
-      .reduce((sum, o) => {
-        const val = Number.parseInt(o.amount.replace(/[^0-9]/g, '')) || 0;
-        return sum + val * 1000;
-      }, 0);
-
-    const dynamicKpi = [...kpiItems];
-    if (dynamicKpi[0]) {
-      dynamicKpi[0].value = `${(revenueSum / 1_000_000).toFixed(1)}M UZS`;
-    }
-    if (dynamicKpi[1]) {
-      dynamicKpi[1].value = totalCount.toString();
-    }
-
-    return {
-      kpi: dynamicKpi,
-      recentOrders: list.slice(0, 5),
-      earnings,
-      topEmployees,
-      serviceBreakdown,
-    };
-  } catch (_) {
+    return await apiClient.get('/dashboard/overview');
+  } catch {
     return {
       kpi: kpiItems,
       recentOrders,
@@ -116,7 +94,7 @@ export async function getCommandCenterDashboard() {
     const totalOrders = list.length;
 
     const newCount = list.filter((o) => o.status === 'new').length;
-    const progressCount = list.filter(
+    const _progressCount = list.filter(
       (o) => o.status === 'in-progress' || o.status === 'pending',
     ).length;
     const completedCount = list.filter((o) => o.status === 'done').length;
@@ -149,7 +127,7 @@ export async function getCommandCenterDashboard() {
       alerts,
       weeklySummary,
     };
-  } catch (_) {
+  } catch {
     return {
       bigStats,
       ordersByStatus,

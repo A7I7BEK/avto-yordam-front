@@ -4,20 +4,17 @@ export interface ProfessionalOnboardingData {
   dateOfBirth: string;
   phone: string;
   email: string;
-  languages: string[];
+  yearsOfExperience: number;
 }
 
 export interface ProfessionalInfoData {
-  specializations: string[];
-  yearsOfExperience: number;
-  workingHours: {
-    from: string;
-    to: string;
-  };
-  workingDays: string[];
+  /** Id of the chosen specialization (from the master-specialization list). */
+  specializationId: string;
+  /** Ids of the selected languages (from the /language list). */
+  languages: string[];
 }
 
-export type OrganizationType = 'MCHJ' | 'YTT' | 'SELF_EMPLOYED';
+export type OrganizationType = 'MCHJ' | 'YATT' | 'SELF_EMPLOYED';
 
 export interface BusinessOnboardingData {
   organizationType: OrganizationType;

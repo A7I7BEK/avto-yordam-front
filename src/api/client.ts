@@ -1,16 +1,53 @@
+import { getAcceptLanguage } from '@/config/language';
 import router from '@/router';
+import { useErrorStore } from '@/stores/errorStore';
 
 const BASE_URL = import.meta.env.VITE_URL_API || 'http://localhost:8700/api';
 
-async function request(url: string, method: string, data?: any, config?: any) {
+function handleUnauthorized(status: number) {
+  if (status === 401) {
+    localStorage.removeItem('token');
+    const path =
+      router.currentRoute.value?.path || window.location.pathname || '';
+    const isRegisterPage = path.includes('register') || path.includes('signup');
+    const isLoginPage = path.includes('login') || path.includes('signin');
+    if (!(isRegisterPage || isLoginPage)) {
+      router.push('/auth/login');
+    }
+  }
+}
+
+async function parseErrorResponse(response: Response): Promise<string> {
+  let errorMsg = response.statusText;
+  try {
+    const errJson = await response.json();
+    errorMsg = errJson.message || errJson.error || errorMsg;
+  } catch {
+    // Ignore json parse error
+  }
+  return errorMsg;
+}
+
+async function request(
+  url: string,
+  method: string,
+  data?: unknown,
+  config?: {
+    headers?: Record<string, string>;
+    params?: Record<string, unknown>;
+  },
+) {
   const token = localStorage.getItem('token');
+  const isFormData = data instanceof FormData;
+
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(config?.headers || {}),
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+    'Accept-Language': getAcceptLanguage(),
+    ...(config?.headers ?? {}),
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   // Handle absolute vs relative URL
@@ -22,42 +59,31 @@ async function request(url: string, method: string, data?: any, config?: any) {
   };
 
   if (data && method !== 'GET' && method !== 'HEAD') {
-    options.body = JSON.stringify(data);
+    options.body = isFormData ? data : JSON.stringify(data);
   }
 
   const response = await fetch(fullUrl, options);
 
   if (!response.ok) {
-    if (response.status === 401) {
-      localStorage.removeItem('token');
-      const path =
-        router.currentRoute.value?.path || window.location.pathname || '';
-      const isRegisterPage =
-        path.includes('register') || path.includes('signup');
-      const isLoginPage = path.includes('login') || path.includes('signin');
-      if (!(isRegisterPage || isLoginPage)) {
-        router.push('/auth/login');
-      }
+    handleUnauthorized(response.status);
+    const errorMsg = await parseErrorResponse(response);
+    const fallback = `Request failed with status ${response.status}`;
+    const message = errorMsg || fallback;
+    // Surface backend errors to the user on every page via the global toasts
+    if (response.status !== 401) {
+      useErrorStore().showError(message);
     }
-
-    let errorMsg = response.statusText;
-    try {
-      const errJson = await response.json();
-      errorMsg = errJson.message || errJson.error || errorMsg;
-    } catch (_) {}
-    throw new Error(
-      errorMsg || `Request failed with status ${response.status}`,
-    );
+    throw new Error(message);
   }
 
   const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
+  if (contentType?.includes('application/json')) {
     return await response.json();
   }
   const text = await response.text();
   try {
     return JSON.parse(text);
-  } catch (_) {
+  } catch {
     return text;
   }
 }
@@ -88,7 +114,14 @@ export const apiClient = {
   patch(url: string, data?: any, config?: any) {
     return request(url, 'PATCH', data, config);
   },
-  delete(url: string, config?: any) {
-    return request(url, 'DELETE', undefined, config);
+  delete(
+    url: string,
+    data?: unknown,
+    config?: {
+      headers?: Record<string, string>;
+      params?: Record<string, unknown>;
+    },
+  ) {
+    return request(url, 'DELETE', data, config);
   },
 };

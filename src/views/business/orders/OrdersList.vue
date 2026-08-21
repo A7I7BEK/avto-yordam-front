@@ -2,14 +2,16 @@
   setup
   lang="ts"
 >
-import { Eye, Plus, Search, UserPlus } from '@lucide/vue';
+import { Eye, Plus, Search } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { getOrders } from '@/services/ordersService';
+import { countNewOrders, getOrders } from '@/services/ordersService';
+import { useBusinessAppStore } from '@/stores/businessApp';
 import type { Order } from '@/types/business';
 import OrdersKanban from './OrdersKanban.vue';
 
 const router = useRouter();
+const store = useBusinessAppStore();
 const orders = ref<Order[]>([]);
 const activeTab = ref('all');
 const searchQuery = ref('');
@@ -17,15 +19,26 @@ const viewMode = ref<'list' | 'board'>('list');
 
 async function loadOrders() {
   orders.value = await getOrders();
+  store.setOrdersBadgeCount(countNewOrders(orders.value));
 }
 loadOrders();
+
+const newOrdersCount = computed(() => countNewOrders(orders.value));
 
 const tabs = [
   { key: 'all', label: 'All', count: orders.value.length },
   {
-    key: 'new',
-    label: 'New',
-    count: orders.value.filter((o) => o.status === 'new').length,
+    key: 'pending-master-confirmation',
+    label: 'Pending Master',
+    count: orders.value.filter(
+      (o) => o.status === 'pending-master-confirmation',
+    ).length,
+  },
+  {
+    key: 'pending-user-confirmation',
+    label: 'Pending User',
+    count: orders.value.filter((o) => o.status === 'pending-user-confirmation')
+      .length,
   },
   {
     key: 'confirmed',
@@ -38,24 +51,37 @@ const tabs = [
     count: orders.value.filter((o) => o.status === 'in-progress').length,
   },
   {
-    key: 'done',
-    label: 'Done',
-    count: orders.value.filter((o) => o.status === 'done').length,
+    key: 'completed',
+    label: 'Completed',
+    count: orders.value.filter((o) => o.status === 'completed').length,
   },
   {
     key: 'cancelled',
     label: 'Cancelled',
     count: orders.value.filter((o) => o.status === 'cancelled').length,
   },
+  {
+    key: 'rejected',
+    label: 'Rejected',
+    count: orders.value.filter((o) => o.status === 'rejected').length,
+  },
 ];
 
 const statusMap: Record<string, { label: string; class: string }> = {
-  new: { label: 'New', class: 'status-badge--new' },
-  pending: { label: 'Pending', class: 'status-badge--pending' },
+  created: { label: 'Created', class: 'status-badge--new' },
+  'pending-master-confirmation': {
+    label: 'Pending Master',
+    class: 'status-badge--pending',
+  },
+  'pending-user-confirmation': {
+    label: 'Pending User',
+    class: 'status-badge--pending',
+  },
   confirmed: { label: 'Confirmed', class: 'status-badge--confirmed' },
   'in-progress': { label: 'In Progress', class: 'status-badge--progress' },
-  done: { label: 'Done', class: 'status-badge--done' },
+  completed: { label: 'Completed', class: 'status-badge--done' },
   cancelled: { label: 'Cancelled', class: 'status-badge--cancelled' },
+  rejected: { label: 'Rejected', class: 'status-badge--cancelled' },
 };
 
 const filteredOrders = computed(() => {
@@ -79,8 +105,8 @@ function viewOrder(id: string) {
   router.push(`/business/orders/${encodeURIComponent(id)}`);
 }
 
-function goToAddWalkIn() {
-  // Navigate to add walk-in
+function goToCreateOrder() {
+  // Navigate to the create order flow
 }
 </script>
 
@@ -91,7 +117,12 @@ function goToAddWalkIn() {
       <div class="header-row__left">
         <h1 class="page-title">
           Orders
-          <span class="badge-new">7 new</span>
+          <span
+            v-if="newOrdersCount > 0"
+            class="badge-new"
+            >{{ newOrdersCount }}
+            new</span
+          >
         </h1>
         <p class="page-subtitle">Manage and track all bookings</p>
       </div>
@@ -122,10 +153,10 @@ function goToAddWalkIn() {
           v-if="viewMode === 'list'"
           type="button"
           class="btn btn--outline"
-          @click="goToAddWalkIn"
+          @click="goToCreateOrder"
         >
-          <UserPlus :size="16" />
-          Add walk-in
+          <Plus :size="16" />
+          Create order
         </button>
       </div>
     </div>
@@ -190,7 +221,7 @@ function goToAddWalkIn() {
                 <button
                   type="button"
                   class="link-order"
-                  @click="viewOrder(order.id)"
+                  @click="viewOrder(order.backendId)"
                 >
                   {{ order.id }}
                 </button>
@@ -218,7 +249,7 @@ function goToAddWalkIn() {
                   type="button"
                   class="btn-icon"
                   title="View order"
-                  @click="viewOrder(order.id)"
+                  @click="viewOrder(order.backendId)"
                 >
                   <Eye :size="16" />
                 </button>

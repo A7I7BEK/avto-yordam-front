@@ -36,19 +36,18 @@ import {
   proposeOrderTime,
   rejectOrder,
 } from '@/services/ordersService';
+import { getMyOrg } from '@/services/settingsService';
 import type { Order } from '@/types/business';
 
 const router = useRouter();
 
 // Auth context decodes
-const orgId = ref<any>('1');
 const isOwner = ref(true);
 const isMaster = ref(false);
 
 function decodeUserToken() {
   const token = localStorage.getItem('token');
   if (!token || isMockMode()) {
-    orgId.value = '1';
     isOwner.value = true;
     isMaster.value = false;
     return;
@@ -60,7 +59,6 @@ function decodeUserToken() {
       const payload = JSON.parse(
         atob(payloadPart.replace(/-/g, '+').replace(/_/g, '/')),
       );
-      orgId.value = payload.organizationId || '1';
       isOwner.value =
         payload.organizationRole === 'OWNER' ||
         payload.platformRole === 'OWNER';
@@ -69,7 +67,6 @@ function decodeUserToken() {
         payload.platformRole === 'MASTER';
     }
   } catch (_) {
-    orgId.value = '1';
     isOwner.value = true;
     isMaster.value = false;
   }
@@ -259,7 +256,20 @@ async function refreshAll() {
       getTimeSlots(),
       getOrders(),
     ]);
-    slots.value = slotList;
+    // Mark slots as booked if their id matches an order's masterTimeSlotId
+    // or if the backend already returned isBooked=true
+    const bookedSlotIds = new Set(
+      orderList
+        .filter(
+          (o: any) => o.status !== 'CANCELLED' && o.status !== 'cancelled',
+        )
+        .map((o: any) => o.masterTimeSlotId || o.slotId)
+        .filter(Boolean),
+    );
+    slots.value = slotList.map((s: any) => ({
+      ...s,
+      isBooked: s.isBooked || bookedSlotIds.has(s.id),
+    }));
     orders.value = orderList;
   } catch (err: any) {
     triggerToast(err.message || 'Failed to load calendar data', 'error');
@@ -278,12 +288,12 @@ async function loadModalHelpers() {
       return;
     }
 
-    const orgIdVal = orgId.value || '1';
+    const org = await getMyOrg();
     const [orgSvcList, baseSvcList, empList] = await Promise.all([
       apiClient.get(
-        `/organization-services/get-by-organization-id/${orgIdVal}`,
+        `/organization-catalog/get-by-organization-id/${org?.id ?? ''}`,
       ),
-      apiClient.get('/service'),
+      apiClient.get('/catalog'),
       getEmployees(),
     ]);
 
@@ -292,7 +302,8 @@ async function loadModalHelpers() {
         const baseSvc = baseSvcList.find((bs: any) => bs.id === os.serviceId);
         return {
           id: os.id,
-          name: baseSvc ? baseSvc.name : `Service #${os.serviceId}`,
+          name:
+            os.catalogName || (baseSvc ? baseSvc.name : `Service #${os.serviceId}`),
         };
       });
     } else {
@@ -462,7 +473,7 @@ async function submitCreateOrderInSlot() {
     const payload = {
       clientName: f.clientName.trim(),
       clientNumber: f.clientNumber.trim(),
-      organizationServicesId: f.serviceId,
+      organizationCatalogId: f.serviceId,
       masterTimeSlotId: selectedSlot.value.id,
       status: 'CREATED',
       estimatedPrice: f.estimatedPrice ? Number(f.estimatedPrice) : undefined,

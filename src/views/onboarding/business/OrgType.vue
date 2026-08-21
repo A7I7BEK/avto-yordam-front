@@ -35,7 +35,7 @@ const orgTypes = [
     badgeColor: '#001133',
   },
   {
-    value: 'YTT' as OrganizationType,
+    value: 'YATT' as OrganizationType,
     title: 'Individual Entrepreneur',
     badge: 'YTT',
     description:
