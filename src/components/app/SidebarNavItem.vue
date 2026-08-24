@@ -91,6 +91,6 @@ defineProps<{
 
 .nav-item.active .badge {
   color: var(--primary);
-  background: var(--card);
+  background: var(--primary-foreground);
 }
 </style>
