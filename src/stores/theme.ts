@@ -16,13 +16,19 @@ function isPreference(value: string | null): value is ThemePreference {
   return PREFERENCES.includes(value as ThemePreference);
 }
 
-/** Read the persisted theme preference, defaulting to light. */
+/** Read the persisted theme preference. On a first visit (nothing stored)
+ * the app follows the browser's own theme and records it as `system`,
+ * since the choice was made by the app, not the user. */
 function readStoredPreference(): ThemePreference {
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    return isPreference(stored) ? stored : 'light';
+    if (isPreference(stored)) {
+      return stored;
+    }
+    localStorage.setItem(THEME_STORAGE_KEY, 'system');
+    return 'system';
   } catch {
-    return 'light';
+    return 'system';
   }
 }
 

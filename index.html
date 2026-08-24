@@ -28,7 +28,10 @@
         ).matches;
         if (stored === 'dark') {
           theme = 'dark';
-        } else if (stored === 'system') {
+        } else if (stored === 'light') {
+          theme = 'light';
+        } else {
+          // First visit (or system mode): follow the browser's own theme.
           theme = systemDark ? 'dark' : 'light';
         }
         document.documentElement.setAttribute('data-theme', theme);
