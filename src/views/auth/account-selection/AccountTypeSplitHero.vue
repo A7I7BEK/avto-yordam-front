@@ -13,7 +13,7 @@ import {
   Wallet,
 } from '@lucide/vue';
 import { useRouter } from 'vue-router';
-import logoUrl from '@/assets/logo/avto-yordam-logo.png';
+import logoUrl from '@/assets/logo/logo-light.png';
 
 const router = useRouter();
 

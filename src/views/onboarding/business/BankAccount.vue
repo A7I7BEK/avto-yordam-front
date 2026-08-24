@@ -5,7 +5,7 @@
 import { ArrowLeft, ArrowRight, ShieldAlert } from '@lucide/vue';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import logoUrl from '@/assets/logo/avto-yordam-logo.png';
+import logoUrl from '@/assets/logo/logo-light.png';
 import ProgressBar from '@/components/onboarding/ProgressBar.vue';
 import { useBusinessOnboardingStore } from '@/stores/onboarding';
 

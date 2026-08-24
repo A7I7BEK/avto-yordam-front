@@ -20,7 +20,7 @@ import {
 } from '@lucide/vue';
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import logoUrl from '@/assets/logo/avto-yordam-logo.png';
+import logoUrl from '@/assets/logo/logo-light.png';
 import SidebarNavItem from '@/components/app/SidebarNavItem.vue';
 import { countNewOrders, getOrders } from '@/services/ordersService';
 import { useBusinessAppStore } from '@/stores/businessApp';

@@ -15,7 +15,7 @@ import {
 import { nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { apiClient } from '@/api/client';
-import logoUrl from '@/assets/logo/avto-yordam-logo.png';
+import logoUrl from '@/assets/logo/logo-light.png';
 import { refreshAccessToken } from '@/services/auth/tokenService';
 
 const PHONE_REGEX = /^\+998\d{9}$/;

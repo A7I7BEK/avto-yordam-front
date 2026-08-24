@@ -5,7 +5,7 @@
 import { Layers, LayoutDashboard, Mail, Settings, Star } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import logoUrl from '@/assets/logo/avto-yordam-logo.png';
+import logoUrl from '@/assets/logo/logo-light.png';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 import SidebarNavItem from './SidebarNavItem.vue';
 

@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import logoUrl from '@/assets/logo/avto-yordam-logo.png';
+import logoUrl from '@/assets/logo/logo-light.png';
 
 defineProps<{
   caption?: string;
