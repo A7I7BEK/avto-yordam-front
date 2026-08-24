@@ -28,8 +28,8 @@ const languages = ['EN', 'UZ', 'RU'] as const;
   display: flex;
   gap: 2px;
   padding: 4px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -38,7 +38,7 @@ const languages = ['EN', 'UZ', 'RU'] as const;
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -50,7 +50,7 @@ const languages = ['EN', 'UZ', 'RU'] as const;
 
 .lang-chip.active {
   font-weight: 600;
-  color: #2a2933;
-  background: #ffffff;
+  color: var(--foreground);
+  background: var(--card);
 }
 </style>

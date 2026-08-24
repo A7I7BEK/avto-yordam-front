@@ -9,7 +9,7 @@ import { WifiOff } from '@lucide/vue';
   <div class="page">
     <WifiOff
       :size="64"
-      color="#5749F4"
+      color="var(--primary)"
     />
     <h1 class="title">No internet connection</h1>
     <p class="subtitle">Please check your connection and try again.</p>
@@ -26,7 +26,7 @@ import { WifiOff } from '@lucide/vue';
   width: 100%;
   min-height: 100vh;
   padding: 48px;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .title {
@@ -34,7 +34,7 @@ import { WifiOff } from '@lucide/vue';
   font-family: Inter, sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -42,6 +42,6 @@ import { WifiOff } from '@lucide/vue';
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 </style>

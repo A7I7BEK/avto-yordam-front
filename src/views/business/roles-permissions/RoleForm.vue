@@ -13,7 +13,11 @@ import {
   getRolePermissionIds,
   updateRole,
 } from '@/services/rolesService';
-import type { PermissionCategory, PermissionResponse, Role } from '@/types/business';
+import type {
+  PermissionCategory,
+  PermissionResponse,
+  Role,
+} from '@/types/business';
 
 const route = useRoute();
 const router = useRouter();
@@ -24,7 +28,7 @@ const roleId = ref<string | null>(null);
 const form = ref({
   name: '',
   description: '',
-  color: '#5749F4',
+  color: 'var(--primary)',
   template: 'blank',
 });
 
@@ -35,6 +39,8 @@ const loadingPerms = ref(true);
 const allPermissions = ref<PermissionResponse[]>([]);
 const permissionCategories = ref<PermissionCategory[]>([]);
 const collapsedCats = ref<Set<string>>(new Set());
+
+const PERMISSION_SUFFIX_REGEX = /_(CREATE|READ|UPDATE|DELETE)$/;
 
 const templateOptions = [
   { value: 'blank', label: 'Start blank' },
@@ -57,7 +63,7 @@ const groupedCategories = computed<GroupedCategory[]>(() => {
   const groups = new Map<string, GroupedCategory>();
 
   for (const perm of allPermissions.value) {
-    const prefix = perm.code.replace(/_(CREATE|READ|UPDATE|DELETE)$/, '');
+    const prefix = perm.code.replace(PERMISSION_SUFFIX_REGEX, '');
     const catKey = prefix || 'OTHER';
     let group = groups.get(catKey);
     if (!group) {
@@ -78,7 +84,9 @@ const groupedCategories = computed<GroupedCategory[]>(() => {
     });
   }
 
-  return Array.from(groups.values()).sort((a, b) => a.name.localeCompare(b.name));
+  return Array.from(groups.values()).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
 });
 
 const templatePermissionIds = computed(() => {
@@ -110,7 +118,10 @@ onMounted(async () => {
     const [perms, roleData] = await Promise.all([
       getPermissions(),
       isEdit.value && roleId.value
-        ? Promise.all([getRole(roleId.value), getRolePermissionIds(roleId.value)])
+        ? Promise.all([
+            getRole(roleId.value),
+            getRolePermissionIds(roleId.value),
+          ])
         : Promise.resolve([null, null]),
     ]);
 
@@ -187,7 +198,15 @@ function applyTemplate(template: string) {
   }
 
   permissionCategories.value = [
-    { id: 'template', name: 'Permissions', permissions: allPermissions.value.map((p) => ({ id: p.id, label: p.name, allowed: realIds.has(p.id) })) },
+    {
+      id: 'template',
+      name: 'Permissions',
+      permissions: allPermissions.value.map((p) => ({
+        id: p.id,
+        label: p.name,
+        allowed: realIds.has(p.id),
+      })),
+    },
   ];
 }
 
@@ -216,7 +235,7 @@ function selectAllInCategory(catId: string) {
     .flatMap((c) => c.permissions)
     .map((p) => {
       const group = groupedCategories.value.find((g) => g.id === catId);
-      if (group && group.permissions.some((gp) => gp.id === p.id)) {
+      if (group?.permissions.some((gp) => gp.id === p.id)) {
         return { ...p, allowed: true };
       }
       return p;
@@ -232,7 +251,7 @@ function deselectAllInCategory(catId: string) {
     .flatMap((c) => c.permissions)
     .map((p) => {
       const group = groupedCategories.value.find((g) => g.id === catId);
-      if (group && group.permissions.some((gp) => gp.id === p.id)) {
+      if (group?.permissions.some((gp) => gp.id === p.id)) {
         return { ...p, allowed: false };
       }
       return p;
@@ -773,9 +792,9 @@ function selectColor(color: string) {
 }
 
 .perm-category {
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
 }
 
 .perm-category__header {
@@ -801,8 +820,8 @@ function selectColor(color: string) {
 }
 
 .perm-category__chevron {
-  transition: transform 0.2s;
   color: var(--muted-foreground);
+  transition: transform 0.2s;
 }
 
 .perm-category__chevron.rotated {
@@ -821,12 +840,12 @@ function selectColor(color: string) {
 }
 
 .perm-category__count {
+  padding: 2px 8px;
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: var(--muted-foreground);
   background: var(--border);
-  padding: 2px 8px;
   border-radius: var(--radius-pill);
 }
 
@@ -878,8 +897,8 @@ function selectColor(color: string) {
 .perm-checkbox__input {
   width: 16px;
   height: 16px;
-  cursor: pointer;
   accent-color: var(--primary);
+  cursor: pointer;
 }
 
 .perm-checkbox__label {
@@ -891,11 +910,11 @@ function selectColor(color: string) {
 }
 
 .perm-checkbox__code {
-  font-family: 'SF Mono', 'Cascadia Code', monospace;
+  padding: 2px 6px;
+  font-family: "SF Mono", "Cascadia Code", monospace;
   font-size: 11px;
   color: var(--muted-foreground);
   background: var(--accent);
-  padding: 2px 6px;
   border-radius: 4px;
 }
 </style>

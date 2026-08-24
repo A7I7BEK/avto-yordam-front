@@ -26,7 +26,7 @@ export async function getMembers(): Promise<TeamMember[]> {
           .join('')
           .toUpperCase()
           .slice(0, 2),
-        avatarColor: '#D9D9DB',
+        avatarColor: 'var(--border)',
         role: m.role?.name ?? (m.specializationName ? 'Master' : 'Employee'),
         specialties: m.specializationName
           ? [m.specializationName]

@@ -152,9 +152,7 @@ onMounted(async () => {
               </div>
               <div class="info-row">
                 <span class="info-row__label">Order</span>
-                <span class="info-row__value"
-                  >{{ detail.orderId }}</span
-                >
+                <span class="info-row__value">{{ detail.orderId }}</span>
               </div>
               <div class="info-row">
                 <span class="info-row__label">Payment method</span>
@@ -438,7 +436,7 @@ onMounted(async () => {
   font-size: 12px;
   font-weight: 400;
   color: var(--foreground);
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
 }

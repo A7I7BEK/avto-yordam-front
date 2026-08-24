@@ -90,6 +90,43 @@ function onOtpKeydown(index: number, event: KeyboardEvent) {
   }
 }
 
+function routeAfterOtpLogin(result: {
+  user?: { type?: string; isOnboarded?: boolean };
+}) {
+  const userType = String(result.user?.type || '').toUpperCase();
+  const isOrg =
+    userType === 'ORGANIZATION' ||
+    userType === 'ORGANIZATION_ADMIN' ||
+    isBusiness.value;
+  router.push(
+    result.user?.isOnboarded
+      ? { name: isOrg ? 'biz-dashboard-overview' : 'pro-dashboard' }
+      : {
+          name: isOrg
+            ? 'business-onboarding-step1'
+            : 'professional-onboarding-step1',
+        },
+  );
+}
+
+async function routeAfterOtpRegistration() {
+  if (accountType !== 'business') {
+    router.push({ name: onboardingRoute });
+    return;
+  }
+
+  try {
+    const orgMembers = await apiClient.get('/organization-member/get-by-user');
+    if (orgMembers && orgMembers.length > 0) {
+      router.push({ name: 'biz-dashboard-overview' });
+      return;
+    }
+  } catch {
+    // Fall through to organization creation on failure.
+  }
+  router.push({ name: 'create-organization' });
+}
+
 async function verify() {
   const code = otpValues.value.join('');
   if (code.length !== 6) {
@@ -104,38 +141,9 @@ async function verify() {
     localStorage.setItem('token', result.token);
 
     if (isLogin.value) {
-      const userType = String(result.user?.type || '').toUpperCase();
-      const isOrg =
-        userType === 'ORGANIZATION' ||
-        userType === 'ORGANIZATION_ADMIN' ||
-        isBusiness.value;
-      router.push(
-        result.user.isOnboarded
-          ? { name: isOrg ? 'biz-dashboard-overview' : 'pro-dashboard' }
-          : {
-              name: isOrg
-                ? 'business-onboarding-step1'
-                : 'professional-onboarding-step1',
-            },
-      );
+      routeAfterOtpLogin(result);
     } else {
-      // After registration OTP
-      if (accountType === 'business') {
-        try {
-          const orgMembers = await apiClient.get(
-            '/organization-member/get-by-user',
-          );
-          if (orgMembers && orgMembers.length > 0) {
-            router.push({ name: 'biz-dashboard-overview' });
-          } else {
-            router.push({ name: 'create-organization' });
-          }
-        } catch (_) {
-          router.push({ name: 'create-organization' });
-        }
-      } else {
-        router.push({ name: onboardingRoute });
-      }
+      await routeAfterOtpRegistration();
     }
   } catch {
     errorMessage.value = 'Invalid code. Please try again.';

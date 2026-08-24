@@ -8,9 +8,9 @@ defineProps<{
 }>();
 
 const variants: Record<string, { dot: string; text: string }> = {
-  green: { dot: '#25603A', text: '#25603A' },
-  amber: { dot: '#B45309', text: '#B45309' },
-  grey: { dot: '#616167', text: '#616167' },
+  green: { dot: 'var(--success)', text: 'var(--success)' },
+  amber: { dot: 'var(--warning)', text: 'var(--warning)' },
+  grey: { dot: 'var(--muted-foreground)', text: 'var(--muted-foreground)' },
 };
 </script>
 
@@ -18,8 +18,8 @@ const variants: Record<string, { dot: string; text: string }> = {
   <div
     class="status-badge"
     :style="{
-      '--dot-color': variants[variant || 'grey']?.dot || '#616167',
-      '--text-color': variants[variant || 'grey']?.text || '#616167',
+      '--dot-color': variants[variant || 'grey']?.dot || 'var(--muted-foreground)',
+      '--text-color': variants[variant || 'grey']?.text || 'var(--muted-foreground)',
     }"
   >
     <span class="dot" />

@@ -1197,14 +1197,14 @@ function viewOrder(id: string) {
   display: flex;
   flex: 0 0 280px;
   flex-direction: column;
-  background: #f7f7f8;
+  background: var(--muted);
   border: 1px solid transparent;
   border-radius: var(--radius-lg);
   transition: all 0.2s ease;
 }
 
 .kanban-column--dragover {
-  background: #eef0ff;
+  background: var(--primary-tint);
   border-color: var(--primary);
 }
 
@@ -1403,20 +1403,20 @@ function viewOrder(id: string) {
 }
 
 .text-success:hover {
-  color: #25603a;
-  background: #e8faf0;
+  color: var(--success);
+  background: var(--success-bg);
 }
 .text-danger:hover {
   color: var(--destructive);
-  background: #fee9e5;
+  background: var(--destructive-soft);
 }
 .text-warning:hover {
   color: var(--warning);
-  background: #fff8e5;
+  background: var(--warning-bg);
 }
 .text-primary:hover {
   color: var(--primary);
-  background: #eef0ff;
+  background: var(--primary-tint);
 }
 
 .ml-auto {

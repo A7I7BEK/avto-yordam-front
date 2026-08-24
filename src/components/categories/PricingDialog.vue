@@ -76,7 +76,7 @@ onUnmounted(() => {
         >
           <X
             :size="18"
-            color="#616167"
+            color="var(--muted-foreground)"
           />
         </button>
       </div>
@@ -134,7 +134,7 @@ onUnmounted(() => {
         <div class="info-banner">
           <Info
             :size="16"
-            color="#5749F4"
+            color="var(--primary)"
           />
           <span>
             Suggested range:
@@ -189,7 +189,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   width: 560px;
-  background: #ffffff;
+  background: var(--card);
   border-radius: 20px;
   box-shadow:
     0 20px 60px rgba(42, 41, 51, 0.2),
@@ -201,14 +201,14 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .dialog-title {
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .close-btn {
@@ -219,7 +219,7 @@ onUnmounted(() => {
   height: 32px;
   padding: 0;
   cursor: pointer;
-  background: #f5f5f5;
+  background: var(--muted);
   border: none;
   border-radius: 8px;
 }
@@ -247,7 +247,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .form-input {
@@ -256,15 +256,15 @@ onUnmounted(() => {
   padding: 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 10px;
 }
 
 .form-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(87, 73, 244, 0.15);
 }
 
@@ -274,16 +274,16 @@ onUnmounted(() => {
   padding: 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #2a2933;
+  color: var(--foreground);
   resize: vertical;
   outline: none;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 10px;
 }
 
 .form-textarea:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(87, 73, 244, 0.15);
 }
 
@@ -294,8 +294,8 @@ onUnmounted(() => {
   padding: 12px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
-  background: #f5f5ff;
+  color: var(--muted-foreground);
+  background: var(--primary-tint);
   border-radius: 10px;
 }
 
@@ -304,7 +304,7 @@ onUnmounted(() => {
   gap: 10px;
   justify-content: flex-end;
   padding: 16px 24px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border);
 }
 
 .btn-cancel {
@@ -312,10 +312,10 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 10px;
 }
 
@@ -324,9 +324,9 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 10px;
 }

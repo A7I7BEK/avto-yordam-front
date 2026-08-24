@@ -324,7 +324,7 @@ async function markAllAsRead() {
               >
                 <Trash2
                   :size="14"
-                  color="#939399"
+                  color="var(--muted-icon)"
                 />
               </button>
             </div>
@@ -342,7 +342,7 @@ async function markAllAsRead() {
           height="48"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#939399"
+          stroke="var(--muted-icon)"
           stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -510,7 +510,7 @@ async function markAllAsRead() {
 
 .tab--active .tab__count {
   color: var(--primary);
-  background: #eae8fd;
+  background: var(--primary-tint);
 }
 
 /* Notifications List */
@@ -555,12 +555,12 @@ async function markAllAsRead() {
 }
 
 .notification-item--unread {
-  background: #faf9ff;
+  background: var(--primary-tint);
   border-left: 3px solid var(--primary);
 }
 
 .notification-item--unread:hover {
-  background: #f0eeff;
+  background: var(--primary-tint);
 }
 
 .notification-item__indicator {
@@ -634,7 +634,7 @@ async function markAllAsRead() {
 }
 
 .notification-item__delete:hover {
-  background: #fee8e3;
+  background: var(--destructive-soft);
 }
 
 /* Empty State */

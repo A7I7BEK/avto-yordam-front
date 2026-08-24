@@ -178,14 +178,14 @@ function breadcrumbItems() {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .sub-nav {
@@ -195,8 +195,8 @@ function breadcrumbItems() {
   gap: 4px;
   width: 240px;
   padding: 24px 16px;
-  background: #ffffff;
-  border-right: 1px solid #c5c5cb;
+  background: var(--card);
+  border-right: 1px solid var(--border-soft);
 }
 
 .nav-item {
@@ -208,7 +208,7 @@ function breadcrumbItems() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #939399;
+  color: var(--muted-icon);
   text-align: left;
   text-decoration: none;
   cursor: pointer;
@@ -224,7 +224,7 @@ function breadcrumbItems() {
 }
 
 .nav-item.active {
-  color: #fff;
+  color: var(--primary-foreground);
   background: var(--primary);
 }
 
@@ -234,7 +234,7 @@ function breadcrumbItems() {
 }
 
 .nav-item-danger.active {
-  color: #fff;
+  color: var(--primary-foreground);
   background: var(--destructive);
 }
 
@@ -251,7 +251,7 @@ function breadcrumbItems() {
 .account-tabs {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid #c5c5cb;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .tab-btn {
@@ -259,7 +259,7 @@ function breadcrumbItems() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -269,7 +269,7 @@ function breadcrumbItems() {
 
 .tab-btn.active {
   font-weight: 600;
-  color: #5749f4;
-  border-bottom-color: #5749f4;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 </style>

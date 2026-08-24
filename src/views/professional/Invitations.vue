@@ -30,7 +30,7 @@ const staticInvitations: Invitation[] = [
     id: 'inv-1',
     orgName: 'AutoFix MCHJ',
     initials: 'AF',
-    avatarBg: '#5749F4',
+    avatarBg: 'var(--primary)',
     avatarTextColor: '#FFFFFF',
     location: 'from Tashkent',
     role: 'Master Electrician',
@@ -44,8 +44,8 @@ const staticInvitations: Invitation[] = [
     id: 'inv-2',
     orgName: 'Rahimov Service',
     initials: 'RS',
-    avatarBg: '#FFD9B2',
-    avatarTextColor: '#4D2700',
+    avatarBg: 'var(--color-warning)',
+    avatarTextColor: 'var(--color-warning-foreground)',
     location: 'from Samarkand',
     role: 'Transmission Specialist',
     tags: ['Night shift', 'Premium rate'],
@@ -58,8 +58,8 @@ const staticInvitations: Invitation[] = [
     id: 'inv-3',
     orgName: 'Green Auto',
     initials: 'GA',
-    avatarBg: '#A1E5A1',
-    avatarTextColor: '#003300',
+    avatarBg: 'var(--color-success)',
+    avatarTextColor: 'var(--color-success-foreground)',
     location: 'from Bukhara',
     role: 'Diagnostics Technician',
     tags: ['Part-time', 'Weekends'],
@@ -74,9 +74,9 @@ const invitations = ref<Invitation[]>([]);
 const isLoading = ref(false);
 
 const avatarColors = [
-  { bg: '#5749F4', text: '#FFFFFF' },
-  { bg: '#FFD9B2', text: '#4D2700' },
-  { bg: '#A1E5A1', text: '#003300' },
+  { bg: 'var(--primary)', text: '#FFFFFF' },
+  { bg: 'var(--color-warning)', text: 'var(--color-warning-foreground)' },
+  { bg: 'var(--color-success)', text: 'var(--color-success-foreground)' },
 ];
 
 async function loadInvitations() {
@@ -96,7 +96,7 @@ async function loadInvitations() {
 
     invitations.value = data.map((item: any, index: number) => {
       const color = avatarColors[index % avatarColors.length] || {
-        bg: '#5749F4',
+        bg: 'var(--primary)',
         text: '#FFFFFF',
       };
       const orgName = item.organizationName || 'Auto Service';
@@ -111,7 +111,7 @@ async function loadInvitations() {
         id: item.id,
         orgName,
         initials,
-        avatarBg: color?.bg ?? '#5749F4',
+        avatarBg: color?.bg ?? 'var(--primary)',
         avatarTextColor: color?.text ?? '#FFFFFF',
         location: 'from Tashkent',
         role: item.roleName || 'Master Specialist',
@@ -220,7 +220,7 @@ onMounted(() => {
                   <div class="meta-row">
                     <Building
                       :size="12"
-                      color="#616167"
+                      color="var(--muted-foreground)"
                     />
                     <span>{{ inv.role }}</span>
                     <span
@@ -237,14 +237,14 @@ onMounted(() => {
                 <div class="sent-time">
                   <Clock3
                     :size="12"
-                    color="#616167"
+                    color="var(--muted-foreground)"
                   />
                   <span>{{ inv.sent }}</span>
                 </div>
                 <div class="expiry-badge">
                   <Hourglass
                     :size="11"
-                    color="#4D2700"
+                    color="var(--color-warning-foreground)"
                   />
                   <span>{{ inv.expiresIn }}</span>
                 </div>
@@ -315,7 +315,7 @@ onMounted(() => {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .new-badge {
@@ -323,8 +323,8 @@ onMounted(() => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 700;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -332,7 +332,7 @@ onMounted(() => {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .invitations-list {
@@ -345,15 +345,15 @@ onMounted(() => {
   padding: 48px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: center;
 }
 
 .invitation-card {
   width: 100%;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
@@ -403,13 +403,13 @@ onMounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .org-location {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .meta-row {
@@ -418,15 +418,15 @@ onMounted(() => {
   align-items: center;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .tag-chip {
   padding: 3px 8px;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
-  background: #f5f5f5;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-radius: 999px;
 }
 
@@ -443,7 +443,7 @@ onMounted(() => {
   align-items: center;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .expiry-badge {
@@ -454,8 +454,8 @@ onMounted(() => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #4d2700;
-  background: #ffd9b2;
+  color: var(--color-warning-foreground);
+  background: var(--color-warning);
   border-radius: 999px;
 }
 
@@ -465,8 +465,8 @@ onMounted(() => {
   font-size: 13px;
   font-style: italic;
   line-height: 1.5;
-  color: #2a2933;
-  background: #f5f5f5;
+  color: var(--foreground);
+  background: var(--muted);
   border-radius: 12px;
 }
 
@@ -475,7 +475,7 @@ onMounted(() => {
   gap: 8px;
   justify-content: flex-end;
   padding: 14px 20px;
-  border-top: 1px solid #c5c5cb;
+  border-top: 1px solid var(--border-soft);
 }
 
 .btn {
@@ -494,16 +494,16 @@ onMounted(() => {
 }
 
 .btn-decline {
-  color: #2a2933;
+  color: var(--foreground);
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
 }
 
 .btn-accept {
   padding: 10px 22px;
   font-weight: 700;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .empty-state {
@@ -513,6 +513,6 @@ onMounted(() => {
   padding: 48px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 </style>

@@ -299,7 +299,7 @@ function goToCreateOrder() {
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .badge-new {
@@ -308,8 +308,8 @@ function goToCreateOrder() {
   padding: 2px 8px;
   font-size: 11px;
   font-weight: 700;
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
   border-radius: 999px;
 }
 
@@ -317,7 +317,7 @@ function goToCreateOrder() {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .btn {
@@ -335,13 +335,13 @@ function goToCreateOrder() {
 }
 
 .btn--outline {
-  color: #5749f4;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  color: var(--primary);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 .btn--outline:hover {
-  background: #f5f5f5;
+  background: var(--muted);
 }
 
 .toolbar {
@@ -364,7 +364,7 @@ function goToCreateOrder() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -373,14 +373,14 @@ function goToCreateOrder() {
 }
 
 .tab:hover {
-  color: #2a2933;
-  background: #f5f5f5;
+  color: var(--foreground);
+  background: var(--muted);
 }
 
 .tab.active {
   font-weight: 600;
-  color: #2a2933;
-  background: #f5f5f5;
+  color: var(--foreground);
+  background: var(--muted);
 }
 
 .tab-count {
@@ -392,14 +392,14 @@ function goToCreateOrder() {
   padding: 0 5px;
   font-size: 10px;
   font-weight: 700;
-  color: #616167;
-  background: #e8e8e8;
+  color: var(--muted-foreground);
+  background: var(--hover);
   border-radius: 999px;
 }
 
 .tab-count--purple {
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
 }
 
 .search-wrapper {
@@ -411,7 +411,7 @@ function goToCreateOrder() {
 .search-icon {
   position: absolute;
   left: 12px;
-  color: #939399;
+  color: var(--muted-icon);
   pointer-events: none;
 }
 
@@ -420,25 +420,25 @@ function goToCreateOrder() {
   padding: 8px 12px 8px 36px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   transition: border-color 0.15s;
 }
 
 .search-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .search-input::placeholder {
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .table-wrapper {
   overflow-x: auto;
-  border: 1px solid #d9d9db;
+  border: 1px solid var(--border);
   border-radius: 10px;
 }
 
@@ -453,12 +453,12 @@ function goToCreateOrder() {
   padding: 12px 16px;
   font-size: 11px;
   font-weight: 600;
-  color: #939399;
+  color: var(--muted-icon);
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: #fafafa;
-  border-bottom: 1px solid #d9d9db;
+  background: var(--accent);
+  border-bottom: 1px solid var(--border);
 }
 
 .th-actions {
@@ -471,13 +471,13 @@ function goToCreateOrder() {
 }
 
 .table-row:hover {
-  background: #fafafa;
+  background: var(--accent);
 }
 
 .table-row td {
   padding: 14px 16px;
-  color: #2a2933;
-  border-bottom: 1px solid #f0f0f0;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
 }
 
 .table-row:last-child td {
@@ -489,7 +489,7 @@ function goToCreateOrder() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #5749f4;
+  color: var(--primary);
   text-decoration: none;
   cursor: pointer;
   background: none;
@@ -516,7 +516,7 @@ function goToCreateOrder() {
   font-size: 10px;
   font-weight: 700;
   color: #ffffff;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 50%;
 }
 
@@ -533,33 +533,33 @@ function goToCreateOrder() {
 }
 
 .status-badge--new {
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
 }
 
 .status-badge--pending {
-  color: #b45309;
-  background: #fff8e5;
+  color: var(--warning);
+  background: var(--warning-bg);
 }
 
 .status-badge--confirmed {
-  color: #25603a;
-  background: #e8faf0;
+  color: var(--success);
+  background: var(--success-bg);
 }
 
 .status-badge--progress {
-  color: #1e40af;
-  background: #dbeafe;
+  color: var(--info-strong);
+  background: var(--info-soft);
 }
 
 .status-badge--done {
-  color: #25603a;
-  background: #e8faf0;
+  color: var(--success);
+  background: var(--success-bg);
 }
 
 .status-badge--cancelled {
-  color: #cc3314;
-  background: #fee9e5;
+  color: var(--destructive);
+  background: var(--destructive-soft);
 }
 
 .actions-cell {
@@ -573,7 +573,7 @@ function goToCreateOrder() {
   width: 32px;
   height: 32px;
   padding: 0;
-  color: #939399;
+  color: var(--muted-icon);
   cursor: pointer;
   background: none;
   border: none;
@@ -582,15 +582,15 @@ function goToCreateOrder() {
 }
 
 .btn-icon:hover {
-  color: #2a2933;
-  background: #f5f5f5;
+  color: var(--foreground);
+  background: var(--muted);
 }
 
 .empty-cell {
   padding: 40px 16px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #939399;
+  color: var(--muted-icon);
   text-align: center;
 }
 
@@ -620,7 +620,7 @@ function goToCreateOrder() {
 
 .view-toggle__btn.active {
   color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 </style>

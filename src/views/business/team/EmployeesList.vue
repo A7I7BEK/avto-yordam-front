@@ -80,24 +80,26 @@ async function loadEmployees() {
       status: e.status,
       statusLabel: e.status,
       avatarColor: e.avatarColor,
-      lastActive: [
-        '5 minutes ago',
-        '2 hours ago',
-        'Yesterday',
-        '3 days ago',
-        'Not signed in yet',
-        '5 minutes ago',
-        '2 hours ago',
-      ][i % 7],
-      lastActiveDate: [
-        'Online now',
-        'Today, 09:14',
-        'May 20, 2026',
-        'May 18, 2026',
-        'Invite sent May 19',
-        'Online now',
-        'Today, 10:30',
-      ][i % 7],
+      lastActive:
+        [
+          '5 minutes ago',
+          '2 hours ago',
+          'Yesterday',
+          '3 days ago',
+          'Not signed in yet',
+          '5 minutes ago',
+          '2 hours ago',
+        ][i % 7] ?? 'Not signed in yet',
+      lastActiveDate:
+        [
+          'Online now',
+          'Today, 09:14',
+          'May 20, 2026',
+          'May 18, 2026',
+          'Invite sent May 19',
+          'Online now',
+          'Today, 10:30',
+        ][i % 7] ?? 'Unknown',
     }));
   } finally {
     loading.value = false;
@@ -702,13 +704,13 @@ function goToNext() {
 }
 
 .status-badge--active {
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
 }
 
 .status-badge--inactive {
-  color: #590f00;
-  background: #ffbfb2;
+  color: var(--color-error-foreground);
+  background: var(--color-error);
 }
 
 /* ===== Last active cell ===== */

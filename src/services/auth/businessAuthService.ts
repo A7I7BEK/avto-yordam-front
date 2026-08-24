@@ -92,7 +92,7 @@ export const businessAuth = {
           type: userRes.type || result.type,
         },
       };
-    } catch (_) {
+    } catch {
       return {
         token: 'mock-token-business',
         user: {

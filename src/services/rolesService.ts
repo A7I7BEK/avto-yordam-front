@@ -179,7 +179,8 @@ export async function updateRole(
       return null;
     }
     Object.assign(role, data, {
-      enabledPermissionCount: permissionIds?.length ?? role.enabledPermissionCount,
+      enabledPermissionCount:
+        permissionIds?.length ?? role.enabledPermissionCount,
       lastEditedDate: formatDate(''),
       lastEditedBy: 'You',
     });
@@ -208,9 +209,7 @@ export async function deleteRole(id: string): Promise<boolean> {
   return true;
 }
 
-export async function getRolePermissionIds(
-  roleId: string,
-): Promise<string[]> {
+export async function getRolePermissionIds(roleId: string): Promise<string[]> {
   if (isMockMode()) {
     const cats = getPermissionCategoriesForRole(roleId);
     const ids: string[] = [];

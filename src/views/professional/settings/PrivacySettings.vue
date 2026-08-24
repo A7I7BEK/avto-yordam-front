@@ -94,7 +94,7 @@ function requestExport() {
         <div class="danger-title-row">
           <TriangleAlert
             :size="14"
-            color="#CC3314"
+            color="var(--destructive)"
           />
           <span class="action-title danger-text">Delete account</span>
         </div>
@@ -131,13 +131,13 @@ function requestExport() {
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .toggles-card {
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -147,7 +147,7 @@ function requestExport() {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #c5c5cb;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .toggle-row.no-border {
@@ -165,13 +165,13 @@ function requestExport() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .toggle-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .action-card {
@@ -180,8 +180,8 @@ function requestExport() {
   align-items: center;
   justify-content: space-between;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -195,13 +195,13 @@ function requestExport() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .action-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .danger-title-row {
@@ -211,7 +211,7 @@ function requestExport() {
 }
 
 .danger-text {
-  color: #cc3314;
+  color: var(--destructive);
 }
 
 .action-btn {
@@ -223,26 +223,26 @@ function requestExport() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .danger-outline {
-  color: #cc3314;
-  border-color: #cc3314;
+  color: var(--destructive);
+  border-color: var(--destructive);
 }
 
 .success-message {
   padding: 12px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #25603a;
+  color: var(--success);
   text-align: center;
-  background: #e8faf0;
-  border: 1px solid #25603a;
+  background: var(--success-bg);
+  border: 1px solid var(--success);
   border-radius: 12px;
 }
 </style>

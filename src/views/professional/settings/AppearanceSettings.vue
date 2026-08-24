@@ -7,12 +7,10 @@ import { ref } from 'vue';
 import flagEn from '@/assets/flags/flag-en.png';
 import flagRu from '@/assets/flags/flag-ru.png';
 import flagUz from '@/assets/flags/flag-uz.png';
-import {
-  getStoredLanguage,
-  setStoredLanguage,
-} from '@/config/language';
+import { getStoredLanguage, setStoredLanguage } from '@/config/language';
+import { useThemeStore } from '@/stores/theme';
 
-const selectedTheme = ref<'light' | 'dark' | 'system'>('light');
+const themeStore = useThemeStore();
 const selectedLanguage = ref(getStoredLanguage());
 
 function selectLanguage(languageKey: string) {
@@ -82,11 +80,11 @@ const languages = [
         v-for="theme in themes"
         :key="theme.key"
         class="theme-card"
-        :class="{ selected: selectedTheme === theme.key }"
+        :class="{ selected: themeStore.preference === theme.key }"
         role="button"
         tabindex="0"
-        @click="selectedTheme = theme.key"
-        @keydown.enter="selectedTheme = theme.key"
+        @click="themeStore.setTheme(theme.key)"
+        @keydown.enter="themeStore.setTheme(theme.key)"
       >
         <!-- Preview Area -->
         <div
@@ -130,16 +128,16 @@ const languages = [
             <component
               :is="theme.icon"
               :size="16"
-              color="#2A2933"
+              color="var(--foreground)"
             />
             <span>{{ theme.label }}</span>
           </div>
           <div
             class="theme-radio"
-            :class="{ selected: selectedTheme === theme.key }"
+            :class="{ selected: themeStore.preference === theme.key }"
           >
             <div
-              v-if="selectedTheme === theme.key"
+              v-if="themeStore.preference === theme.key"
               class="radio-dot"
             />
           </div>
@@ -201,14 +199,14 @@ const languages = [
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .section-label {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .theme-cards-row {
@@ -223,13 +221,13 @@ const languages = [
   gap: 10px;
   padding: 14px;
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
 .theme-card.selected {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .theme-preview {
@@ -237,7 +235,7 @@ const languages = [
   display: flex;
   height: 120px;
   overflow: hidden;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
@@ -302,7 +300,7 @@ const languages = [
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .theme-radio {
@@ -311,13 +309,13 @@ const languages = [
   justify-content: center;
   width: 16px;
   height: 16px;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .theme-radio.selected {
-  background: #5749f4;
-  border-color: #5749f4;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .radio-dot {
@@ -339,13 +337,13 @@ const languages = [
   align-items: center;
   padding: 16px;
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
 .language-item.selected {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .flag-image {
@@ -366,13 +364,13 @@ const languages = [
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .lang-code {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .lang-check {
@@ -381,7 +379,7 @@ const languages = [
   justify-content: center;
   width: 16px;
   height: 16px;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 999px;
   opacity: 0;
 }

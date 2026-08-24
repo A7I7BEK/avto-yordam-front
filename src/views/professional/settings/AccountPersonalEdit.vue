@@ -269,7 +269,7 @@ onMounted(async () => {
     >
       <Loader2
         :size="20"
-        color="#616167"
+        color="var(--muted-foreground)"
         class="spin"
       />
       <span>Loading profile...</span>
@@ -291,7 +291,9 @@ onMounted(async () => {
         <div
           v-else
           class="profile-avatar"
-        >{{ getInitials(fullName) }}</div>
+        >
+          {{ getInitials(fullName) }}
+        </div>
         <div class="photo-info">
           <span class="photo-title">Profile photo</span>
           <span class="photo-desc"
@@ -356,7 +358,7 @@ onMounted(async () => {
               >
               <Calendar
                 :size="14"
-                color="#616167"
+                color="var(--muted-foreground)"
                 class="input-icon"
               />
             </div>
@@ -448,7 +450,7 @@ onMounted(async () => {
                 >
                 <ChevronDown
                   :size="14"
-                  color="#616167"
+                  color="var(--muted-foreground)"
                 />
               </div>
             </div>
@@ -463,7 +465,7 @@ onMounted(async () => {
                 >
                 <ChevronDown
                   :size="14"
-                  color="#616167"
+                  color="var(--muted-foreground)"
                 />
               </div>
             </div>
@@ -504,8 +506,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 10px;
   padding: 16px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -518,7 +520,7 @@ onMounted(async () => {
   padding: 32px 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Header */
@@ -538,13 +540,13 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .header-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .header-actions {
@@ -562,10 +564,10 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -577,9 +579,9 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 999px;
 }
@@ -593,7 +595,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -617,8 +619,8 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -643,13 +645,13 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .photo-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .photo-actions {
@@ -662,7 +664,7 @@ onMounted(async () => {
 .divider {
   width: 100%;
   height: 1px;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 /* Edit Section */
@@ -679,7 +681,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 /* Two column layout */
@@ -700,7 +702,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .input-pill {
@@ -709,15 +711,15 @@ onMounted(async () => {
   padding: 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .input-pill:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .input-pill-wrapper {
@@ -759,20 +761,20 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .field-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .selected-count {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-style: italic;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Specialization chips */
@@ -790,18 +792,18 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
   transition: all 0.15s;
 }
 
 .chip.active {
-  color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 /* Experience pill */
@@ -811,8 +813,8 @@ onMounted(async () => {
   align-items: center;
   width: 180px;
   padding: 10px 16px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -822,7 +824,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 18px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
   background: transparent;
   border: none;
@@ -831,7 +833,7 @@ onMounted(async () => {
 .exp-unit {
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Working time */
@@ -851,7 +853,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 10px;
   font-weight: 600;
-  color: #616167;
+  color: var(--muted-foreground);
   letter-spacing: 1.5px;
 }
 
@@ -865,9 +867,9 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: #2a2933;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  color: var(--foreground);
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -877,7 +879,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
   background: transparent;
   border: none;
@@ -891,7 +893,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 18px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Days */
@@ -905,7 +907,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 10px;
   font-weight: 600;
-  color: #616167;
+  color: var(--muted-foreground);
   letter-spacing: 1.5px;
 }
 
@@ -919,18 +921,18 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
   transition: all 0.15s;
 }
 
 .day-chip.active {
-  color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 /* Bio display */
@@ -941,16 +943,16 @@ onMounted(async () => {
   padding: 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #2a2933;
+  color: var(--foreground);
   resize: vertical;
   outline: none;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
 .bio-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .spin {

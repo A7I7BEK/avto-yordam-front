@@ -3,27 +3,28 @@
   lang="ts"
 >
 import { Moon, Sun } from '@lucide/vue';
-import { useProfessionalAppStore } from '@/stores/professionalApp';
+import { computed } from 'vue';
+import { useThemeStore } from '@/stores/theme';
 
-const store = useProfessionalAppStore();
+const themeStore = useThemeStore();
+const isDark = computed(() => themeStore.resolvedTheme === 'dark');
 </script>
 
 <template>
   <button
     class="theme-toggle"
     type="button"
-    :title="store.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
-    @click="store.toggleTheme()"
+    aria-label="Toggle theme"
+    :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+    @click="themeStore.toggleTheme()"
   >
     <Sun
-      v-if="store.theme === 'light'"
+      v-if="!isDark"
       :size="16"
-      color="#2A2933"
     />
     <Moon
       v-else
       :size="16"
-      color="#2A2933"
     />
   </button>
 </template>
@@ -35,14 +36,15 @@ const store = useProfessionalAppStore();
   justify-content: center;
   width: 36px;
   height: 36px;
+  color: var(--foreground);
   cursor: pointer;
-  background: #f5f5f5;
+  background: var(--muted);
   border: none;
   border-radius: 999px;
   transition: background 0.15s;
 }
 
 .theme-toggle:hover {
-  background: #e8e8e8;
+  background: var(--hover);
 }
 </style>

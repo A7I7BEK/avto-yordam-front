@@ -397,9 +397,9 @@ watch(
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #001133;
+  color: var(--color-info-foreground);
   white-space: nowrap;
-  background: #c9d6f0;
+  background: var(--color-info);
   border-radius: var(--radius-pill);
 }
 

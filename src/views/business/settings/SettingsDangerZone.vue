@@ -434,13 +434,13 @@ function confirmDelete() {
 }
 
 .status-pill--active {
-  color: #166534;
-  background: #dcfce7;
+  color: var(--success);
+  background: var(--success-bg);
 }
 
 .status-pill--inactive {
-  color: #7f1d1d;
-  background: #fee2e2;
+  color: var(--destructive);
+  background: var(--destructive-soft);
 }
 
 .danger-row-title {
@@ -482,7 +482,7 @@ function confirmDelete() {
 }
 
 .btn--outline-destructive:hover {
-  background: #fef2f2;
+  background: var(--destructive-soft);
 }
 
 .btn--filled-destructive {

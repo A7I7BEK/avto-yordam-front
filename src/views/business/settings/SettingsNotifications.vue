@@ -248,15 +248,15 @@ async function toggleChannel(id: string) {
   align-items: flex-start;
   padding: 14px;
   margin-bottom: 16px;
-  background: #c9d6f0;
-  border: 1px solid #001133;
+  background: var(--color-info);
+  border: 1px solid var(--color-info-foreground);
   border-radius: var(--radius-xl);
 }
 
 .info-icon {
   flex-shrink: 0;
   margin-top: 1px;
-  color: #001133;
+  color: var(--color-info-foreground);
 }
 
 .info-text {
@@ -269,14 +269,14 @@ async function toggleChannel(id: string) {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #001133;
+  color: var(--color-info-foreground);
 }
 
 .info-desc {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #001133;
+  color: var(--color-info-foreground);
 }
 
 /* ===== Channels card ===== */
@@ -344,9 +344,9 @@ async function toggleChannel(id: string) {
   font-family: Inter, sans-serif;
   font-size: 10px;
   font-weight: 600;
-  color: #003300;
+  color: var(--color-success-foreground);
   white-space: nowrap;
-  background: #a1e5a1;
+  background: var(--color-success);
   border-radius: var(--radius-pill);
 }
 

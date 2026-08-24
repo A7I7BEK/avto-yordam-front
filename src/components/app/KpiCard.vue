@@ -51,8 +51,8 @@ defineProps<{
   flex-direction: column;
   gap: 12px;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
@@ -66,7 +66,7 @@ defineProps<{
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .kpi-icon {
@@ -82,7 +82,7 @@ defineProps<{
   font-family: Inter, sans-serif;
   font-size: 26px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .kpi-trend {
@@ -107,6 +107,6 @@ defineProps<{
 .trend-label {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 </style>

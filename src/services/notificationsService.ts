@@ -33,18 +33,38 @@ function humanizeType(type?: string): string {
 function iconForType(type?: string) {
   const t = (type ?? '').toUpperCase();
   if (t.includes('BOOK')) {
-    return { icon: 'calendar', iconBg: '#FFD9B2', iconColor: '#B45309' };
+    return {
+      icon: 'calendar',
+      iconBg: 'var(--color-warning)',
+      iconColor: 'var(--warning)',
+    };
   }
   if (t.includes('REVIEW') || t.includes('RATING')) {
-    return { icon: 'star', iconBg: '#C9D6F0', iconColor: '#5749F4' };
+    return {
+      icon: 'star',
+      iconBg: 'var(--color-info)',
+      iconColor: 'var(--primary)',
+    };
   }
   if (t.includes('PAY')) {
-    return { icon: 'arrow-down-left', iconBg: '#E8FAF0', iconColor: '#25603A' };
+    return {
+      icon: 'arrow-down-left',
+      iconBg: 'var(--success-bg)',
+      iconColor: 'var(--success)',
+    };
   }
   if (t.includes('INVIT')) {
-    return { icon: 'user-round', iconBg: '#E0E7FF', iconColor: '#4338CA' };
+    return {
+      icon: 'user-round',
+      iconBg: 'var(--primary-tint)',
+      iconColor: 'var(--primary)',
+    };
   }
-  return { icon: 'bell', iconBg: '#F0F0F3', iconColor: '#616167' };
+  return {
+    icon: 'bell',
+    iconBg: 'var(--muted)',
+    iconColor: 'var(--muted-foreground)',
+  };
 }
 
 function formatTime(iso?: string): string {

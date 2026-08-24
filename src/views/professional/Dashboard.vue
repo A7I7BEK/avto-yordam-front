@@ -27,7 +27,7 @@ const kpiCards = [
     trend: '+12.4%',
     icon: CalendarCheck,
     iconBg: 'rgba(87,73,244,0.1)',
-    iconColor: '#5749F4',
+    iconColor: 'var(--primary)',
   },
   {
     label: 'Revenue this month',
@@ -169,12 +169,12 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
       <div class="date-filter">
         <Calendar
           :size="13"
-          color="#2A2933"
+          color="var(--foreground)"
         />
         <span>Last 6 months</span>
         <ChevronDown
           :size="12"
-          color="#616167"
+          color="var(--muted-foreground)"
         />
       </div>
     </div>
@@ -209,7 +209,7 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
               <component
                 :is="row.icon"
                 :size="16"
-                color="#616167"
+                color="var(--muted-foreground)"
               />
             </div>
             <div class="cat-text">
@@ -344,14 +344,14 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .date-filter {
@@ -362,9 +362,9 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #2a2933;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  color: var(--foreground);
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -382,8 +382,8 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 .chart-card {
   flex: 1;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
@@ -392,8 +392,8 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #2a2933;
-  border-bottom: 1px solid #c5c5cb;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .table-header {
@@ -403,10 +403,10 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #616167;
+  color: var(--muted-foreground);
   letter-spacing: 0.5px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #c5c5cb;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .col-category {
@@ -440,8 +440,8 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   padding: 12px 18px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #2a2933;
-  border-bottom: 1px solid #c5c5cb;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .cat-icon {
@@ -451,8 +451,8 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 8px;
 }
 
@@ -468,26 +468,26 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 
 .cat-sub {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .trend-track {
   width: 180px;
   height: 6px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: var(--muted);
   border-radius: 999px;
 }
 
 .trend-fill {
   height: 100%;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 999px;
 }
 
 .trend-pct {
   font-weight: 600;
-  color: #003300;
+  color: var(--color-success-foreground);
 }
 
 .chart-title-row {
@@ -503,7 +503,7 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   align-items: center;
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .legend-item {
@@ -519,11 +519,11 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 }
 
 .legend-dot.completed {
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .legend-dot.cancelled {
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 .chart-body {
@@ -548,7 +548,7 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   width: 100%;
   height: 200px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: var(--muted);
   border-radius: 6px;
 }
 
@@ -559,18 +559,18 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 }
 
 .bar-completed {
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .bar-cancelled {
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 .bar-label {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .bookings-table {
@@ -583,18 +583,18 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   padding: 10px 18px;
   font-size: 11px;
   font-weight: 600;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: left;
   letter-spacing: 0.5px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #c5c5cb;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .bookings-table td {
   padding: 12px 18px;
   font-size: 13px;
-  color: #2a2933;
-  border-bottom: 1px solid #c5c5cb;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .order-id {

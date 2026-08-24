@@ -44,7 +44,7 @@ defineProps<{
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #939399;
+  color: var(--muted-icon);
   text-decoration: none;
   cursor: pointer;
   border-radius: 10px;
@@ -67,7 +67,7 @@ defineProps<{
 }
 
 .nav-item.active {
-  color: #fff;
+  color: var(--primary-foreground);
   background: var(--primary);
 }
 
@@ -84,13 +84,13 @@ defineProps<{
   padding: 0 5px;
   font-size: 10px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--primary);
   border-radius: 999px;
 }
 
 .nav-item.active .badge {
   color: var(--primary);
-  background: #ffffff;
+  background: var(--card);
 }
 </style>

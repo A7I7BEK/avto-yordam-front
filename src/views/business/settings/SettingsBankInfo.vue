@@ -284,15 +284,15 @@ async function saveChanges() {
   align-items: flex-start;
   padding: 14px;
   margin-bottom: 16px;
-  background: #ffd9b2;
-  border: 1px solid #4d2700;
+  background: var(--color-warning);
+  border: 1px solid var(--color-warning-foreground);
   border-radius: var(--radius-xl);
 }
 
 .warning-icon {
   flex-shrink: 0;
   margin-top: 1px;
-  color: #4d2700;
+  color: var(--color-warning-foreground);
 }
 
 .warning-text {
@@ -305,14 +305,14 @@ async function saveChanges() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #4d2700;
+  color: var(--color-warning-foreground);
 }
 
 .warning-desc {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #4d2700;
+  color: var(--color-warning-foreground);
 }
 
 /* ===== Form card ===== */

@@ -160,7 +160,7 @@ function formatAmount(amount: number): string {
             v-for="(status, sIdx) in data.ordersByStatus.statuses"
             :key="sIdx"
             class="status-mini-card"
-            :style="{ background: status.bg, border: status.border ? '1px solid #D9D9DB' : 'none' }"
+            :style="{ background: status.bg, border: status.border ? '1px solid var(--border)' : 'none' }"
           >
             <div class="status-top">
               <span
@@ -170,7 +170,7 @@ function formatAmount(amount: number): string {
               >
               <span
                 class="status-trend"
-                :style="{ color: status.trendUp ? '#25603A' : '#CC3314' }"
+                :style="{ color: status.trendUp ? 'var(--success)' : 'var(--destructive)' }"
               >
                 <ArrowUp
                   v-if="status.trendUp"
@@ -205,17 +205,17 @@ function formatAmount(amount: number): string {
           >
             <div
               class="txn-direction"
-              :style="{ background: txn.type === 'incoming' ? '#E8FAF0' : '#FDEBEC' }"
+              :style="{ background: txn.type === 'incoming' ? 'var(--success-bg)' : 'var(--destructive-soft)' }"
             >
               <ArrowUp
                 v-if="txn.type === 'incoming'"
                 :size="14"
-                color="#25603A"
+                color="var(--success)"
               />
               <ArrowDown
                 v-else
                 :size="14"
-                color="#CC3314"
+                color="var(--destructive)"
               />
             </div>
             <div class="txn-info">
@@ -224,7 +224,7 @@ function formatAmount(amount: number): string {
             </div>
             <span
               class="txn-amount"
-              :style="{ color: txn.type === 'incoming' ? '#25603A' : '#CC3314' }"
+              :style="{ color: txn.type === 'incoming' ? 'var(--success)' : 'var(--destructive)' }"
             >
               {{ txn.type === 'incoming' ? '+' : '' }}
               {{ formatAmount(txn.amount) }}
@@ -357,7 +357,7 @@ function formatAmount(amount: number): string {
   height: 200px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .command-center {
@@ -381,8 +381,8 @@ function formatAmount(amount: number): string {
   justify-content: space-between;
   height: 120px;
   padding: 18px 20px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -409,18 +409,18 @@ function formatAmount(amount: number): string {
 
 .big-stat-label {
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .big-stat-value {
   font-size: 22px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .big-stat-trend {
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: right;
 }
 
@@ -437,8 +437,8 @@ function formatAmount(amount: number): string {
   flex-direction: column;
   height: 320px;
   padding: 20px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -457,12 +457,12 @@ function formatAmount(amount: number): string {
 .card-title {
   font-size: 15px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .card-total {
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Orders by Status Grid */
@@ -520,7 +520,7 @@ function formatAmount(amount: number): string {
   gap: 12px;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--border);
 }
 
 .txn-item:last-child {
@@ -546,12 +546,12 @@ function formatAmount(amount: number): string {
 .txn-title {
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .txn-time {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .txn-amount {
@@ -617,8 +617,8 @@ function formatAmount(amount: number): string {
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 500;
-  color: #25603a;
-  background: #e8faf0;
+  color: var(--success);
+  background: var(--success-bg);
   border-radius: 999px;
 }
 
@@ -634,15 +634,15 @@ function formatAmount(amount: number): string {
   gap: 12px;
   align-items: center;
   padding: 14px;
-  background: #fafafa;
-  border: 1px solid #eaeaea;
+  background: var(--accent);
+  border: 1px solid var(--border);
   border-radius: 14px;
 }
 
 .week-sub-value {
   font-size: 28px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .week-sub-meta {
@@ -653,7 +653,7 @@ function formatAmount(amount: number): string {
 
 .week-sub-label {
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .week-sub-trend {
@@ -662,14 +662,14 @@ function formatAmount(amount: number): string {
   align-items: center;
   font-size: 11px;
   font-weight: 500;
-  color: #25603a;
+  color: var(--success);
 }
 
 .week-bottom-stats {
   display: flex;
   gap: 16px;
   padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border);
 }
 
 .week-stat {
@@ -687,6 +687,6 @@ function formatAmount(amount: number): string {
 
 .week-stat-label {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 </style>

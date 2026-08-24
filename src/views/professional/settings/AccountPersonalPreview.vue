@@ -122,7 +122,7 @@ onMounted(async () => {
     >
       <Loader2
         :size="20"
-        color="#616167"
+        color="var(--muted-foreground)"
         class="spin"
       />
       <span>Loading profile...</span>
@@ -231,7 +231,7 @@ onMounted(async () => {
               <span class="detail-label">Experience on platform</span>
               <Lock
                 :size="12"
-                color="#616167"
+                color="var(--muted-foreground)"
               />
             </div>
             <span class="verified-stat-value"
@@ -243,7 +243,7 @@ onMounted(async () => {
               <span class="detail-label">Completed orders</span>
               <Lock
                 :size="12"
-                color="#616167"
+                color="var(--muted-foreground)"
               />
             </div>
             <span class="verified-stat-value"
@@ -255,7 +255,7 @@ onMounted(async () => {
               <span class="detail-label">Rating</span>
               <Lock
                 :size="12"
-                color="#616167"
+                color="var(--muted-foreground)"
               />
             </div>
             <div class="verified-stat-row">
@@ -263,10 +263,13 @@ onMounted(async () => {
                 >{{ masterInfo?.rating?.toFixed(1) ?? '—' }}</span
               >
               <div class="stars-row">
-                <template v-for="i in 5" :key="i">
+                <template
+                  v-for="i in 5"
+                  :key="i"
+                >
                   <Star
                     :size="12"
-                    :color="i <= starCount ? '#FFB800' : '#D9D9DB'"
+                    :color="i <= starCount ? '#FFB800' : 'var(--border)'"
                   />
                 </template>
               </div>
@@ -285,8 +288,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 12px;
   padding: 20px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -306,7 +309,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .loading-state {
@@ -317,7 +320,7 @@ onMounted(async () => {
   padding: 32px 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .spin {
@@ -336,7 +339,7 @@ onMounted(async () => {
 .card-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .edit-btn {
@@ -347,9 +350,9 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 999px;
 }
@@ -371,8 +374,8 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -393,13 +396,13 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 18px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .profile-role {
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .verified-badge {
@@ -410,15 +413,15 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
   border-radius: 999px;
 }
 
 .divider {
   width: 100%;
   height: 1px;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 /* Profile Details Section */
@@ -435,7 +438,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .details-grid {
@@ -449,8 +452,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 8px;
   padding: 14px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
@@ -466,14 +469,14 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .detail-value {
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .detail-value.bio-text {
@@ -498,7 +501,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .verified-grid {
@@ -517,7 +520,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .verified-stat-row {
@@ -535,6 +538,6 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 </style>

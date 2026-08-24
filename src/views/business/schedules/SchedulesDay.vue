@@ -364,9 +364,9 @@ function getStatus(status?: string): string {
 }
 
 .view-toggle__btn.active {
-  color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .date-nav {
@@ -480,7 +480,7 @@ function getStatus(status?: string): string {
   padding: 10px 12px;
   overflow: hidden;
   cursor: pointer;
-  background: #fafafa;
+  background: var(--accent);
   border: 1px solid var(--border-soft);
   border-left: 4px solid var(--primary);
   border-radius: 6px;
@@ -516,23 +516,23 @@ function getStatus(status?: string): string {
 }
 
 .status--confirmed {
-  color: #25603a;
-  background: #e8faf0;
+  color: var(--success);
+  background: var(--success-bg);
 }
 
 .status--progress {
-  color: #1e40af;
-  background: #dbeafe;
+  color: var(--info-strong);
+  background: var(--info-soft);
 }
 
 .status--done {
-  color: #626167;
-  background: #e8e8e8;
+  color: var(--muted-foreground);
+  background: var(--hover);
 }
 
 .status--cancelled {
-  color: #cc3314;
-  background: #fee9e5;
+  color: var(--destructive);
+  background: var(--destructive-soft);
 }
 
 .day-booking__customer {

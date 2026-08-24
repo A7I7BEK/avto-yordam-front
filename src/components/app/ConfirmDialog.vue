@@ -124,8 +124,8 @@ const isDanger = computed(() => props.variant !== 'warning');
 }
 
 .confirm-dialog__icon--warning {
-  color: #b45309;
-  background: #fef3c7;
+  color: var(--warning);
+  background: var(--warning-bg);
 }
 
 .confirm-dialog__text {
@@ -189,7 +189,7 @@ const isDanger = computed(() => props.variant !== 'warning');
 }
 
 .confirm-dialog__btn--confirm {
-  color: #fff;
+  color: var(--destructive-foreground);
   background: var(--destructive);
 }
 

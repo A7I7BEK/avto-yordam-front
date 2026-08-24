@@ -21,7 +21,7 @@ function goBack() {
     <div class="icon-circle">
       <FileQuestion
         :size="48"
-        color="#5749f4"
+        color="var(--primary)"
       />
     </div>
     <h1 class="code">404</h1>
@@ -67,7 +67,7 @@ function goBack() {
   width: 100%;
   min-height: 100vh;
   padding: 48px;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .icon-circle {
@@ -76,7 +76,7 @@ function goBack() {
   justify-content: center;
   width: 96px;
   height: 96px;
-  background: #eef0ff;
+  background: var(--primary-tint);
   border-radius: 50%;
 }
 
@@ -86,7 +86,7 @@ function goBack() {
   font-size: 72px;
   font-weight: 800;
   line-height: 1;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .title {
@@ -94,7 +94,7 @@ function goBack() {
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -103,7 +103,7 @@ function goBack() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.6;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: center;
 }
 
@@ -129,8 +129,8 @@ function goBack() {
 }
 
 .btn--primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .btn--primary:hover {
@@ -138,13 +138,13 @@ function goBack() {
 }
 
 .btn--outline {
-  color: #616167;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  color: var(--muted-foreground);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 .btn--outline:hover {
-  background: #f5f5f5;
+  background: var(--muted);
 }
 
 .support-link {
@@ -152,7 +152,7 @@ function goBack() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   text-decoration: none;
 }
 

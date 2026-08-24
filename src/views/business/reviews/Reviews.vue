@@ -103,7 +103,7 @@ async function performDelete() {
     >
       <Star
         :size="48"
-        color="#939399"
+        color="var(--muted-icon)"
       />
       <h3>No reviews yet</h3>
       <p>Customer reviews will appear here once they start coming in.</p>
@@ -328,7 +328,7 @@ async function performDelete() {
   height: 100%;
   padding: 24px 32px;
   font-family: Inter, sans-serif;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .reviews-header {
@@ -344,7 +344,7 @@ async function performDelete() {
 .page-subtitle {
   margin: 0;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Loading */
@@ -355,7 +355,7 @@ async function performDelete() {
   justify-content: center;
   padding: 80px 0;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .spin {
@@ -392,7 +392,7 @@ async function performDelete() {
   max-width: 360px;
   margin: 0;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Layout */
@@ -417,14 +417,14 @@ async function performDelete() {
   gap: 6px;
   padding: 16px 40px 16px 16px;
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
   transition: border-color 0.15s;
 }
 
 .review-card:hover {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .review-card__header {
@@ -459,7 +459,7 @@ async function performDelete() {
 
 .review-card__service {
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .review-card__comment {
@@ -468,7 +468,7 @@ async function performDelete() {
   text-overflow: ellipsis;
   font-size: 13px;
   line-height: 1.4;
-  color: #616167;
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 
@@ -480,7 +480,7 @@ async function performDelete() {
 
 .review-card__date {
   font-size: 11px;
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .review-card__master {
@@ -488,14 +488,14 @@ async function performDelete() {
   gap: 4px;
   align-items: center;
   font-size: 11px;
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .review-card__chevron {
   position: absolute;
   top: 50%;
   right: 16px;
-  color: #c5c5cb;
+  color: var(--muted-icon);
   transform: translateY(-50%);
 }
 
@@ -514,10 +514,10 @@ async function performDelete() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -526,8 +526,8 @@ async function performDelete() {
   flex-direction: column;
   gap: 16px;
   padding: 24px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -565,13 +565,13 @@ async function performDelete() {
   margin: 0;
   font-size: 14px;
   line-height: 1.6;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .detail-divider {
   width: 100%;
   height: 1px;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 .detail-info-row {
@@ -585,7 +585,7 @@ async function performDelete() {
   width: 100px;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .detail-value {
@@ -611,14 +611,14 @@ async function performDelete() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #cc3314;
+  color: var(--destructive);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #cc3314;
+  border: 1px solid var(--destructive);
   border-radius: 999px;
 }
 
 .delete-btn:hover {
-  background: #fff5f5;
+  background: var(--destructive-soft);
 }
 </style>

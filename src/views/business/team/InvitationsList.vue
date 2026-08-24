@@ -51,8 +51,7 @@ const filteredInvitations = computed(() =>
       .join(' ')
       .toLowerCase();
     const matchSearch =
-      !searchQuery.value ||
-      haystack.includes(searchQuery.value.toLowerCase());
+      !searchQuery.value || haystack.includes(searchQuery.value.toLowerCase());
     const matchStatus =
       statusFilter.value === 'All' ||
       invitationStatus(inv) === statusFilter.value;
@@ -110,7 +109,8 @@ onMounted(loadInvitations);
       <div class="header-row__left">
         <h1 class="header-row__title">Invitations</h1>
         <p class="header-row__subtitle">
-          {{ invitations.length }} sent · {{ pendingCount }} pending
+          {{ invitations.length }}
+          sent · {{ pendingCount }} pending
         </p>
       </div>
       <div class="header-row__right">
@@ -262,7 +262,9 @@ onMounted(loadInvitations);
             <h3 class="modal-title">Cancel invitation?</h3>
             <p class="modal-desc">
               The invitation to
-              <strong>{{ cancelTarget.email || cancelTarget.phoneNumber || cancelTarget.userName }}</strong>
+              <strong
+                >{{ cancelTarget.email || cancelTarget.phoneNumber || cancelTarget.userName }}</strong
+              >
               will be cancelled and can no longer be accepted.
             </p>
           </div>
@@ -387,8 +389,8 @@ onMounted(loadInvitations);
 
 .btn--danger {
   font-weight: 600;
-  color: #ffffff;
-  background: #cc3314;
+  color: var(--primary-foreground);
+  background: var(--destructive);
 }
 
 /* ============================================
@@ -592,8 +594,8 @@ onMounted(loadInvitations);
 }
 
 .badge--pending {
-  color: #b26a00;
-  background: #fff4e0;
+  color: var(--warning);
+  background: var(--warning-bg);
 }
 
 .badge--resolved {
@@ -610,7 +612,7 @@ onMounted(loadInvitations);
   justify-content: center;
   width: 30px;
   height: 30px;
-  color: #cc3314;
+  color: var(--destructive);
   cursor: pointer;
   background: transparent;
   border: 1px solid var(--border);
@@ -678,8 +680,8 @@ onMounted(loadInvitations);
   justify-content: center;
   width: 40px;
   height: 40px;
-  color: #cc3314;
-  background: #fde8e8;
+  color: var(--destructive);
+  background: var(--destructive-soft);
   border-radius: 50%;
 }
 

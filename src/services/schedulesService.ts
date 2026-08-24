@@ -61,7 +61,7 @@ export async function getRealBookings() {
         status: o.status,
       };
     });
-  } catch (_) {
+  } catch {
     return [];
   }
 }

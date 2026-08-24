@@ -303,7 +303,7 @@ async function onInviteSend(data: {
     name: displayName,
     email: emailAddr,
     initials: displayInitials || 'NM',
-    avatarColor: '#D9D9DB',
+    avatarColor: 'var(--border)',
     role: data.role,
     specialties: [],
     rating: 0,

@@ -31,7 +31,7 @@ const phoneConfirming = ref(false);
 const phoneOtpSent = ref(false);
 const phoneError = ref('');
 
-const otpInputs = ref<string[]>(Array(6).fill(''));
+const otpInputs = ref<string[]>(new Array(6).fill(''));
 const otpTimeLeft = ref(0);
 const otpTimerInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
@@ -44,7 +44,7 @@ const emailConfirming = ref(false);
 const emailOtpSent = ref(false);
 const emailError = ref('');
 
-const emailOtpInputs = ref<string[]>(Array(6).fill(''));
+const emailOtpInputs = ref<string[]>(new Array(6).fill(''));
 
 // Loading
 const loading = ref(true);
@@ -80,7 +80,7 @@ async function handleSendCode() {
   try {
     await sendOtpToPhone(newPhone.value);
     phoneOtpSent.value = true;
-    otpInputs.value = Array(6).fill('');
+    otpInputs.value = new Array(6).fill('');
     startOtpTimer();
   } catch (e: any) {
     phoneError.value = e.message ?? 'Failed to send OTP';
@@ -145,7 +145,7 @@ async function handleSendEmailOtp() {
   try {
     await sendOtpToEmail(newEmail.value);
     emailOtpSent.value = true;
-    emailOtpInputs.value = Array(6).fill('');
+    emailOtpInputs.value = new Array(6).fill('');
     startOtpTimer();
   } catch (e: any) {
     emailError.value = e.message ?? 'Failed to send OTP';
@@ -200,7 +200,7 @@ function handleCancelEmailChange() {
   }
 }
 
-function onOtpInput(event: Event, index: number, inputs: string[]) {
+function onOtpInput(event: Event, index: number, _inputs: string[]) {
   const input = event.target as HTMLInputElement;
   if (input.value && index < 5) {
     const nextInput = input.parentElement?.children[index + 1] as
@@ -232,7 +232,7 @@ onMounted(async () => {
     >
       <Loader2
         :size="20"
-        color="#616167"
+        color="var(--muted-foreground)"
         class="spin"
       />
       <span>Loading contact info...</span>
@@ -586,8 +586,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   padding: 24px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -596,14 +596,14 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .card-description {
   margin: 0 0 14px 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Info Box */
@@ -613,8 +613,8 @@ onMounted(async () => {
   justify-content: space-between;
   padding: 12px 14px;
   margin-bottom: 14px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
@@ -628,14 +628,14 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .info-value {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 /* Badges */
@@ -651,15 +651,15 @@ onMounted(async () => {
 }
 
 .badge-verified {
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
 }
 
 .badge-awaiting {
   padding: 4px 10px;
   font-size: 11px;
-  color: #4d2700;
-  background: #ffd9b2;
+  color: var(--color-warning-foreground);
+  background: var(--color-warning);
 }
 
 .badge-icon {
@@ -685,7 +685,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .styled-input {
@@ -693,16 +693,16 @@ onMounted(async () => {
   padding: 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
   transition: border 0.15s;
 }
 
 .styled-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .action-btn {
@@ -714,9 +714,9 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 999px;
 }
@@ -762,24 +762,24 @@ onMounted(async () => {
 
 /* Warning State */
 .alert-warning {
-  color: #4d2700;
-  background: #ffd9b2;
-  border-left: 3px solid #4d2700;
+  color: var(--color-warning-foreground);
+  background: var(--color-warning);
+  border-left: 3px solid var(--color-warning-foreground);
 }
 
 .alert-warning .alert-icon {
-  color: #4d2700;
+  color: var(--color-warning-foreground);
 }
 
 /* Info State */
 .alert-info {
-  color: #001133;
-  background: #c9d6f0;
-  border-left: 3px solid #001133;
+  color: var(--color-info-foreground);
+  background: var(--color-info);
+  border-left: 3px solid var(--color-info-foreground);
 }
 
 .alert-info .alert-icon {
-  color: #001133;
+  color: var(--color-info-foreground);
 }
 
 /* OTP boxes */
@@ -795,16 +795,16 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   text-align: center;
   outline: none;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
 .otp-box:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
   border-width: 1.5px;
 }
 
@@ -830,9 +830,9 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 999px;
 }
@@ -852,10 +852,10 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -863,7 +863,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: none;
   border: none;
@@ -888,14 +888,14 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 700;
   color: #ffffff;
-  background: #616167;
+  background: var(--muted-foreground);
   border-radius: 999px;
 }
 
 .info-footer-text {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Loading State */
@@ -907,7 +907,7 @@ onMounted(async () => {
   padding: 64px 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .spin {
@@ -929,9 +929,9 @@ onMounted(async () => {
   margin-bottom: 14px;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #cc3314;
-  background: #fff5f5;
-  border: 1px solid #cc3314;
+  color: var(--destructive);
+  background: var(--destructive-soft);
+  border: 1px solid var(--destructive);
   border-radius: 6px;
 }
 
@@ -949,7 +949,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -972,10 +972,10 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 

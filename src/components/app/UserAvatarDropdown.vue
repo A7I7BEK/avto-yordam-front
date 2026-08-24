@@ -63,7 +63,7 @@ function handleLogout() {
       </div>
       <ChevronDown
         :size="14"
-        color="#2A2933"
+        color="var(--foreground)"
         class="chevron"
         :class="{ 'rotate-icon': isOpen }"
       />
@@ -114,14 +114,14 @@ function handleLogout() {
   align-items: center;
   padding: 4px 12px 4px 4px;
   cursor: pointer;
-  background: #f5f5f5;
+  background: var(--muted);
   border: none;
   border-radius: 999px;
   transition: background 0.15s;
 }
 
 .avatar-dropdown:hover {
-  background: #e8e8e8;
+  background: var(--hover);
 }
 
 .avatar-circle {
@@ -133,8 +133,8 @@ function handleLogout() {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 700;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -154,8 +154,8 @@ function handleLogout() {
   min-width: 180px;
   padding: 6px 0;
   margin-top: 4px;
-  background: #ffffff;
-  border: 1px solid #d9d9db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   transform-origin: top right;
@@ -170,7 +170,7 @@ function handleLogout() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   text-align: left;
   cursor: pointer;
   background: none;
@@ -181,34 +181,34 @@ function handleLogout() {
 }
 
 .menu-item:hover {
-  background: #f5f5f5;
+  background: var(--muted);
 }
 
 .menu-icon {
-  color: #616167;
+  color: var(--muted-foreground);
   transition: color 0.15s;
 }
 
 .menu-item:hover .menu-icon {
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .menu-divider {
   height: 1px;
   margin: 4px 0;
-  background: #e8e8e8;
+  background: var(--border);
 }
 
 .menu-item--danger {
-  color: #cc3314;
+  color: var(--destructive);
 }
 
 .menu-item--danger:hover {
-  background: #fdf2f2;
+  background: var(--destructive-soft);
 }
 
 .menu-item--danger:hover .menu-icon {
-  color: #cc3314;
+  color: var(--destructive);
 }
 
 /* Transitions */

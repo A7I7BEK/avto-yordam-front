@@ -166,8 +166,7 @@ async function loadData() {
         maxDurationMinutes: item.maxDurationMinutes,
         masters: (item.masters ?? []).map((m: any) => ({
           id: m.id ?? m.userId ?? '',
-          userName:
-            m.userName ?? m.name ?? m.fullName ?? 'Unknown Specialist',
+          userName: m.userName ?? m.name ?? m.fullName ?? 'Unknown Specialist',
         })),
       }));
     }
@@ -431,7 +430,7 @@ onMounted(() => {
       <div class="search-wrapper">
         <Search
           :size="16"
-          color="#939399"
+          color="var(--muted-icon)"
         />
         <input
           v-model="searchQuery"
@@ -468,9 +467,7 @@ onMounted(() => {
       >
         <div class="service-main">
           <div class="service-info">
-            <span class="service-name"
-              >{{ orgServiceName(service) }}</span
-            >
+            <span class="service-name">{{ orgServiceName(service) }}</span>
             <span class="service-desc"
               >{{ getServiceDescription(service.serviceId) }}</span
             >
@@ -479,7 +476,7 @@ onMounted(() => {
               <span class="meta-tag">
                 <Clock
                   :size="12"
-                  color="#616167"
+                  color="var(--muted-foreground)"
                 />
                 {{ service.minDurationMinutes }}–{{ service.maxDurationMinutes }}
                 min
@@ -697,7 +694,7 @@ onMounted(() => {
   height: 200px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .categories-page {
@@ -724,15 +721,15 @@ onMounted(() => {
   margin: 0;
   font-size: 22px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .curated-badge {
   padding: 3px 10px;
   font-size: 11px;
   font-weight: 500;
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
   border-radius: 999px;
 }
 
@@ -740,9 +737,9 @@ onMounted(() => {
   padding: 3px 10px;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
-  background: #f5f5f5;
-  border: 1px solid #d9d9db;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 999px;
 }
 
@@ -761,8 +758,8 @@ onMounted(() => {
   align-items: center;
   max-width: 340px;
   padding: 8px 14px;
-  background: #f5f5f5;
-  border: 1px solid #d9d9db;
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 999px;
 }
 
@@ -771,14 +768,14 @@ onMounted(() => {
   padding: 0;
   font-family: inherit;
   font-size: 13px;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
   background: transparent;
   border: none;
 }
 
 .search-input::placeholder {
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .toolbar-actions {
@@ -796,7 +793,7 @@ onMounted(() => {
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 8px;
   transition: opacity 0.15s;
@@ -815,8 +812,8 @@ onMounted(() => {
 
 .service-card {
   padding: 20px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -837,12 +834,12 @@ onMounted(() => {
 .service-name {
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .service-desc {
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .service-meta {
@@ -857,13 +854,13 @@ onMounted(() => {
   gap: 4px;
   align-items: center;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .meta-price {
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .masters-row {
@@ -876,7 +873,7 @@ onMounted(() => {
 .masters-label {
   font-size: 12px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
 
 .masters-avatars {
@@ -892,9 +889,9 @@ onMounted(() => {
   height: 24px;
   font-size: 9px;
   font-weight: 700;
-  color: #374151;
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 999px;
 }
 
@@ -910,16 +907,16 @@ onMounted(() => {
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   white-space: nowrap;
   cursor: pointer;
-  background: #eef0ff;
+  background: var(--primary-tint);
   border: none;
   border-radius: 8px;
 }
 
 .btn-edit-service:hover {
-  background: #dfe1ff;
+  background: var(--primary-tint);
 }
 
 .btn-delete-service {
@@ -927,10 +924,10 @@ onMounted(() => {
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
-  color: #dc2626;
+  color: var(--destructive);
   white-space: nowrap;
   cursor: pointer;
-  background: #fef2f2;
+  background: var(--destructive-soft);
   border: none;
   border-radius: 8px;
 }
@@ -943,26 +940,27 @@ onMounted(() => {
   color: #ffffff;
   white-space: nowrap;
   cursor: pointer;
-  background: #dc2626;
+  background: var(--destructive);
   border: none;
   border-radius: 8px;
 }
 
 .btn-confirm-delete:hover {
-  background: #b91c1c;
+  background: var(--destructive);
+  opacity: 0.9;
 }
 
 .btn-delete-service:hover {
-  background: #fee2e2;
+  background: var(--destructive-soft);
 }
 
 .empty-state {
   padding: 40px;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: center;
-  background: #ffffff;
-  border: 1px dashed #d1d5db;
+  background: var(--card);
+  border: 1px dashed var(--border);
   border-radius: 24px;
 }
 
@@ -987,7 +985,7 @@ onMounted(() => {
   width: 100%;
   max-width: 500px;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--card);
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
@@ -997,20 +995,20 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-title {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #111827;
+  color: var(--foreground);
 }
 
 .close-x-btn {
   padding: 0;
   font-size: 20px;
-  color: #9ca3af;
+  color: var(--muted-icon);
   cursor: pointer;
   background: none;
   border: none;
@@ -1030,8 +1028,8 @@ onMounted(() => {
   gap: 12px;
   justify-content: flex-end;
   padding: 16px 24px;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
+  background: var(--muted);
+  border-top: 1px solid var(--border);
 }
 
 .form-group {
@@ -1049,38 +1047,38 @@ onMounted(() => {
 .form-label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--muted-foreground);
 }
 
 .form-input {
   padding: 10px 14px;
   font-family: inherit;
   font-size: 13px;
-  color: #111827;
+  color: var(--foreground);
   outline: none;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
 .form-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .form-select {
   padding: 10px 14px;
   font-family: inherit;
   font-size: 13px;
-  color: #111827;
+  color: var(--foreground);
   cursor: pointer;
   outline: none;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
 .form-select:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .checkbox-list {
@@ -1090,7 +1088,7 @@ onMounted(() => {
   max-height: 150px;
   padding: 8px;
   overflow-y: auto;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
@@ -1099,14 +1097,14 @@ onMounted(() => {
   gap: 8px;
   align-items: center;
   font-size: 13px;
-  color: #374151;
+  color: var(--muted-foreground);
   cursor: pointer;
 }
 
 .empty-checkbox-label {
   padding: 8px;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-icon);
   text-align: center;
 }
 
@@ -1115,15 +1113,15 @@ onMounted(() => {
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--muted-foreground);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
 .btn-secondary:hover {
-  background: #f9fafb;
+  background: var(--muted);
 }
 
 .btn-primary {
@@ -1131,9 +1129,9 @@ onMounted(() => {
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 8px;
 }
@@ -1148,8 +1146,8 @@ onMounted(() => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   color: #b91c1c;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--destructive-soft);
+  border: 1px solid rgba(204, 51, 20, 0.35);
   border-radius: 8px;
 }
 </style>

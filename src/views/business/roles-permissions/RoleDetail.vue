@@ -395,8 +395,8 @@ function allowedCount(cat: PermissionCategory): number {
 }
 
 .legend--allowed {
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
 }
 
 .legend--not-allowed {
@@ -490,8 +490,8 @@ function allowedCount(cat: PermissionCategory): number {
 }
 
 .perm-row__tag--allowed {
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
 }
 
 .perm-row__tag--denied {

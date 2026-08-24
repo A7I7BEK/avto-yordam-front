@@ -562,7 +562,7 @@ function confirmDelete() {
   inset: 4px;
   display: block;
   content: "";
-  background: #003300;
+  background: var(--success);
   border-radius: var(--radius-pill);
 }
 
@@ -613,13 +613,13 @@ function confirmDelete() {
 }
 
 .badge--info {
-  color: #001133;
-  background: #c9d6f0;
+  color: var(--color-info-foreground);
+  background: var(--color-info);
 }
 
 .badge--success {
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
 }
 
 .badge--outline {
@@ -637,7 +637,7 @@ function confirmDelete() {
 }
 
 .badge-dot--success {
-  background: #003300;
+  background: var(--success);
 }
 
 /* ===== Quick Actions ===== */
@@ -717,8 +717,8 @@ function confirmDelete() {
   font-family: Inter, sans-serif;
   font-size: 10px;
   font-weight: 600;
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
   border-radius: var(--radius-pill);
 }
 
@@ -847,7 +847,7 @@ function confirmDelete() {
 }
 
 .text-success {
-  color: #003300;
+  color: var(--success);
 }
 </style>
 font-weight: 600; color: #ffffff; border-radius: 50%; } .detail-card__name {

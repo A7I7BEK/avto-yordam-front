@@ -24,7 +24,7 @@ defineProps<{
       <ChevronRight
         v-if="idx < items.length - 1"
         :size="14"
-        color="#616167"
+        color="var(--muted-foreground)"
       />
     </template>
   </div>
@@ -40,11 +40,11 @@ defineProps<{
 .crumb {
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .crumb.active {
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 </style>

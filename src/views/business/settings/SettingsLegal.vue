@@ -161,10 +161,10 @@ const orgTypeOptions = [
       'MChJ \u2014 the most common form for small and mid-size service businesses. Liability limited to capital contribution.',
     badge: 'MCHJ',
     icon: Building2,
-    iconBg: '#c9d6f0',
-    iconColor: '#001133',
-    badgeBg: '#c9d6f0',
-    badgeColor: '#001133',
+    iconBg: 'var(--color-info)',
+    iconColor: 'var(--color-info-foreground)',
+    badgeBg: 'var(--color-info)',
+    badgeColor: 'var(--color-info-foreground)',
   },
   {
     value: 'ytt',
@@ -173,10 +173,10 @@ const orgTypeOptions = [
       'YTT (Yakka Tartibdagi Tadbirkor) \u2014 sole-trader format with simplified tax and direct personal liability.',
     badge: 'YTT',
     icon: Briefcase,
-    iconBg: '#ffd9b2',
-    iconColor: '#4d2700',
-    badgeBg: '#ffd9b2',
-    badgeColor: '#4d2700',
+    iconBg: 'var(--color-warning)',
+    iconColor: 'var(--color-warning-foreground)',
+    badgeBg: 'var(--color-warning)',
+    badgeColor: 'var(--color-warning-foreground)',
   },
   {
     value: 'self-employed',
@@ -185,10 +185,10 @@ const orgTypeOptions = [
       'For one-person setups working without a formal company. Lowest paperwork, fastest start.',
     badge: 'Self-employed',
     icon: UserRound,
-    iconBg: '#a1e5a1',
-    iconColor: '#003300',
-    badgeBg: '#a1e5a1',
-    badgeColor: '#003300',
+    iconBg: 'var(--color-success)',
+    iconColor: 'var(--color-success-foreground)',
+    badgeBg: 'var(--color-success)',
+    badgeColor: 'var(--color-success-foreground)',
   },
 ];
 
@@ -1496,14 +1496,14 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 .page-subtitle {
   max-width: 720px;
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .btn {
   display: inline-flex;
@@ -1518,17 +1518,17 @@ const deleteModalName = computed(
   border-radius: 999px;
 }
 .btn-primary {
-  color: #fff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 .btn-outline {
-  color: #616167;
+  color: var(--muted-foreground);
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
 }
 .btn-danger {
-  color: #fff;
-  background: #cc3314;
+  color: var(--primary-foreground);
+  background: var(--destructive);
   border: none;
 }
 .btn-sm {
@@ -1541,8 +1541,8 @@ const deleteModalName = computed(
   flex-direction: column;
   gap: 14px;
   padding: 24px;
-  background: #fff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 .section-header {
@@ -1560,13 +1560,13 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 .section-desc {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .org-type-wrapper {
   display: flex;
@@ -1580,18 +1580,18 @@ const deleteModalName = computed(
   gap: 12px;
   padding: 20px;
   cursor: default;
-  background: #fff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 .org-type-card-selected {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 .org-type-card[role="button"] {
   cursor: pointer;
 }
 .org-type-card[role="button"]:hover {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 .org-type-card-header {
   display: flex;
@@ -1604,8 +1604,8 @@ const deleteModalName = computed(
   justify-content: center;
   width: 40px;
   height: 40px;
-  color: #001133;
-  background: #c9d6f0;
+  color: var(--color-info-foreground);
+  background: var(--color-info);
   border-radius: 24px;
 }
 .org-type-badge-pill {
@@ -1613,9 +1613,9 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #001133;
+  color: var(--color-info-foreground);
   letter-spacing: 0.3px;
-  background: #c9d6f0;
+  background: var(--color-info);
   border-radius: 999px;
 }
 .org-type-check {
@@ -1624,21 +1624,21 @@ const deleteModalName = computed(
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: #5749f4;
+  color: var(--primary);
 }
 .org-type-title {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 .org-type-desc {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .org-type-status {
   display: flex;
@@ -1655,8 +1655,8 @@ const deleteModalName = computed(
   border-radius: 999px;
 }
 .status-badge-active {
-  color: #2a2933;
-  background: #f5f5f5;
+  color: var(--foreground);
+  background: var(--muted);
 }
 .org-type-btn {
   display: inline-flex;
@@ -1672,14 +1672,14 @@ const deleteModalName = computed(
   border-radius: 999px;
 }
 .org-type-btn-current {
-  color: #fff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border: none;
 }
 .org-type-btn-select {
-  color: #2a2933;
+  color: var(--foreground);
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
 }
 .field-group {
   display: flex;
@@ -1690,14 +1690,14 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .field-value {
   padding: 2px 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 .field-value-full {
   width: 100%;
@@ -1708,14 +1708,14 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #fff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 .field-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 .field-input-full {
   width: 100%;
@@ -1723,14 +1723,14 @@ const deleteModalName = computed(
 .field-error {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #d32f2f;
+  color: var(--destructive);
 }
 .map-container {
   z-index: 1;
   width: 100%;
   height: 280px;
   overflow: hidden;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 .field-row {
@@ -1755,12 +1755,12 @@ const deleteModalName = computed(
   gap: 16px;
   align-items: center;
   padding: 12px 14px;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 .doc-icon {
   flex-shrink: 0;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .doc-info {
   display: flex;
@@ -1773,12 +1773,12 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 .doc-meta {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .doc-badge {
   flex-shrink: 0;
@@ -1789,12 +1789,12 @@ const deleteModalName = computed(
   border-radius: 999px;
 }
 .badge-verified {
-  color: #003300;
-  background: #a1e5a1;
+  color: var(--color-success-foreground);
+  background: var(--color-success);
 }
 .badge-pending {
-  color: #4d2700;
-  background: #ffd9b2;
+  color: var(--color-warning-foreground);
+  background: var(--color-warning);
 }
 .btn-icon {
   display: flex;
@@ -1804,10 +1804,10 @@ const deleteModalName = computed(
   width: 32px;
   height: 32px;
   padding: 6px 12px;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 .btn-download-pill {
@@ -1818,10 +1818,10 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 .btn-delete-pill {
@@ -1832,15 +1832,15 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #cc3314;
+  color: var(--destructive);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #cc3314;
+  border: 1px solid var(--destructive);
   border-radius: 999px;
 }
 .btn-icon-danger {
-  color: #cc3314;
-  border-color: #c5c5cb;
+  color: var(--destructive);
+  border-color: var(--border-soft);
 }
 .edit-actions {
   display: flex;
@@ -1863,8 +1863,8 @@ const deleteModalName = computed(
   gap: 20px;
   width: 440px;
   padding: 24px;
-  background: #fff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 20px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
 }
@@ -1879,8 +1879,8 @@ const deleteModalName = computed(
   justify-content: center;
   width: 48px;
   height: 48px;
-  color: #cc3314;
-  background: #f5f5f5;
+  color: var(--destructive);
+  background: var(--muted);
   border-radius: 24px;
 }
 .modal-title-group {
@@ -1894,14 +1894,14 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 .modal-desc {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
   line-height: 1.4;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .modal-actions {
   display: flex;
@@ -1922,8 +1922,8 @@ const deleteModalName = computed(
   font-weight: 600;
 }
 .btn-danger {
-  color: #fff;
-  background: #cc3314;
+  color: var(--primary-foreground);
+  background: var(--destructive);
   border: none;
 }
 .spin {
@@ -1942,16 +1942,16 @@ const deleteModalName = computed(
   padding: 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #cc3314;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: var(--destructive);
+  background: var(--destructive-soft);
+  border: 1px solid rgba(204, 51, 20, 0.35);
   border-radius: 8px;
 }
 .error-dismiss {
   display: flex;
   align-items: center;
   padding: 0;
-  color: #cc3314;
+  color: var(--destructive);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -1965,7 +1965,7 @@ const deleteModalName = computed(
   padding: 48px 24px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .empty-state {
   display: flex;
@@ -1981,8 +1981,8 @@ const deleteModalName = computed(
   justify-content: center;
   width: 64px;
   height: 64px;
-  color: #616167;
-  background: #f5f5f5;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-radius: 32px;
 }
 .empty-title {
@@ -1990,7 +1990,7 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 .empty-desc {
   max-width: 360px;
@@ -1998,7 +1998,7 @@ const deleteModalName = computed(
   font-family: Inter, sans-serif;
   font-size: 12px;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 .doc-actions {
   display: flex;
@@ -2012,22 +2012,22 @@ const deleteModalName = computed(
   width: 32px;
   height: 32px;
   padding: 0;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
   transition: background 0.15s;
 }
 .btn-icon-only:hover {
-  background: #f5f5f5;
+  background: var(--muted);
 }
 .btn-icon-danger {
-  color: #cc3314;
-  border-color: #cc3314;
+  color: var(--destructive);
+  border-color: var(--destructive);
 }
 .btn-icon-danger:hover {
-  background: #fef2f2;
+  background: var(--destructive-soft);
 }
 .file-type-badge {
   display: flex;
@@ -2036,15 +2036,15 @@ const deleteModalName = computed(
   justify-content: center;
   width: 36px;
   height: 36px;
-  color: #616167;
-  background: #f5f5f5;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-radius: 10px;
 }
 .doc-date {
   flex-shrink: 0;
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 </style>

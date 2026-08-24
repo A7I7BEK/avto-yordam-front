@@ -33,18 +33,18 @@ const model = defineModel<boolean>({ required: true });
 
 .toggle-switch.on {
   justify-content: end;
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .toggle-switch:not(.on) {
   justify-content: start;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 .knob {
   width: 16px;
   height: 16px;
-  background: #ffffff;
+  background: var(--primary-foreground);
   border-radius: 999px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }

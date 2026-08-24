@@ -38,6 +38,6 @@ import BusinessSidebar from '@/components/business/BusinessSidebar.vue';
 .app-shell__content {
   flex: 1;
   overflow-y: auto;
-  background: #ffffff;
+  background: var(--content-bg);
 }
 </style>

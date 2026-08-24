@@ -1,5 +1,9 @@
 export const masterColors = {
-  'Aziz K.': { bg: '#EEF0FF', bar: '#5749F4', text: '#2A2933' },
+  'Aziz K.': {
+    bg: 'var(--primary-tint)',
+    bar: 'var(--primary)',
+    text: 'var(--foreground)',
+  },
   'Bekzod R.': { bg: '#FFF0E9', bar: '#FF7A4B', text: '#4D2700' },
   'Jasur T.': { bg: '#E8FAF0', bar: '#1FAA59', text: '#003300' },
 };

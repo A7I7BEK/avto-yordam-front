@@ -39,8 +39,8 @@ const store = useBusinessAppStore();
   justify-content: space-between;
   height: 80px;
   padding: 0 24px;
-  background: #ffffff;
-  border-bottom: 1px solid #d9d9db;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
 }
 
 .header__left {
@@ -59,14 +59,14 @@ const store = useBusinessAppStore();
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .header__user-role {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .header__org {
@@ -78,7 +78,7 @@ const store = useBusinessAppStore();
 .header__org-dot {
   width: 6px;
   height: 6px;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 50%;
 }
 
@@ -86,7 +86,7 @@ const store = useBusinessAppStore();
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .header__right {

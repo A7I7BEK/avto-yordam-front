@@ -10,12 +10,21 @@ import {
 } from '@/services/settingsService';
 import type { DaySchedule } from '@/types/settings';
 
+type DayKey =
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday'
+  | 'sunday';
+
 interface TimezoneOption {
   value: string;
   label: string;
 }
 
-const days = [
+const days: { key: DayKey; label: string }[] = [
   { key: 'monday', label: 'Monday' },
   { key: 'tuesday', label: 'Tuesday' },
   { key: 'wednesday', label: 'Wednesday' },
@@ -25,7 +34,7 @@ const days = [
   { key: 'sunday', label: 'Sunday' },
 ];
 
-const defaultSchedule: Record<string, DaySchedule> = {
+const defaultSchedule: Record<DayKey, DaySchedule> = {
   monday: { open: '09:00', close: '18:00', closed: false },
   tuesday: { open: '09:00', close: '18:00', closed: false },
   wednesday: { open: '09:00', close: '18:00', closed: false },
@@ -35,8 +44,8 @@ const defaultSchedule: Record<string, DaySchedule> = {
   sunday: { open: '09:00', close: '18:00', closed: true },
 };
 
-const schedule = ref<Record<string, DaySchedule>>({ ...defaultSchedule });
-const initialSchedule = ref<Record<string, DaySchedule>>({
+const schedule = ref<Record<DayKey, DaySchedule>>({ ...defaultSchedule });
+const initialSchedule = ref<Record<DayKey, DaySchedule>>({
   ...defaultSchedule,
 });
 const loading = ref(true);
@@ -55,13 +64,13 @@ const selectedTimezone = ref('Asia/Tashkent');
 onMounted(async () => {
   const data = await getSettingsHours();
   if (data) {
-    schedule.value = { ...data };
-    initialSchedule.value = JSON.parse(JSON.stringify(data));
+    schedule.value = { ...defaultSchedule, ...data };
+    initialSchedule.value = { ...defaultSchedule, ...data };
   }
   loading.value = false;
 });
 
-function toggleDay(dayKey: string) {
+function toggleDay(dayKey: DayKey) {
   schedule.value[dayKey].closed = !schedule.value[dayKey].closed;
 }
 
@@ -521,7 +530,7 @@ function cancel() {
 }
 
 .btn--primary {
-  color: #fff;
+  color: var(--primary-foreground);
   background: var(--primary);
   border-color: var(--primary);
 }
@@ -596,7 +605,7 @@ function cancel() {
   height: 22px;
   padding: 3px;
   cursor: pointer;
-  background: #d9d9db;
+  background: var(--border);
   border: none;
   border-radius: var(--radius-pill);
   transition: background 0.2s ease;

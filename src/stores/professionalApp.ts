@@ -25,7 +25,6 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
   const activeOrganization = ref('AutoFix MCHJ');
   const notificationCount = ref(3);
   const language = ref<LanguageCode>(getStoredLanguageCode());
-  const theme = ref<'light' | 'dark'>('light');
 
   function setActiveNavItem(item: typeof activeNavItem.value) {
     activeNavItem.value = item;
@@ -42,10 +41,6 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
     setStoredLanguageCode(lang);
   }
 
-  function toggleTheme() {
-    theme.value = theme.value === 'light' ? 'dark' : 'light';
-  }
-
   function setNotificationCount(count: number) {
     notificationCount.value = count;
   }
@@ -60,11 +55,9 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
     activeOrganization,
     notificationCount,
     language,
-    theme,
     setActiveNavItem,
     decrementInvitationCount,
     setLanguage,
-    toggleTheme,
     setNotificationCount,
   };
 });

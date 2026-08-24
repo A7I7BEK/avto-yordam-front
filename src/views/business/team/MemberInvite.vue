@@ -308,8 +308,8 @@ onMounted(async () => {
 }
 
 .btn--primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .btn--outline {
@@ -327,7 +327,7 @@ onMounted(async () => {
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--success);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-modal);

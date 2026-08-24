@@ -17,6 +17,10 @@ const emit = defineEmits<{
 const copied = ref(false);
 const inviteLink = 'https://autofix.uz/invite/a7f3b2c9';
 
+function selectAllText(event: FocusEvent) {
+  (event.target as HTMLInputElement).select();
+}
+
 async function copyLink() {
   try {
     await navigator.clipboard.writeText(inviteLink);
@@ -70,7 +74,7 @@ async function copyLink() {
             class="copy-modal__link-input"
             :value="inviteLink"
             readonly
-            @focus="$event.target.select()"
+            @focus="selectAllText"
           >
           <button
             type="button"

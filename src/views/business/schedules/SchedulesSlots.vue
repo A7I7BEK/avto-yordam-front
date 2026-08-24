@@ -66,7 +66,7 @@ function decodeUserToken() {
         payload.organizationRole === 'MASTER' ||
         payload.platformRole === 'MASTER';
     }
-  } catch (_) {
+  } catch {
     isOwner.value = true;
     isMaster.value = false;
   }
@@ -303,7 +303,8 @@ async function loadModalHelpers() {
         return {
           id: os.id,
           name:
-            os.catalogName || (baseSvc ? baseSvc.name : `Service #${os.serviceId}`),
+            os.catalogName ||
+            (baseSvc ? baseSvc.name : `Service #${os.serviceId}`),
         };
       });
     } else {
@@ -312,11 +313,13 @@ async function loadModalHelpers() {
     }
 
     masters.value = empList || [];
-  } catch (_) {
+  } catch {
     try {
       const { services: svcList } = await getCategories();
       services.value = svcList || [];
-    } catch (_) {}
+    } catch {
+      // Keep the previous services list if the fallback request fails too.
+    }
   }
 }
 
@@ -446,8 +449,8 @@ async function submitCreateSlot() {
   try {
     await createTimeSlot({
       slotDate: f.slotDate,
-      startTime: f.startTime + ':00',
-      endTime: f.endTime + ':00',
+      startTime: `${f.startTime}:00`,
+      endTime: `${f.endTime}:00`,
       isBooked: false,
     });
     triggerToast('Time slot created');
@@ -505,6 +508,11 @@ async function submitCreateOrderInSlot() {
 function closeFlyout() {
   selectedSlot.value = null;
 }
+
+function selectIncomingOrder(order: Order) {
+  selectedOrder.value = order;
+  selectedSlot.value = null;
+}
 </script>
 
 <template>
@@ -517,15 +525,17 @@ function closeFlyout() {
       <div class="header-actions">
         <button
           class="btn"
+          type="button"
           :class="rescheduleMode ? 'btn--primary' : 'btn--outline'"
           :disabled="!selectedOrder?.id"
           @click="rescheduleMode = !rescheduleMode"
-          :title="!selectedOrder?.id ? 'Select an incoming order first' : 'Propose new time on calendar'"
+          :title="selectedOrder?.id ? 'Propose new time on calendar' : 'Select an incoming order first'"
         >
           {{ rescheduleMode ? 'Cancel Reschedule' : 'Reschedule Order' }}
         </button>
         <button
           class="btn btn--outline"
+          type="button"
           @click="refreshAll"
         >
           Refresh
@@ -663,7 +673,7 @@ function closeFlyout() {
             type="button"
             class="order-list-item"
             :class="{ active: selectedOrder?.id === o.id }"
-            @click="selectedOrder = o; selectedSlot = null"
+            @click="selectIncomingOrder(o)"
           >
             <div class="order-row">
               <span class="order-title">Order {{ o.id }}</span>
@@ -698,12 +708,14 @@ function closeFlyout() {
           <div class="details-actions">
             <button
               class="btn btn--primary flex-1"
+              type="button"
               @click="acceptSelected"
             >
               Accept
             </button>
             <button
               class="btn btn--danger flex-1"
+              type="button"
               @click="openRejectOpen"
             >
               Reject
@@ -1115,9 +1127,9 @@ function closeFlyout() {
 }
 
 .view-toggle__btn.active {
-  color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 /* Date navigation */
@@ -1178,7 +1190,7 @@ function closeFlyout() {
 }
 
 .btn--primary {
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--primary);
 }
 
@@ -1197,7 +1209,7 @@ function closeFlyout() {
 }
 
 .btn--danger {
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--destructive);
 }
 
@@ -1282,7 +1294,7 @@ function closeFlyout() {
   gap: 16px;
   padding: 16px;
   overflow-y: auto;
-  background: #f7f7f8;
+  background: var(--muted);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
 }
@@ -1326,7 +1338,7 @@ function closeFlyout() {
 }
 
 .order-list-item.active {
-  background: #eef0ff;
+  background: var(--primary-tint);
   border-color: var(--primary);
   box-shadow: 0 0 0 1px var(--primary);
 }
@@ -1412,7 +1424,7 @@ function closeFlyout() {
   font-size: 11px;
   line-height: 1.4;
   color: var(--primary);
-  background: #eef0ff;
+  background: var(--primary-tint);
   border-radius: var(--radius-sm);
 }
 
@@ -1452,7 +1464,7 @@ function closeFlyout() {
   display: grid;
   flex-shrink: 0;
   grid-template-columns: 60px repeat(7, 1fr);
-  background: #fafafa;
+  background: var(--accent);
   border-bottom: 1px solid var(--border);
 }
 
@@ -1499,7 +1511,7 @@ function closeFlyout() {
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--primary);
   border-radius: 50%;
 }
@@ -1567,14 +1579,14 @@ function closeFlyout() {
 }
 
 .slot-chip--available {
-  color: #25603a;
-  background: #e8faf0;
+  color: var(--success);
+  background: var(--success-bg);
   border-left-color: #16a34a;
 }
 
 .slot-chip--booked {
   color: var(--destructive);
-  background: #fee9e5;
+  background: var(--destructive-soft);
   border-left-color: var(--destructive);
 }
 
@@ -1674,13 +1686,13 @@ function closeFlyout() {
 }
 
 .status-indicator--available {
-  color: #25603a;
-  background: #e8faf0;
+  color: var(--success);
+  background: var(--success-bg);
 }
 
 .status-indicator--booked {
   color: var(--destructive);
-  background: #fee9e5;
+  background: var(--destructive-soft);
 }
 
 .w-full {
@@ -1873,7 +1885,7 @@ function closeFlyout() {
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--success);
   border-radius: var(--radius-md);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

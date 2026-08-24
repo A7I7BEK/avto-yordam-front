@@ -158,8 +158,8 @@ function onConfirm() {
   width: 64px;
   height: 64px;
   margin: auto;
-  color: #590f00;
-  background: #ffbfb2;
+  color: var(--color-error-foreground);
+  background: var(--color-error);
   border-radius: var(--radius-pill);
 }
 
@@ -248,9 +248,9 @@ function onConfirm() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #001133;
+  color: var(--color-info-foreground);
   white-space: nowrap;
-  background: #c9d6f0;
+  background: var(--color-info);
   border-radius: var(--radius-pill);
 }
 
@@ -260,8 +260,8 @@ function onConfirm() {
   gap: 10px;
   align-items: flex-start;
   padding: 12px 14px;
-  color: #590f00;
-  background: #ffbfb2;
+  color: var(--color-error-foreground);
+  background: var(--color-error);
   border-radius: var(--radius-xl);
 }
 
@@ -270,7 +270,7 @@ function onConfirm() {
   font-size: 12px;
   font-weight: 400;
   line-height: 1.45;
-  color: #590f00;
+  color: var(--color-error-foreground);
 }
 
 /* ===== Actions ===== */

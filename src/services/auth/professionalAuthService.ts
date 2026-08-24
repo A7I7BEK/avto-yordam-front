@@ -95,7 +95,7 @@ export const professionalAuth = {
           type: userRes.type || result.type,
         },
       };
-    } catch (_) {
+    } catch {
       return {
         token: 'mock-token-professional',
         user: {

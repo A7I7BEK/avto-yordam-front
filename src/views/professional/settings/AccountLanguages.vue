@@ -128,7 +128,7 @@ onMounted(fetchData);
       <div class="badge-count">
         <Globe
           :size="12"
-          color="#616167"
+          color="var(--muted-foreground)"
         />
         <span>{{ entries.length }} added</span>
       </div>
@@ -143,7 +143,7 @@ onMounted(fetchData);
     >
       <Loader2
         :size="20"
-        color="#616167"
+        color="var(--muted-foreground)"
         class="spin"
       />
       <span>Loading languages...</span>
@@ -184,7 +184,7 @@ onMounted(fetchData);
             </select>
             <ChevronDown
               :size="14"
-              color="#616167"
+              color="var(--muted-foreground)"
               class="select-chevron"
             />
           </div>
@@ -217,7 +217,7 @@ onMounted(fetchData);
     >
       <Plus
         :size="15"
-        color="#5749f4"
+        color="var(--primary)"
       />
       <span>Add another language</span>
     </button>
@@ -255,8 +255,8 @@ onMounted(fetchData);
   flex-direction: column;
   gap: 12px;
   padding: 20px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -277,13 +277,13 @@ onMounted(fetchData);
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .header-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .badge-count {
@@ -294,8 +294,8 @@ onMounted(fetchData);
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
-  background: #f5f5f5;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-radius: 999px;
 }
 
@@ -303,7 +303,7 @@ onMounted(fetchData);
 .divider {
   width: 100%;
   height: 1px;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 /* Language List */
@@ -318,8 +318,8 @@ onMounted(fetchData);
   gap: 12px;
   align-items: flex-end;
   padding: 14px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
@@ -334,7 +334,7 @@ onMounted(fetchData);
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Select wrapper */
@@ -350,17 +350,17 @@ onMounted(fetchData);
   padding: 10px 36px 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #2a2933;
+  color: var(--foreground);
   appearance: none;
   cursor: pointer;
   outline: none;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
 .select-pill:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .select-chevron {
@@ -377,15 +377,15 @@ onMounted(fetchData);
   justify-content: center;
   width: 38px;
   height: 38px;
-  color: #cc3314;
+  color: var(--destructive);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .btn-delete:hover {
-  background: #fff5f5;
+  background: var(--destructive-soft);
 }
 
 /* Add button */
@@ -398,10 +398,10 @@ onMounted(fetchData);
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
 }
 
@@ -410,14 +410,14 @@ onMounted(fetchData);
   padding: 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #cc3314;
-  background: #fff5f5;
-  border: 1px solid #cc3314;
+  color: var(--destructive);
+  background: var(--destructive-soft);
+  border: 1px solid var(--destructive);
   border-radius: 6px;
 }
 
 .btn-add:hover {
-  background: #f5f5ff;
+  background: var(--primary-tint);
 }
 
 .btn-add.disabled {
@@ -426,7 +426,7 @@ onMounted(fetchData);
 }
 
 .btn-add.disabled:hover {
-  background: #ffffff;
+  background: var(--card);
 }
 
 /* Loading state */
@@ -438,7 +438,7 @@ onMounted(fetchData);
   padding: 32px 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .spin {
@@ -467,10 +467,10 @@ onMounted(fetchData);
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -479,9 +479,9 @@ onMounted(fetchData);
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 999px;
 }

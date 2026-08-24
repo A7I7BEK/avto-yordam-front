@@ -66,22 +66,22 @@ onMounted(async () => {
 
 function statusColor(status: string): string {
   const map: Record<string, string> = {
-    confirmed: '#25603A',
-    'in-progress': '#5749F4',
-    pending: '#B45309',
-    done: '#616167',
+    confirmed: 'var(--success)',
+    'in-progress': 'var(--primary)',
+    pending: 'var(--warning)',
+    done: 'var(--muted-foreground)',
   };
-  return map[status] || '#616167';
+  return map[status] || 'var(--muted-foreground)';
 }
 
 function statusBg(status: string): string {
   const map: Record<string, string> = {
-    confirmed: '#E8FAF0',
-    'in-progress': '#EEF0FF',
-    pending: '#FFF6E9',
-    done: '#F5F5F5',
+    confirmed: 'var(--success-bg)',
+    'in-progress': 'var(--primary-tint)',
+    pending: 'var(--warning-bg)',
+    done: 'var(--muted)',
   };
-  return map[status] || '#F5F5F5';
+  return map[status] || 'var(--muted)';
 }
 </script>
 
@@ -108,7 +108,7 @@ function statusBg(status: string): string {
       <div class="kpi-card">
         <div
           class="kpi-icon-wrap"
-          style="background: #EEF0FF; color: #5749F4;"
+          style="background: var(--primary-tint); color: var(--primary);"
         >
           <Calendar :size="20" />
         </div>
@@ -120,7 +120,7 @@ function statusBg(status: string): string {
       <div class="kpi-card">
         <div
           class="kpi-icon-wrap"
-          style="background: #FFF6E9; color: #B45309;"
+          style="background: var(--warning-bg); color: var(--warning);"
         >
           <Clock :size="20" />
         </div>
@@ -132,7 +132,7 @@ function statusBg(status: string): string {
       <div class="kpi-card">
         <div
           class="kpi-icon-wrap"
-          style="background: #E8FAF0; color: #25603A;"
+          style="background: var(--success-bg); color: var(--success);"
         >
           <CheckCircle :size="20" />
         </div>
@@ -256,7 +256,7 @@ function statusBg(status: string): string {
   height: 200px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .receptionist-dashboard {
@@ -271,7 +271,7 @@ function statusBg(status: string): string {
   margin: 0;
   font-size: 22px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 /* KPI Row */
@@ -286,8 +286,8 @@ function statusBg(status: string): string {
   gap: 14px;
   align-items: center;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -308,13 +308,13 @@ function statusBg(status: string): string {
 
 .kpi-label {
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .kpi-value {
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 /* Columns */
@@ -329,8 +329,8 @@ function statusBg(status: string): string {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -344,15 +344,15 @@ function statusBg(status: string): string {
 .card-title {
   font-size: 15px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .card-badge {
   padding: 3px 10px;
   font-size: 11px;
   font-weight: 500;
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
   border-radius: 999px;
 }
 
@@ -368,8 +368,8 @@ function statusBg(status: string): string {
   flex-direction: column;
   gap: 8px;
   padding: 14px;
-  background: #fafafa;
-  border: 1px solid #eaeaea;
+  background: var(--accent);
+  border: 1px solid var(--border);
   border-radius: 16px;
 }
 
@@ -393,8 +393,8 @@ function statusBg(status: string): string {
   height: 34px;
   font-size: 12px;
   font-weight: 700;
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
   border-radius: 999px;
 }
 
@@ -407,23 +407,23 @@ function statusBg(status: string): string {
 .queue-name {
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .queue-vehicle {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .queue-time {
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 
 .queue-service {
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .queue-actions {
@@ -454,10 +454,10 @@ function statusBg(status: string): string {
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
-  background: #f5f5f5;
-  border: 1px solid #d9d9db;
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
@@ -488,8 +488,8 @@ function statusBg(status: string): string {
   height: 32px;
   font-size: 11px;
   font-weight: 700;
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
   border-radius: 999px;
 }
 
@@ -502,12 +502,12 @@ function statusBg(status: string): string {
 .master-name {
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .master-count {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .booking-slots {
@@ -529,7 +529,7 @@ function statusBg(status: string): string {
   min-width: 44px;
   font-size: 12px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   white-space: nowrap;
 }
 
@@ -543,12 +543,12 @@ function statusBg(status: string): string {
 .slot-service {
   font-size: 12px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .slot-vehicle {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .slot-status {

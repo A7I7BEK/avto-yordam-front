@@ -43,8 +43,8 @@ const store = useProfessionalAppStore();
   width: 100%;
   height: 80px;
   padding: 0 24px;
-  background: #ffffff;
-  border-bottom: 1px solid #d9d9db;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
 }
 
 .header-left {
@@ -58,7 +58,7 @@ const store = useProfessionalAppStore();
   font-size: 15px;
   font-weight: 600;
   line-height: 1.3;
-  color: #2a2933;
+  color: var(--foreground);
   letter-spacing: -0.3px;
 }
 
@@ -72,7 +72,7 @@ const store = useProfessionalAppStore();
   flex-shrink: 0;
   width: 5px;
   height: 5px;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -81,7 +81,7 @@ const store = useProfessionalAppStore();
   font-size: 11px;
   font-weight: 500;
   line-height: 1.3;
-  color: #616167;
+  color: var(--muted-foreground);
   letter-spacing: 0.2px;
 }
 

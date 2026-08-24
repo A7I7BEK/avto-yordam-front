@@ -124,7 +124,9 @@ function confirmRemove() {
             <span class="profile-card__email">{{ user.email }}</span>
           </div>
           <div class="profile-card__badges">
-            <span class="profile-badge profile-badge--role">{{ user.type }}</span>
+            <span class="profile-badge profile-badge--role"
+              >{{ user.type }}</span
+            >
             <span
               class="profile-badge"
               :class="
@@ -140,15 +142,21 @@ function confirmRemove() {
           <div class="profile-card__meta">
             <div class="profile-meta-row">
               <span class="profile-meta-row__label">Phone</span>
-              <span class="profile-meta-row__value">{{ user.phone || '—' }}</span>
+              <span class="profile-meta-row__value"
+                >{{ user.phone || '—' }}</span
+              >
             </div>
             <div class="profile-meta-row">
               <span class="profile-meta-row__label">Languages</span>
-              <span class="profile-meta-row__value">{{ languagesLabel() }}</span>
+              <span class="profile-meta-row__value"
+                >{{ languagesLabel() }}</span
+              >
             </div>
             <div class="profile-meta-row">
               <span class="profile-meta-row__label">Birth date</span>
-              <span class="profile-meta-row__value">{{ formatDate(user.birthDay) }}</span>
+              <span class="profile-meta-row__value"
+                >{{ formatDate(user.birthDay) }}</span
+              >
             </div>
           </div>
         </div>
@@ -212,7 +220,9 @@ function confirmRemove() {
             <div class="personal-field-row">
               <div class="personal-field">
                 <span class="personal-field__label">Phone</span>
-                <span class="personal-field__value">{{ user.phone || '—' }}</span>
+                <span class="personal-field__value"
+                  >{{ user.phone || '—' }}</span
+                >
               </div>
               <div class="personal-field">
                 <span class="personal-field__label">Type</span>
@@ -222,11 +232,15 @@ function confirmRemove() {
             <div class="personal-field-row">
               <div class="personal-field">
                 <span class="personal-field__label">Birth date</span>
-                <span class="personal-field__value">{{ formatDate(user.birthDay) }}</span>
+                <span class="personal-field__value"
+                  >{{ formatDate(user.birthDay) }}</span
+                >
               </div>
               <div class="personal-field">
                 <span class="personal-field__label">Languages</span>
-                <span class="personal-field__value">{{ languagesLabel() }}</span>
+                <span class="personal-field__value"
+                  >{{ languagesLabel() }}</span
+                >
               </div>
             </div>
           </div>

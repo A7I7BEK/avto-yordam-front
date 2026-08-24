@@ -163,8 +163,8 @@ function breadcrumbItems() {
   gap: 4px;
   width: 240px;
   padding: 24px 16px;
-  background: #ffffff;
-  border-right: 1px solid #c5c5cb;
+  background: var(--card);
+  border-right: 1px solid var(--border-soft);
 }
 
 .nav-item {
@@ -176,7 +176,7 @@ function breadcrumbItems() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #939399;
+  color: var(--muted-icon);
   text-align: left;
   text-decoration: none;
   cursor: pointer;

@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 import { apiClient } from '@/api/client';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import { isMockMode } from '@/config';
+import { useErrorStore } from '@/stores/errorStore';
 
 const router = useRouter();
 
@@ -151,12 +152,14 @@ async function enterOrganization(organizationId: string) {
     const result = await apiClient.post(
       `/user/change-organization/${organizationId}`,
     );
-    if (result && result.accessToken) {
+    if (result?.accessToken) {
       localStorage.setItem('token', result.accessToken);
       router.push({ name: 'biz-dashboard-overview' });
     }
   } catch {
-    alert('Failed to switch to organization workspace. Please try again.');
+    useErrorStore().showError(
+      'Failed to switch to organization workspace. Please try again.',
+    );
   }
 }
 
@@ -296,14 +299,14 @@ function getInitialsColor(gradient: string) {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .org-list {
@@ -316,7 +319,7 @@ function getInitialsColor(gradient: string) {
   padding: 40px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: center;
 }
 
@@ -379,7 +382,7 @@ function getInitialsColor(gradient: string) {
   font-family: Inter, sans-serif;
   font-size: 18px;
   font-weight: 800;
-  background: #ffffff;
+  background: var(--card);
   border-radius: 12px;
 }
 
@@ -414,8 +417,8 @@ function getInitialsColor(gradient: string) {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 700;
-  color: #2a2933;
-  background: #ffffff;
+  color: var(--foreground);
+  background: var(--card);
   border-radius: 999px;
 }
 
@@ -463,9 +466,9 @@ function getInitialsColor(gradient: string) {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
-  background: #ffffff;
+  background: var(--card);
   border: none;
   border-radius: 999px;
   transition:
@@ -474,7 +477,7 @@ function getInitialsColor(gradient: string) {
 }
 
 .enter-btn:hover {
-  background: #f5f5f5;
+  background: var(--muted);
   transform: translateY(-1px);
 }
 
@@ -485,14 +488,14 @@ function getInitialsColor(gradient: string) {
   justify-content: center;
   padding: 60px 24px;
   text-align: center;
-  background: #ffffff;
-  border: 1px dashed #c5c5cb;
+  background: var(--card);
+  border: 1px dashed var(--border-soft);
   border-radius: 20px;
 }
 
 .empty-icon {
   margin-bottom: 16px;
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .empty-title {
@@ -500,13 +503,13 @@ function getInitialsColor(gradient: string) {
   font-family: Inter, sans-serif;
   font-size: 18px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .empty-subtitle {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 </style>

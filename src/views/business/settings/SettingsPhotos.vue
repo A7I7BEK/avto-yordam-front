@@ -436,9 +436,9 @@ async function performDeletePhoto() {
   margin-bottom: 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #7c1400;
-  background: #fde8e3;
-  border: 1px solid #f5bfb4;
+  color: var(--destructive);
+  background: var(--destructive-soft);
+  border: 1px solid rgba(204, 51, 20, 0.35);
   border-radius: 12px;
 }
 
@@ -447,7 +447,7 @@ async function performDeletePhoto() {
   align-items: center;
   justify-content: center;
   padding: 4px;
-  color: #7c1400;
+  color: var(--destructive);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -455,7 +455,7 @@ async function performDeletePhoto() {
 }
 
 .error-dismiss:hover {
-  background: #f5bfb4;
+  background: var(--destructive-soft);
 }
 
 /* ===== Loading ===== */

@@ -566,9 +566,9 @@ onMounted(async () => {
   padding: 10px 14px;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #cc3314;
-  background: #fff5f5;
-  border: 1px solid #cc3314;
+  color: var(--destructive);
+  background: var(--destructive-soft);
+  border: 1px solid var(--destructive);
   border-radius: 6px;
 }
 

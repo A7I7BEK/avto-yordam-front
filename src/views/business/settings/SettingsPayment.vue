@@ -46,6 +46,7 @@ interface Provider {
   fields: ProviderField[];
   lastCharge: string;
   hasActivity: boolean;
+  fee: string;
 }
 
 interface ProviderTypeInfo {
@@ -58,7 +59,8 @@ interface ProviderTypeInfo {
 }
 
 const providers = ref<Provider[]>([]);
-const orgId = ref<string | null>(null);const loading = ref(true);
+const orgId = ref<string | null>(null);
+const loading = ref(true);
 const savingProviders = ref<Record<string, boolean>>({});
 const addingProviderKey = ref<string | null>(null);
 const addingFieldValues = ref<Record<string, string>>({});
@@ -93,14 +95,18 @@ const allProviderTypes = computed<ProviderTypeInfo[]>(() =>
     })),
 );
 
-const configuredTypes = computed(() => new Set(providers.value.map((p) => p.typeKey)));
+const configuredTypes = computed(
+  () => new Set(providers.value.map((p) => p.typeKey)),
+);
 
 const availableTypes = computed(() =>
   allProviderTypes.value.filter((t) => !configuredTypes.value.has(t.typeKey)),
 );
 
-const addingProviderData = computed(() =>
-  allProviderTypes.value.find((t) => t.typeKey === addingProviderKey.value) ?? null,
+const addingProviderData = computed(
+  () =>
+    allProviderTypes.value.find((t) => t.typeKey === addingProviderKey.value) ??
+    null,
 );
 
 const MASKED_VALUE = '•••••••••••••••••••';
@@ -178,25 +184,23 @@ onMounted(async () => {
       .filter((p) => p.type !== 'CASH')
       .map((p) => {
         const typeKey = p.type.toLowerCase();
-        const master = masterProviders.find(
-          (m) => m.code === p.type,
-        );
+        const master = masterProviders.find((m) => m.code === p.type);
         const parsedCredentials = parseCredentials(p.credentials);
-        const fields = buildFields(
-          master?.fields ?? [],
-          parsedCredentials,
-        );
+        const fields = buildFields(master?.fields ?? [], parsedCredentials);
 
         return {
           id: p.id,
           type: p.type,
           typeKey,
-          name: master?.displayName ?? typeKey.charAt(0).toUpperCase() + typeKey.slice(1),
+          name:
+            master?.displayName ??
+            typeKey.charAt(0).toUpperCase() + typeKey.slice(1),
           enabled: p.enabled,
           logoUrl: master?.logoUrl ?? '',
           fields,
           lastCharge: lastChargeTexts[typeKey] ?? 'Never used',
           hasActivity: p.enabled && typeKey !== 'paynet',
+          fee: providerFees[typeKey] ?? '',
         };
       });
   }
@@ -248,6 +252,7 @@ async function confirmAddingProvider(typeInfo: ProviderTypeInfo) {
       fields,
       lastCharge: lastChargeTexts[typeInfo.typeKey] ?? 'Never used',
       hasActivity: false,
+      fee: providerFees[typeInfo.typeKey] ?? '',
     });
 
     addingProviderKey.value = null;
@@ -582,7 +587,10 @@ async function saveEditing(providerId: string) {
               </div>
               <div class="provider-info">
                 <span class="provider-name">{{ addingProviderData.name }}</span>
-                <span class="provider-fee">{{ addingProviderData.fee }} per transaction</span>
+                <span class="provider-fee"
+                  >{{ addingProviderData.fee }}
+                  per transaction</span
+                >
               </div>
             </div>
             <button
@@ -608,7 +616,13 @@ async function saveEditing(providerId: string) {
               <label
                 class="field-label"
                 :for="`modal-${def.name}`"
-              >{{ def.label }} <span v-if="def.required" class="field-required">*</span></label>
+                >{{ def.label }}
+                <span
+                  v-if="def.required"
+                  class="field-required"
+                  >*</span
+                ></label
+              >
               <div
                 v-if="def.type === 'password'"
                 class="field-input-wrap"
@@ -731,8 +745,8 @@ async function saveEditing(providerId: string) {
   align-items: center;
   justify-content: center;
   min-height: 280px;
-  border-style: dashed;
   background: var(--accent);
+  border-style: dashed;
 }
 
 .provider-add-content {
@@ -929,7 +943,7 @@ async function saveEditing(providerId: string) {
 }
 
 .status-dot--active {
-  background: #003300;
+  background: var(--success);
 }
 
 .status-dot--inactive {
@@ -1024,15 +1038,15 @@ async function saveEditing(providerId: string) {
   gap: 12px;
   align-items: flex-start;
   padding: 14px;
-  background: #c9d6f0;
-  border: 1px solid #001133;
+  background: var(--color-info);
+  border: 1px solid var(--color-info-foreground);
   border-radius: var(--radius-xl);
 }
 
 .info-icon {
   flex-shrink: 0;
   margin-top: 1px;
-  color: #001133;
+  color: var(--color-info-foreground);
 }
 
 .info-text {
@@ -1045,14 +1059,14 @@ async function saveEditing(providerId: string) {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #001133;
+  color: var(--color-info-foreground);
 }
 
 .info-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #001133;
+  color: var(--color-info-foreground);
 }
 
 /* ===== Button spinner ===== */
@@ -1151,6 +1165,6 @@ async function saveEditing(providerId: string) {
 }
 
 .field-required {
-  color: #e53e3e;
+  color: var(--destructive);
 }
 </style>

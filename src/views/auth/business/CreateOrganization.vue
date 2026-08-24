@@ -17,8 +17,37 @@ import { useRouter } from 'vue-router';
 import { apiClient } from '@/api/client';
 import { refreshAccessToken } from '@/services/auth/tokenService';
 
+const PHONE_REGEX = /^\+998\d{9}$/;
+const INN_REGEX = /^\d{9}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PINFL_REGEX = /^\d{14}$/;
+const PASSPORT_REGEX = /^[A-Z]{2}\d{7}$/;
+const OKED_REGEX = /^\d{4,5}$/;
+const BANK_ACCOUNT_REGEX = /^\d{20}$/;
+const MFO_REGEX = /^\d{5}$/;
+
 const router = useRouter();
 const currentStep = ref(1);
+
+function stepTitleFor(step: number): string {
+  if (step === 1) {
+    return 'General Info';
+  }
+  if (step === 2) {
+    return 'Legal Entity Details';
+  }
+  return 'Bank Accounts';
+}
+
+function stepSubtitleFor(step: number): string {
+  if (step === 1) {
+    return 'Select your service center format and enter contact details.';
+  }
+  if (step === 2) {
+    return 'Provide registered documentations associated with your format.';
+  }
+  return 'Add banking details where payouts will settle (optional).';
+}
 const isLoading = ref(false);
 const errorMessage = ref('');
 const userId = ref('');
@@ -113,7 +142,9 @@ const initMap = async () => {
   if (mapInstance) {
     try {
       mapInstance.remove();
-    } catch (_) {}
+    } catch {
+      // The previous map instance may already be detached from the DOM.
+    }
     mapInstance = null;
   }
 
@@ -168,7 +199,7 @@ onMounted(async () => {
     if (userRes.phone) {
       form.phone = userRes.phone;
     }
-  } catch (_) {
+  } catch {
     router.push({ name: 'auth-login', query: { type: 'business' } });
   }
 
@@ -179,7 +210,9 @@ onMounted(async () => {
 });
 
 function validateStep1(): boolean {
-  Object.keys(errors).forEach((key) => delete errors[key]);
+  for (const key of Object.keys(errors)) {
+    delete errors[key];
+  }
 
   if (!form.name.trim()) {
     errors.name = 'Organization name is required.';
@@ -192,102 +225,113 @@ function validateStep1(): boolean {
   }
 
   const cleanPhone = form.phone.replace(/[^0-9+]/g, '');
-  const phoneRegex = /^\+998\d{9}$/;
   if (!cleanPhone) {
     errors.phone = 'Phone number is required.';
-  } else if (!phoneRegex.test(cleanPhone)) {
+  } else if (!PHONE_REGEX.test(cleanPhone)) {
     errors.phone = 'Phone must be in format +998XXXXXXXXX.';
   }
 
-  const innRegex = /^\d{9}$/;
   if (!form.inn.trim()) {
     errors.inn = 'INN is required.';
-  } else if (!innRegex.test(form.inn.trim())) {
+  } else if (!INN_REGEX.test(form.inn.trim())) {
     errors.inn = 'INN must be exactly 9 digits.';
   }
 
-  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+  if (form.email && !EMAIL_REGEX.test(form.email)) {
     errors.email = 'Invalid email format.';
   }
 
   return Object.keys(errors).length === 0;
 }
 
-function validateStep2(): boolean {
-  Object.keys(errors).forEach((key) => delete errors[key]);
+function validateMchjStep2(): void {
+  const details = form.companyDetails;
+  if (!details.directorFullName.trim()) {
+    errors.directorFullName = 'Director full name is required.';
+  }
+  if (!details.directorPinfl.trim()) {
+    errors.directorPinfl = 'Director PINFL is required.';
+  } else if (!PINFL_REGEX.test(details.directorPinfl.trim())) {
+    errors.directorPinfl = 'PINFL must be exactly 14 digits.';
+  }
+  if (!details.registrationNumber.trim()) {
+    errors.registrationNumber = 'Registration number is required.';
+  }
+  if (details.oked && !OKED_REGEX.test(details.oked.trim())) {
+    errors.oked = 'OKED must be 4 or 5 digits.';
+  }
+  if (details.charterCapital !== null && details.charterCapital <= 0) {
+    errors.charterCapital = 'Charter capital must be positive.';
+  }
+}
 
-  const pinflRegex = /^\d{14}$/;
-  const passportRegex = /^[A-Z]{2}\d{7}$/;
+function validateYattStep2(): void {
+  const details = form.yattDetails;
+  if (!details.fullName.trim()) {
+    errors.yattFullName = 'Full name is required.';
+  }
+  if (!details.passportSeries.trim()) {
+    errors.yattPassport = 'Passport series is required.';
+  } else if (!PASSPORT_REGEX.test(details.passportSeries.trim())) {
+    errors.yattPassport = 'Passport must be in format AB1234567.';
+  }
+  if (!details.pinfl.trim()) {
+    errors.yattPinfl = 'PINFL is required.';
+  } else if (!PINFL_REGEX.test(details.pinfl.trim())) {
+    errors.yattPinfl = 'PINFL must be exactly 14 digits.';
+  }
+  if (!details.registrationNumber.trim()) {
+    errors.yattRegistrationNumber = 'Registration number is required.';
+  }
+}
+
+function validateSelfEmployedStep2(): void {
+  const details = form.selfEmployedDetails;
+  if (!details.fullName.trim()) {
+    errors.seFullName = 'Full name is required.';
+  } else if (details.fullName.length < 2 || details.fullName.length > 255) {
+    errors.seFullName = 'Full name must be between 2 and 255 characters.';
+  }
+  if (!details.pinfl.trim()) {
+    errors.sePinfl = 'PINFL is required.';
+  } else if (!PINFL_REGEX.test(details.pinfl.trim())) {
+    errors.sePinfl = 'PINFL must be exactly 14 digits.';
+  }
+  if (!details.passportSeries.trim()) {
+    errors.sePassportSeries = 'Passport series is required.';
+  } else if (!PASSPORT_REGEX.test(details.passportSeries.trim())) {
+    errors.sePassportSeries = 'Passport must be in format AB1234567.';
+  }
+  if (!details.activityType.trim()) {
+    errors.seActivityType = 'Activity type is required.';
+  }
+}
+
+function validateStep2(): boolean {
+  for (const key of Object.keys(errors)) {
+    delete errors[key];
+  }
 
   if (form.type === 'MCHJ') {
-    const details = form.companyDetails;
-    if (!details.directorFullName.trim()) {
-      errors.directorFullName = 'Director full name is required.';
-    }
-    if (!details.directorPinfl.trim()) {
-      errors.directorPinfl = 'Director PINFL is required.';
-    } else if (!pinflRegex.test(details.directorPinfl.trim())) {
-      errors.directorPinfl = 'PINFL must be exactly 14 digits.';
-    }
-    if (!details.registrationNumber.trim()) {
-      errors.registrationNumber = 'Registration number is required.';
-    }
-    if (details.oked && !/^\d{4,5}$/.test(details.oked.trim())) {
-      errors.oked = 'OKED must be 4 or 5 digits.';
-    }
-    if (details.charterCapital !== null && details.charterCapital <= 0) {
-      errors.charterCapital = 'Charter capital must be positive.';
-    }
+    validateMchjStep2();
   } else if (form.type === 'YATT') {
-    const details = form.yattDetails;
-    if (!details.fullName.trim()) {
-      errors.yattFullName = 'Full name is required.';
-    }
-    if (!details.passportSeries.trim()) {
-      errors.yattPassport = 'Passport series is required.';
-    } else if (!passportRegex.test(details.passportSeries.trim())) {
-      errors.yattPassport = 'Passport must be in format AB1234567.';
-    }
-    if (!details.pinfl.trim()) {
-      errors.yattPinfl = 'PINFL is required.';
-    } else if (!pinflRegex.test(details.pinfl.trim())) {
-      errors.yattPinfl = 'PINFL must be exactly 14 digits.';
-    }
-    if (!details.registrationNumber.trim()) {
-      errors.yattRegistrationNumber = 'Registration number is required.';
-    }
+    validateYattStep2();
   } else if (form.type === 'SELF_EMPLOYED') {
-    const details = form.selfEmployedDetails;
-    if (!details.fullName.trim()) {
-      errors.seFullName = 'Full name is required.';
-    } else if (details.fullName.length < 2 || details.fullName.length > 255) {
-      errors.seFullName = 'Full name must be between 2 and 255 characters.';
-    }
-    if (!details.pinfl.trim()) {
-      errors.sePinfl = 'PINFL is required.';
-    } else if (!pinflRegex.test(details.pinfl.trim())) {
-      errors.sePinfl = 'PINFL must be exactly 14 digits.';
-    }
-    if (!details.passportSeries.trim()) {
-      errors.sePassportSeries = 'Passport series is required.';
-    } else if (!passportRegex.test(details.passportSeries.trim())) {
-      errors.sePassportSeries = 'Passport must be in format AB1234567.';
-    }
-    if (!details.activityType.trim()) {
-      errors.seActivityType = 'Activity type is required.';
-    }
+    validateSelfEmployedStep2();
   }
 
   return Object.keys(errors).length === 0;
 }
 
 function validateStep3(): boolean {
-  Object.keys(errors).forEach((key) => delete errors[key]);
+  for (const key of Object.keys(errors)) {
+    delete errors[key];
+  }
 
-  if (form.bankAccount && !/^\d{20}$/.test(form.bankAccount.trim())) {
+  if (form.bankAccount && !BANK_ACCOUNT_REGEX.test(form.bankAccount.trim())) {
     errors.bankAccount = 'Bank account must be exactly 20 digits.';
   }
-  if (form.mfo && !/^\d{5}$/.test(form.mfo.trim())) {
+  if (form.mfo && !MFO_REGEX.test(form.mfo.trim())) {
     errors.mfo = 'MFO must be exactly 5 digits.';
   }
 
@@ -405,18 +449,10 @@ async function submit() {
     <!-- Title Section -->
     <div class="title-section">
       <h1 class="page-title">
-        {{ currentStep === 1
-            ? 'General Info'
-            : currentStep === 2
-              ? 'Legal Entity Details'
-              : 'Bank Accounts' }}
+        {{ stepTitleFor(currentStep) }}
       </h1>
       <p class="page-subtitle">
-        {{ currentStep === 1
-            ? 'Select your service center format and enter contact details.'
-            : currentStep === 2
-              ? 'Provide registered documentations associated with your format.'
-              : 'Add banking details where payouts will settle (optional).' }}
+        {{ stepSubtitleFor(currentStep) }}
       </p>
     </div>
 

@@ -84,7 +84,7 @@ export interface OrganizationFileUploadItem {
  *
  * `organizationId` is not sent — the backend derives it from the JWT.
  */
-export async function uploadOrganizationFiles(
+export function uploadOrganizationFiles(
   items: OrganizationFileUploadItem[],
 ): Promise<OrganizationFileResponse[]> {
   const formData = new FormData();

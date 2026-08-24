@@ -1,12 +1,12 @@
 import { apiClient } from '@/api/client';
 import { isMockMode } from '@/config';
 import { transactionDetail } from '@/data/transactionDetail';
-import { getOrders } from './ordersService';
 import type {
   PaymentTransaction,
   PaymentTransactionPageResponse,
   PaymentTransactionRequest,
 } from '@/types/payment';
+import { getOrders } from './ordersService';
 
 /**
  * Build a mock PaymentTransaction from an order so mock mode keeps the page
@@ -65,9 +65,7 @@ export async function getTransactionsByOrder(
 ): Promise<PaymentTransaction[]> {
   if (isMockMode()) {
     const list = await getOrders();
-    return list
-      .filter((o) => o.backendId === orderId)
-      .map(toMockTransaction);
+    return list.filter((o) => o.backendId === orderId).map(toMockTransaction);
   }
   try {
     return (await apiClient.get(
@@ -79,9 +77,7 @@ export async function getTransactionsByOrder(
 }
 
 /** GET /api/payment-transaction/get-by-master — current logged-in master. */
-export async function getTransactionsByMaster(): Promise<
-  PaymentTransaction[]
-> {
+export async function getTransactionsByMaster(): Promise<PaymentTransaction[]> {
   if (isMockMode()) {
     const list = await getOrders();
     return list.map(toMockTransaction);

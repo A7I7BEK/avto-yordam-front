@@ -95,8 +95,8 @@ const navItems = [
   flex-direction: column;
   width: 256px;
   height: 100%;
-  background: #ffffff;
-  border-right: 1px solid #d9d9db;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
 }
 
 .sidebar-header {
@@ -105,7 +105,7 @@ const navItems = [
   align-items: center;
   height: 80px;
   padding: 0 28px;
-  border-bottom: 1px solid #d9d9db;
+  border-bottom: 1px solid var(--border);
 }
 
 .logo-mark {
@@ -118,8 +118,8 @@ const navItems = [
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border-radius: 8px;
 }
 
@@ -127,7 +127,7 @@ const navItems = [
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
   letter-spacing: 1.5px;
 }
 

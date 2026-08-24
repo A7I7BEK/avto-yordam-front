@@ -58,8 +58,8 @@ const errorStore = useErrorStore();
   line-height: 1.4;
   color: var(--foreground);
   background: var(--card);
-  border: 1px solid #f3c6bd;
-  border-left: 3px solid #cc3314;
+  border: 1px solid rgba(204, 51, 20, 0.35);
+  border-left: 3px solid var(--destructive);
   border-radius: 10px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }

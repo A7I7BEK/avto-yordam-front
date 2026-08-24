@@ -59,7 +59,7 @@ const isInvitationActive = computed(() =>
       <div class="sidebar__logo">
         <Building2
           :size="18"
-          color="white"
+          color="var(--background)"
         />
       </div>
       <span class="sidebar__brand">Business</span>
@@ -189,8 +189,8 @@ const isInvitationActive = computed(() =>
   display: flex;
   flex-direction: column;
   width: 256px;
-  background: #ffffff;
-  border-right: 1px solid #d9d9db;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
 }
 
 .sidebar__header {
@@ -199,7 +199,7 @@ const isInvitationActive = computed(() =>
   align-items: center;
   height: 80px;
   padding: 0 28px;
-  border-bottom: 1px solid #d9d9db;
+  border-bottom: 1px solid var(--border);
 }
 
 .sidebar__logo {
@@ -208,7 +208,7 @@ const isInvitationActive = computed(() =>
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: #2a2933;
+  background: var(--foreground);
   border-radius: 8px;
 }
 
@@ -216,7 +216,7 @@ const isInvitationActive = computed(() =>
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .sidebar__nav {
@@ -243,7 +243,7 @@ const isInvitationActive = computed(() =>
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #939399;
+  color: var(--muted-icon);
   cursor: pointer;
   background: none;
   border: none;
@@ -277,8 +277,8 @@ const isInvitationActive = computed(() =>
   gap: 4px;
   padding: 8px;
   margin: 4px 0 12px;
-  background: color-mix(in srgb, var(--primary) 6%, white);
-  border-bottom: 1px solid color-mix(in srgb, var(--primary) 40%, white);
+  background: var(--primary-tint);
+  border-bottom: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
   border-radius: var(--radius-sm);
 }
 
@@ -291,7 +291,7 @@ const isInvitationActive = computed(() =>
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #939399;
+  color: var(--muted-icon);
   text-decoration: none;
   cursor: pointer;
   border-radius: 6px;
@@ -300,11 +300,11 @@ const isInvitationActive = computed(() =>
 
 .sidebar__sub-item:hover {
   color: var(--foreground);
-  background: color-mix(in srgb, var(--accent) 95%, black);
+  background: var(--hover);
 }
 
 .sidebar__sub-item.active {
-  color: #fff;
+  color: var(--primary-foreground);
   background: var(--primary);
 }
 

@@ -306,7 +306,7 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
                 class="booking-chip"
                 :style="{
                   borderLeftColor: masterColors[bk.master as keyof typeof masterColors]?.bar ?? '#5749F4',
-                  background: masterColors[bk.master as keyof typeof masterColors]?.bg ?? '#EEF0FF',
+                  background: masterColors[bk.master as keyof typeof masterColors]?.bg ?? 'var(--primary-tint)',
                 }"
                 @click.stop="clickBooking(bk.orderId)"
               >
@@ -399,9 +399,9 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
 }
 
 .view-toggle__btn.active {
-  color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 /* Date navigation */
@@ -541,7 +541,7 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
   font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 600;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -570,7 +570,7 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
 }
 
 .calendar__cell--outside {
-  background: #fafafa;
+  background: var(--accent);
 }
 
 .calendar__day-num {
@@ -592,7 +592,7 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--primary);
   border-radius: 50%;
 }

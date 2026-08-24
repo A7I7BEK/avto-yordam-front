@@ -97,22 +97,22 @@ onMounted(async () => {
 
 function statusColor(status: string): string {
   if (status === 'active') {
-    return '#25603A';
+    return 'var(--success)';
   }
   if (status === 'pending') {
-    return '#B45309';
+    return 'var(--warning)';
   }
-  return '#616167';
+  return 'var(--muted-foreground)';
 }
 
 function statusBg(status: string): string {
   if (status === 'active') {
-    return '#E8FAF0';
+    return 'var(--success-bg)';
   }
   if (status === 'pending') {
-    return '#FFF6E9';
+    return 'var(--warning-bg)';
   }
-  return '#F5F5F5';
+  return 'var(--muted)';
 }
 
 function formatAmount(amount: number, currency: string): string {
@@ -158,7 +158,7 @@ function formatAmount(amount: number, currency: string): string {
         <div
           v-if="item.trend"
           class="trend-badge"
-          :style="{ color: item.trendColor, background: item.trendUp ? '#E8FAF0' : '#FDEBEC' }"
+          :style="{ color: item.trendColor, background: item.trendUp ? 'var(--success-bg)' : 'var(--destructive-soft)' }"
         >
           <ArrowUp
             v-if="item.trendUp"
@@ -293,9 +293,10 @@ function formatAmount(amount: number, currency: string): string {
           >
             <div
               class="employee-avatar"
-              :style="{ background: ['#EEF0FF', '#E8FAF0', '#FFF0E9'][eIdx] }"
+              :style="{ background: ['var(--primary-tint)', 'var(--success-bg)', 'var(--warning-bg)'][eIdx] }"
             >
-              <span :style="{ color: ['#5749F4', '#25603A', '#A05A00'][eIdx] }"
+              <span
+                :style="{ color: ['var(--primary)', 'var(--success)', '#A05A00'][eIdx] }"
                 >{{ emp.initials }}</span
               >
             </div>
@@ -309,8 +310,8 @@ function formatAmount(amount: number, currency: string): string {
             <div class="rating-badge">
               <Star
                 :size="12"
-                color="#B45309"
-                fill="#B45309"
+                color="var(--warning)"
+                fill="var(--warning)"
               />
               <span>{{ emp.rating }}</span>
             </div>
@@ -336,7 +337,7 @@ function formatAmount(amount: number, currency: string): string {
             <div class="progress-track">
               <div
                 class="progress-fill"
-                :style="{ width: `${(svc.count / svc.maxCount) * 100}%`, background: ['#5749F4', '#25603A', '#B45309', '#7C3AED'][sIdx] }"
+                :style="{ width: `${(svc.count / svc.maxCount) * 100}%`, background: ['var(--primary)', '#25603A', '#B45309', '#7C3AED'][sIdx] }"
               />
             </div>
           </div>
@@ -354,7 +355,7 @@ function formatAmount(amount: number, currency: string): string {
   height: 200px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .overview-dashboard {
@@ -377,8 +378,8 @@ function formatAmount(amount: number, currency: string): string {
   flex-direction: column;
   gap: 14px;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -391,7 +392,7 @@ function formatAmount(amount: number, currency: string): string {
 .kpi-label {
   font-size: 13px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .kpi-icon-circle {
@@ -406,7 +407,7 @@ function formatAmount(amount: number, currency: string): string {
 .kpi-value {
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .trend-badge {
@@ -439,8 +440,8 @@ function formatAmount(amount: number, currency: string): string {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -470,13 +471,13 @@ function formatAmount(amount: number, currency: string): string {
 .card-title {
   font-size: 15px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .view-link {
   font-size: 13px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   text-decoration: none;
 }
 
@@ -494,18 +495,18 @@ function formatAmount(amount: number, currency: string): string {
   padding: 8px 8px 8px 0;
   font-size: 11px;
   font-weight: 600;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .orders-table td {
   padding: 10px 8px 10px 0;
   font-size: 13px;
-  color: #2a2933;
-  border-bottom: 1px solid #f5f5f5;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
 }
 
 .orders-table tr:last-child td {
@@ -514,7 +515,7 @@ function formatAmount(amount: number, currency: string): string {
 
 .order-id {
   font-weight: 600;
-  color: #5749f4;
+  color: var(--primary);
 }
 
 .customer-cell {
@@ -531,8 +532,8 @@ function formatAmount(amount: number, currency: string): string {
   height: 26px;
   font-size: 10px;
   font-weight: 600;
-  color: #5749f4;
-  background: #eef0ff;
+  color: var(--primary);
+  background: var(--primary-tint);
   border-radius: 999px;
 }
 
@@ -540,12 +541,12 @@ function formatAmount(amount: number, currency: string): string {
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #616167;
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 
 .employee-cell {
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .amount-cell {
@@ -579,7 +580,7 @@ function formatAmount(amount: number, currency: string): string {
 .earnings-amount {
   font-size: 22px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .trend-up-badge {
@@ -587,7 +588,7 @@ function formatAmount(amount: number, currency: string): string {
   gap: 4px;
   align-items: center;
   font-size: 12px;
-  color: #25603a;
+  color: var(--success);
 }
 
 /* Bar Chart */
@@ -613,21 +614,21 @@ function formatAmount(amount: number, currency: string): string {
   width: 100%;
   height: 100px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: var(--muted);
   border-radius: 6px;
 }
 
 .bar-fill {
   width: 100%;
   min-height: 4px;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 6px 6px 0 0;
   transition: height 0.3s;
 }
 
 .bar-label {
   font-size: 10px;
-  color: #616167;
+  color: var(--muted-foreground);
   text-transform: uppercase;
 }
 
@@ -636,7 +637,7 @@ function formatAmount(amount: number, currency: string): string {
   display: flex;
   gap: 24px;
   padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border);
 }
 
 .earnings-stat {
@@ -647,13 +648,13 @@ function formatAmount(amount: number, currency: string): string {
 
 .stat-label {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .stat-value {
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 /* Top Employees */
@@ -669,7 +670,7 @@ function formatAmount(amount: number, currency: string): string {
   gap: 12px;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--border);
 }
 
 .employee-row:last-child {
@@ -697,12 +698,12 @@ function formatAmount(amount: number, currency: string): string {
 .employee-name {
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .employee-stats {
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .rating-badge {
@@ -712,8 +713,8 @@ function formatAmount(amount: number, currency: string): string {
   padding: 4px 10px;
   font-size: 13px;
   font-weight: 600;
-  color: #b45309;
-  background: #fff8e5;
+  color: var(--warning);
+  background: var(--warning-bg);
   border-radius: 999px;
 }
 
@@ -739,20 +740,20 @@ function formatAmount(amount: number, currency: string): string {
 
 .progress-name {
   font-size: 13px;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .progress-count {
   font-size: 13px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .progress-track {
   width: 100%;
   height: 8px;
   overflow: hidden;
-  background: #f0f0f0;
+  background: var(--accent);
   border-radius: 999px;
 }
 

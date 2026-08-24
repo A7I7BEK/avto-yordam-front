@@ -2,8 +2,8 @@ export const notifications = [
   {
     id: 'n1',
     icon: 'calendar',
-    iconBg: '#FFD9B2',
-    iconColor: '#B45309',
+    iconBg: 'var(--color-warning)',
+    iconColor: 'var(--warning)',
     title: 'New booking #BK-1247',
     desc: 'Brake pads exchange — Aziz Karimov',
     time: '2 min ago',
@@ -14,8 +14,8 @@ export const notifications = [
   {
     id: 'n2',
     icon: 'star',
-    iconBg: '#C9D6F0',
-    iconColor: '#5749F4',
+    iconBg: 'var(--color-info)',
+    iconColor: 'var(--primary)',
     title: 'New 5-star review received',
     desc: 'Aziz Karimov rated your brake pad service',
     time: '10 min ago',
@@ -26,8 +26,8 @@ export const notifications = [
   {
     id: 'n3',
     icon: 'arrow-down-left',
-    iconBg: '#E8FAF0',
-    iconColor: '#25603A',
+    iconBg: 'var(--success-bg)',
+    iconColor: 'var(--success)',
     title: 'Payment received PM-8472913',
     desc: '850 000 UZS via PayMe — Order #BK-1247',
     time: '1 hour ago',
@@ -38,8 +38,8 @@ export const notifications = [
   {
     id: 'n4',
     icon: 'calendar',
-    iconBg: '#F5F5F5',
-    iconColor: '#616167',
+    iconBg: 'var(--muted)',
+    iconColor: 'var(--muted-foreground)',
     title: 'Booking completed #BK-1244',
     desc: 'Oil change — Nodir Ergashev',
     time: 'Yesterday',

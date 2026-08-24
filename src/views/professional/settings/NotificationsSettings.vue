@@ -237,20 +237,20 @@ async function saveChanges() {
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .matrix-card {
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
@@ -258,8 +258,8 @@ async function saveChanges() {
   display: flex;
   align-items: center;
   padding: 14px 18px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #c5c5cb;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .channel-headers {
@@ -273,7 +273,7 @@ async function saveChanges() {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: center;
 }
 
@@ -288,7 +288,7 @@ async function saveChanges() {
   display: flex;
   align-items: center;
   padding: 14px 18px;
-  border-bottom: 1px solid #c5c5cb;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .matrix-row:last-child {
@@ -299,13 +299,13 @@ async function saveChanges() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .evt-desc {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .channel-cells {
@@ -323,14 +323,14 @@ async function saveChanges() {
   padding: 0;
   margin: 0 auto;
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 4px;
 }
 
 .cell-checkbox.checked {
-  background: #5749f4;
-  border-color: #5749f4;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 /* ===== Header + save button ===== */
@@ -356,9 +356,9 @@ async function saveChanges() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 999px;
   transition: opacity 0.15s;

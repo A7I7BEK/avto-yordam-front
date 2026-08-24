@@ -16,13 +16,13 @@ import {
 } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { getOrders } from '@/services/ordersService';
 import {
   createPaymentTransaction,
   deletePaymentTransaction,
   getPaymentTransactionPage,
   updatePaymentTransaction,
 } from '@/services/transactionsService';
-import { getOrders } from '@/services/ordersService';
 import type {
   PaymentMethod,
   PaymentStatus,
@@ -306,9 +306,7 @@ onMounted(() => {
     <div class="page-header">
       <div class="header-text">
         <h1 class="page-title">Transactions</h1>
-        <p class="page-subtitle">
-          Payments tied to your orders.
-        </p>
+        <p class="page-subtitle">Payments tied to your orders.</p>
       </div>
       <button
         type="button"
@@ -592,9 +590,7 @@ onMounted(() => {
                   v-model="form.status"
                   class="field-input"
                 >
-                  <option value="">
-                    Default (PENDING)
-                  </option>
+                  <option value="">Default (PENDING)</option>
                   <option value="PENDING">PENDING</option>
                   <option value="PAID">PAID</option>
                   <option value="FAILED">FAILED</option>
@@ -614,7 +610,9 @@ onMounted(() => {
             </div>
 
             <div class="field-group">
-              <label class="field-label">External transaction ID (optional)</label>
+              <label class="field-label"
+                >External transaction ID (optional)</label
+              >
               <input
                 v-model="form.externalTransactionId"
                 type="text"
@@ -730,10 +728,10 @@ onMounted(() => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   color: var(--foreground);
+  outline: none;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  outline: none;
 }
 
 .search-bar__input:focus {
@@ -1054,9 +1052,9 @@ onMounted(() => {
 /* ===== Form fields ===== */
 .field-group {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
 }
 
 .field-row {
@@ -1077,10 +1075,10 @@ onMounted(() => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   color: var(--foreground);
+  outline: none;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-m);
-  outline: none;
 }
 
 .field-input:focus {

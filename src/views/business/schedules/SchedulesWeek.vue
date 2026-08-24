@@ -309,7 +309,7 @@ function bookingHeight(start: string, end: string): string {
               top: bookingTop(bk.time),
               height: bookingHeight(bk.time, bk.endTime),
               borderLeftColor: masterColors[bk.master as keyof typeof masterColors]?.bar ?? '#5749F4',
-              background: masterColors[bk.master as keyof typeof masterColors]?.bg ?? '#EEF0FF',
+              background: masterColors[bk.master as keyof typeof masterColors]?.bg ?? 'var(--primary-tint)',
             }"
             @click="clickBooking(bk.orderId)"
           >
@@ -389,9 +389,9 @@ function bookingHeight(start: string, end: string): string {
 }
 
 .view-toggle__btn.active {
-  color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .date-nav {
@@ -566,7 +566,7 @@ function bookingHeight(start: string, end: string): string {
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: #ffffff;
+  color: var(--primary-foreground);
   background: var(--primary);
   border-radius: 50%;
 }

@@ -27,10 +27,7 @@ import {
   DAY_KEY_TO_DAY_OF_WEEK,
   DAY_OF_WEEK_TO_DAY_KEY,
 } from '@/types/settings';
-import type {
-  OrganizationRequest,
-  OrganizationResponse,
-} from '@/types/user';
+import type { OrganizationRequest, OrganizationResponse } from '@/types/user';
 
 /**
  * Fetch the authenticated user's current organization. The backend derives
@@ -135,14 +132,12 @@ export async function getSettingsLegal() {
       street: org.address || '',
       documents: legalInfo.documents,
     };
-  } catch (_) {
+  } catch {
     return null;
   }
 }
 
-export async function getOrganizationDetails(): Promise<
-  OrganizationDetailsResponse | null
-> {
+export async function getOrganizationDetails(): Promise<OrganizationDetailsResponse | null> {
   if (isMockMode()) {
     return null;
   }
@@ -153,7 +148,7 @@ export async function getOrganizationDetails(): Promise<
   }
 }
 
-export async function getOrganization(): Promise<OrganizationResponse | null> {
+export function getOrganization(): Promise<OrganizationResponse | null> {
   return getMyOrg();
 }
 
@@ -196,9 +191,10 @@ function toRequest(
   };
 }
 
-export async function getSettingsHours(): Promise<
-  Record<string, DaySchedule> | null
-> {
+export async function getSettingsHours(): Promise<Record<
+  string,
+  DaySchedule
+> | null> {
   if (isMockMode()) {
     return operatingHours;
   }
@@ -237,15 +233,16 @@ export async function saveSettingsHours(
     return;
   }
 
-  const dayKeys = Object.keys(schedule);
-  const requests: OrganizationOperatingHoursRequest[] = dayKeys.map((dayKey) =>
-    toRequest(dayKey, schedule[dayKey], schedule[dayKey].id),
+  const requests: OrganizationOperatingHoursRequest[] = Object.entries(
+    schedule,
+  ).map(([dayKey, daySchedule]) =>
+    toRequest(dayKey, daySchedule, daySchedule.id),
   );
 
   await apiClient.put(`${HOURS_BASE}/week`, requests);
 }
 
-export async function getSettingsPhotos() {
+export function getSettingsPhotos() {
   return photos;
 }
 
@@ -267,7 +264,7 @@ export async function getSettingsBankInfo() {
       accountNumber: org.bankAccount || '',
       currency: 'UZS',
     };
-  } catch (_) {
+  } catch {
     return null;
   }
 }
@@ -439,15 +436,15 @@ export async function updateSettingsPayment(
   return await apiClient.put(`${PAYMENT_BASE}/${id}`, request);
 }
 
-export async function getSettingsNotifications() {
+export function getSettingsNotifications() {
   return notificationPreferences;
 }
 
-export async function getSettingsAppearance() {
+export function getSettingsAppearance() {
   return appearanceSettings;
 }
 
-export async function getSettingsDangerZone() {
+export function getSettingsDangerZone() {
   return dangerZoneData;
 }
 

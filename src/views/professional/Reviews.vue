@@ -109,7 +109,7 @@ onMounted(async () => {
             v-for="i in 5"
             :key="i"
             :size="16"
-            :color="i <= Math.round(summary.averageRating) ? '#FBBF24' : '#C5C5CB'"
+            :color="i <= Math.round(summary.averageRating) ? '#FBBF24' : 'var(--border-soft)'"
             :fill="i <= Math.round(summary.averageRating) ? '#FBBF24' : 'none'"
           />
         </div>
@@ -147,14 +147,14 @@ onMounted(async () => {
         <span>Rating: All</span>
         <ChevronDown
           :size="13"
-          color="#2A2933"
+          color="var(--foreground)"
         />
       </div>
       <div class="filter-pill">
         <span>Last 30 days</span>
         <ChevronDown
           :size="13"
-          color="#2A2933"
+          color="var(--foreground)"
         />
       </div>
       <div class="filter-pill toggle-pill">
@@ -236,7 +236,7 @@ onMounted(async () => {
           >
             <ThumbsUp
               :size="14"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
             <span>Helpful</span>
           </button>
@@ -246,7 +246,7 @@ onMounted(async () => {
           >
             <CornerDownRight
               :size="14"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
             <span>Reply</span>
           </button>
@@ -256,7 +256,7 @@ onMounted(async () => {
           >
             <Flag
               :size="14"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
             <span>Report</span>
           </button>
@@ -287,14 +287,14 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
   margin: 0;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 /* Loading / Empty */
@@ -305,13 +305,13 @@ onMounted(async () => {
   justify-content: center;
   padding: 60px 0;
   font-size: 14px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .empty-state {
   padding: 60px 16px;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: center;
 }
 
@@ -339,8 +339,8 @@ onMounted(async () => {
   justify-content: center;
   width: 280px;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
@@ -348,7 +348,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 48px;
   font-weight: 800;
-  color: #2a2933;
+  color: var(--foreground);
   letter-spacing: -1px;
 }
 
@@ -361,7 +361,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .dist-card {
@@ -370,8 +370,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 8px;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
@@ -379,7 +379,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 10px;
   font-weight: 700;
-  color: #616167;
+  color: var(--muted-foreground);
   letter-spacing: 0.5px;
 }
 
@@ -394,20 +394,20 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .dist-bar-track {
   flex: 1;
   height: 8px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: var(--muted);
   border-radius: 999px;
 }
 
 .dist-bar-fill {
   height: 100%;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -416,7 +416,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   text-align: right;
 }
 
@@ -434,9 +434,9 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  color: var(--foreground);
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -458,18 +458,18 @@ onMounted(async () => {
 
 .toggle-switch.on {
   justify-content: end;
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .toggle-switch:not(.on) {
   justify-content: start;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 .toggle-knob {
   width: 12px;
   height: 12px;
-  background: #ffffff;
+  background: var(--card);
   border-radius: 999px;
 }
 
@@ -485,8 +485,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 12px;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
@@ -510,8 +510,8 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 700;
-  color: #2a2933;
-  background: #d9d9db;
+  color: var(--foreground);
+  background: var(--border);
   border-radius: 999px;
 }
 
@@ -525,7 +525,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .meta-row {
@@ -542,13 +542,13 @@ onMounted(async () => {
 .meta-sep {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .meta-text {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .review-text {
@@ -556,7 +556,7 @@ onMounted(async () => {
   font-family: Inter, sans-serif;
   font-size: 13px;
   line-height: 1.5;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .photos-row {
@@ -584,13 +584,13 @@ onMounted(async () => {
   padding: 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: none;
   border: none;
 }
 
 .action-btn:hover {
-  color: #5749f4;
+  color: var(--primary);
 }
 </style>

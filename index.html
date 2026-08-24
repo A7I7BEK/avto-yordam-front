@@ -16,6 +16,28 @@
       content="Avto Yordam — auto service platform"
     >
     <title>Avto Yordam</title>
+    <script>
+    'use strict';
+    // Apply the persisted theme before the first paint to avoid flashing.
+    (() => {
+      try {
+        let theme = 'light';
+        const stored = localStorage.getItem('app-theme');
+        const systemDark = window.matchMedia(
+          '(prefers-color-scheme: dark)',
+        ).matches;
+        if (stored === 'dark') {
+          theme = 'dark';
+        } else if (stored === 'system') {
+          theme = systemDark ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.colorScheme = theme;
+      } catch {
+        // Theme is reapplied by the store once the app boots.
+      }
+    })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

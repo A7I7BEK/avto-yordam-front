@@ -207,7 +207,7 @@ onUnmounted(() => {
     >
       <Bell
         :size="16"
-        color="#2A2933"
+        color="var(--foreground)"
       />
       <span
         v-if="badgeCount > 0"
@@ -318,7 +318,7 @@ onUnmounted(() => {
   height: 36px;
   padding: 0;
   cursor: pointer;
-  background: #f5f5f5;
+  background: var(--muted);
   border: none;
   border-radius: 999px;
 }
@@ -336,8 +336,8 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 9px;
   font-weight: 700;
-  color: #ffffff;
-  background: #cc3314;
+  color: var(--on-accent);
+  background: var(--destructive);
   border-radius: 999px;
 }
 
@@ -349,8 +349,8 @@ onUnmounted(() => {
   width: 320px;
   max-height: 420px;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #e5e5ea;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
@@ -361,14 +361,14 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  border-bottom: 1px solid #f0f0f3;
+  border-bottom: 1px solid var(--border);
 }
 
 .bell-dropdown__title {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .bell-dropdown__mark-all,
@@ -379,7 +379,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -405,15 +405,15 @@ onUnmounted(() => {
   cursor: pointer;
   background: transparent;
   border: none;
-  border-bottom: 1px solid #f0f0f3;
+  border-bottom: 1px solid var(--border);
 }
 
 .bell-notif:hover {
-  background: #fafafa;
+  background: var(--accent);
 }
 
 .bell-notif--unread {
-  background: #f7f6ff;
+  background: var(--primary-tint);
 }
 
 .bell-notif__icon {
@@ -438,21 +438,21 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .bell-notif__desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
   line-height: 1.4;
-  color: #616167;
+  color: var(--muted-foreground);
   word-break: break-word;
 }
 
 .bell-notif__time {
   font-family: Inter, sans-serif;
   font-size: 11px;
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .bell-notif__delete {
@@ -461,27 +461,27 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 4px;
-  color: #939399;
+  color: var(--muted-icon);
   cursor: pointer;
   border-radius: 6px;
 }
 
 .bell-notif__delete:hover {
-  color: #cc3314;
-  background: #fde8e8;
+  color: var(--destructive);
+  background: var(--destructive-soft);
 }
 
 .bell-dropdown__state {
   padding: 30px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #939399;
+  color: var(--muted-icon);
   text-align: center;
 }
 
 .bell-dropdown__footer {
   padding: 10px 14px;
   text-align: center;
-  border-top: 1px solid #f0f0f3;
+  border-top: 1px solid var(--border);
 }
 </style>

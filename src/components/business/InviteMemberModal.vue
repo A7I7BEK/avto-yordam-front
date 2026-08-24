@@ -369,7 +369,7 @@ function handleSend() {
 .invite-error {
   font-size: 12px;
   font-weight: 400;
-  color: #cc3314;
+  color: var(--destructive);
 }
 
 /* ── Segmented control ── */
