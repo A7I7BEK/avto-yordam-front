@@ -11,9 +11,9 @@ import {
   Sparkles,
   UserRound,
   Wallet,
-  Wrench,
 } from '@lucide/vue';
 import { useRouter } from 'vue-router';
+import logoUrl from '@/assets/logo/avto-yordam-logo.png';
 
 const router = useRouter();
 
@@ -38,12 +38,13 @@ function goToBusiness() {
         <!-- Brand Section -->
         <div class="brand-section">
           <div class="logo-box">
-            <Wrench
-              :size="20"
-              color="var(--primary)"
-            />
+            <img
+              class="logo-box-img"
+              :src="logoUrl"
+              alt="Avto Yordam logo"
+            >
           </div>
-          <span class="brand-name">Professional</span>
+          <span class="brand-name">Avto Yordam</span>
         </div>
 
         <!-- Middle Section -->
@@ -330,12 +331,20 @@ function goToBusiness() {
 
 .logo-box {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  padding: 3px;
   background: #ffffff;
   border-radius: 10px;
+}
+
+.logo-box-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand-name {

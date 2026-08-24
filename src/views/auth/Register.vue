@@ -2,14 +2,7 @@
   setup
   lang="ts"
 >
-import {
-  Building2,
-  Check,
-  ChevronDown,
-  Eye,
-  EyeOff,
-  UserRound,
-} from '@lucide/vue';
+import { Check, ChevronDown, Eye, EyeOff } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -56,13 +49,6 @@ const contactTabs = [
 ];
 
 const isBusiness = computed(() => accountType.value === 'business');
-const brandIcon = computed(() => (isBusiness.value ? Building2 : UserRound));
-const brandIconBg = computed(() =>
-  isBusiness.value ? '#2A2933' : 'var(--primary)',
-);
-const brandLabel = computed(() =>
-  isBusiness.value ? 'Business' : 'Professional',
-);
 
 const canSubmit = computed(() => {
   const nameOk = fullName.value.trim().length > 0;
@@ -139,11 +125,7 @@ async function signUp() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="brandIcon"
-      :icon-bg="brandIconBg"
-      :label="brandLabel"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="480px"

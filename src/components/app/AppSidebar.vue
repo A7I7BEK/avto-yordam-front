@@ -5,6 +5,7 @@
 import { Layers, LayoutDashboard, Mail, Settings, Star } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import logoUrl from '@/assets/logo/avto-yordam-logo.png';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 import SidebarNavItem from './SidebarNavItem.vue';
 
@@ -70,8 +71,15 @@ const navItems = [
   <aside class="sidebar">
     <!-- Logo -->
     <div class="sidebar-header">
-      <div class="logo-mark">P</div>
-      <div class="brand-text">Professional</div>
+      <img
+        class="brand-logo"
+        :src="logoUrl"
+        alt="Avto Yordam logo"
+      >
+      <div class="brand-text">
+        <span class="brand-name">Avto Yordam</span>
+        <span class="brand-caption">Professional</span>
+      </div>
     </div>
 
     <!-- Navigation -->
@@ -108,27 +116,36 @@ const navItems = [
   border-bottom: 1px solid var(--border);
 }
 
-.logo-mark {
-  display: flex;
+.brand-logo {
   flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  font-family: Inter, sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--primary-foreground);
-  background: var(--primary);
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 9px;
 }
 
 .brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brand-name {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 700;
+  line-height: 1.2;
   color: var(--foreground);
-  letter-spacing: 1.5px;
+}
+
+.brand-caption {
+  font-family: Inter, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
 }
 
 .nav-container {

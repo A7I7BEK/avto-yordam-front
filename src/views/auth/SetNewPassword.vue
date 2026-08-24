@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Check, Circle, Lock, UserRound } from '@lucide/vue';
+import { ArrowLeft, Check, Circle, Lock } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -12,10 +12,6 @@ import { professionalAuth } from '@/services/auth/professionalAuthService';
 
 const router = useRouter();
 const route = useRoute();
-
-const brandIcon = UserRound;
-const brandIconBg = 'var(--primary)';
-const brandLabel = 'Professional';
 
 const resetToken = (route.query.resetToken as string) || 'mock-reset-token';
 const newPassword = ref('');
@@ -72,11 +68,7 @@ function goBackToSignIn() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="brandIcon"
-      :icon-bg="brandIconBg"
-      :label="brandLabel"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"

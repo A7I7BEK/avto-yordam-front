@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowRight, BadgeCheck, UserRound } from '@lucide/vue';
+import { ArrowRight, BadgeCheck } from '@lucide/vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -125,11 +125,7 @@ function goNext() {
 
 <template>
   <div class="onboarding-page">
-    <AuthBrand
-      :icon="UserRound"
-      icon-bg="var(--primary)"
-      label="Professional"
-    />
+    <AuthBrand caption="Professional" />
 
     <OnboardingStepper :current-step="1" />
 

@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, MessageCircleMore, Timer, UserRound } from '@lucide/vue';
+import { ArrowLeft, MessageCircleMore, Timer } from '@lucide/vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -121,11 +121,7 @@ onUnmounted(() => {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="UserRound"
-      icon-bg="var(--primary)"
-      label="Professional"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="500px"

@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, KeyRound, Mail, UserRound } from '@lucide/vue';
+import { ArrowLeft, KeyRound, Mail } from '@lucide/vue';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -45,11 +45,7 @@ function goBackToSignIn() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="UserRound"
-      icon-bg="var(--primary)"
-      label="Professional"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"

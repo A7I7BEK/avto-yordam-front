@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Check, UserRound } from '@lucide/vue';
+import { Check } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -70,11 +70,7 @@ async function signUp() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="UserRound"
-      icon-bg="var(--primary)"
-      label="Professional"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"

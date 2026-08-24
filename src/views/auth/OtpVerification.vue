@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Mail, MessageCircleMore, Phone, Timer } from '@lucide/vue';
+import { ArrowLeft, Mail, Phone, Timer } from '@lucide/vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { apiClient } from '@/api/client';
@@ -180,11 +180,7 @@ onUnmounted(() => {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="isEmail ? Mail : MessageCircleMore"
-      :icon-bg="isBusiness ? '#2A2933' : 'var(--primary)'"
-      :label="isBusiness ? 'Business' : 'Professional'"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="500px"

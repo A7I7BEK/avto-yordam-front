@@ -4,7 +4,6 @@
 >
 import {
   ArrowRightLeft,
-  Building2,
   Calendar,
   ChevronDown,
   DollarSign,
@@ -21,6 +20,7 @@ import {
 } from '@lucide/vue';
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import logoUrl from '@/assets/logo/avto-yordam-logo.png';
 import SidebarNavItem from '@/components/app/SidebarNavItem.vue';
 import { countNewOrders, getOrders } from '@/services/ordersService';
 import { useBusinessAppStore } from '@/stores/businessApp';
@@ -56,13 +56,15 @@ const isInvitationActive = computed(() =>
 <template>
   <aside class="sidebar">
     <div class="sidebar__header">
-      <div class="sidebar__logo">
-        <Building2
-          :size="18"
-          color="var(--background)"
-        />
+      <img
+        class="sidebar__logo"
+        :src="logoUrl"
+        alt="Avto Yordam logo"
+      >
+      <div class="sidebar__brand">
+        <span class="sidebar__brand-name">Avto Yordam</span>
+        <span class="sidebar__brand-caption">Business</span>
       </div>
-      <span class="sidebar__brand">Business</span>
     </div>
 
     <nav class="sidebar__nav">
@@ -203,20 +205,35 @@ const isInvitationActive = computed(() =>
 }
 
 .sidebar__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: var(--foreground);
-  border-radius: 8px;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 9px;
 }
 
 .sidebar__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sidebar__brand-name {
   font-family: Inter, sans-serif;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
   color: var(--foreground);
+}
+
+.sidebar__brand-caption {
+  font-family: Inter, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
 }
 
 .sidebar__nav {

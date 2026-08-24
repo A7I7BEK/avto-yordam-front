@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Eye, EyeOff, UserRound } from '@lucide/vue';
+import { Eye, EyeOff } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -75,11 +75,7 @@ function goToForgotPassword() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="UserRound"
-      icon-bg="var(--primary)"
-      label="Professional"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"

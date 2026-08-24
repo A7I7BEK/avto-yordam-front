@@ -2,9 +2,10 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, ArrowRight, Building2, ShieldAlert } from '@lucide/vue';
+import { ArrowLeft, ArrowRight, ShieldAlert } from '@lucide/vue';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import logoUrl from '@/assets/logo/avto-yordam-logo.png';
 import ProgressBar from '@/components/onboarding/ProgressBar.vue';
 import { useBusinessOnboardingStore } from '@/stores/onboarding';
 
@@ -41,13 +42,15 @@ function goNext() {
     <!-- Header -->
     <div class="header-row">
       <div class="brand-header">
-        <div class="brand-icon-box">
-          <Building2
-            :size="20"
-            color="var(--background)"
-          />
+        <img
+          class="brand-logo"
+          :src="logoUrl"
+          alt="Avto Yordam logo"
+        >
+        <div class="brand-text">
+          <span class="brand-name">Avto Yordam</span>
+          <span class="brand-caption">Business</span>
         </div>
-        <span class="brand-text">Business</span>
       </div>
       <span class="step-label">Organization · Step 2 of 2</span>
     </div>
@@ -189,21 +192,36 @@ function goNext() {
   align-items: center;
 }
 
-.brand-icon-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.brand-logo {
+  flex-shrink: 0;
   width: 36px;
   height: 36px;
-  background: var(--foreground);
-  border-radius: 10px;
+  object-fit: contain;
+  border-radius: 9px;
 }
 
 .brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brand-name {
   font-family: Inter, sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
+  line-height: 1.15;
   color: var(--foreground);
+}
+
+.brand-caption {
+  font-family: Inter, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
 }
 
 .step-label {

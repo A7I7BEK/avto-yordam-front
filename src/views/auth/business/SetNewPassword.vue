@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Building2, Check, Circle, Lock } from '@lucide/vue';
+import { ArrowLeft, Check, Circle, Lock } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -78,11 +78,7 @@ function goBackToSignIn() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="Building2"
-      icon-bg="#2A2933"
-      label="Business"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"

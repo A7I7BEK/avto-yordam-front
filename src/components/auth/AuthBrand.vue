@@ -2,28 +2,29 @@
   setup
   lang="ts"
 >
-import type { Component } from 'vue';
+import logoUrl from '@/assets/logo/avto-yordam-logo.png';
 
 defineProps<{
-  icon: Component;
-  iconBg: string;
-  label: string;
+  caption?: string;
 }>();
 </script>
 
 <template>
   <div class="auth-brand">
-    <div
-      class="brand-icon"
-      :style="{ background: iconBg }"
+    <img
+      class="brand-logo"
+      :src="logoUrl"
+      alt="Avto Yordam logo"
     >
-      <component
-        :is="icon"
-        :size="20"
-        color="#FFFFFF"
-      />
+    <div class="brand-text">
+      <span class="brand-name">Avto Yordam</span>
+      <span
+        v-if="caption"
+        class="brand-caption"
+      >
+        {{ caption }}
+      </span>
     </div>
-    <span class="brand-label">{{ label }}</span>
   </div>
 </template>
 
@@ -34,19 +35,35 @@ defineProps<{
   align-items: center;
 }
 
-.brand-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
+.brand-logo {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
   border-radius: 10px;
 }
 
-.brand-label {
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-name {
   font-family: Inter, sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 1.1;
   color: var(--foreground);
+}
+
+.brand-caption {
+  font-family: Inter, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
 }
 </style>

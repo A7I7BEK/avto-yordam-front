@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ArrowLeft, Building2, ChevronDown, ShieldCheck } from '@lucide/vue';
+import { ArrowLeft, ChevronDown, ShieldCheck } from '@lucide/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -41,11 +41,7 @@ async function sendCode() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="Building2"
-      icon-bg="#2A2933"
-      label="Business"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"

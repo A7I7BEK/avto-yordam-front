@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Building2, ChevronDown, Eye, EyeOff, UserRound } from '@lucide/vue';
+import { ChevronDown, Eye, EyeOff } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -30,13 +30,6 @@ const contactTabs = [
 ];
 
 const isBusiness = computed(() => route.query.type === 'business');
-const brandIcon = computed(() => (isBusiness.value ? Building2 : UserRound));
-const brandIconBg = computed(() =>
-  isBusiness.value ? '#2A2933' : 'var(--primary)',
-);
-const brandLabel = computed(() =>
-  isBusiness.value ? 'Business' : 'Professional',
-);
 
 function goToRegister() {
   router.push({
@@ -101,11 +94,7 @@ async function signIn() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="brandIcon"
-      :icon-bg="brandIconBg"
-      :label="brandLabel"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"

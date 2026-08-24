@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { ChevronDown, ShieldCheck, UserRound } from '@lucide/vue';
+import { ChevronDown, ShieldCheck } from '@lucide/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthBrand from '@/components/auth/AuthBrand.vue';
@@ -43,11 +43,7 @@ async function sendCode() {
 
 <template>
   <AuthPageLayout>
-    <AuthBrand
-      :icon="UserRound"
-      icon-bg="var(--primary)"
-      label="Professional"
-    />
+    <AuthBrand />
 
     <AuthCard
       width="460px"
