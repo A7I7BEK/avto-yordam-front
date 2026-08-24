@@ -182,7 +182,7 @@ onUnmounted(() => {
   <AuthPageLayout>
     <AuthBrand
       :icon="isEmail ? Mail : MessageCircleMore"
-      :icon-bg="isBusiness ? '#2A2933' : '#5749F4'"
+      :icon-bg="isBusiness ? '#2A2933' : 'var(--primary)'"
       :label="isBusiness ? 'Business' : 'Professional'"
     />
 
@@ -197,7 +197,7 @@ onUnmounted(() => {
         <component
           :is="isEmail ? Mail : Phone"
           :size="28"
-          :color="isBusiness ? '#2A2933' : '#5749F4'"
+          :color="isBusiness ? 'var(--foreground)' : 'var(--primary)'"
         />
       </div>
 
@@ -247,7 +247,7 @@ onUnmounted(() => {
       <div class="timer-row">
         <Timer
           :size="14"
-          color="#616167"
+          color="var(--muted-foreground)"
         />
         <span class="timer-text">{{ formattedTime }}</span>
       </div>
@@ -278,7 +278,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -287,7 +287,7 @@ onUnmounted(() => {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .icon-circle {
@@ -296,7 +296,7 @@ onUnmounted(() => {
   justify-content: center;
   width: 56px;
   height: 56px;
-  background: #f5f5f5;
+  background: var(--muted);
   border-radius: 50%;
 }
 
@@ -305,7 +305,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .otp-row {
@@ -321,13 +321,13 @@ onUnmounted(() => {
   justify-content: center;
   width: 56px;
   height: 64px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 12px;
 }
 
 .otp-box:focus-within {
-  border-color: #5749f4;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(87, 73, 244, 0.12);
 }
 
@@ -338,7 +338,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   text-align: center;
   outline: none;
   background: transparent;
@@ -350,9 +350,9 @@ onUnmounted(() => {
   padding: 10px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #cc3314;
+  color: var(--destructive);
   text-align: center;
-  background: #ffbfb2;
+  background: var(--color-error);
   border-radius: 12px;
 }
 
@@ -382,8 +382,8 @@ onUnmounted(() => {
 }
 
 .btn-primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .timer-row {
@@ -397,7 +397,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .resend-link {
@@ -405,14 +405,14 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: none;
   border: none;
 }
 
 .resend-link:disabled {
-  color: #939399;
+  color: var(--muted-icon);
   cursor: not-allowed;
 }
 

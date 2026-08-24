@@ -127,7 +127,7 @@ function goNext() {
   <div class="onboarding-page">
     <AuthBrand
       :icon="UserRound"
-      icon-bg="#5749F4"
+      icon-bg="var(--primary)"
       label="Professional"
     />
 
@@ -232,7 +232,7 @@ function goNext() {
           <label class="field-label">Phone (verified)</label>
           <BadgeCheck
             :size="14"
-            color="#003300"
+            color="var(--color-success-foreground)"
           />
           <span class="verified-text">Verified</span>
         </div>
@@ -286,7 +286,7 @@ function goNext() {
   width: 100%;
   min-height: 100vh;
   padding: 40px 80px;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .onboarding-card {
@@ -296,8 +296,8 @@ function goNext() {
   width: 100%;
   max-width: 640px;
   padding: 32px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 40px;
   box-shadow: 0 10px 8.75px rgba(0, 0, 0, 0.039);
 }
@@ -313,7 +313,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .card-subtitle {
@@ -322,7 +322,7 @@ function goNext() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .avatar-row {
@@ -342,7 +342,7 @@ function goNext() {
   font-size: 28px;
   font-weight: 600;
   color: #ffffff;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -357,10 +357,10 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -368,7 +368,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .avatar--image {
@@ -396,7 +396,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #cc3314;
+  color: var(--destructive);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -428,14 +428,14 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .verified-text {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #003300;
+  color: var(--color-success-foreground);
 }
 
 .field-input {
@@ -445,10 +445,10 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -468,8 +468,8 @@ function goNext() {
   gap: 8px;
   align-items: center;
   padding: 12px 18px;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -478,7 +478,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 18px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
   text-align: center;
   outline: none;
   background: transparent;
@@ -494,14 +494,14 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .exp-hint {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-style: italic;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .chips-row {
@@ -515,18 +515,18 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
   transition: all 0.15s;
 }
 
 .chip.selected {
   color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .footer-buttons {
@@ -553,12 +553,12 @@ function goNext() {
 }
 
 .btn-back {
-  color: #2a2933;
-  background: #f5f5f5;
+  color: var(--foreground);
+  background: var(--muted);
 }
 
 .btn-next {
   color: #ffffff;
-  background: #5749f4;
+  background: var(--primary);
 }
 </style>

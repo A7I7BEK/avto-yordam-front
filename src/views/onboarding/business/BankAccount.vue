@@ -44,7 +44,7 @@ function goNext() {
         <div class="brand-icon-box">
           <Building2
             :size="20"
-            color="#FFFFFF"
+            color="var(--background)"
           />
         </div>
         <span class="brand-text">Business</span>
@@ -70,7 +70,7 @@ function goNext() {
     <div class="warning-notice">
       <ShieldAlert
         :size="16"
-        color="#4D2700"
+        color="var(--color-warning-foreground)"
       />
       <div class="warning-text">
         <span class="warning-bold">Account holder must match legal entity</span>
@@ -173,7 +173,7 @@ function goNext() {
   min-height: 100vh;
   padding: 40px 80px;
   margin: 0 auto;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .header-row {
@@ -195,7 +195,7 @@ function goNext() {
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: #2a2933;
+  background: var(--foreground);
   border-radius: 10px;
 }
 
@@ -203,14 +203,14 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .step-label {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .title-section {
@@ -224,7 +224,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
@@ -232,7 +232,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .warning-notice {
@@ -240,8 +240,8 @@ function goNext() {
   gap: 10px;
   align-items: flex-start;
   padding: 14px;
-  background: #ffd9b2;
-  border: 1px solid #4d2700;
+  background: var(--color-warning);
+  border: 1px solid var(--color-warning-foreground);
   border-radius: 24px;
 }
 
@@ -255,14 +255,14 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #4d2700;
+  color: var(--color-warning-foreground);
 }
 
 .warning-regular {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #4d2700;
+  color: var(--color-warning-foreground);
 }
 
 .bank-card {
@@ -271,8 +271,8 @@ function goNext() {
   gap: 20px;
   width: 100%;
   padding: 32px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 40px;
   box-shadow: 0 10px 8.75px rgba(0, 0, 0, 0.039);
 }
@@ -288,7 +288,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .field-input {
@@ -298,10 +298,10 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -316,14 +316,14 @@ function goNext() {
   gap: 8px;
   align-items: center;
   padding-top: 8px;
-  border-top: 1px solid #c5c5cb;
+  border-top: 1px solid var(--border-soft);
 }
 
 .currency-label {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .currency-chip {
@@ -331,9 +331,9 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 700;
-  color: #2a2933;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  color: var(--foreground);
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -341,7 +341,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-style: italic;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .footer-row {
@@ -367,12 +367,12 @@ function goNext() {
 }
 
 .btn-back {
-  color: #2a2933;
-  background: #d9d9db;
+  color: var(--foreground);
+  background: var(--border);
 }
 
 .btn-next {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 </style>

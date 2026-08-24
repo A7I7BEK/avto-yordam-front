@@ -34,8 +34,8 @@ const emit = defineEmits<{
   width: 100%;
   height: 56px;
   padding: 8px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -48,7 +48,7 @@ const emit = defineEmits<{
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -59,7 +59,7 @@ const emit = defineEmits<{
 }
 
 .tab-item.active {
-  background: #d9d9db;
+  background: var(--secondary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 </style>

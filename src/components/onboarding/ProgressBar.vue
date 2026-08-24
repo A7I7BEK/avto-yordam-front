@@ -34,10 +34,10 @@ defineProps<{
 }
 
 .progress-segment.active {
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .progress-segment:not(.active) {
-  background: #f5f5f5;
+  background: var(--muted);
 }
 </style>

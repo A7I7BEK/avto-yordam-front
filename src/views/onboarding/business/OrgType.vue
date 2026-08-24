@@ -29,10 +29,10 @@ const orgTypes = [
     description:
       'MChJ is the most common form for small and mid-size service businesses. Founders share liability up to capital contribution.',
     icon: Building2,
-    iconBg: '#C9D6F0',
-    iconColor: '#001133',
-    badgeBg: '#C9D6F0',
-    badgeColor: '#001133',
+    iconBg: 'var(--color-info)',
+    iconColor: 'var(--color-info-foreground)',
+    badgeBg: 'var(--color-info)',
+    badgeColor: 'var(--color-info-foreground)',
   },
   {
     value: 'YATT' as OrganizationType,
@@ -41,10 +41,10 @@ const orgTypes = [
     description:
       'YTT (Yakka Tartibdagi Tadbirkor) — a sole-trader format with simplified tax and direct personal liability.',
     icon: Briefcase,
-    iconBg: '#FFD9B2',
-    iconColor: '#4D2700',
-    badgeBg: '#FFD9B2',
-    badgeColor: '#4D2700',
+    iconBg: 'var(--color-warning)',
+    iconColor: 'var(--color-warning-foreground)',
+    badgeBg: 'var(--color-warning)',
+    badgeColor: 'var(--color-warning-foreground)',
   },
   {
     value: 'SELF_EMPLOYED' as OrganizationType,
@@ -53,10 +53,10 @@ const orgTypes = [
     description:
       'For one-person setups working without a formal company. Lowest paperwork, fastest start.',
     icon: UserRound,
-    iconBg: '#A1E5A1',
-    iconColor: '#003300',
-    badgeBg: '#A1E5A1',
-    badgeColor: '#003300',
+    iconBg: 'var(--color-success)',
+    iconColor: 'var(--color-success-foreground)',
+    badgeBg: 'var(--color-success)',
+    badgeColor: 'var(--color-success-foreground)',
   },
 ];
 
@@ -83,7 +83,7 @@ function goNext() {
         <div class="brand-icon-box">
           <Building2
             :size="20"
-            color="#FFFFFF"
+            color="var(--background)"
           />
         </div>
         <span class="brand-text">Business</span>
@@ -190,7 +190,7 @@ function goNext() {
   width: 100%;
   min-height: 100vh;
   padding: 40px 80px;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .header-row {
@@ -212,7 +212,7 @@ function goNext() {
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: #2a2933;
+  background: var(--foreground);
   border-radius: 10px;
 }
 
@@ -220,14 +220,14 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .step-label {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .body-section {
@@ -251,7 +251,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
@@ -259,7 +259,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .cards-row {
@@ -277,14 +277,14 @@ function goNext() {
   max-width: 100%;
   padding: 28px;
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 40px;
   transition: border-color 0.15s;
 }
 
 .org-card.selected {
-  border: 2px solid #5749f4;
+  border: 2px solid var(--primary);
 }
 
 .card-top-row {
@@ -315,7 +315,7 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 18px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .org-desc {
@@ -324,7 +324,7 @@ function goNext() {
   font-size: 13px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .cta-selected {
@@ -337,8 +337,8 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border-radius: 999px;
 }
 
@@ -351,8 +351,8 @@ function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
-  border: 1px solid #c5c5cb;
+  color: var(--foreground);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -379,12 +379,12 @@ function goNext() {
 }
 
 .btn-back {
-  color: #2a2933;
-  background: #d9d9db;
+  color: var(--foreground);
+  background: var(--border);
 }
 
 .btn-next {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 </style>

@@ -119,12 +119,12 @@ function goToForgotPassword() {
             <Eye
               v-if="!showPassword"
               :size="16"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
             <EyeOff
               v-else
               :size="16"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
           </button>
         </div>
@@ -174,7 +174,7 @@ function goToForgotPassword() {
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -183,7 +183,7 @@ function goToForgotPassword() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .field-group {
@@ -197,7 +197,7 @@ function goToForgotPassword() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .field-input {
@@ -207,15 +207,15 @@ function goToForgotPassword() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .field-input::placeholder {
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .password-wrapper {
@@ -261,8 +261,8 @@ function goToForgotPassword() {
 }
 
 .btn-primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .forgot-row {
@@ -276,7 +276,7 @@ function goToForgotPassword() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .forgot-link {
@@ -284,7 +284,7 @@ function goToForgotPassword() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: none;
   border: none;
@@ -293,7 +293,7 @@ function goToForgotPassword() {
 .error-text {
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #cc3314;
+  color: var(--destructive);
   text-align: center;
 }
 </style>

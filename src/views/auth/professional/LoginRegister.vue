@@ -42,7 +42,7 @@ function switchToOrganization() {
   <AuthPageLayout>
     <AuthBrand
       :icon="UserRound"
-      icon-bg="#5749F4"
+      icon-bg="var(--primary)"
       label="Professional"
     />
 
@@ -168,7 +168,7 @@ function switchToOrganization() {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -176,7 +176,7 @@ function switchToOrganization() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .btn {
@@ -201,12 +201,12 @@ function switchToOrganization() {
 
 .btn-primary {
   color: #ffffff;
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .btn-secondary {
-  color: #2a2933;
-  background: #d9d9db;
+  color: var(--foreground);
+  background: var(--border);
 }
 
 .or-divider {
@@ -219,14 +219,14 @@ function switchToOrganization() {
 .or-divider .line {
   flex: 1;
   height: 1px;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 .or-divider span {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .social-row {
@@ -238,9 +238,9 @@ function switchToOrganization() {
 .btn-social {
   flex: 1;
   padding: 14px 16px;
-  color: #2a2933;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--border-soft);
 }
 
 .switch-row {
@@ -254,7 +254,7 @@ function switchToOrganization() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .switch-link {
@@ -262,7 +262,7 @@ function switchToOrganization() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: none;
   border: none;
@@ -277,10 +277,10 @@ function switchToOrganization() {
   padding: 10px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #616167;
+  color: var(--muted-foreground);
   text-align: center;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 12px;
 }
 </style>

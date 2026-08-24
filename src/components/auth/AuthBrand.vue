@@ -47,6 +47,6 @@ defineProps<{
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 </style>

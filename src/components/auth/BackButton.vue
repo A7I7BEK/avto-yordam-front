@@ -25,7 +25,7 @@ function handleClick() {
   >
     <ArrowLeft
       :size="16"
-      color="#616167"
+      color="var(--muted-foreground)"
     />
     <span>Back</span>
   </button>
@@ -41,7 +41,7 @@ function handleClick() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
   cursor: pointer;
   background: none;
   border: none;

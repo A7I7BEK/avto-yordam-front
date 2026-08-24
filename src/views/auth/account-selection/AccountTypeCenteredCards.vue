@@ -40,7 +40,7 @@ function goToBusiness() {
             <div class="icon-box icon-box-pro">
               <UserRound
                 :size="30"
-                color="#FFFFFF"
+                color="var(--primary-foreground)"
               />
             </div>
             <span class="badge">For individuals</span>
@@ -59,7 +59,7 @@ function goToBusiness() {
               <div class="check-circle">
                 <Check
                   :size="13"
-                  color="#5749F4"
+                  color="var(--primary)"
                 />
               </div>
               <span>Set your own rates &amp; schedule</span>
@@ -68,7 +68,7 @@ function goToBusiness() {
               <div class="check-circle">
                 <Check
                   :size="13"
-                  color="#5749F4"
+                  color="var(--primary)"
                 />
               </div>
               <span>Get matched with nearby jobs</span>
@@ -77,7 +77,7 @@ function goToBusiness() {
               <div class="check-circle">
                 <Check
                   :size="13"
-                  color="#5749F4"
+                  color="var(--primary)"
                 />
               </div>
               <span>Fast payouts after every job</span>
@@ -92,7 +92,7 @@ function goToBusiness() {
             <span>Continue as Pro</span>
             <ArrowRight
               :size="18"
-              color="#FFFFFF"
+              color="var(--primary-foreground)"
             />
           </button>
         </div>
@@ -103,7 +103,7 @@ function goToBusiness() {
             <div class="icon-box icon-box-biz">
               <Building2
                 :size="30"
-                color="#FFFFFF"
+                color="var(--background)"
               />
             </div>
             <span class="badge">For companies</span>
@@ -122,7 +122,7 @@ function goToBusiness() {
               <div class="check-circle">
                 <Check
                   :size="13"
-                  color="#5749F4"
+                  color="var(--primary)"
                 />
               </div>
               <span>Manage your team &amp; schedule</span>
@@ -131,7 +131,7 @@ function goToBusiness() {
               <div class="check-circle">
                 <Check
                   :size="13"
-                  color="#5749F4"
+                  color="var(--primary)"
                 />
               </div>
               <span>Track earnings &amp; transactions</span>
@@ -140,7 +140,7 @@ function goToBusiness() {
               <div class="check-circle">
                 <Check
                   :size="13"
-                  color="#5749F4"
+                  color="var(--primary)"
                 />
               </div>
               <span>Grow with customer reviews</span>
@@ -155,7 +155,7 @@ function goToBusiness() {
             <span>Continue as Business</span>
             <ArrowRight
               :size="18"
-              color="#FFFFFF"
+              color="var(--primary-foreground)"
             />
           </button>
         </div>
@@ -186,7 +186,7 @@ function goToBusiness() {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .blob {
@@ -200,7 +200,7 @@ function goToBusiness() {
   left: -240px;
   width: 880px;
   height: 880px;
-  background: #5749f4;
+  background: var(--primary);
   opacity: 0.08;
   filter: blur(100px);
 }
@@ -210,7 +210,7 @@ function goToBusiness() {
   bottom: -320px;
   width: 760px;
   height: 760px;
-  background: #5749f4;
+  background: var(--primary);
   opacity: 0.07;
   filter: blur(100px);
 }
@@ -243,7 +243,7 @@ function goToBusiness() {
   font-family: Inter, sans-serif;
   font-size: 38px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .heading p {
@@ -252,7 +252,7 @@ function goToBusiness() {
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .cards-row {
@@ -269,8 +269,8 @@ function goToBusiness() {
   width: 400px;
   max-width: 100%;
   padding: 32px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 40px;
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.059);
 }
@@ -291,11 +291,11 @@ function goToBusiness() {
 }
 
 .icon-box-pro {
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .icon-box-biz {
-  background: #2a2933;
+  background: var(--foreground);
 }
 
 .badge {
@@ -303,8 +303,8 @@ function goToBusiness() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #616167;
-  background: #f5f5f5;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-radius: 999px;
 }
 
@@ -313,7 +313,7 @@ function goToBusiness() {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .card-desc {
@@ -323,13 +323,13 @@ function goToBusiness() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .divider {
   width: 100%;
   height: 1px;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 
 .features {
@@ -348,7 +348,7 @@ function goToBusiness() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .check-circle {
@@ -372,9 +372,9 @@ function goToBusiness() {
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
-  background: #5749f4;
+  background: var(--primary);
   border: none;
   border-radius: 999px;
   transition: opacity 0.15s;
@@ -394,7 +394,7 @@ function goToBusiness() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .footer-link {
@@ -402,7 +402,7 @@ function goToBusiness() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: none;
   border: none;

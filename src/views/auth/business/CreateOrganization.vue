@@ -430,7 +430,7 @@ async function submit() {
         <div class="brand-icon-box">
           <Building2
             :size="20"
-            color="#FFFFFF"
+            color="var(--background)"
           />
         </div>
         <span class="brand-text">Business Center</span>
@@ -487,7 +487,7 @@ async function submit() {
                 <component
                   :is="item.icon"
                   :size="22"
-                  :color="form.type === item.value ? '#FFFFFF' : '#2A2933'"
+                  :color="form.type === item.value ? 'var(--primary-foreground)' : 'var(--foreground)'"
                 />
               </div>
               <div class="type-box-text">
@@ -500,7 +500,7 @@ async function submit() {
               >
                 <Check
                   :size="12"
-                  color="#FFFFFF"
+                  color="var(--primary-foreground)"
                 />
               </div>
             </div>
@@ -935,7 +935,7 @@ async function submit() {
           <component
             :is="isLoading ? Sparkles : Save"
             :size="18"
-            color="#FFFFFF"
+            color="var(--primary-foreground)"
           />
           <span
             >{{ isLoading ? 'Creating Organization...' : 'Create & Complete' }}</span
@@ -978,7 +978,7 @@ async function submit() {
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: #2a2933;
+  background: var(--foreground);
   border-radius: 10px;
 }
 
@@ -986,27 +986,27 @@ async function submit() {
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .step-label {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .progress-container {
   width: 100%;
   height: 6px;
   overflow: hidden;
-  background: #eaeaea;
+  background: var(--muted);
   border-radius: 3px;
 }
 
 .progress-bar-fill {
   height: 100%;
-  background: #5749f4;
+  background: var(--primary);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1021,7 +1021,7 @@ async function submit() {
   font-family: Inter, sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .page-subtitle {
@@ -1030,16 +1030,16 @@ async function submit() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .error-notice {
   padding: 14px 20px;
   font-family: Inter, sans-serif;
   font-size: 14px;
-  color: #c53030;
-  background: #fff5f5;
-  border: 1px solid #fed7d7;
+  color: var(--destructive);
+  background: var(--destructive-soft);
+  border: 1px solid var(--destructive-soft);
   border-radius: 12px;
 }
 
@@ -1049,8 +1049,8 @@ async function submit() {
   gap: 24px;
   width: 100%;
   padding: 32px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 40px;
   box-shadow: 0 10px 8.75px rgba(0, 0, 0, 0.039);
 }
@@ -1072,7 +1072,7 @@ async function submit() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .field-input,
@@ -1083,10 +1083,10 @@ async function submit() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #fcfcfc;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 20px;
   transition: all 0.2s ease;
 }
@@ -1097,8 +1097,8 @@ async function submit() {
 
 .field-input:focus,
 .field-textarea:focus {
-  background: #ffffff;
-  border-color: #5749f4;
+  background: var(--card);
+  border-color: var(--primary);
   box-shadow: 0 0 0 4px rgba(87, 73, 244, 0.1);
 }
 
@@ -1106,7 +1106,7 @@ async function submit() {
   margin-top: 2px;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #e53e3e;
+  color: var(--destructive);
 }
 
 .row {
@@ -1135,20 +1135,20 @@ async function submit() {
   align-items: center;
   padding: 18px;
   cursor: pointer;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
   transition: all 0.2s ease;
 }
 
 .type-box:hover {
-  background: #f9f9ff;
-  border-color: #5749f4;
+  background: var(--primary-tint);
+  border-color: var(--primary);
 }
 
 .type-box.selected {
   background: rgba(87, 73, 244, 0.04);
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .type-box-icon {
@@ -1157,13 +1157,13 @@ async function submit() {
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: #f5f5f7;
+  background: var(--accent);
   border-radius: 12px;
   transition: all 0.2s ease;
 }
 
 .type-box.selected .type-box-icon {
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .type-box-text {
@@ -1176,14 +1176,14 @@ async function submit() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .type-desc {
   font-family: Inter, sans-serif;
   font-size: 12px;
   line-height: 1.4;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .checked-badge {
@@ -1195,7 +1195,7 @@ async function submit() {
   justify-content: center;
   width: 18px;
   height: 18px;
-  background: #5749f4;
+  background: var(--primary);
   border-radius: 50%;
 }
 
@@ -1204,7 +1204,7 @@ async function submit() {
   width: 100%;
   height: 280px;
   margin-top: 6px;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
@@ -1216,7 +1216,7 @@ async function submit() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   background: rgba(87, 73, 244, 0.08);
   border-radius: 12px;
 }
@@ -1256,18 +1256,18 @@ async function submit() {
 }
 
 .prev-btn {
-  color: #2a2933;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--border-soft);
 }
 
 .prev-btn:hover {
-  background: #f5f5f7;
+  background: var(--accent);
 }
 
 .next-btn {
-  color: #ffffff;
-  background: #2a2933;
+  color: var(--background);
+  background: var(--foreground);
   border: none;
 }
 
@@ -1277,8 +1277,8 @@ async function submit() {
 
 .submit-btn {
   flex: 1;
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border: none;
 }
 

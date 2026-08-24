@@ -76,7 +76,7 @@ function goBackToSignIn() {
   <AuthPageLayout>
     <AuthBrand
       :icon="UserRound"
-      icon-bg="#5749F4"
+      icon-bg="var(--primary)"
       label="Professional"
     />
 
@@ -88,7 +88,7 @@ function goBackToSignIn() {
       <div class="icon-circle">
         <Lock
           :size="28"
-          color="#5749F4"
+          color="var(--primary)"
         />
       </div>
 
@@ -129,12 +129,12 @@ function goBackToSignIn() {
           <Check
             v-if="req.met"
             :size="14"
-            color="#003300"
+            color="var(--color-success-foreground)"
           />
           <Circle
             v-else
             :size="14"
-            color="#616167"
+            color="var(--muted-foreground)"
           />
           <span>{{ req.label }}</span>
         </div>
@@ -163,7 +163,7 @@ function goBackToSignIn() {
       >
         <ArrowLeft
           :size="14"
-          color="#5749F4"
+          color="var(--primary)"
         />
         <span>Back to sign in</span>
       </button>
@@ -178,7 +178,7 @@ function goBackToSignIn() {
   justify-content: center;
   width: 64px;
   height: 64px;
-  background: #f5f5f5;
+  background: var(--muted);
   border-radius: 999px;
 }
 
@@ -195,7 +195,7 @@ function goBackToSignIn() {
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -204,7 +204,7 @@ function goBackToSignIn() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .field-group {
@@ -218,7 +218,7 @@ function goBackToSignIn() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .field-input {
@@ -228,15 +228,15 @@ function goBackToSignIn() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .field-input::placeholder {
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .requirements {
@@ -256,7 +256,7 @@ function goBackToSignIn() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .btn {
@@ -282,7 +282,7 @@ function goBackToSignIn() {
 
 .btn-primary {
   color: #ffffff;
-  background: #5749f4;
+  background: var(--primary);
 }
 
 .back-link {
@@ -294,7 +294,7 @@ function goBackToSignIn() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: none;
   border: none;
@@ -307,7 +307,7 @@ function goBackToSignIn() {
 .error-text {
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #cc3314;
+  color: var(--destructive);
   text-align: center;
 }
 </style>

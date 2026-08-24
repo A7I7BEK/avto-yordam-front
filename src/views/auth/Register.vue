@@ -57,7 +57,9 @@ const contactTabs = [
 
 const isBusiness = computed(() => accountType.value === 'business');
 const brandIcon = computed(() => (isBusiness.value ? Building2 : UserRound));
-const brandIconBg = computed(() => (isBusiness.value ? '#2A2933' : '#5749F4'));
+const brandIconBg = computed(() =>
+  isBusiness.value ? '#2A2933' : 'var(--primary)',
+);
 const brandLabel = computed(() =>
   isBusiness.value ? 'Business' : 'Professional',
 );
@@ -211,7 +213,7 @@ async function signUp() {
             <span>{{ countryCode }}</span>
             <ChevronDown
               :size="14"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
           </div>
           <input
@@ -241,12 +243,12 @@ async function signUp() {
             <Eye
               v-if="!showPassword"
               :size="16"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
             <EyeOff
               v-else
               :size="16"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
           </button>
         </div>
@@ -270,12 +272,12 @@ async function signUp() {
             <Eye
               v-if="!showConfirmPassword"
               :size="16"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
             <EyeOff
               v-else
               :size="16"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
           </button>
         </div>
@@ -303,7 +305,7 @@ async function signUp() {
             <Check
               v-if="agreedToTerms"
               :size="12"
-              color="#FFFFFF"
+              color="var(--primary-foreground)"
             />
           </div>
         </div>
@@ -360,7 +362,7 @@ async function signUp() {
   font-family: Inter, sans-serif;
   font-size: 22px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -369,7 +371,7 @@ async function signUp() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .field-group {
@@ -383,7 +385,7 @@ async function signUp() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .field-input {
@@ -393,19 +395,19 @@ async function signUp() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .field-input::placeholder {
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .field-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(87, 73, 244, 0.12);
 }
 
@@ -443,10 +445,10 @@ async function signUp() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   white-space: nowrap;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -456,19 +458,19 @@ async function signUp() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .phone-input::placeholder {
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .phone-input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(87, 73, 244, 0.12);
 }
 
@@ -477,9 +479,9 @@ async function signUp() {
   padding: 10px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #cc3314;
+  color: var(--destructive);
   text-align: center;
-  background: #ffbfb2;
+  background: var(--color-error);
   border-radius: 12px;
 }
 
@@ -510,14 +512,14 @@ async function signUp() {
   justify-content: center;
   width: 20px;
   height: 20px;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
   transition: background 0.15s;
 }
 
 .checkbox-box.checked {
-  background: #5749f4;
-  border-color: #5749f4;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .checkbox-label {
@@ -525,11 +527,11 @@ async function signUp() {
   font-size: 13px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .terms-link {
-  color: #5749f4;
+  color: var(--primary);
   text-decoration: none;
 }
 
@@ -563,8 +565,8 @@ async function signUp() {
 }
 
 .btn-primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .switch-row {
@@ -578,7 +580,7 @@ async function signUp() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .switch-link {
@@ -586,7 +588,7 @@ async function signUp() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: none;
   border: none;

@@ -132,7 +132,7 @@ onUnmounted(() => {
       <div class="icon-circle">
         <MessageCircleMore
           :size="28"
-          color="#5749F4"
+          color="var(--primary)"
         />
       </div>
 
@@ -176,7 +176,7 @@ onUnmounted(() => {
       >
         <Clock
           :size="14"
-          color="#616167"
+          color="var(--muted-foreground)"
         />
         <span>Resend code in {{ formattedTime }}</span>
       </div>
@@ -215,7 +215,7 @@ onUnmounted(() => {
   justify-content: center;
   width: 64px;
   height: 64px;
-  background: #f5f5f5;
+  background: var(--muted);
   border-radius: 999px;
 }
 
@@ -232,7 +232,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -241,7 +241,7 @@ onUnmounted(() => {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .otp-label {
@@ -249,7 +249,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .otp-row {
@@ -265,16 +265,16 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 20px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
   text-align: center;
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
 .otp-box input:focus {
-  border-color: #5749f4;
+  border-color: var(--primary);
 }
 
 .btn {
@@ -299,8 +299,8 @@ onUnmounted(() => {
 }
 
 .btn-primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .timer-row {
@@ -314,7 +314,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .resend-row {
@@ -328,7 +328,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .resend-link {
@@ -336,7 +336,7 @@ onUnmounted(() => {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #5749f4;
+  color: var(--primary);
   cursor: pointer;
   background: none;
   border: none;
@@ -345,7 +345,7 @@ onUnmounted(() => {
 .error-text {
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #cc3314;
+  color: var(--destructive);
   text-align: center;
 }
 </style>

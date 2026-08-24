@@ -51,13 +51,17 @@ export const useThemeStore = defineStore('theme', () => {
     root.style.colorScheme = theme;
   }
 
-  function onSystemChange(event: MediaQueryListEvent) {
-    systemDark.value = event.matches;
+  /** Re-read the OS scheme; keeps system mode correct even if the
+   * `change` event was missed (e.g. the tab was backgrounded). */
+  function syncSystemDark() {
+    systemDark.value = systemMedia.matches;
   }
 
   /** Attach listeners and apply the persisted theme. Called once at startup. */
   function init() {
-    systemMedia.addEventListener('change', onSystemChange);
+    systemMedia.addEventListener('change', syncSystemDark);
+    window.addEventListener('focus', syncSystemDark);
+    document.addEventListener('visibilitychange', syncSystemDark);
     watch(resolvedTheme, applyTheme, { immediate: true });
   }
 

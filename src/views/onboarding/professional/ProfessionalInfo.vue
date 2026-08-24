@@ -136,7 +136,7 @@ async function goNext() {
   <div class="onboarding-page">
     <AuthBrand
       :icon="UserRound"
-      icon-bg="#5749F4"
+      icon-bg="var(--primary)"
       label="Professional"
     />
 
@@ -261,7 +261,7 @@ async function goNext() {
   width: 100%;
   min-height: 100vh;
   padding: 40px 80px;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .onboarding-card {
@@ -271,8 +271,8 @@ async function goNext() {
   width: 100%;
   max-width: 680px;
   padding: 32px;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 40px;
   box-shadow: 0 10px 8.75px rgba(0, 0, 0, 0.039);
 }
@@ -288,7 +288,7 @@ async function goNext() {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .card-subtitle {
@@ -297,7 +297,7 @@ async function goNext() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .section {
@@ -306,7 +306,7 @@ async function goNext() {
 
 .section.bordered {
   padding-bottom: 16px;
-  border-bottom: 1px solid #c5c5cb;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .section-header {
@@ -319,14 +319,14 @@ async function goNext() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .section-counter {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-style: italic;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .section-hint {
@@ -335,7 +335,7 @@ async function goNext() {
   font-size: 12px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .chips-grid {
@@ -349,7 +349,7 @@ async function goNext() {
   margin-top: 8px;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .chip {
@@ -360,18 +360,18 @@ async function goNext() {
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   cursor: pointer;
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
   transition: all 0.15s;
 }
 
 .chip.selected {
   color: #ffffff;
-  background: #5749f4;
-  border-color: #5749f4;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .footer-buttons {
@@ -398,12 +398,12 @@ async function goNext() {
 }
 
 .btn-back {
-  color: #2a2933;
-  background: #f5f5f5;
+  color: var(--foreground);
+  background: var(--muted);
 }
 
 .btn-next {
   color: #ffffff;
-  background: #5749f4;
+  background: var(--primary);
 }
 </style>

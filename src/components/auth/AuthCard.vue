@@ -32,8 +32,8 @@ defineSlots<{
   flex-direction: column;
   align-items: center;
   width: 100%;
-  background: #ffffff;
-  border: 1px solid #c5c5cb;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   border-radius: 40px;
   box-shadow: 0 10px 8.75px rgba(0, 0, 0, 0.039);
 }

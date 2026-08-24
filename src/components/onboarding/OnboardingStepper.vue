@@ -25,7 +25,7 @@ const steps = ['Personal info', 'Professional info'];
         <Check
           v-if="currentStep > 1"
           :size="12"
-          color="#FFFFFF"
+          color="var(--primary-foreground)"
         />
         <span v-else>1</span>
       </div>
@@ -46,7 +46,7 @@ const steps = ['Personal info', 'Professional info'];
         <Check
           v-if="currentStep > 2"
           :size="12"
-          color="#FFFFFF"
+          color="var(--primary-foreground)"
         />
         <span v-else>2</span>
       </div>
@@ -85,16 +85,16 @@ const steps = ['Personal info', 'Professional info'];
 
 .step-item.active .step-circle,
 .step-item.completed .step-circle {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
   border: none;
 }
 
 .step-item:not(.active):not(.completed) .step-circle {
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
   background: transparent;
-  border: 1px solid #c5c5cb;
+  border: 1px solid var(--border-soft);
 }
 
 .step-label {
@@ -105,19 +105,19 @@ const steps = ['Personal info', 'Professional info'];
 
 .step-item.active .step-label {
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .step-item.completed .step-label,
 .step-item:not(.active):not(.completed) .step-label {
   font-weight: 500;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .step-line {
   flex: 1;
   min-width: 40px;
   height: 1px;
-  background: #c5c5cb;
+  background: var(--border-soft);
 }
 </style>

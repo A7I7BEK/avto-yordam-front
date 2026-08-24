@@ -24,7 +24,7 @@ defineSlots<{
   width: 100%;
   min-height: 100vh;
   padding: 48px;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .auth-page-inner {

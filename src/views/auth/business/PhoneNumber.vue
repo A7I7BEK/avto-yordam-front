@@ -68,7 +68,7 @@ async function sendCode() {
             <span>{{ countryCode }}</span>
             <ChevronDown
               :size="14"
-              color="#616167"
+              color="var(--muted-foreground)"
             />
           </div>
           <input
@@ -99,7 +99,7 @@ async function sendCode() {
       <div class="privacy-notice">
         <ShieldCheck
           :size="14"
-          color="#616167"
+          color="var(--muted-foreground)"
         />
         <span>Your number stays private — we use it only to verify you.</span>
       </div>
@@ -121,7 +121,7 @@ async function sendCode() {
   font-family: Inter, sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -130,7 +130,7 @@ async function sendCode() {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .field-group {
@@ -144,7 +144,7 @@ async function sendCode() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
 }
 
 .phone-input-row {
@@ -161,10 +161,10 @@ async function sendCode() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #2a2933;
+  color: var(--foreground);
   white-space: nowrap;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
@@ -174,15 +174,15 @@ async function sendCode() {
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #2a2933;
+  color: var(--foreground);
   outline: none;
-  background: #f5f5f5;
-  border: 1px solid #c5c5cb;
+  background: var(--muted);
+  border: 1px solid var(--border-soft);
   border-radius: 999px;
 }
 
 .phone-input::placeholder {
-  color: #939399;
+  color: var(--muted-icon);
 }
 
 .btn {
@@ -207,8 +207,8 @@ async function sendCode() {
 }
 
 .btn-primary {
-  color: #ffffff;
-  background: #5749f4;
+  color: var(--primary-foreground);
+  background: var(--primary);
 }
 
 .privacy-notice {
@@ -222,13 +222,13 @@ async function sendCode() {
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #616167;
+  color: var(--muted-foreground);
 }
 
 .error-text {
   font-family: Inter, sans-serif;
   font-size: 13px;
-  color: #cc3314;
+  color: var(--destructive);
   text-align: center;
 }
 </style>
