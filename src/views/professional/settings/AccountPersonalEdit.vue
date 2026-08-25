@@ -913,58 +913,30 @@ onMounted(async () => {
 
 .days-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
-.day-chip {
-  padding: 8px 12px;
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--foreground);
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid var(--border-soft);
-  border-radius: 999px;
-  transition: all 0.15s;
-}
-
-.day-chip.active {
-  color: var(--primary-foreground);
-  background: var(--primary);
-  border-color: var(--primary);
-}
-
-/* Bio display */
-.bio-input {
-  box-sizing: border-box;
-  width: 100%;
-  height: 52px;
-  padding: 14px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: var(--foreground);
-  resize: vertical;
-  outline: none;
-  background: var(--card);
-  border: 1px solid var(--border-soft);
-  border-radius: 6px;
-}
-
-.bio-input:focus {
-  border-color: var(--primary);
-}
-
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 640px) {
+  .two-col {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: rotate(360deg);
+
+  .photo-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .time-range {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .time-pill {
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 </style>

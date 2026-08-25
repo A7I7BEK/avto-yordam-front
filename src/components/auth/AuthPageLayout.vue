@@ -23,7 +23,7 @@ defineSlots<{
   justify-content: center;
   width: 100%;
   min-height: 100vh;
-  padding: 48px;
+  padding: 32px 16px;
   background: var(--background);
 }
 
@@ -34,5 +34,11 @@ defineSlots<{
   align-items: center;
   width: 100%;
   max-width: 500px;
+}
+
+@media (min-width: 640px) {
+  .auth-page {
+    padding: 48px 24px;
+  }
 }
 </style>

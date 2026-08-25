@@ -1746,8 +1746,24 @@ const deleteModalName = computed(
   gap: 14px;
 }
 @media (max-width: 640px) {
+  .field-row {
+    flex-direction: column;
+    gap: 12px;
+  }
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .header-actions {
+    width: 100%;
+  }
+  .header-actions .btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 .doc-row {

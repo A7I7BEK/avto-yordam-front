@@ -306,17 +306,18 @@ onUnmounted(() => {
 
 .otp-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
   width: 100%;
 }
 
 .otp-box {
   display: flex;
+  flex: 1;
+  max-width: 56px;
+  height: 56px;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 64px;
   background: var(--muted);
   border: 1px solid var(--border-soft);
   border-radius: 12px;
@@ -332,7 +333,7 @@ onUnmounted(() => {
   height: 100%;
   padding: 0;
   font-family: Inter, sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--foreground);
   text-align: center;

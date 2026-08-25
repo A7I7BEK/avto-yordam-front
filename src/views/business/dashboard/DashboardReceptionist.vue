@@ -276,13 +276,13 @@ function statusBg(status: string): string {
 
 /* KPI Row */
 .kpi-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
 .kpi-card {
   display: flex;
-  flex: 1;
   gap: 14px;
   align-items: center;
   padding: 18px;
@@ -332,6 +332,31 @@ function statusBg(status: string): string {
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 24px;
+}
+
+@media (max-width: 1023px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .receptionist-dashboard {
+    padding: 12px;
+  }
+
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 20px;
+  }
 }
 
 .card-header {

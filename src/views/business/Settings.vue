@@ -215,4 +215,33 @@ function breadcrumbItems() {
   padding: 24px 32px;
   overflow-y: auto;
 }
+
+@media (max-width: 860px) {
+  .settings-page {
+    flex-direction: column;
+  }
+
+  .sub-nav {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border-right: none;
+    border-bottom: 1px solid var(--border-soft);
+    padding: 10px 14px;
+    gap: 6px;
+  }
+
+  .nav-item {
+    width: auto;
+    flex-shrink: 0;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  .settings-content {
+    padding: 16px 12px;
+  }
+}
 </style>

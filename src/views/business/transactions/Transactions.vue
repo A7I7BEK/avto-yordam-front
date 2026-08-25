@@ -740,7 +740,8 @@ onMounted(() => {
 
 /* ===== Table card ===== */
 .table-card {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -749,7 +750,24 @@ onMounted(() => {
 /* ===== Data table ===== */
 .data-table {
   width: 100%;
+  min-width: 680px;
   border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+  .transactions-page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* ===== Column headers ===== */

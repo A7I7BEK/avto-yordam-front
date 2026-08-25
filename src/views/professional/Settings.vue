@@ -238,28 +238,24 @@ function breadcrumbItems() {
   background: var(--destructive);
 }
 
-.settings-content {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-  padding: 24px 32px;
-  overflow-y: auto;
-}
-
 .account-tabs {
   display: flex;
-  gap: 0;
+  gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
   border-bottom: 1px solid var(--border-soft);
 }
 
 .tab-btn {
+  display: flex;
+  flex-shrink: 0;
   padding: 10px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: var(--muted-foreground);
+  color: var(--muted-icon);
   cursor: pointer;
   background: transparent;
   border: none;
@@ -267,9 +263,42 @@ function breadcrumbItems() {
   transition: all 0.2s;
 }
 
+.tab-btn:hover {
+  color: var(--foreground);
+}
+
 .tab-btn.active {
   font-weight: 600;
   color: var(--primary);
   border-bottom-color: var(--primary);
+}
+
+@media (max-width: 860px) {
+  .settings-page {
+    flex-direction: column;
+  }
+
+  .sub-nav {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border-right: none;
+    border-bottom: 1px solid var(--border-soft);
+    padding: 10px 14px;
+    gap: 6px;
+  }
+
+  .nav-item {
+    width: auto;
+    flex-shrink: 0;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  .settings-content {
+    padding: 16px 12px;
+  }
 }
 </style>

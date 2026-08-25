@@ -148,27 +148,34 @@ async function sendCode() {
 .phone-input-row {
   display: flex;
   gap: 8px;
+  align-items: center;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .country-code {
   display: flex;
-  gap: 6px;
+  flex-shrink: 0;
+  gap: 4px;
   align-items: center;
-  padding: 18px 20px;
+  padding: 16px 12px;
   font-family: Inter, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--foreground);
   white-space: nowrap;
   background: var(--muted);
   border: 1px solid var(--border-soft);
   border-radius: 999px;
+  box-sizing: border-box;
 }
 
 .phone-input {
+  box-sizing: border-box;
   flex: 1;
-  padding: 18px 24px;
+  min-width: 0;
+  width: 100%;
+  padding: 16px 18px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -189,7 +196,7 @@ async function sendCode() {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 16px 24px;
+  padding: 15px 20px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;

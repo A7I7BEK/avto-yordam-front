@@ -524,7 +524,8 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
 
 /* Calendar grid */
 .calendar {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -533,6 +534,7 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
 .calendar__day-headers {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  min-width: 640px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -550,6 +552,33 @@ function switchView(view: 'month' | 'week' | 'day' | 'slots') {
 .calendar__grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  min-width: 640px;
+}
+
+@media (max-width: 768px) {
+  .schedules-page {
+    padding: 16px 12px;
+  }
+
+  .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-toggle {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .date-nav {
+    justify-content: space-between;
+  }
 }
 
 .calendar__cell {

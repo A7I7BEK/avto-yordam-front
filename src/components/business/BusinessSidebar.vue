@@ -17,6 +17,7 @@ import {
   UserCheck,
   UserPlus,
   Users,
+  X,
 } from '@lucide/vue';
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
@@ -56,15 +57,25 @@ const isInvitationActive = computed(() =>
 <template>
   <aside class="sidebar">
     <div class="sidebar__header">
-      <img
-        class="sidebar__logo"
-        :src="logoUrl"
-        alt="Avto Yordam logo"
-      >
-      <div class="sidebar__brand">
-        <span class="sidebar__brand-name">Avto Yordam</span>
-        <span class="sidebar__brand-caption">Business</span>
+      <div class="sidebar__brand-row">
+        <img
+          class="sidebar__logo"
+          :src="logoUrl"
+          alt="Avto Yordam logo"
+        >
+        <div class="sidebar__brand">
+          <span class="sidebar__brand-name">Avto Yordam</span>
+          <span class="sidebar__brand-caption">Business</span>
+        </div>
       </div>
+      <button
+        class="sidebar__close-btn"
+        type="button"
+        aria-label="Close navigation sidebar"
+        @click="store.closeMobileSidebar"
+      >
+        <X :size="20" />
+      </button>
     </div>
 
     <nav class="sidebar__nav">
@@ -191,17 +202,51 @@ const isInvitationActive = computed(() =>
   display: flex;
   flex-direction: column;
   width: 256px;
+  height: 100%;
+  overflow-y: auto;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border);
 }
 
 .sidebar__header {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar__brand-row {
+  display: flex;
   gap: 8px;
   align-items: center;
-  height: 80px;
-  padding: 0 28px;
-  border-bottom: 1px solid var(--border);
+}
+
+.sidebar__close-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all 0.15s;
+}
+
+.sidebar__close-btn:hover {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+@media (max-width: 1023px) {
+  .sidebar__close-btn {
+    display: inline-flex;
+  }
 }
 
 .sidebar__logo {

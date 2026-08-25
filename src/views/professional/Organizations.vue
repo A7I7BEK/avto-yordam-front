@@ -329,103 +329,29 @@ function getInitialsColor(gradient: string) {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  height: 220px;
+  min-height: 200px;
   padding: 24px 28px;
   overflow: hidden;
   border: 1px solid;
   border-radius: 20px;
 }
 
-.deco-circle {
-  position: absolute;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 50%;
-}
-
-.deco-large {
-  top: -40px;
-  right: -20px;
-  width: 280px;
-  height: 280px;
-}
-
-.deco-small {
-  right: -30px;
-  bottom: -40px;
-  width: 200px;
-  height: 200px;
-  opacity: 0.04;
-}
-
 .card-header-row {
   position: relative;
   z-index: 1;
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   align-items: flex-start;
   justify-content: space-between;
-}
-
-.org-identity {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.org-avatar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  font-family: Inter, sans-serif;
-  font-size: 18px;
-  font-weight: 800;
-  background: var(--card);
-  border-radius: 12px;
-}
-
-.org-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.org-name {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: -0.5px;
-}
-
-.org-meta {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.role-badge {
-  display: flex;
-  flex-shrink: 0;
-  gap: 6px;
-  align-items: center;
-  padding: 5px 12px;
-  font-family: Inter, sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--foreground);
-  background: var(--card);
-  border-radius: 999px;
 }
 
 .card-footer {
   position: relative;
   z-index: 1;
   display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
   align-items: flex-end;
   justify-content: space-between;
   width: 100%;
@@ -433,7 +359,23 @@ function getInitialsColor(gradient: string) {
 
 .stats-row {
   display: flex;
-  gap: 48px;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .organizations {
+    padding: 16px 12px;
+  }
+
+  .org-card {
+    padding: 18px 16px;
+  }
+
+  .card-footer .btn-open {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .stat-col {

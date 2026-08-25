@@ -377,4 +377,18 @@ function allowedCount(cat: PermissionCategory): number {
 .toggle--on .toggle__thumb {
   transform: translateX(18px);
 }
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+  }
+
+  .perm-card__header {
+    padding: 16px;
+  }
+
+  .perm-table td {
+    padding: 6px 16px;
+  }
+}
 </style>

@@ -492,13 +492,53 @@ onMounted(loadInvitations);
 /* ============================================
    Data Table
    ============================================ */
+.data-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .data-table {
   width: 100%;
+  min-width: 680px;
   border-spacing: 0;
   border-collapse: separate;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px 16px 0 0;
+}
+
+@media (max-width: 768px) {
+  .invitations-page {
+    padding: 16px 12px;
+  }
+
+  .header-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .header-row__right {
+    width: 100%;
+  }
+
+  .header-row__right .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .filters-row {
+    flex-wrap: wrap;
+  }
+
+  .filter-search {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .filter-pill {
+    flex: 1;
+    min-width: 130px;
+  }
 }
 
 .column-headers th {

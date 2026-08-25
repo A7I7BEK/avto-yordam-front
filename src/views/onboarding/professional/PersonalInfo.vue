@@ -437,7 +437,7 @@ function goNext() {
 .field-input {
   box-sizing: border-box;
   width: 100%;
-  padding: 18px 24px;
+  padding: 16px 20px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -455,6 +455,7 @@ function goNext() {
 
 .experience-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   align-items: center;
 }
@@ -463,7 +464,7 @@ function goNext() {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding: 12px 18px;
+  padding: 10px 16px;
   background: var(--muted);
   border: 1px solid var(--border-soft);
   border-radius: 999px;
@@ -472,7 +473,7 @@ function goNext() {
 .exp-number {
   width: 50px;
   font-family: Inter, sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--foreground);
   text-align: center;
@@ -538,7 +539,7 @@ function goNext() {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  padding: 16px 24px;
+  padding: 14px 24px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -556,5 +557,40 @@ function goNext() {
 .btn-next {
   color: #ffffff;
   background: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .onboarding-page {
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .header-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card-title {
+    font-size: 20px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+  }
+
+  .avatar-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .footer-buttons {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
 </style>

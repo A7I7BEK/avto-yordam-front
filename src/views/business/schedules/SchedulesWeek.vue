@@ -512,7 +512,8 @@ function bookingHeight(start: string, end: string): string {
 
 /* Week calendar */
 .week-calendar {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -521,6 +522,7 @@ function bookingHeight(start: string, end: string): string {
 .week-calendar__headers {
   display: grid;
   grid-template-columns: 60px repeat(7, 1fr);
+  min-width: 680px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -575,8 +577,40 @@ function bookingHeight(start: string, end: string): string {
   position: relative;
   display: grid;
   grid-template-columns: 60px repeat(7, 1fr);
+  min-width: 680px;
   max-height: 600px;
   overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .schedules-page {
+    padding: 16px 12px;
+  }
+
+  .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-toggle {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .date-nav {
+    justify-content: space-between;
+  }
+
+  .date-nav__label {
+    min-width: 0;
+    font-size: 13px;
+  }
 }
 
 .week-calendar__time-gutter {

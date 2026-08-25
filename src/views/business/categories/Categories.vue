@@ -743,9 +743,9 @@ onMounted(() => {
   border-radius: 999px;
 }
 
-/* Toolbar */
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   align-items: center;
   margin-bottom: 8px;
@@ -822,6 +822,36 @@ onMounted(() => {
   gap: 16px;
   align-items: flex-start;
   justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .categories-page {
+    padding: 16px 12px;
+  }
+
+  .search-wrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .toolbar-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .btn-add-service-main {
+    width: 100%;
+  }
+
+  .service-main {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .service-controls {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .service-info {

@@ -526,7 +526,8 @@ function goToNext() {
 
 /* ===== Table card ===== */
 .table-card {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -535,6 +536,7 @@ function goToNext() {
 /* ===== Toolbar ===== */
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   align-items: center;
   padding: 14px 18px;
@@ -604,7 +606,37 @@ function goToNext() {
 /* ===== Data table ===== */
 .data-table {
   width: 100%;
+  min-width: 680px;
   border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .page-header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .filter-group {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .filter-pill {
+    flex: 1;
+  }
 }
 
 /* ===== Column headers ===== */

@@ -369,22 +369,50 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 }
 
 .kpi-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
 }
 
 .split-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
 
 .table-card,
 .chart-card {
   flex: 1;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 16px;
+}
+
+@media (max-width: 1023px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .split-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 16px 12px;
+  }
+
+  .header-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card-title-bar {
@@ -575,6 +603,7 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 
 .bookings-table {
   width: 100%;
+  min-width: 540px;
   font-family: Inter, sans-serif;
   border-collapse: collapse;
 }

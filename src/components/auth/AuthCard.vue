@@ -37,4 +37,12 @@ defineSlots<{
   border-radius: 40px;
   box-shadow: 0 10px 8.75px rgba(0, 0, 0, 0.039);
 }
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 16px !important;
+    border-radius: 24px !important;
+    gap: 16px !important;
+  }
+}
 </style>

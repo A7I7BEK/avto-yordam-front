@@ -402,16 +402,36 @@ function cancel() {
 }
 
 /* ===== Day rows ===== */
-.day-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  padding: 14px 2px;
-  border-bottom: 1px solid var(--border);
-}
-
 .day-row:last-child {
   border-bottom: none;
+}
+
+@media (max-width: 640px) {
+  .column-headers {
+    display: none;
+  }
+
+  .day-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 0;
+  }
+
+  .col--day,
+  .col--hours,
+  .col--status {
+    width: 100%;
+  }
+
+  .col--status {
+    justify-content: space-between;
+  }
+
+  .time-picker {
+    flex: 1;
+    width: auto;
+  }
 }
 
 .day-name {

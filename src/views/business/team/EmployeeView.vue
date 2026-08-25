@@ -666,16 +666,16 @@ function confirmDelete() {
 
 /* ===== Stats Row ===== */
 .stats-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 
 .stat-card {
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: 6px;
-  height: 88px;
+  min-height: 88px;
   padding: 16px;
   background: var(--accent);
   border: 1px solid var(--border);
@@ -727,12 +727,16 @@ function confirmDelete() {
   display: flex;
   gap: 4px;
   padding: 0 28px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
 
 .tab {
   display: flex;
+  flex-shrink: 0;
   gap: 8px;
   align-items: center;
   padding: 14px 16px;
@@ -794,6 +798,7 @@ function confirmDelete() {
 }
 
 .section-title {
+  margin: 0;
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -801,6 +806,7 @@ function confirmDelete() {
 }
 
 .section-desc {
+  margin: 0;
   font-family: Inter, sans-serif;
   font-size: 12px;
   font-weight: 400;
@@ -809,13 +815,13 @@ function confirmDelete() {
 
 /* ===== Info Grid ===== */
 .info-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
 .info-field {
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: 4px;
   padding: 12px 16px;
@@ -849,19 +855,50 @@ function confirmDelete() {
 .text-success {
   color: var(--success);
 }
+
+@media (max-width: 768px) {
+  .view-page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .hero {
+    padding: 20px 16px;
+  }
+
+  .identity-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs-row {
+    padding: 0 16px;
+  }
+
+  .tab-content {
+    padding: 20px 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
-font-weight: 600; color: #ffffff; border-radius: 50%; } .detail-card__name {
-margin: 0 0 4px; font-family: var(--font-primary); font-size: 18px; font-weight:
-600; color: var(--foreground); } .detail-card__body { display: flex;
-flex-direction: column; gap: 0; padding: 24px; } .detail-row { display: flex;
-align-items: center; padding: 12px 0; border-bottom: 1px solid var(--accent); }
-.detail-row:last-child { border-bottom: none; } .detail-row__label {
-flex-shrink: 0; width: 160px; font-family: var(--font-primary); font-size: 14px;
-color: var(--muted-foreground); } .detail-row__value { font-family:
-var(--font-primary); font-size: 14px; font-weight: 500; color:
-var(--foreground); } /* Badges */ .badge { display: inline-block; padding: 3px
-10px; font-family: var(--font-primary); font-size: 12px; font-weight: 500;
-border-radius: var(--radius-pill); } .badge--role { color: var(--foreground);
-background: var(--accent); } .badge--status { font-weight: 600; }
-.badge--success { color: var(--success); background: var(--success-bg); }
-.badge--muted { color: var(--muted-foreground); background: var(--accent); }

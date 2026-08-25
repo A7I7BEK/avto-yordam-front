@@ -2,7 +2,7 @@
   setup
   lang="ts"
 >
-import { Layers, LayoutDashboard, Mail, Settings, Star } from '@lucide/vue';
+import { Layers, LayoutDashboard, Mail, Settings, Star, X } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import logoUrl from '@/assets/logo/logo-light.png';
@@ -71,15 +71,25 @@ const navItems = [
   <aside class="sidebar">
     <!-- Logo -->
     <div class="sidebar-header">
-      <img
-        class="brand-logo"
-        :src="logoUrl"
-        alt="Avto Yordam logo"
-      >
-      <div class="brand-text">
-        <span class="brand-name">Avto Yordam</span>
-        <span class="brand-caption">Professional</span>
+      <div class="brand-row">
+        <img
+          class="brand-logo"
+          :src="logoUrl"
+          alt="Avto Yordam logo"
+        >
+        <div class="brand-text">
+          <span class="brand-name">Avto Yordam</span>
+          <span class="brand-caption">Professional</span>
+        </div>
       </div>
+      <button
+        class="close-btn"
+        type="button"
+        aria-label="Close navigation sidebar"
+        @click="store.closeMobileSidebar"
+      >
+        <X :size="20" />
+      </button>
     </div>
 
     <!-- Navigation -->
@@ -103,17 +113,50 @@ const navItems = [
   flex-direction: column;
   width: 256px;
   height: 100%;
+  overflow-y: auto;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border);
 }
 
 .sidebar-header {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand-row {
+  display: flex;
   gap: 8px;
   align-items: center;
-  height: 80px;
-  padding: 0 28px;
-  border-bottom: 1px solid var(--border);
+}
+
+.close-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all 0.15s;
+}
+
+.close-btn:hover {
+  color: var(--foreground);
+  background: var(--accent);
+}
+
+@media (max-width: 1023px) {
+  .close-btn {
+    display: inline-flex;
+  }
 }
 
 .brand-logo {

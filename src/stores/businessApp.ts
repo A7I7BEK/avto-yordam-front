@@ -25,6 +25,8 @@ export const useBusinessAppStore = defineStore('businessApp', () => {
     null,
   );
 
+  const isMobileSidebarOpen = ref(false);
+
   function setLanguage(lang: LanguageCode) {
     language.value = lang;
     setStoredLanguageCode(lang);
@@ -42,6 +44,14 @@ export const useBusinessAppStore = defineStore('businessApp', () => {
     teamSubmenuOpen.value = !teamSubmenuOpen.value;
   }
 
+  function toggleMobileSidebar() {
+    isMobileSidebarOpen.value = !isMobileSidebarOpen.value;
+  }
+
+  function closeMobileSidebar() {
+    isMobileSidebarOpen.value = false;
+  }
+
   return {
     userName,
     userRole,
@@ -52,9 +62,12 @@ export const useBusinessAppStore = defineStore('businessApp', () => {
     ordersBadgeCount,
     teamSubmenuOpen,
     activeTeamSubItem,
+    isMobileSidebarOpen,
     setLanguage,
     setNotificationCount,
     setOrdersBadgeCount,
     toggleTeamSubmenu,
+    toggleMobileSidebar,
+    closeMobileSidebar,
   };
 });

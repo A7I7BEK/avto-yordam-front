@@ -425,6 +425,28 @@ async function saveChanges() {
   gap: 8px;
 }
 
+@media (max-width: 640px) {
+  .form-row--two-col {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .footer-actions {
+    width: 100%;
+  }
+
+  .footer-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
 /* ===== Buttons ===== */
 .btn {
   display: inline-flex;

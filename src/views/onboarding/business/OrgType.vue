@@ -386,7 +386,7 @@ function goNext() {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  padding: 16px 24px;
+  padding: 14px 24px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -404,5 +404,41 @@ function goNext() {
 .btn-next {
   color: var(--primary-foreground);
   background: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .onboarding-page {
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .header-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+  }
+
+  .org-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+
+  .footer-row {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
 </style>

@@ -244,6 +244,26 @@ onMounted(async () => {
   gap: 16px;
 }
 
+@media (max-width: 640px) {
+  .page {
+    padding: 16px 12px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-card__actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .form-card__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .form-group {
   display: flex;
   flex-direction: column;

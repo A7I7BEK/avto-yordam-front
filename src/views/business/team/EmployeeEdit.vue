@@ -440,7 +440,9 @@ function saveChanges() {
 }
 
 .field-input {
-  padding: 18px 24px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px 18px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -452,12 +454,18 @@ function saveChanges() {
   transition: border-color 0.15s;
 }
 
+.field-input::placeholder {
+  color: var(--muted-foreground);
+}
+
 .field-input:focus {
   border-color: var(--primary);
 }
 
 .field-select {
-  padding: 18px 24px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px 18px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -469,6 +477,33 @@ function saveChanges() {
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   transition: border-color 0.15s;
+}
+
+@media (max-width: 768px) {
+  .edit-page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .page-header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-card {
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
+
+  .avatar-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
 
 .field-select:focus {

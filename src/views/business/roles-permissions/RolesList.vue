@@ -366,7 +366,8 @@ async function performDelete() {
 
 /* Table card */
 .table-card {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -383,7 +384,7 @@ async function performDelete() {
 /* Real table */
 .roles-table {
   width: 100%;
-  table-layout: fixed;
+  min-width: 620px;
   border-collapse: collapse;
 }
 
@@ -411,32 +412,20 @@ async function performDelete() {
   border-bottom: none;
 }
 
-.col--role {
-  width: 36%;
-}
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+  }
 
-.col--members {
-  width: 11%;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--foreground);
-}
+  .page__header {
+    flex-direction: column;
+    gap: 12px;
+  }
 
-.col--permissions {
-  width: 17%;
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--muted-foreground);
-}
-
-.col--edited {
-  width: 24%;
-}
-
-.col--actions {
-  width: 12%;
+  .page__header .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .table-empty {
