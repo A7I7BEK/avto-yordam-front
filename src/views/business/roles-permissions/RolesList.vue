@@ -158,82 +158,84 @@ async function performDelete() {
       </div>
 
       <template v-else>
-        <table class="roles-table">
-          <thead>
-            <tr>
-              <th class="col--role">Role</th>
-              <th class="col--members">Members</th>
-              <th class="col--permissions">Permissions</th>
-              <th class="col--edited">Last edited</th>
-              <th class="col--actions">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="role in paginatedRoles"
-              :key="role.id"
-            >
-              <td class="col--role">
-                <div class="role-info">
-                  <span
-                    class="role-dot"
-                    :style="{ background: role.color }"
-                  />
-                  <div class="role-text">
-                    <span class="role-name">{{ role.name }}</span>
-                    <span class="role-desc">{{ role.description }}</span>
-                  </div>
-                </div>
-              </td>
-              <td class="col--members">{{ role.memberCount }}</td>
-              <td class="col--permissions">
-                {{ role.isSystem ? 'All permissions' : `${role.enabledPermissionCount} enabled` }}
-              </td>
-              <td class="col--edited">
-                <span class="edited-date">{{ role.lastEditedDate }}</span>
-                <span class="edited-by">by {{ role.lastEditedBy }}</span>
-              </td>
-              <td class="col--actions">
-                <div class="action-btns">
-                  <button
-                    type="button"
-                    class="icon-btn"
-                    title="View"
-                    @click="viewRole(role.id)"
-                  >
-                    <Eye :size="16" />
-                  </button>
-                  <button
-                    v-if="!role.isSystem"
-                    type="button"
-                    class="icon-btn"
-                    title="Edit"
-                    @click="editRole(role.id)"
-                  >
-                    <Pencil :size="16" />
-                  </button>
-                  <button
-                    v-if="!role.isSystem"
-                    type="button"
-                    class="icon-btn icon-btn--danger"
-                    title="Delete"
-                    @click="askDelete(role)"
-                  >
-                    <Trash2 :size="16" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="paginatedRoles.length === 0">
-              <td
-                colspan="5"
-                class="table-empty"
+        <div class="table-scroll-wrapper">
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th class="col--role">Role</th>
+                <th class="col--members">Members</th>
+                <th class="col--permissions">Permissions</th>
+                <th class="col--edited">Last edited</th>
+                <th class="col--actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="role in paginatedRoles"
+                :key="role.id"
               >
-                No roles found
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <td class="col--role">
+                  <div class="role-info">
+                    <span
+                      class="role-dot"
+                      :style="{ background: role.color }"
+                    />
+                    <div class="role-text">
+                      <span class="role-name">{{ role.name }}</span>
+                      <span class="role-desc">{{ role.description }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="col--members">{{ role.memberCount }}</td>
+                <td class="col--permissions">
+                  {{ role.isSystem ? 'All permissions' : `${role.enabledPermissionCount} enabled` }}
+                </td>
+                <td class="col--edited">
+                  <span class="edited-date">{{ role.lastEditedDate }}</span>
+                  <span class="edited-by">by {{ role.lastEditedBy }}</span>
+                </td>
+                <td class="col--actions">
+                  <div class="action-btns">
+                    <button
+                      type="button"
+                      class="icon-btn"
+                      title="View"
+                      @click="viewRole(role.id)"
+                    >
+                      <Eye :size="16" />
+                    </button>
+                    <button
+                      v-if="!role.isSystem"
+                      type="button"
+                      class="icon-btn"
+                      title="Edit"
+                      @click="editRole(role.id)"
+                    >
+                      <Pencil :size="16" />
+                    </button>
+                    <button
+                      v-if="!role.isSystem"
+                      type="button"
+                      class="icon-btn icon-btn--danger"
+                      title="Delete"
+                      @click="askDelete(role)"
+                    >
+                      <Trash2 :size="16" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="paginatedRoles.length === 0">
+                <td
+                  colspan="5"
+                  class="table-empty"
+                >
+                  No roles found
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <!-- Pagination -->
         <div class="table-footer">
@@ -366,11 +368,16 @@ async function performDelete() {
 
 /* Table card */
 .table-card {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+}
+
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-card__loading {
@@ -423,8 +430,15 @@ async function performDelete() {
   }
 
   .page__header .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
+  }
+
+  .table-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
   }
 }
 

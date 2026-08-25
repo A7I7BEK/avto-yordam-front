@@ -283,36 +283,38 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
     <!-- Recent Bookings -->
     <div class="table-card">
       <div class="card-title-bar">Recent bookings</div>
-      <table class="bookings-table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Service</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="b in recentBookings"
-            :key="b.id"
-          >
-            <td class="order-id">{{ b.id }}</td>
-            <td>{{ b.customer }}</td>
-            <td>{{ b.service }}</td>
-            <td>{{ b.date }}</td>
-            <td>
-              <StatusBadge
-                :status="b.status"
-                :variant="b.variant"
-              />
-            </td>
-            <td class="amount">{{ b.amount }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll-wrapper">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Service</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="b in recentBookings"
+              :key="b.id"
+            >
+              <td class="order-id">{{ b.id }}</td>
+              <td>{{ b.customer }}</td>
+              <td>{{ b.service }}</td>
+              <td>{{ b.date }}</td>
+              <td>
+                <StatusBadge
+                  :status="b.status"
+                  :variant="b.variant"
+                />
+              </td>
+              <td class="amount">{{ b.amount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -383,11 +385,16 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 .table-card,
 .chart-card {
   flex: 1;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 16px;
+}
+
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 1023px) {

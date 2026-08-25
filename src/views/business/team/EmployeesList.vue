@@ -284,121 +284,123 @@ function goToNext() {
       </div>
 
       <!-- Table -->
-      <table class="data-table">
-        <thead>
-          <tr class="column-headers">
-            <th>Employee</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Last active</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-if="!loading && pagedEmployees.length === 0"
-            class="empty-row"
-          >
-            <td
-              colspan="5"
-              class="empty-state"
+      <div class="table-scroll-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr class="column-headers">
+              <th>Employee</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Last active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-if="!loading && pagedEmployees.length === 0"
+              class="empty-row"
             >
-              No employees found
-            </td>
-          </tr>
-          <tr
-            v-for="emp in pagedEmployees"
-            :key="emp.id"
-            class="data-row"
-          >
-            <!-- Employee cell -->
-            <td>
-              <div class="employee-cell">
-                <div
-                  class="avatar"
-                  :style="{ background: emp.avatarColor }"
-                >
-                  {{ emp.initials }}
-                </div>
-                <div class="employee-info">
-                  <span class="employee-name">{{ emp.name }}</span>
-                  <span class="employee-email">{{ emp.email }}</span>
-                </div>
-              </div>
-            </td>
-
-            <!-- Role cell -->
-            <td>
-              <div class="role-cell">
-                <span
-                  class="role-dot"
-                  :style="{ background: emp.roleColor }"
-                />
-                <span class="role-name">{{ emp.role }}</span>
-              </div>
-            </td>
-
-            <!-- Status cell -->
-            <td>
-              <span
-                class="status-badge"
-                :class="{
-                  'status-badge--active': emp.status === 'Active',
-                  'status-badge--inactive': emp.status === 'Inactive',
-                }"
+              <td
+                colspan="5"
+                class="empty-state"
               >
-                {{ emp.statusLabel }}
-              </span>
-            </td>
+                No employees found
+              </td>
+            </tr>
+            <tr
+              v-for="emp in pagedEmployees"
+              :key="emp.id"
+              class="data-row"
+            >
+              <!-- Employee cell -->
+              <td>
+                <div class="employee-cell">
+                  <div
+                    class="avatar"
+                    :style="{ background: emp.avatarColor }"
+                  >
+                    {{ emp.initials }}
+                  </div>
+                  <div class="employee-info">
+                    <span class="employee-name">{{ emp.name }}</span>
+                    <span class="employee-email">{{ emp.email }}</span>
+                  </div>
+                </div>
+              </td>
 
-            <!-- Last active cell -->
-            <td>
-              <div class="last-active-cell">
-                <span class="last-active-time">{{ emp.lastActive }}</span>
-                <span class="last-active-date">{{ emp.lastActiveDate }}</span>
-              </div>
-            </td>
+              <!-- Role cell -->
+              <td>
+                <div class="role-cell">
+                  <span
+                    class="role-dot"
+                    :style="{ background: emp.roleColor }"
+                  />
+                  <span class="role-name">{{ emp.role }}</span>
+                </div>
+              </td>
 
-            <!-- Actions cell -->
-            <td>
-              <div class="actions-cell">
-                <button
-                  type="button"
-                  class="action-btn"
-                  title="View"
-                  @click="viewEmployee(emp.id)"
+              <!-- Status cell -->
+              <td>
+                <span
+                  class="status-badge"
+                  :class="{
+                    'status-badge--active': emp.status === 'Active',
+                    'status-badge--inactive': emp.status === 'Inactive',
+                  }"
                 >
-                  <Eye :size="16" />
-                </button>
-                <button
-                  type="button"
-                  class="action-btn"
-                  title="Edit"
-                  @click="editEmployee(emp.id)"
-                >
-                  <Pencil :size="16" />
-                </button>
-                <button
-                  type="button"
-                  class="action-btn"
-                  title="Reset password"
-                  @click="resetPassword(emp.id)"
-                >
-                  <KeyRound :size="16" />
-                </button>
-                <button
-                  type="button"
-                  class="action-btn action-btn--danger"
-                  title="Delete"
-                  @click="deleteEmployee(emp.id)"
-                >
-                  <Trash2 :size="16" />
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  {{ emp.statusLabel }}
+                </span>
+              </td>
+
+              <!-- Last active cell -->
+              <td>
+                <div class="last-active-cell">
+                  <span class="last-active-time">{{ emp.lastActive }}</span>
+                  <span class="last-active-date">{{ emp.lastActiveDate }}</span>
+                </div>
+              </td>
+
+              <!-- Actions cell -->
+              <td>
+                <div class="actions-cell">
+                  <button
+                    type="button"
+                    class="action-btn"
+                    title="View"
+                    @click="viewEmployee(emp.id)"
+                  >
+                    <Eye :size="16" />
+                  </button>
+                  <button
+                    type="button"
+                    class="action-btn"
+                    title="Edit"
+                    @click="editEmployee(emp.id)"
+                  >
+                    <Pencil :size="16" />
+                  </button>
+                  <button
+                    type="button"
+                    class="action-btn"
+                    title="Reset password"
+                    @click="resetPassword(emp.id)"
+                  >
+                    <KeyRound :size="16" />
+                  </button>
+                  <button
+                    type="button"
+                    class="action-btn action-btn--danger"
+                    title="Delete"
+                    @click="deleteEmployee(emp.id)"
+                  >
+                    <Trash2 :size="16" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div class="table-footer">
@@ -526,11 +528,16 @@ function goToNext() {
 
 /* ===== Table card ===== */
 .table-card {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+}
+
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ===== Toolbar ===== */
@@ -879,5 +886,50 @@ function goToNext() {
   font-size: 13px;
   color: var(--muted-foreground);
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .employees-page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .page-header .btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    padding: 12px 14px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .filter-group {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .filter-pill {
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .table-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+  }
 }
 </style>
