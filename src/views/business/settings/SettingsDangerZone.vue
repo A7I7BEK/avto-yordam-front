@@ -113,13 +113,15 @@ function confirmDelete() {
             an admin.
           </span>
         </div>
-        <button
-          type="button"
-          class="btn btn--outline-destructive"
-          @click="openModal('transfer')"
-        >
-          Transfer ownership
-        </button>
+        <div class="danger-row-actions">
+          <button
+            type="button"
+            class="btn btn--outline-destructive"
+            @click="openModal('transfer')"
+          >
+            Transfer ownership
+          </button>
+        </div>
       </div>
 
       <!-- Row 2: Organization activation state -->
@@ -168,13 +170,15 @@ function confirmDelete() {
             history. This cannot be undone.
           </span>
         </div>
-        <button
-          type="button"
-          class="btn btn--filled-destructive"
-          @click="openModal('delete')"
-        >
-          Delete organization
-        </button>
+        <div class="danger-row-actions">
+          <button
+            type="button"
+            class="btn btn--filled-destructive"
+            @click="openModal('delete')"
+          >
+            Delete organization
+          </button>
+        </div>
       </div>
     </div>
 
@@ -396,14 +400,14 @@ function confirmDelete() {
 /* ===== Danger row ===== */
 .danger-row {
   display: flex;
-  gap: 24px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 0 16px 0;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 0 0 20px 0;
 }
 
 .danger-row--bordered {
-  padding: 16px 0;
+  padding: 20px 0;
   border-top: 1px solid var(--border);
 }
 
@@ -414,14 +418,32 @@ function confirmDelete() {
 .danger-row-text {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  min-width: 0;
+  gap: 4px;
+  width: 100%;
 }
 
 .danger-row-actions {
   display: flex;
   gap: 12px;
   align-items: center;
+  width: 100%;
+  margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+  .danger-card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .danger-row-actions {
+    width: 100%;
+  }
+
+  .danger-row-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .status-pill {

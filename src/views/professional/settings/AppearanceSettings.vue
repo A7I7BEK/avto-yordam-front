@@ -211,19 +211,21 @@ const languages = [
 
 .theme-cards-row {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .theme-card {
   display: flex;
-  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
   flex-direction: column;
   gap: 10px;
   padding: 14px;
   cursor: pointer;
   background: var(--card);
   border: 1px solid var(--border-soft);
-  border-radius: 24px;
+  border-radius: 20px;
 }
 
 .theme-card.selected {
@@ -233,7 +235,7 @@ const languages = [
 .theme-preview {
   position: relative;
   display: flex;
-  height: 120px;
+  height: 90px;
   overflow: hidden;
   border: 1px solid var(--border-soft);
   border-radius: 6px;
@@ -327,19 +329,21 @@ const languages = [
 
 .language-list {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .language-item {
   display: flex;
-  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
   gap: 14px;
   align-items: center;
-  padding: 16px;
+  padding: 14px 16px;
   cursor: pointer;
   background: var(--card);
   border: 1px solid var(--border-soft);
-  border-radius: 24px;
+  border-radius: 16px;
 }
 
 .language-item.selected {
