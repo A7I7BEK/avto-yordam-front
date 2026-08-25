@@ -193,48 +193,50 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
       <!-- Performance Table -->
       <div class="table-card">
         <div class="card-title-bar">Performance by service category</div>
-        <div class="table-header">
-          <span class="col-category">CATEGORY</span>
-          <span class="col-rating">RATING</span>
-          <span class="col-orders">ORDERS</span>
-          <span class="col-trend">TREND</span>
-        </div>
-        <div
-          v-for="row in performanceRows"
-          :key="row.name"
-          class="table-row"
-        >
-          <div class="col-category">
-            <div class="cat-icon">
-              <component
-                :is="row.icon"
-                :size="16"
-                color="var(--muted-foreground)"
+        <div class="table-scroll-wrapper">
+          <div class="table-header">
+            <span class="col-category">CATEGORY</span>
+            <span class="col-rating">RATING</span>
+            <span class="col-orders">ORDERS</span>
+            <span class="col-trend">TREND</span>
+          </div>
+          <div
+            v-for="row in performanceRows"
+            :key="row.name"
+            class="table-row"
+          >
+            <div class="col-category">
+              <div class="cat-icon">
+                <component
+                  :is="row.icon"
+                  :size="16"
+                  color="var(--muted-foreground)"
+                />
+              </div>
+              <div class="cat-text">
+                <span class="cat-name">{{ row.name }}</span>
+                <span class="cat-sub">{{ row.subcats }}</span>
+              </div>
+            </div>
+            <div class="col-rating">
+              <Star
+                :size="14"
+                color="#FBBF24"
               />
+              <span>{{ row.rating }}</span>
             </div>
-            <div class="cat-text">
-              <span class="cat-name">{{ row.name }}</span>
-              <span class="cat-sub">{{ row.subcats }}</span>
+            <div class="col-orders">
+              {{ row.orders }}
             </div>
-          </div>
-          <div class="col-rating">
-            <Star
-              :size="14"
-              color="#FBBF24"
-            />
-            <span>{{ row.rating }}</span>
-          </div>
-          <div class="col-orders">
-            {{ row.orders }}
-          </div>
-          <div class="col-trend">
-            <div class="trend-track">
-              <div
-                class="trend-fill"
-                :style="{ width: `${(row.trendWidth / 180) * 100}%` }"
-              />
+            <div class="col-trend">
+              <div class="trend-track">
+                <div
+                  class="trend-fill"
+                  :style="{ width: `${(row.trendWidth / 180) * 100}%` }"
+                />
+              </div>
+              <span class="trend-pct">{{ row.trendPct }}</span>
             </div>
-            <span class="trend-pct">{{ row.trendPct }}</span>
           </div>
         </div>
       </div>
@@ -254,27 +256,29 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
             </div>
           </div>
         </div>
-        <div class="chart-body">
-          <div
-            v-for="(day, idx) in chartDays"
-            :key="day"
-            class="chart-column"
-          >
-            <div class="bar-container">
-              <div
-                class="bar bar-cancelled"
-                :style="{
-                  height: `${((chartData[idx]?.cancelled ?? 0) / maxCompleted) * 100}%`,
-                }"
-              />
-              <div
-                class="bar bar-completed"
-                :style="{
-                  height: `${((chartData[idx]?.completed ?? 0) / maxCompleted) * 100}%`,
-                }"
-              />
+        <div class="chart-scroll-wrapper">
+          <div class="chart-body">
+            <div
+              v-for="(day, idx) in chartDays"
+              :key="day"
+              class="chart-column"
+            >
+              <div class="bar-container">
+                <div
+                  class="bar bar-cancelled"
+                  :style="{
+                    height: `${((chartData[idx]?.cancelled ?? 0) / maxCompleted) * 100}%`,
+                  }"
+                />
+                <div
+                  class="bar bar-completed"
+                  :style="{
+                    height: `${((chartData[idx]?.completed ?? 0) / maxCompleted) * 100}%`,
+                  }"
+                />
+              </div>
+              <span class="bar-label">{{ day }}</span>
             </div>
-            <span class="bar-label">{{ day }}</span>
           </div>
         </div>
       </div>
@@ -391,7 +395,8 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
   border-radius: 16px;
 }
 
-.table-scroll-wrapper {
+.table-scroll-wrapper,
+.chart-scroll-wrapper {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -434,6 +439,7 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 .table-header {
   display: flex;
   align-items: center;
+  min-width: 540px;
   padding: 10px 18px;
   font-family: Inter, sans-serif;
   font-size: 11px;
@@ -472,6 +478,7 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
 .table-row {
   display: flex;
   align-items: center;
+  min-width: 540px;
   padding: 12px 18px;
   font-family: Inter, sans-serif;
   font-size: 13px;

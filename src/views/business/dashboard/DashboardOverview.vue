@@ -442,6 +442,7 @@ function formatAmount(amount: number, currency: string): string {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 24px;
@@ -452,6 +453,7 @@ function formatAmount(amount: number, currency: string): string {
 }
 
 .orders-table-wrapper {
+  width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }

@@ -329,6 +329,7 @@ function statusBg(status: string): string {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 24px;

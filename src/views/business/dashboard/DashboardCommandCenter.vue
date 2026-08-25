@@ -437,6 +437,7 @@ function formatAmount(amount: number): string {
   flex-direction: column;
   min-height: 320px;
   padding: 20px;
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 24px;
