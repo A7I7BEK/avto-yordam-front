@@ -26,6 +26,8 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
   const notificationCount = ref(3);
   const language = ref<LanguageCode>(getStoredLanguageCode());
 
+  const isMobileSidebarOpen = ref(false);
+
   function setActiveNavItem(item: typeof activeNavItem.value) {
     activeNavItem.value = item;
   }
@@ -45,6 +47,14 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
     notificationCount.value = count;
   }
 
+  function toggleMobileSidebar() {
+    isMobileSidebarOpen.value = !isMobileSidebarOpen.value;
+  }
+
+  function closeMobileSidebar() {
+    isMobileSidebarOpen.value = false;
+  }
+
   return {
     activeNavItem,
     invitationCount,
@@ -55,9 +65,12 @@ export const useProfessionalAppStore = defineStore('professional-app', () => {
     activeOrganization,
     notificationCount,
     language,
+    isMobileSidebarOpen,
     setActiveNavItem,
     decrementInvitationCount,
     setLanguage,
     setNotificationCount,
+    toggleMobileSidebar,
+    closeMobileSidebar,
   };
 });

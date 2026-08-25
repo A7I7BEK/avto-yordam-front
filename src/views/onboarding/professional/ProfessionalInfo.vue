@@ -383,7 +383,7 @@ async function goNext() {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  padding: 16px 24px;
+  padding: 14px 24px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -401,5 +401,34 @@ async function goNext() {
 .btn-next {
   color: #ffffff;
   background: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .onboarding-page {
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .header-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card-title {
+    font-size: 20px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+  }
+
+  .footer-buttons {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
 </style>

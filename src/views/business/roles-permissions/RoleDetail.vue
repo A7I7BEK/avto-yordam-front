@@ -499,4 +499,24 @@ function allowedCount(cat: PermissionCategory): number {
   background: var(--accent);
   border: 1px solid var(--border);
 }
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+  }
+
+  .perms-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .perm-card__header {
+    padding: 16px;
+  }
+
+  .perm-table td {
+    padding: 6px 16px;
+  }
+}
 </style>

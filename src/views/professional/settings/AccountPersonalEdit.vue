@@ -493,6 +493,8 @@ onMounted(async () => {
           <textarea
             v-model="bio"
             class="bio-input"
+            rows="3"
+            placeholder="Tell customers and team members about your experience..."
           />
         </div>
       </div>
@@ -913,58 +915,111 @@ onMounted(async () => {
 
 .days-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
 .day-chip {
-  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
   font-family: Inter, sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  color: var(--foreground);
+  font-weight: 500;
+  color: var(--muted-foreground);
   cursor: pointer;
-  background: transparent;
+  background: var(--muted);
   border: 1px solid var(--border-soft);
   border-radius: 999px;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
+}
+
+.day-chip:hover {
+  color: var(--foreground);
+  background: var(--accent);
+  border-color: var(--border);
 }
 
 .day-chip.active {
+  font-weight: 600;
   color: var(--primary-foreground);
   background: var(--primary);
   border-color: var(--primary);
 }
 
-/* Bio display */
+/* Bio Input */
 .bio-input {
   box-sizing: border-box;
   width: 100%;
-  height: 52px;
-  padding: 14px;
+  min-height: 80px;
+  padding: 12px 16px;
   font-family: Inter, sans-serif;
   font-size: 13px;
+  line-height: 1.5;
   color: var(--foreground);
-  resize: vertical;
   outline: none;
   background: var(--card);
   border: 1px solid var(--border-soft);
-  border-radius: 6px;
+  border-radius: 12px;
+  resize: vertical;
+  transition: border-color 0.15s ease;
 }
 
 .bio-input:focus {
   border-color: var(--primary);
 }
 
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 640px) {
+  .card {
+    padding: 18px 16px;
+    border-radius: 20px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .card-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn-outline,
+  .header-actions .btn-primary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .photo-actions {
+    width: 100%;
+  }
+
+  .photo-actions .btn-outline {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-section {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .time-range {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .time-pill {
+    box-sizing: border-box;
+    width: 100%;
   }
 }
 </style>

@@ -168,7 +168,7 @@ function goBackToSignIn() {
 .field-input {
   box-sizing: border-box;
   width: 100%;
-  padding: 18px 24px;
+  padding: 16px 20px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -189,7 +189,7 @@ function goBackToSignIn() {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 16px 24px;
+  padding: 15px 20px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;

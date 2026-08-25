@@ -113,13 +113,15 @@ function confirmDelete() {
             an admin.
           </span>
         </div>
-        <button
-          type="button"
-          class="btn btn--outline-destructive"
-          @click="openModal('transfer')"
-        >
-          Transfer ownership
-        </button>
+        <div class="danger-row-actions">
+          <button
+            type="button"
+            class="btn btn--outline-destructive"
+            @click="openModal('transfer')"
+          >
+            Transfer ownership
+          </button>
+        </div>
       </div>
 
       <!-- Row 2: Organization activation state -->
@@ -168,13 +170,15 @@ function confirmDelete() {
             history. This cannot be undone.
           </span>
         </div>
-        <button
-          type="button"
-          class="btn btn--filled-destructive"
-          @click="openModal('delete')"
-        >
-          Delete organization
-        </button>
+        <div class="danger-row-actions">
+          <button
+            type="button"
+            class="btn btn--filled-destructive"
+            @click="openModal('delete')"
+          >
+            Delete organization
+          </button>
+        </div>
       </div>
     </div>
 
@@ -420,8 +424,40 @@ function confirmDelete() {
 
 .danger-row-actions {
   display: flex;
+  flex-shrink: 0;
   gap: 12px;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .danger-card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .danger-row {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 16px 0;
+  }
+
+  .danger-row:first-child {
+    padding-top: 0;
+  }
+
+  .danger-row:last-child {
+    padding-bottom: 0;
+  }
+
+  .danger-row-actions {
+    width: 100%;
+  }
+
+  .danger-row-actions .btn {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .status-pill {

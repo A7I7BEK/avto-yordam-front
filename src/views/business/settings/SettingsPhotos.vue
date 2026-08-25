@@ -302,31 +302,33 @@ async function performDeletePhoto() {
               Up to 12 photos of your workshop, team and completed work.
             </p>
           </div>
-          <button
-            type="button"
-            class="btn btn--primary"
-            :disabled="uploadingGallery || galleryPhotos.length >= MAX_GALLERY_PHOTOS"
-            @click="triggerAddPhotos"
-          >
-            <Loader2
-              v-if="uploadingGallery"
-              :size="13"
-              class="spin"
-            />
-            <Plus
-              v-else
-              :size="13"
-            />
-            Add photos
-          </button>
-          <input
-            ref="galleryInputRef"
-            type="file"
-            multiple
-            accept="image/*"
-            style="display: none"
-            @change="onGallerySelected"
-          >
+          <div class="gallery-actions">
+            <button
+              type="button"
+              class="btn btn--primary"
+              :disabled="uploadingGallery || galleryPhotos.length >= MAX_GALLERY_PHOTOS"
+              @click="triggerAddPhotos"
+            >
+              <Loader2
+                v-if="uploadingGallery"
+                :size="13"
+                class="spin"
+              />
+              <Plus
+                v-else
+                :size="13"
+              />
+              Add photos
+            </button>
+            <input
+              ref="galleryInputRef"
+              type="file"
+              multiple
+              accept="image/*"
+              style="display: none"
+              @change="onGallerySelected"
+            >
+          </div>
         </div>
 
         <!-- Gallery grid -->
@@ -614,6 +616,7 @@ async function performDeletePhoto() {
 /* ===== Gallery header ===== */
 .gallery-header {
   display: flex;
+  gap: 12px;
   align-items: flex-start;
   justify-content: space-between;
 }
@@ -624,25 +627,69 @@ async function performDeletePhoto() {
   gap: 2px;
 }
 
+.gallery-actions {
+  display: flex;
+  flex-shrink: 0;
+}
+
 /* ===== Gallery grid ===== */
 .gallery-grid {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
+  width: 100%;
 }
 
 .gallery-item {
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 6px;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: 120px;
   overflow: hidden;
   background: var(--accent);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .gallery-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .gallery-actions {
+    width: 100%;
+  }
+
+  .gallery-actions .btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .gallery-item {
+    height: auto;
+    min-height: 80px;
+    aspect-ratio: 1 / 1;
+    background: var(--card);
+    border-radius: 10px;
+  }
 }
 
 .gallery-image {

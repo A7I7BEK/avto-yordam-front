@@ -140,82 +140,81 @@ function cancel() {
           v-for="day in days"
           :key="day.key"
           class="day-row"
+          :class="{ 'day-row--closed': schedule[day.key].closed }"
         >
-          <!-- Day name -->
-          <div class="col col--day">
+          <!-- Day header (Day name & status switch) -->
+          <div class="day-row__header">
             <span class="day-name">{{ day.label }}</span>
+            <div class="status-toggle-group">
+              <span
+                class="status-label"
+                :class="{ 'status-label--muted': schedule[day.key].closed }"
+              >
+                {{ schedule[day.key].closed ? 'Closed' : 'Open' }}
+              </span>
+              <button
+                type="button"
+                class="toggle-switch"
+                :class="{ 'toggle-switch--on': !schedule[day.key].closed }"
+                :aria-label="`Toggle ${day.label} hours`"
+                @click="toggleDay(day.key)"
+              >
+                <span class="toggle-switch-knob" />
+              </button>
+            </div>
           </div>
 
           <!-- Hours area -->
           <div class="col col--hours">
-            <label
-              class="time-picker"
-              :class="{ 'time-picker--muted': schedule[day.key].closed }"
-              :for="`time-open-${day.key}`"
-            >
-              <Timer
-                :size="13"
-                class="time-picker-icon"
-              />
-              <span class="time-picker-value"
-                >{{ schedule[day.key].open }}</span
+            <template v-if="!schedule[day.key].closed">
+              <label
+                class="time-picker"
+                :for="`time-open-${day.key}`"
               >
-              <ChevronDown
-                :size="14"
-                class="time-picker-chevron"
-              />
-              <input
-                :id="`time-open-${day.key}`"
-                v-model="schedule[day.key].open"
-                type="time"
-                class="time-picker-input"
-                :disabled="schedule[day.key].closed"
+                <Timer
+                  :size="13"
+                  class="time-picker-icon"
+                />
+                <span class="time-picker-value">{{ schedule[day.key].open }}</span>
+                <ChevronDown
+                  :size="14"
+                  class="time-picker-chevron"
+                />
+                <input
+                  :id="`time-open-${day.key}`"
+                  v-model="schedule[day.key].open"
+                  type="time"
+                  class="time-picker-input"
+                >
+              </label>
+              <span class="time-separator">to</span>
+              <label
+                class="time-picker"
+                :for="`time-close-${day.key}`"
               >
-            </label>
-            <span class="time-separator">to</span>
-            <label
-              class="time-picker"
-              :class="{ 'time-picker--muted': schedule[day.key].closed }"
-              :for="`time-close-${day.key}`"
+                <Timer
+                  :size="13"
+                  class="time-picker-icon"
+                />
+                <span class="time-picker-value">{{ schedule[day.key].close }}</span>
+                <ChevronDown
+                  :size="14"
+                  class="time-picker-chevron"
+                />
+                <input
+                  :id="`time-close-${day.key}`"
+                  v-model="schedule[day.key].close"
+                  type="time"
+                  class="time-picker-input"
+                >
+              </label>
+            </template>
+            <div
+              v-else
+              class="closed-indicator"
             >
-              <Timer
-                :size="13"
-                class="time-picker-icon"
-              />
-              <span class="time-picker-value"
-                >{{ schedule[day.key].close }}</span
-              >
-              <ChevronDown
-                :size="14"
-                class="time-picker-chevron"
-              />
-              <input
-                :id="`time-close-${day.key}`"
-                v-model="schedule[day.key].close"
-                type="time"
-                class="time-picker-input"
-                :disabled="schedule[day.key].closed"
-              >
-            </label>
-          </div>
-
-          <!-- Status toggle -->
-          <div class="col col--status">
-            <span
-              class="status-label"
-              :class="{ 'status-label--muted': schedule[day.key].closed }"
-            >
-              {{ schedule[day.key].closed ? 'Closed' : 'Open' }}
-            </span>
-            <button
-              type="button"
-              class="toggle-switch"
-              :class="{ 'toggle-switch--on': !schedule[day.key].closed }"
-              :aria-label="`Toggle ${day.label} hours`"
-              @click="toggleDay(day.key)"
-            >
-              <span class="toggle-switch-knob" />
-            </button>
+              Closed all day
+            </div>
           </div>
         </div>
       </div>
@@ -384,6 +383,7 @@ function cancel() {
   flex: 1;
   gap: 10px;
   min-width: 0;
+  order: 2;
 }
 
 .col--status {
@@ -404,9 +404,10 @@ function cancel() {
 /* ===== Day rows ===== */
 .day-row {
   display: flex;
-  gap: 16px;
   align-items: center;
-  padding: 14px 2px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -414,11 +415,81 @@ function cancel() {
   border-bottom: none;
 }
 
+.day-row__header {
+  display: contents;
+}
+
 .day-name {
+  flex-shrink: 0;
+  width: 120px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: var(--foreground);
+  order: 1;
+}
+
+.status-toggle-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  width: 150px;
+  order: 3;
+}
+
+.closed-indicator {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 768px) {
+  .column-headers {
+    display: none;
+  }
+
+  .day-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .day-row__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .day-name {
+    width: auto;
+    order: unset;
+  }
+
+  .status-toggle-group {
+    width: auto;
+    order: unset;
+  }
+
+  .col--hours {
+    width: 100%;
+    order: unset;
+  }
+
+  .time-picker {
+    flex: 1;
+    width: auto;
+  }
 }
 
 /* ===== Time picker ===== */

@@ -404,14 +404,14 @@ function cashHeight(val: number): number {
 
 /* ===== KPI strip ===== */
 .kpi-strip {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 16px;
 }
 
 .kpi-card {
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
@@ -419,6 +419,44 @@ function cashHeight(val: number): number {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+}
+
+@media (max-width: 1023px) {
+  .kpi-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom-grid {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .earnings-page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .chart-card {
+    padding: 16px;
+  }
+
+  .chart-bars {
+    gap: 16px;
+  }
+
+  .info-card {
+    padding: 16px;
+  }
 }
 
 .kpi-card__header {

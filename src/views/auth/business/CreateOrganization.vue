@@ -1308,4 +1308,31 @@ async function submit() {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+@media (max-width: 640px) {
+  .onboarding-page {
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .form-card {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .actions-row {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .nav-button,
+  .submit-btn {
+    width: 100%;
+    height: 48px;
+  }
+}
 </style>

@@ -280,9 +280,11 @@ function goToCreateOrder() {
 
 .header-row {
   display: flex;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .header-row__left {
@@ -346,6 +348,8 @@ function goToCreateOrder() {
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
@@ -354,10 +358,16 @@ function goToCreateOrder() {
 .tabs {
   display: flex;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
 }
 
 .tab {
   display: inline-flex;
+  flex-shrink: 0;
   gap: 6px;
   align-items: center;
   padding: 6px 14px;
@@ -438,15 +448,33 @@ function goToCreateOrder() {
 
 .table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--border);
   border-radius: 10px;
 }
 
 .table {
   width: 100%;
+  min-width: 680px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+  .orders-page {
+    padding: 16px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-wrapper,
+  .search-input {
+    width: 100%;
+  }
 }
 
 .table th {

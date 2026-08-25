@@ -370,16 +370,16 @@ function formatAmount(amount: number): string {
 
 /* Big Stat Cards */
 .big-stats-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
 .big-stat-card {
   display: flex;
-  flex: 1;
   align-items: center;
   justify-content: space-between;
-  height: 120px;
+  min-height: 110px;
   padding: 18px 20px;
   background: var(--card);
   border: 1px solid var(--border-soft);
@@ -435,8 +435,9 @@ function formatAmount(amount: number): string {
 .card {
   display: flex;
   flex-direction: column;
-  height: 320px;
+  min-height: 320px;
   padding: 20px;
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 24px;
@@ -444,7 +445,32 @@ function formatAmount(amount: number): string {
 
 .card:has(.alerts-list),
 .card:has(.week-sub-cards) {
-  height: 250px;
+  min-height: 250px;
+}
+
+@media (max-width: 1023px) {
+  .big-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .two-col-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .command-center {
+    padding: 12px;
+  }
+
+  .big-stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 20px;
+  }
 }
 
 .card-header {

@@ -185,47 +185,49 @@ function formatAmount(amount: number, currency: string): string {
             >View all →</a
           >
         </div>
-        <table class="orders-table">
-          <thead>
-            <tr>
-              <th>Order</th>
-              <th>Customer</th>
-              <th>Service</th>
-              <th>Master</th>
-              <th>Amount</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="order in data.recentOrders"
-              :key="order.id"
-            >
-              <td class="order-id">{{ order.id }}</td>
-              <td>
-                <div class="customer-cell">
-                  <div class="avatar-small">{{ order.customerInitials }}</div>
-                  <span>{{ order.customerName }}</span>
-                </div>
-              </td>
-              <td class="service-cell">{{ order.service }}</td>
-              <td class="employee-cell">{{ order.employeeName }}</td>
-              <td class="amount-cell">{{ order.amount }}</td>
-              <td>
-                <span
-                  class="status-dot"
-                  :style="{ background: statusBg(order.status), color: statusColor(order.status) }"
-                >
+        <div class="orders-table-wrapper">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Master</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="order in data.recentOrders"
+                :key="order.id"
+              >
+                <td class="order-id">{{ order.id }}</td>
+                <td>
+                  <div class="customer-cell">
+                    <div class="avatar-small">{{ order.customerInitials }}</div>
+                    <span>{{ order.customerName }}</span>
+                  </div>
+                </td>
+                <td class="service-cell">{{ order.service }}</td>
+                <td class="employee-cell">{{ order.employeeName }}</td>
+                <td class="amount-cell">{{ order.amount }}</td>
+                <td>
                   <span
-                    class="dot"
-                    :style="{ background: statusColor(order.status) }"
-                  />
-                  {{ order.status }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    class="status-dot"
+                    :style="{ background: statusBg(order.status), color: statusColor(order.status) }"
+                  >
+                    <span
+                      class="dot"
+                      :style="{ background: statusColor(order.status) }"
+                    />
+                    {{ order.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Earnings -->
@@ -368,13 +370,13 @@ function formatAmount(amount: number, currency: string): string {
 
 /* KPI Row */
 .kpi-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
 .kpi-card {
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: 14px;
   padding: 18px;
@@ -440,25 +442,58 @@ function formatAmount(amount: number, currency: string): string {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 24px;
 }
 
 .recent-orders-card {
-  height: 350px;
+  min-height: 350px;
+}
+
+.orders-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .earnings-card {
-  height: 350px;
+  min-height: 350px;
 }
 
 .top-employees-card {
-  height: 250px;
+  min-height: 250px;
 }
 
 .service-breakdown-card {
-  height: 250px;
+  min-height: 250px;
+}
+
+@media (max-width: 1023px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .middle-row,
+  .bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .overview-dashboard {
+    padding: 12px;
+  }
+
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 20px;
+  }
 }
 
 .card-header {
@@ -488,6 +523,7 @@ function formatAmount(amount: number, currency: string): string {
 /* Recent Orders Table */
 .orders-table {
   width: 100%;
+  min-width: 500px;
   border-collapse: collapse;
 }
 

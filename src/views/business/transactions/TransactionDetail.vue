@@ -308,6 +308,38 @@ onMounted(async () => {
   width: 30%;
 }
 
+@media (max-width: 1023px) {
+  .detail-grid {
+    flex-direction: column;
+  }
+
+  .detail-right {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-page {
+    padding: 16px 12px;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .detail-header__left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .info-card {
+    padding: 16px;
+  }
+}
+
 /* ===== Header ===== */
 .detail-header {
   display: flex;

@@ -988,4 +988,47 @@ onMounted(async () => {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+@media (max-width: 640px) {
+  .settings-card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .input-row {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+
+  .alert-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .otp-actions {
+    width: 100%;
+  }
+
+  .cancel-btn,
+  .confirm-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .otp-container {
+    gap: 6px;
+  }
+
+  .otp-box {
+    width: 40px;
+    height: 46px;
+    font-size: 18px;
+  }
+}
 </style>

@@ -442,8 +442,9 @@ async function onInviteSend(data: {
     </div>
 
     <!-- Table -->
-    <div class="data-table-wrapper">
-      <table class="data-table">
+    <div class="data-table-card">
+      <div class="data-table-scroll">
+        <table class="data-table">
         <thead>
           <tr class="column-headers">
             <th>Member</th>
@@ -553,6 +554,7 @@ async function onInviteSend(data: {
           </tr>
         </tbody>
       </table>
+      </div>
 
       <!-- Table Footer -->
       <div class="table-footer">
@@ -880,13 +882,66 @@ async function onInviteSend(data: {
 /* ============================================
    Data Table
    ============================================ */
+.data-table-card {
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.data-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .data-table {
   width: 100%;
+  min-width: 680px;
   border-spacing: 0;
   border-collapse: separate;
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px 16px 0 0;
+}
+
+@media (max-width: 768px) {
+  .members-page {
+    padding: 16px 12px;
+  }
+
+  .header-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .header-row__right {
+    width: 100%;
+  }
+
+  .header-row__right .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .filters-row {
+    flex-wrap: wrap;
+  }
+
+  .filter-search {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .filter-pill {
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .table-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+  }
 }
 
 /* Header */
@@ -1182,9 +1237,7 @@ async function onInviteSend(data: {
   justify-content: space-between;
   padding: 12px 18px;
   background: var(--accent);
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 16px 16px;
+  border-top: 1px solid var(--border);
 }
 
 .table-footer__text {

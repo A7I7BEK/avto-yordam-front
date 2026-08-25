@@ -335,126 +335,130 @@ onMounted(() => {
 
     <!-- Table card -->
     <div class="table-card">
-      <table class="data-table">
-        <thead>
-          <tr class="column-headers">
-            <th>Transaction</th>
-            <th>Order</th>
-            <th>Amount</th>
-            <th>Method</th>
-            <th>Status</th>
-            <th>Paid at</th>
-            <th>Created</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-if="loading"
-            class="empty-row"
-          >
-            <td
-              colspan="8"
-              class="empty-state"
+      <div class="table-scroll-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr class="column-headers">
+              <th>Transaction</th>
+              <th>Order</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Paid at</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-if="loading"
+              class="empty-row"
             >
-              <Loader2
-                :size="16"
-                class="spin"
-              />
-              Loading transactions...
-            </td>
-          </tr>
-          <tr
-            v-else-if="transactions.length === 0"
-            class="empty-row"
-          >
-            <td
-              colspan="8"
-              class="empty-state"
-            >
-              No transactions found
-            </td>
-          </tr>
-          <tr
-            v-for="tx in transactions"
-            :key="tx.id"
-            class="data-row"
-          >
-            <!-- Transaction ID -->
-            <td class="cell-transaction">
-              {{ tx.id }}
-            </td>
-
-            <!-- Order -->
-            <td class="cell-order">
-              {{ tx.orderId }}
-            </td>
-
-            <!-- Amount -->
-            <td class="cell-amount">
-              {{ formatAmount(tx.amount) }}
-            </td>
-
-            <!-- Method -->
-            <td>
-              <div class="provider-pill">
-                <CircleDollarSign :size="14" />
-                {{ methodLabel(tx.method) }}
-              </div>
-            </td>
-
-            <!-- Status -->
-            <td>
-              <span
-                class="status-badge"
-                :class="statusClass(tx.status)"
+              <td
+                colspan="8"
+                class="empty-state"
               >
-                {{ tx.status }}
-              </span>
-            </td>
+                <div class="empty-state-content">
+                  <Loader2
+                    :size="16"
+                    class="spin"
+                  />
+                  <span>Loading transactions...</span>
+                </div>
+              </td>
+            </tr>
+            <tr
+              v-else-if="transactions.length === 0"
+              class="empty-row"
+            >
+              <td
+                colspan="8"
+                class="empty-state"
+              >
+                No transactions found
+              </td>
+            </tr>
+            <tr
+              v-for="tx in transactions"
+              :key="tx.id"
+              class="data-row"
+            >
+              <!-- Transaction ID -->
+              <td class="cell-transaction">
+                {{ tx.id }}
+              </td>
 
-            <!-- Paid at -->
-            <td class="cell-date">
-              {{ formatDate(tx.paidAt) }}
-            </td>
+              <!-- Order -->
+              <td class="cell-order">
+                {{ tx.orderId }}
+              </td>
 
-            <!-- Created -->
-            <td class="cell-date">
-              {{ formatDate(tx.createdDate) }}
-            </td>
+              <!-- Amount -->
+              <td class="cell-amount">
+                {{ formatAmount(tx.amount) }}
+              </td>
 
-            <!-- Actions -->
-            <td>
-              <div class="actions-cell">
-                <button
-                  type="button"
-                  class="action-btn"
-                  title="Edit transaction"
-                  @click="openEdit(tx)"
+              <!-- Method -->
+              <td>
+                <div class="provider-pill">
+                  <CircleDollarSign :size="14" />
+                  {{ methodLabel(tx.method) }}
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td>
+                <span
+                  class="status-badge"
+                  :class="statusClass(tx.status)"
                 >
-                  <Pencil :size="15" />
-                </button>
-                <button
-                  type="button"
-                  class="action-btn"
-                  title="View transaction"
-                  @click="viewTransaction(tx.id)"
-                >
-                  <Eye :size="15" />
-                </button>
-                <button
-                  type="button"
-                  class="action-btn action-btn--danger"
-                  title="Delete transaction"
-                  @click="handleDelete(tx)"
-                >
-                  <Trash2 :size="15" />
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  {{ tx.status }}
+                </span>
+              </td>
+
+              <!-- Paid at -->
+              <td class="cell-date">
+                {{ formatDate(tx.paidAt) }}
+              </td>
+
+              <!-- Created -->
+              <td class="cell-date">
+                {{ formatDate(tx.createdDate) }}
+              </td>
+
+              <!-- Actions -->
+              <td>
+                <div class="actions-cell">
+                  <button
+                    type="button"
+                    class="action-btn"
+                    title="Edit transaction"
+                    @click="openEdit(tx)"
+                  >
+                    <Pencil :size="15" />
+                  </button>
+                  <button
+                    type="button"
+                    class="action-btn"
+                    title="View transaction"
+                    @click="viewTransaction(tx.id)"
+                  >
+                    <Eye :size="15" />
+                  </button>
+                  <button
+                    type="button"
+                    class="action-btn action-btn--danger"
+                    title="Delete transaction"
+                    @click="handleDelete(tx)"
+                  >
+                    <Trash2 :size="15" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div class="table-footer">
@@ -746,10 +750,40 @@ onMounted(() => {
   border-radius: var(--radius-xl);
 }
 
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ===== Data table ===== */
 .data-table {
   width: 100%;
+  min-width: 680px;
   border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+  .transactions-page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-export {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .table-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+  }
 }
 
 /* ===== Column headers ===== */
@@ -967,15 +1001,19 @@ onMounted(() => {
 
 /* ===== Empty state ===== */
 .empty-state {
-  display: flex;
+  padding: 48px 18px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  vertical-align: middle;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.empty-state-content {
+  display: inline-flex;
   gap: 8px;
   align-items: center;
   justify-content: center;
-  padding: 40px 18px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  color: var(--muted-foreground);
-  text-align: center;
 }
 
 /* ===== Modal ===== */

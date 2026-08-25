@@ -2,6 +2,7 @@
   setup
   lang="ts"
 >
+import { Menu } from '@lucide/vue';
 import { useProfessionalAppStore } from '@/stores/professionalApp';
 import LanguageSwitcher from './LanguageSwitcher.vue';
 import NotificationBell from './NotificationBell.vue';
@@ -15,22 +16,32 @@ const store = useProfessionalAppStore();
   <header class="header">
     <!-- Left: User Identity -->
     <div class="header-left">
-      <span class="user-name"
-        >{{ store.userName }}
-        — {{ store.userSpecialization }}</span
+      <button
+        class="menu-btn"
+        type="button"
+        aria-label="Toggle navigation menu"
+        @click="store.toggleMobileSidebar"
       >
-      <div class="org-line">
-        <span class="accent-dot" />
-        <span class="org-names">{{ store.organizations.join(', ') }}</span>
+        <Menu :size="22" />
+      </button>
+      <div class="user-block">
+        <span class="user-name"
+          >{{ store.userName }}
+          <span class="user-spec">— {{ store.userSpecialization }}</span></span
+        >
+        <div class="org-line">
+          <span class="accent-dot" />
+          <span class="org-names">{{ store.organizations.join(', ') }}</span>
+        </div>
       </div>
     </div>
 
     <!-- Right: Utility Controls -->
     <div class="header-right">
-      <LanguageSwitcher />
-      <ThemeToggle />
+      <LanguageSwitcher class="header-desktop-only" />
+      <ThemeToggle class="header-desktop-only" />
       <NotificationBell />
-      <UserAvatarDropdown />
+      <UserAvatarDropdown class="header-desktop-only" />
     </div>
   </header>
 </template>
@@ -49,8 +60,35 @@ const store = useProfessionalAppStore();
 
 .header-left {
   display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--foreground);
+  cursor: pointer;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
+}
+
+.menu-btn:hover {
+  background: var(--accent);
+}
+
+.user-block {
+  display: flex;
   flex-direction: column;
   gap: 1px;
+  min-width: 0;
 }
 
 .user-name {
@@ -60,12 +98,21 @@ const store = useProfessionalAppStore();
   line-height: 1.3;
   color: var(--foreground);
   letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-spec {
+  font-weight: 400;
+  color: var(--muted-icon);
 }
 
 .org-line {
   display: flex;
   gap: 6px;
   align-items: center;
+  white-space: nowrap;
 }
 
 .accent-dot {
@@ -83,11 +130,47 @@ const store = useProfessionalAppStore();
   line-height: 1.3;
   color: var(--muted-foreground);
   letter-spacing: 0.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-right {
   display: flex;
+  flex-shrink: 0;
   gap: 8px;
   align-items: center;
+}
+
+@media (max-width: 1023px) {
+  .menu-btn {
+    display: inline-flex;
+  }
+
+  .header-desktop-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    height: 64px;
+    padding: 0 16px;
+  }
+
+  .user-name {
+    font-size: 14px;
+  }
+
+  .user-spec {
+    font-size: 12px;
+  }
+
+  .org-line {
+    display: flex;
+  }
+
+  .org-names {
+    font-size: 11px;
+  }
 }
 </style>

@@ -460,12 +460,16 @@ async function markAllAsRead() {
   gap: 4px;
   padding-bottom: 0;
   margin-bottom: 24px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
   border-bottom: 1px solid var(--border);
 }
 
 .tab {
   position: relative;
   display: flex;
+  flex-shrink: 0;
   gap: 6px;
   align-items: center;
   padding: 10px 16px;
@@ -477,6 +481,26 @@ async function markAllAsRead() {
   background: transparent;
   border: none;
   transition: color 0.15s;
+}
+
+@media (max-width: 768px) {
+  .notifications-page {
+    padding: 16px 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .page-header__right {
+    width: 100%;
+  }
+
+  .page-header__right .btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 .tab--active {

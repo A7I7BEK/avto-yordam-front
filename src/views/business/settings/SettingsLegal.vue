@@ -554,16 +554,16 @@ async function save() {
       mfo: org?.mfo ?? null,
       bankName: org?.bankName ?? null,
     });
+    data.value = { ...form.value };
+    isEditing.value = false;
+    clearDetailsErrors();
+    resetDetailsForm();
+    await loadDetails();
   } catch {
     // Global error toast surfaces the failure
   } finally {
     saving.value = false;
   }
-  data.value = { ...form.value };
-  isEditing.value = false;
-  clearDetailsErrors();
-  resetDetailsForm();
-  await loadDetails();
 }
 
 // ── Documents CRUD ─────────────────────────────────────────────────────────────
@@ -1745,7 +1745,50 @@ const deleteModalName = computed(
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .header-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  .header-actions .btn {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+  .org-type-wrapper {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .org-type-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .section-card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+  .section-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .section-header-row .header-actions {
+    width: 100%;
+  }
+  .section-header-row .header-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .field-row {
+    flex-direction: column;
+    gap: 12px;
+  }
   .detail-grid {
     grid-template-columns: 1fr;
   }

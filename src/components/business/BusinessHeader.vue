@@ -2,6 +2,7 @@
   setup
   lang="ts"
 >
+import { Menu } from '@lucide/vue';
 import LanguageSwitcher from '@/components/app/LanguageSwitcher.vue';
 import NotificationBell from '@/components/app/NotificationBell.vue';
 import ThemeToggle from '@/components/app/ThemeToggle.vue';
@@ -14,20 +15,30 @@ const store = useBusinessAppStore();
 <template>
   <header class="header">
     <div class="header__left">
-      <div class="header__user-info">
-        <span class="header__user-name">{{ store.userName }}</span>
-        <span class="header__user-role">— {{ store.userRole }}</span>
-      </div>
-      <div class="header__org">
-        <span class="header__org-dot" />
-        <span class="header__org-name">{{ store.orgName }}</span>
+      <button
+        class="header__menu-btn"
+        type="button"
+        aria-label="Toggle navigation menu"
+        @click="store.toggleMobileSidebar"
+      >
+        <Menu :size="22" />
+      </button>
+      <div class="header__user-block">
+        <div class="header__user-info">
+          <span class="header__user-name">{{ store.userName }}</span>
+          <span class="header__user-role">— {{ store.userRole }}</span>
+        </div>
+        <div class="header__org">
+          <span class="header__org-dot" />
+          <span class="header__org-name">{{ store.orgName }}</span>
+        </div>
       </div>
     </div>
     <div class="header__right">
-      <LanguageSwitcher />
-      <ThemeToggle />
+      <LanguageSwitcher class="header__desktop-only" />
+      <ThemeToggle class="header__desktop-only" />
       <NotificationBell />
-      <UserAvatarDropdown />
+      <UserAvatarDropdown class="header__desktop-only" />
     </div>
   </header>
 </template>
@@ -45,14 +56,44 @@ const store = useBusinessAppStore();
 
 .header__left {
   display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.header__menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--foreground);
+  cursor: pointer;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
+}
+
+.header__menu-btn:hover {
+  background: var(--accent);
+}
+
+.header__user-block {
+  display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  min-width: 0;
 }
 
 .header__user-info {
   display: flex;
   gap: 4px;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header__user-name {
@@ -60,6 +101,8 @@ const store = useBusinessAppStore();
   font-size: 16px;
   font-weight: 600;
   color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header__user-role {
@@ -73,9 +116,11 @@ const store = useBusinessAppStore();
   display: flex;
   gap: 6px;
   align-items: center;
+  white-space: nowrap;
 }
 
 .header__org-dot {
+  flex-shrink: 0;
   width: 6px;
   height: 6px;
   background: var(--primary);
@@ -87,11 +132,47 @@ const store = useBusinessAppStore();
   font-size: 13px;
   font-weight: 400;
   color: var(--muted-icon);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header__right {
   display: flex;
+  flex-shrink: 0;
   gap: 8px;
   align-items: center;
+}
+
+@media (max-width: 1023px) {
+  .header__menu-btn {
+    display: inline-flex;
+  }
+
+  .header__desktop-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    height: 64px;
+    padding: 0 16px;
+  }
+
+  .header__user-name {
+    font-size: 14px;
+  }
+
+  .header__user-role {
+    font-size: 12px;
+  }
+
+  .header__org {
+    display: flex;
+  }
+
+  .header__org-name {
+    font-size: 11px;
+  }
 }
 </style>

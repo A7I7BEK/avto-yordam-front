@@ -327,7 +327,8 @@ onMounted(async () => {
 
 /* Summary */
 .summary-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 280px 1fr;
   gap: 14px;
 }
 
@@ -337,11 +338,25 @@ onMounted(async () => {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  width: 280px;
+  width: 100%;
   padding: 18px;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 16px;
+}
+
+@media (max-width: 768px) {
+  .reviews-page {
+    padding: 16px 12px;
+  }
+
+  .summary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-row {
+    flex-wrap: wrap;
+  }
 }
 
 .big-rating {

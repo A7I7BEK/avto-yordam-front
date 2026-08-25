@@ -1287,6 +1287,12 @@ function selectIncomingOrder(order: Order) {
   min-height: 0;
 }
 
+@media (max-width: 1023px) {
+  .master-calendar-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Panel Incoming */
 .master-calendar-panel {
   display: flex;
@@ -1454,7 +1460,8 @@ function selectIncomingOrder(order: Order) {
   display: flex;
   flex: 1;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1464,6 +1471,7 @@ function selectIncomingOrder(order: Order) {
   display: grid;
   flex-shrink: 0;
   grid-template-columns: 60px repeat(7, 1fr);
+  min-width: 680px;
   background: var(--accent);
   border-bottom: 1px solid var(--border);
 }
@@ -1521,7 +1529,39 @@ function selectIncomingOrder(order: Order) {
   display: grid;
   flex: 1;
   grid-template-columns: 60px repeat(7, 1fr);
+  min-width: 680px;
   overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .schedules-page {
+    padding: 16px 12px;
+  }
+
+  .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-toggle {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .date-nav {
+    justify-content: space-between;
+  }
+
+  .date-nav__label {
+    min-width: 0;
+    font-size: 13px;
+  }
 }
 
 .week-calendar__time-label {

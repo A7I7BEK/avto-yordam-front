@@ -126,7 +126,6 @@ function breadcrumbItems() {
         <h1 class="page-title">Account</h1>
         <p class="page-subtitle">Manage your account and preferences</p>
       </div>
-
       <!-- Account Section -->
       <template v-if="section === 'account'">
         <!-- Account Tabs -->
@@ -238,6 +237,42 @@ function breadcrumbItems() {
   background: var(--destructive);
 }
 
+.account-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  margin-bottom: -1px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: var(--foreground);
+}
+
+.tab-btn.active {
+  font-weight: 600;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
 .settings-content {
   display: flex;
   flex: 1;
@@ -248,28 +283,42 @@ function breadcrumbItems() {
   overflow-y: auto;
 }
 
-.account-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border-soft);
-}
+@media (max-width: 860px) {
+  .settings-page {
+    flex-direction: column;
+  }
 
-.tab-btn {
-  padding: 10px 16px;
-  font-family: Inter, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted-foreground);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
+  .sub-nav {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border-right: none;
+    border-bottom: 1px solid var(--border-soft);
+    padding: 10px 14px;
+    gap: 6px;
+  }
 
-.tab-btn.active {
-  font-weight: 600;
-  color: var(--primary);
-  border-bottom-color: var(--primary);
+  .nav-item {
+    flex-shrink: 0;
+    width: auto;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  .settings-content {
+    padding: 16px 12px;
+  }
+
+  .account-tabs {
+    gap: 2px;
+  }
+
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
 }
 </style>

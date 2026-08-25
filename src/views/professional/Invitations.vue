@@ -515,4 +515,28 @@ onMounted(() => {
   font-size: 14px;
   color: var(--muted-foreground);
 }
+
+@media (max-width: 640px) {
+  .invitations-page {
+    padding: 16px 12px;
+  }
+
+  .top-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .time-section {
+    align-items: flex-start;
+  }
+
+  .card-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+  }
+}
 </style>

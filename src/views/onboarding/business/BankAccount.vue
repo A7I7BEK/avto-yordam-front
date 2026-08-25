@@ -312,7 +312,7 @@ function goNext() {
 .field-input {
   box-sizing: border-box;
   width: 100%;
-  padding: 18px 24px;
+  padding: 16px 20px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -374,7 +374,7 @@ function goNext() {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  padding: 16px 24px;
+  padding: 14px 24px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -392,5 +392,40 @@ function goNext() {
 .btn-next {
   color: var(--primary-foreground);
   background: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .onboarding-page {
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .header-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .bank-card {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+
+  .field-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-row {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
 </style>

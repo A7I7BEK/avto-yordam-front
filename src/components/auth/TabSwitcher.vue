@@ -42,13 +42,15 @@ const emit = defineEmits<{
 .tab-item {
   display: flex;
   flex: 1;
+  min-width: 0;
   align-items: center;
   justify-content: center;
-  padding: 10px 24px;
+  padding: 8px 14px;
   font-family: Inter, sans-serif;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--foreground);
+  white-space: nowrap;
   cursor: pointer;
   background: transparent;
   border: none;

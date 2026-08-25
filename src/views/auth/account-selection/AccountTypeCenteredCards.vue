@@ -225,7 +225,7 @@ function goToBusiness() {
   justify-content: center;
   width: 100%;
   max-width: 1200px;
-  padding: 44px 80px;
+  padding: 44px 24px;
 }
 
 .heading {
@@ -260,6 +260,7 @@ function goToBusiness() {
   flex-wrap: wrap;
   gap: 28px;
   justify-content: center;
+  width: 100%;
 }
 
 .card {
@@ -273,6 +274,27 @@ function goToBusiness() {
   border: 1px solid var(--border-soft);
   border-radius: 40px;
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.059);
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 32px 16px;
+    gap: 24px;
+  }
+
+  .heading h1 {
+    font-size: 26px;
+  }
+
+  .heading p {
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 24px 18px;
+    border-radius: 24px;
+    gap: 18px;
+  }
 }
 
 .card-header {

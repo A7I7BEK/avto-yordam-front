@@ -653,7 +653,9 @@ function selectColor(color: string) {
 }
 
 .form-input {
-  padding: 18px 24px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px 18px;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -663,6 +665,27 @@ function selectColor(color: string) {
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   transition: border-color 0.15s;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+  }
+
+  .page__header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .page__header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-card {
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
 }
 
 .form-input::placeholder {

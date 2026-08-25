@@ -462,7 +462,8 @@ onMounted(async () => {
 }
 
 .detail-card.bio-card {
-  height: 64px;
+  height: auto;
+  min-height: 64px;
 }
 
 .detail-label {
@@ -482,6 +483,7 @@ onMounted(async () => {
 .detail-value.bio-text {
   font-size: 13px;
   font-weight: normal;
+  line-height: 1.5;
 }
 
 /* Verified Section */
@@ -539,5 +541,45 @@ onMounted(async () => {
   font-size: 12px;
   font-weight: 500;
   color: var(--muted-foreground);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .edit-btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .verified-header {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .verified-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 </style>

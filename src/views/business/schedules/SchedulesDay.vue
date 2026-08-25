@@ -441,6 +441,37 @@ function getStatus(status?: string): string {
   overflow-y: auto;
 }
 
+@media (max-width: 768px) {
+  .schedules-page {
+    padding: 16px 12px;
+  }
+
+  .controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-toggle {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .date-nav {
+    justify-content: space-between;
+  }
+
+  .date-nav__label {
+    min-width: 0;
+    font-size: 13px;
+  }
+}
+
 .day-calendar__time-gutter {
   display: flex;
   flex-direction: column;

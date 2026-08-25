@@ -177,42 +177,44 @@ async function saveChanges() {
 
     <!-- Matrix Table -->
     <div class="matrix-card">
-      <!-- Column Headers -->
-      <div class="matrix-header">
-        <span class="col-event">Event</span>
-        <div class="channel-headers">
-          <span class="col-channel">In-app</span>
-          <span class="col-channel">SMS</span>
-          <span class="col-channel">Telegram</span>
-          <span class="col-channel">Email</span>
+      <div class="matrix-scroll-wrapper">
+        <!-- Column Headers -->
+        <div class="matrix-header">
+          <span class="col-event">Event</span>
+          <div class="channel-headers">
+            <span class="col-channel">In-app</span>
+            <span class="col-channel">SMS</span>
+            <span class="col-channel">Telegram</span>
+            <span class="col-channel">Email</span>
+          </div>
         </div>
-      </div>
 
-      <!-- Rows -->
-      <div
-        v-for="(evt, idx) in events"
-        :key="evt.eventType"
-        class="matrix-row"
-      >
-        <div class="col-event">
-          <span class="evt-name">{{ evt.label }}</span>
-          <span class="evt-desc">{{ evt.description }}</span>
-        </div>
-        <div class="channel-cells">
-          <button
-            v-for="channel in ['inApp', 'sms', 'telegram', 'email'] as const"
-            :key="channel"
-            class="cell-checkbox"
-            :class="{ checked: evt.channels[channel] }"
-            type="button"
-            @click="toggleChannel(idx, channel)"
-          >
-            <Check
-              v-if="evt.channels[channel]"
-              :size="10"
-              color="#FFFFFF"
-            />
-          </button>
+        <!-- Rows -->
+        <div
+          v-for="(evt, idx) in events"
+          :key="evt.eventType"
+          class="matrix-row"
+        >
+          <div class="col-event">
+            <span class="evt-name">{{ evt.label }}</span>
+            <span class="evt-desc">{{ evt.description }}</span>
+          </div>
+          <div class="channel-cells">
+            <button
+              v-for="channel in ['inApp', 'sms', 'telegram', 'email'] as const"
+              :key="channel"
+              class="cell-checkbox"
+              :class="{ checked: evt.channels[channel] }"
+              type="button"
+              @click="toggleChannel(idx, channel)"
+            >
+              <Check
+                v-if="evt.channels[channel]"
+                :size="10"
+                color="#FFFFFF"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -254,9 +256,16 @@ async function saveChanges() {
   border-radius: 16px;
 }
 
+.matrix-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .matrix-header {
   display: flex;
   align-items: center;
+  min-width: 540px;
   padding: 14px 18px;
   background: var(--muted);
   border-bottom: 1px solid var(--border-soft);
@@ -287,6 +296,7 @@ async function saveChanges() {
 .matrix-row {
   display: flex;
   align-items: center;
+  min-width: 540px;
   padding: 14px 18px;
   border-bottom: 1px solid var(--border-soft);
 }
@@ -376,6 +386,19 @@ async function saveChanges() {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .header-row {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .btn-save {
+    justify-content: center;
+    width: 100%;
   }
 }
 </style>

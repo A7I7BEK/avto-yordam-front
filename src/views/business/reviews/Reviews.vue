@@ -603,6 +603,26 @@ async function performDelete() {
   padding-top: 8px;
 }
 
+@media (max-width: 768px) {
+  .reviews-page {
+    padding: 16px 12px;
+  }
+
+  .detail-card {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .detail-info-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .detail-label {
+    width: auto;
+  }
+}
+
 .delete-btn {
   display: flex;
   gap: 6px;

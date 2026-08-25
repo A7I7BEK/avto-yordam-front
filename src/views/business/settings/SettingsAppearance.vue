@@ -386,4 +386,31 @@ const languages = [
 .lang-check.active {
   opacity: 1;
 }
+
+@media (max-width: 768px) {
+  .theme-cards-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .theme-card {
+    width: 100%;
+    border-radius: 20px;
+  }
+
+  .theme-preview {
+    height: 90px;
+  }
+
+  .language-list {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .language-item {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
+}
 </style>
