@@ -9,25 +9,41 @@ import {
   DollarSign,
   Grid3X3,
   LayoutDashboard,
+  LogOut,
   Mail,
   Settings,
   ShieldCheck,
   ShoppingCart,
   Star,
+  User,
   UserCheck,
   UserPlus,
   Users,
   X,
 } from '@lucide/vue';
 import { computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import logoUrl from '@/assets/logo/logo-light.png';
+import LanguageSwitcher from '@/components/app/LanguageSwitcher.vue';
 import SidebarNavItem from '@/components/app/SidebarNavItem.vue';
+import ThemeToggle from '@/components/app/ThemeToggle.vue';
 import { countNewOrders, getOrders } from '@/services/ordersService';
 import { useBusinessAppStore } from '@/stores/businessApp';
 
 const route = useRoute();
+const router = useRouter();
 const store = useBusinessAppStore();
+
+function goToProfile() {
+  store.closeMobileSidebar();
+  router.push({ name: 'biz-settings-legal' });
+}
+
+function handleLogout() {
+  store.closeMobileSidebar();
+  localStorage.removeItem('token');
+  router.push('/auth/login');
+}
 
 const isActive = (path: string) => route.path.startsWith(path);
 
@@ -194,6 +210,48 @@ const isInvitationActive = computed(() =>
         :is-active="isActive('/business/settings')"
       />
     </nav>
+
+    <!-- Mobile-only utilities & profile -->
+    <div class="sidebar__mobile-section">
+      <div class="sidebar__mobile-divider" />
+
+      <!-- Language & Theme switcher -->
+      <div class="sidebar__mobile-utils">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="sidebar__mobile-profile">
+        <div class="sidebar__mobile-user-row">
+          <div class="sidebar__mobile-avatar">
+            {{ store.userInitials || 'U' }}
+          </div>
+          <div class="sidebar__mobile-user-info">
+            <span class="sidebar__mobile-user-name">{{ store.userName }}</span>
+            <span class="sidebar__mobile-user-role">{{ store.userRole }} • {{ store.orgName }}</span>
+          </div>
+        </div>
+        <div class="sidebar__mobile-actions">
+          <button
+            class="sidebar__mobile-action-btn"
+            type="button"
+            @click="goToProfile"
+          >
+            <User :size="15" />
+            <span>Profile Settings</span>
+          </button>
+          <button
+            class="sidebar__mobile-action-btn sidebar__mobile-action-btn--danger"
+            type="button"
+            @click="handleLogout"
+          >
+            <LogOut :size="15" />
+            <span>Log out</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </aside>
 </template>
 
@@ -373,5 +431,127 @@ const isInvitationActive = computed(() =>
 /* Override for Transactions item — border-radius 6px */
 :deep(.sidebar__nav-item--rounded) .nav-item {
   border-radius: 6px;
+}
+
+/* Mobile-only utilities & profile section */
+.sidebar__mobile-section {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 16px 24px;
+  margin-top: auto;
+}
+
+@media (max-width: 1023px) {
+  .sidebar__mobile-section {
+    display: flex;
+  }
+}
+
+.sidebar__mobile-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+.sidebar__mobile-utils {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar__mobile-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.sidebar__mobile-user-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.sidebar__mobile-avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-radius: 999px;
+}
+
+.sidebar__mobile-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sidebar__mobile-user-name {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar__mobile-user-role {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar__mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar__mobile-action-btn {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.sidebar__mobile-action-btn:hover {
+  background: var(--accent);
+}
+
+.sidebar__mobile-action-btn--danger {
+  color: var(--destructive);
+}
+
+.sidebar__mobile-action-btn--danger:hover {
+  background: var(--destructive-soft, rgba(239, 68, 68, 0.1));
 }
 </style>

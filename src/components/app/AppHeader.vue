@@ -38,10 +38,10 @@ const store = useProfessionalAppStore();
 
     <!-- Right: Utility Controls -->
     <div class="header-right">
-      <LanguageSwitcher />
-      <ThemeToggle />
+      <LanguageSwitcher class="header-desktop-only" />
+      <ThemeToggle class="header-desktop-only" />
       <NotificationBell />
-      <UserAvatarDropdown />
+      <UserAvatarDropdown class="header-desktop-only" />
     </div>
   </header>
 </template>
@@ -145,28 +145,32 @@ const store = useProfessionalAppStore();
   .menu-btn {
     display: inline-flex;
   }
+
+  .header-desktop-only {
+    display: none !important;
+  }
 }
 
 @media (max-width: 640px) {
   .header {
     height: 64px;
-    padding: 0 12px;
-  }
-
-  .user-spec {
-    display: none;
+    padding: 0 16px;
   }
 
   .user-name {
     font-size: 14px;
   }
 
-  .org-line {
-    display: none;
+  .user-spec {
+    font-size: 12px;
   }
 
-  .header-right {
-    gap: 4px;
+  .org-line {
+    display: flex;
+  }
+
+  .org-names {
+    font-size: 11px;
   }
 }
 </style>

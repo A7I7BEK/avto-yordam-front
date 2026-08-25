@@ -35,10 +35,10 @@ const store = useBusinessAppStore();
       </div>
     </div>
     <div class="header__right">
-      <LanguageSwitcher />
-      <ThemeToggle />
+      <LanguageSwitcher class="header__desktop-only" />
+      <ThemeToggle class="header__desktop-only" />
       <NotificationBell />
-      <UserAvatarDropdown />
+      <UserAvatarDropdown class="header__desktop-only" />
     </div>
   </header>
 </template>
@@ -147,28 +147,32 @@ const store = useBusinessAppStore();
   .header__menu-btn {
     display: inline-flex;
   }
+
+  .header__desktop-only {
+    display: none !important;
+  }
 }
 
 @media (max-width: 640px) {
   .header {
     height: 64px;
-    padding: 0 12px;
-  }
-
-  .header__user-role {
-    display: none;
+    padding: 0 16px;
   }
 
   .header__user-name {
     font-size: 14px;
   }
 
-  .header__org {
-    display: none;
+  .header__user-role {
+    font-size: 12px;
   }
 
-  .header__right {
-    gap: 4px;
+  .header__org {
+    display: flex;
+  }
+
+  .header__org-name {
+    font-size: 11px;
   }
 }
 </style>
