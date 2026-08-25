@@ -211,21 +211,19 @@ const languages = [
 
 .theme-cards-row {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .theme-card {
   display: flex;
-  width: 100%;
-  box-sizing: border-box;
+  flex: 1;
   flex-direction: column;
   gap: 10px;
   padding: 14px;
   cursor: pointer;
   background: var(--card);
   border: 1px solid var(--border-soft);
-  border-radius: 20px;
+  border-radius: 24px;
 }
 
 .theme-card.selected {
@@ -235,7 +233,7 @@ const languages = [
 .theme-preview {
   position: relative;
   display: flex;
-  height: 90px;
+  height: 120px;
   overflow: hidden;
   border: 1px solid var(--border-soft);
   border-radius: 6px;
@@ -329,21 +327,19 @@ const languages = [
 
 .language-list {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .language-item {
   display: flex;
-  width: 100%;
-  box-sizing: border-box;
+  flex: 1;
   gap: 14px;
   align-items: center;
-  padding: 14px 16px;
+  padding: 16px;
   cursor: pointer;
   background: var(--card);
   border: 1px solid var(--border-soft);
-  border-radius: 16px;
+  border-radius: 24px;
 }
 
 .language-item.selected {
@@ -389,5 +385,32 @@ const languages = [
 }
 .lang-check.active {
   opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .theme-cards-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .theme-card {
+    width: 100%;
+    border-radius: 20px;
+  }
+
+  .theme-preview {
+    height: 90px;
+  }
+
+  .language-list {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .language-item {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
 }
 </style>

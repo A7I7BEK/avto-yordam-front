@@ -400,14 +400,14 @@ function confirmDelete() {
 /* ===== Danger row ===== */
 .danger-row {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-start;
-  padding: 0 0 20px 0;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 16px 0;
 }
 
 .danger-row--bordered {
-  padding: 20px 0;
+  padding: 16px 0;
   border-top: 1px solid var(--border);
 }
 
@@ -418,22 +418,36 @@ function confirmDelete() {
 .danger-row-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: 100%;
+  gap: 3px;
+  min-width: 0;
 }
 
 .danger-row-actions {
   display: flex;
+  flex-shrink: 0;
   gap: 12px;
   align-items: center;
-  width: 100%;
-  margin-top: 2px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .danger-card {
     padding: 18px 16px;
     border-radius: 20px;
+  }
+
+  .danger-row {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 16px 0;
+  }
+
+  .danger-row:first-child {
+    padding-top: 0;
+  }
+
+  .danger-row:last-child {
+    padding-bottom: 0;
   }
 
   .danger-row-actions {
@@ -441,8 +455,8 @@ function confirmDelete() {
   }
 
   .danger-row-actions .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 }
 
