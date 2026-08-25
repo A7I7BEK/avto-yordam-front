@@ -245,4 +245,28 @@ function requestExport() {
   border: 1px solid var(--success);
   border-radius: 12px;
 }
+
+@media (max-width: 640px) {
+  .toggles-card,
+  .action-card {
+    border-radius: 20px;
+  }
+
+  .toggle-row {
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .action-card {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .action-btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
 </style>

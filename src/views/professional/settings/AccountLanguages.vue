@@ -485,4 +485,22 @@ onMounted(fetchData);
   border: none;
   border-radius: 999px;
 }
+
+@media (max-width: 640px) {
+  .card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+    justify-content: center;
+  }
+}
 </style>

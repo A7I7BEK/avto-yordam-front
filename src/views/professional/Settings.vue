@@ -126,7 +126,6 @@ function breadcrumbItems() {
         <h1 class="page-title">Account</h1>
         <p class="page-subtitle">Manage your account and preferences</p>
       </div>
-
       <!-- Account Section -->
       <template v-if="section === 'account'">
         <!-- Account Tabs -->
@@ -240,27 +239,28 @@ function breadcrumbItems() {
 
 .account-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
-  max-width: 100%;
-  overflow-x: auto;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
+  align-items: center;
+  width: 100%;
   border-bottom: 1px solid var(--border-soft);
 }
 
 .tab-btn {
-  display: flex;
-  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px 16px;
+  margin-bottom: -1px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: var(--muted-icon);
+  color: var(--muted-foreground);
   cursor: pointer;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .tab-btn:hover {
@@ -271,6 +271,16 @@ function breadcrumbItems() {
   font-weight: 600;
   color: var(--primary);
   border-bottom-color: var(--primary);
+}
+
+.settings-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 24px 32px;
+  overflow-y: auto;
 }
 
 @media (max-width: 860px) {
@@ -291,14 +301,24 @@ function breadcrumbItems() {
   }
 
   .nav-item {
-    width: auto;
     flex-shrink: 0;
+    width: auto;
     padding: 7px 12px;
     font-size: 12px;
   }
 
   .settings-content {
     padding: 16px 12px;
+  }
+
+  .account-tabs {
+    gap: 2px;
+  }
+
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }
 </style>

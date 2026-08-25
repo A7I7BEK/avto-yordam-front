@@ -990,10 +990,15 @@ onMounted(async () => {
 }
 
 @media (max-width: 640px) {
+  .settings-card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
   .input-row {
     flex-direction: column;
-    align-items: stretch;
     gap: 10px;
+    align-items: stretch;
   }
 
   .action-btn {
@@ -1002,8 +1007,8 @@ onMounted(async () => {
 
   .alert-footer {
     flex-direction: column;
-    align-items: stretch;
     gap: 10px;
+    align-items: stretch;
   }
 
   .otp-actions {
