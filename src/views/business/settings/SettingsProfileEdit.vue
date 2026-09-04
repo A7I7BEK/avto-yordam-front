@@ -958,11 +958,11 @@ onMounted(async () => {
   font-size: 13px;
   line-height: 1.5;
   color: var(--foreground);
+  resize: vertical;
   outline: none;
   background: var(--card);
   border: 1px solid var(--border-soft);
   border-radius: 12px;
-  resize: vertical;
   transition: border-color 0.15s ease;
 }
 

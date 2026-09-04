@@ -146,7 +146,9 @@ const navItems = [
           </div>
           <div class="sidebar-mobile-user-info">
             <span class="sidebar-mobile-user-name">{{ store.userName }}</span>
-            <span class="sidebar-mobile-user-role">{{ store.userSpecialization }}</span>
+            <span class="sidebar-mobile-user-role"
+              >{{ store.userSpecialization }}</span
+            >
           </div>
         </div>
         <div class="sidebar-mobile-actions">
@@ -331,21 +333,21 @@ const navItems = [
 }
 
 .sidebar-mobile-user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: var(--foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .sidebar-mobile-user-role {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 11px;
   color: var(--muted-foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 

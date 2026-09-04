@@ -1748,26 +1748,26 @@ const deleteModalName = computed(
 @media (max-width: 768px) {
   .header-row {
     flex-direction: column;
-    align-items: flex-start;
     gap: 14px;
+    align-items: flex-start;
   }
   .header-actions {
-    width: 100%;
     display: flex;
     gap: 8px;
+    width: 100%;
   }
   .header-actions .btn {
     flex: 1;
-    min-width: 0;
     justify-content: center;
+    min-width: 0;
   }
   .org-type-wrapper {
     flex-direction: column;
     gap: 12px;
   }
   .org-type-card {
-    width: 100%;
     box-sizing: border-box;
+    width: 100%;
   }
   .section-card {
     padding: 18px 16px;
@@ -1775,15 +1775,15 @@ const deleteModalName = computed(
   }
   .section-header-row {
     flex-direction: column;
-    align-items: flex-start;
     gap: 12px;
+    align-items: flex-start;
   }
   .section-header-row .header-actions {
     width: 100%;
   }
   .section-header-row .header-actions .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
   .field-row {
     flex-direction: column;

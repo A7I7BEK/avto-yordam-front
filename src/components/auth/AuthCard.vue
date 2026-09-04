@@ -40,9 +40,9 @@ defineSlots<{
 
 @media (max-width: 480px) {
   .auth-card {
+    gap: 16px !important;
     padding: 24px 16px !important;
     border-radius: 24px !important;
-    gap: 16px !important;
   }
 }
 </style>

@@ -259,8 +259,8 @@ onMounted(async () => {
   }
 
   .form-card__actions .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 }
 

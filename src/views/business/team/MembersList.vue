@@ -445,115 +445,115 @@ async function onInviteSend(data: {
     <div class="data-table-card">
       <div class="data-table-scroll">
         <table class="data-table">
-        <thead>
-          <tr class="column-headers">
-            <th>Member</th>
-            <th>Role</th>
-            <th>Specialties</th>
-            <th>Rating</th>
-            <th>Orders</th>
-            <th>Status</th>
-            <th>Joined</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="pagedMembers.length === 0">
-            <td
-              colspan="8"
-              class="empty-state"
+          <thead>
+            <tr class="column-headers">
+              <th>Member</th>
+              <th>Role</th>
+              <th>Specialties</th>
+              <th>Rating</th>
+              <th>Orders</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="pagedMembers.length === 0">
+              <td
+                colspan="8"
+                class="empty-state"
+              >
+                No members found
+              </td>
+            </tr>
+            <tr
+              v-for="member in pagedMembers"
+              :key="member.id"
+              class="data-row"
             >
-              No members found
-            </td>
-          </tr>
-          <tr
-            v-for="member in pagedMembers"
-            :key="member.id"
-            class="data-row"
-          >
-            <!-- Member cell -->
-            <td>
-              <div class="member-info">
-                <div class="member-info__avatar">{{ member.initials }}</div>
-                <div class="member-info__text">
-                  <span class="member-info__name">{{ member.name }}</span>
-                  <span class="member-info__email">{{ member.email }}</span>
+              <!-- Member cell -->
+              <td>
+                <div class="member-info">
+                  <div class="member-info__avatar">{{ member.initials }}</div>
+                  <div class="member-info__text">
+                    <span class="member-info__name">{{ member.name }}</span>
+                    <span class="member-info__email">{{ member.email }}</span>
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <!-- Role cell -->
-            <td>
-              <span class="badge badge--role">{{ member.role }}</span>
-            </td>
+              <!-- Role cell -->
+              <td>
+                <span class="badge badge--role">{{ member.role }}</span>
+              </td>
 
-            <!-- Specialties cell -->
-            <td>
-              <div class="specialty-list">
+              <!-- Specialties cell -->
+              <td>
+                <div class="specialty-list">
+                  <span
+                    v-for="spec in member.specialties"
+                    :key="spec"
+                    class="badge badge--specialty"
+                    >{{ spec }}</span
+                  >
+                </div>
+              </td>
+
+              <!-- Rating cell -->
+              <td>
+                <div class="rating">
+                  <Star
+                    :size="12"
+                    class="rating__star"
+                  />
+                  <span class="rating__value"
+                    >{{ member.rating.toFixed(1) }}</span
+                  >
+                </div>
+              </td>
+
+              <!-- Orders cell -->
+              <td>
+                <span class="orders-value">{{ member.orders }}</span>
+              </td>
+
+              <!-- Status cell -->
+              <td>
                 <span
-                  v-for="spec in member.specialties"
-                  :key="spec"
-                  class="badge badge--specialty"
-                  >{{ spec }}</span
-                >
-              </div>
-            </td>
-
-            <!-- Rating cell -->
-            <td>
-              <div class="rating">
-                <Star
-                  :size="12"
-                  class="rating__star"
-                />
-                <span class="rating__value"
-                  >{{ member.rating.toFixed(1) }}</span
-                >
-              </div>
-            </td>
-
-            <!-- Orders cell -->
-            <td>
-              <span class="orders-value">{{ member.orders }}</span>
-            </td>
-
-            <!-- Status cell -->
-            <td>
-              <span
-                class="badge badge--status"
-                :class="{
+                  class="badge badge--status"
+                  :class="{
                 'badge--accepted': member.status === 'Accepted',
                 'badge--invited': member.status === 'Invited',
                 'badge--declined': member.status === 'Declined',
                 'badge--expired': member.status === 'Expired',
               }"
-              >
-                <Check
-                  v-if="member.status === 'Accepted'"
-                  :size="10"
-                />
-                {{ member.status }}
-              </span>
-            </td>
+                >
+                  <Check
+                    v-if="member.status === 'Accepted'"
+                    :size="10"
+                  />
+                  {{ member.status }}
+                </span>
+              </td>
 
-            <!-- Joined cell -->
-            <td>
-              <span class="joined-date">{{ member.joined }}</span>
-            </td>
+              <!-- Joined cell -->
+              <td>
+                <span class="joined-date">{{ member.joined }}</span>
+              </td>
 
-            <!-- Actions cell -->
-            <td>
-              <button
-                type="button"
-                class="kebab-btn"
-                @click.stop="toggleDropdown(member.id, $event)"
-              >
-                <EllipsisVertical :size="16" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <!-- Actions cell -->
+              <td>
+                <button
+                  type="button"
+                  class="kebab-btn"
+                  @click.stop="toggleDropdown(member.id, $event)"
+                >
+                  <EllipsisVertical :size="16" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Table Footer -->

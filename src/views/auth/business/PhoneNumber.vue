@@ -144,14 +144,15 @@ async function sendCode() {
 }
 
 .phone-input-row {
+  box-sizing: border-box;
   display: flex;
   gap: 8px;
   align-items: center;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .country-code {
+  box-sizing: border-box;
   display: flex;
   flex-shrink: 0;
   gap: 4px;
@@ -165,14 +166,13 @@ async function sendCode() {
   background: var(--muted);
   border: 1px solid var(--border-soft);
   border-radius: 999px;
-  box-sizing: border-box;
 }
 
 .phone-input {
   box-sizing: border-box;
   flex: 1;
-  min-width: 0;
   width: 100%;
+  min-width: 0;
   padding: 16px 18px;
   font-family: Inter, sans-serif;
   font-size: 14px;

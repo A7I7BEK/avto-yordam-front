@@ -314,10 +314,10 @@ onUnmounted(() => {
 .otp-box {
   display: flex;
   flex: 1;
-  max-width: 56px;
-  height: 56px;
   align-items: center;
   justify-content: center;
+  max-width: 56px;
+  height: 56px;
   background: var(--muted);
   border: 1px solid var(--border-soft);
   border-radius: 12px;

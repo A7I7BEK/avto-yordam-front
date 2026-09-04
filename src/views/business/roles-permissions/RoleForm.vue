@@ -678,8 +678,8 @@ function selectColor(color: string) {
   }
 
   .page__header .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 
   .form-card {

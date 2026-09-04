@@ -433,8 +433,8 @@ async function saveChanges() {
 
   .form-footer {
     flex-direction: column;
-    align-items: flex-start;
     gap: 12px;
+    align-items: flex-start;
   }
 
   .footer-actions {

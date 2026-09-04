@@ -449,8 +449,8 @@ onMounted(async () => {
   }
 
   .page-header .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 
   .form-card {
@@ -460,8 +460,8 @@ onMounted(async () => {
 
   .avatar-section {
     flex-direction: column;
-    align-items: flex-start;
     gap: 12px;
+    align-items: flex-start;
   }
 }
 

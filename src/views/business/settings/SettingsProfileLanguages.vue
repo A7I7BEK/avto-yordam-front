@@ -499,8 +499,8 @@ onMounted(fetchData);
 
   .btn-cancel,
   .btn-save {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 }
 </style>
