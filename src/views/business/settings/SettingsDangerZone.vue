@@ -429,70 +429,6 @@ function confirmDelete() {
   align-items: center;
 }
 
-@media (max-width: 768px) {
-  .danger-card {
-    padding: 18px 16px;
-    border-radius: 20px;
-  }
-
-  .danger-row {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 16px 0;
-  }
-
-  .danger-row:first-child {
-    padding-top: 0;
-  }
-
-  .danger-row:last-child {
-    padding-bottom: 0;
-  }
-
-  .danger-row-actions {
-    width: 100%;
-  }
-
-  .danger-row-actions .btn {
-    justify-content: center;
-    width: 100%;
-  }
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: var(--radius-pill);
-}
-
-.status-pill--active {
-  color: var(--success);
-  background: var(--success-bg);
-}
-
-.status-pill--inactive {
-  color: var(--destructive);
-  background: var(--destructive-soft);
-}
-
-.danger-row-title {
-  font-family: Inter, sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--foreground);
-}
-
-.danger-row-desc {
-  font-family: Inter, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--muted-foreground);
-}
-
 /* ===== Buttons ===== */
 .btn {
   display: inline-flex;
@@ -557,6 +493,70 @@ function confirmDelete() {
 .btn--primary:disabled {
   cursor: default;
   opacity: 0.45;
+}
+
+@media (max-width: 768px) {
+  .danger-card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .danger-row {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 16px 0;
+  }
+
+  .danger-row:first-child {
+    padding-top: 0;
+  }
+
+  .danger-row:last-child {
+    padding-bottom: 0;
+  }
+
+  .danger-row-actions {
+    width: 100%;
+  }
+
+  .danger-row-actions .btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+.status-pill--active {
+  color: var(--success);
+  background: var(--success-bg);
+}
+
+.status-pill--inactive {
+  color: var(--destructive);
+  background: var(--destructive-soft);
+}
+
+.danger-row-title {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.danger-row-desc {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
 }
 
 /* ===== Modal overlay ===== */

@@ -373,8 +373,8 @@ function getInitialsColor(gradient: string) {
   }
 
   .card-footer .btn-open {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 }
 

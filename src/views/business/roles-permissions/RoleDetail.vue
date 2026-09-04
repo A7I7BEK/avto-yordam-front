@@ -507,8 +507,8 @@ function allowedCount(cat: PermissionCategory): number {
 
   .perms-header {
     flex-direction: column;
-    align-items: flex-start;
     gap: 8px;
+    align-items: flex-start;
   }
 
   .perm-card__header {

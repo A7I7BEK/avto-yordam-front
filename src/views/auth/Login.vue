@@ -348,8 +348,8 @@ async function signIn() {
 .password-wrapper {
   position: relative;
   display: flex;
-  width: 100%;
   align-items: center;
+  width: 100%;
 }
 
 .password-wrapper .field-input {
@@ -367,14 +367,15 @@ async function signIn() {
 }
 
 .phone-input-row {
+  box-sizing: border-box;
   display: flex;
   gap: 8px;
   align-items: center;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .country-code {
+  box-sizing: border-box;
   display: flex;
   flex-shrink: 0;
   gap: 4px;
@@ -388,14 +389,13 @@ async function signIn() {
   background: var(--muted);
   border: 1px solid var(--border-soft);
   border-radius: 999px;
-  box-sizing: border-box;
 }
 
 .phone-input {
   box-sizing: border-box;
   flex: 1;
-  min-width: 0;
   width: 100%;
+  min-width: 0;
   padding: 16px 18px;
   font-family: Inter, sans-serif;
   font-size: 14px;
@@ -507,10 +507,10 @@ async function signIn() {
 .btn-social {
   display: flex;
   flex: 1;
-  min-width: 0;
+  gap: 8px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  min-width: 0;
   padding: 13px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;

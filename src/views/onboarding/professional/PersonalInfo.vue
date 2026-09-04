@@ -561,8 +561,8 @@ function goNext() {
 
 @media (max-width: 640px) {
   .onboarding-page {
-    padding: 24px 16px;
     gap: 20px;
+    padding: 24px 16px;
   }
 
   .header-row {
@@ -580,8 +580,8 @@ function goNext() {
 
   .avatar-row {
     flex-direction: column;
-    align-items: flex-start;
     gap: 14px;
+    align-items: flex-start;
   }
 
   .footer-buttons {

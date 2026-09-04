@@ -278,8 +278,8 @@ function goToBusiness() {
 
 @media (max-width: 640px) {
   .content {
-    padding: 32px 16px;
     gap: 24px;
+    padding: 32px 16px;
   }
 
   .heading h1 {
@@ -291,9 +291,9 @@ function goToBusiness() {
   }
 
   .card {
+    gap: 18px;
     padding: 24px 18px;
     border-radius: 24px;
-    gap: 18px;
   }
 }
 

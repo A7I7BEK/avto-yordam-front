@@ -1311,8 +1311,8 @@ async function submit() {
 
 @media (max-width: 640px) {
   .onboarding-page {
-    padding: 24px 16px;
     gap: 20px;
+    padding: 24px 16px;
   }
 
   .form-card {

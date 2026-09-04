@@ -830,8 +830,8 @@ onMounted(() => {
   }
 
   .search-wrapper {
-    max-width: 100%;
     width: 100%;
+    max-width: 100%;
   }
 
   .toolbar-actions {
@@ -849,8 +849,8 @@ onMounted(() => {
   }
 
   .service-controls {
-    width: 100%;
     justify-content: flex-end;
+    width: 100%;
   }
 }
 

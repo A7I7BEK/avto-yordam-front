@@ -91,18 +91,18 @@ const store = useBusinessAppStore();
   display: flex;
   gap: 4px;
   align-items: center;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .header__user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: var(--foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .header__user-role {
@@ -128,12 +128,12 @@ const store = useBusinessAppStore();
 }
 
 .header__org-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 400;
   color: var(--muted-icon);
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .header__right {

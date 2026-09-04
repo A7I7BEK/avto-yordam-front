@@ -442,8 +442,8 @@ function cashHeight(val: number): number {
   }
 
   .header-actions {
-    width: 100%;
     justify-content: space-between;
+    width: 100%;
   }
 
   .chart-card {

@@ -628,8 +628,8 @@ function goToNext() {
   }
 
   .page-header .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 
   .search-box {
@@ -637,8 +637,8 @@ function goToNext() {
   }
 
   .filter-group {
-    width: 100%;
     justify-content: stretch;
+    width: 100%;
   }
 
   .filter-pill {

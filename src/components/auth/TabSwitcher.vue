@@ -42,9 +42,9 @@ const emit = defineEmits<{
 .tab-item {
   display: flex;
   flex: 1;
-  min-width: 0;
   align-items: center;
   justify-content: center;
+  min-width: 0;
   padding: 8px 14px;
   font-family: Inter, sans-serif;
   font-size: 13px;

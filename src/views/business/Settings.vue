@@ -11,6 +11,7 @@ import {
   Palette,
   Timer,
   TriangleAlert,
+  UserRound,
 } from '@lucide/vue';
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -23,12 +24,16 @@ import SettingsLegal from './settings/SettingsLegal.vue';
 import SettingsNotifications from './settings/SettingsNotifications.vue';
 import SettingsPayment from './settings/SettingsPayment.vue';
 import SettingsPhotos from './settings/SettingsPhotos.vue';
+import SettingsProfile from './settings/SettingsProfile.vue';
 
 const route = useRoute();
 const router = useRouter();
 
 const section = computed(() => {
   const path = route.path;
+  if (path.includes('/settings/profile')) {
+    return 'profile';
+  }
   if (path.includes('/settings/legal')) {
     return 'legal';
   }
@@ -53,10 +58,11 @@ const section = computed(() => {
   if (path.includes('/settings/danger-zone')) {
     return 'danger-zone';
   }
-  return 'legal';
+  return 'profile';
 });
 
 const subNavItems = [
+  { key: 'profile', icon: UserRound, label: 'Profile info' },
   { key: 'legal', icon: Building2, label: 'Legal info' },
   { key: 'hours', icon: Timer, label: 'Operating hours' },
   { key: 'photos', icon: Image, label: 'Photos' },
@@ -69,7 +75,9 @@ const subNavItems = [
 
 function navigateToSection(key: string) {
   const base = '/business/settings';
-  if (key === 'legal') {
+  if (key === 'profile') {
+    router.push(`${base}/profile`);
+  } else if (key === 'legal') {
     router.push(`${base}/legal`);
   } else if (key === 'hours') {
     router.push(`${base}/hours`);
@@ -90,7 +98,9 @@ function navigateToSection(key: string) {
 
 function breadcrumbItems() {
   const items = ['Workspace', 'Settings'];
-  if (section.value === 'legal') {
+  if (section.value === 'profile') {
+    items.push('Profile info');
+  } else if (section.value === 'legal') {
     items.push('Legal info');
   } else if (section.value === 'hours') {
     items.push('Operating hours');
@@ -138,7 +148,8 @@ function breadcrumbItems() {
     <div class="settings-content">
       <BreadcrumbBar :items="breadcrumbItems()" />
 
-      <SettingsLegal v-if="section === 'legal'" />
+      <SettingsProfile v-if="section === 'profile'" />
+      <SettingsLegal v-else-if="section === 'legal'" />
       <SettingsHours v-else-if="section === 'hours'" />
       <SettingsPhotos v-else-if="section === 'photos'" />
       <SettingsBankInfo v-else-if="section === 'bank-info'" />
@@ -234,8 +245,8 @@ function breadcrumbItems() {
   }
 
   .nav-item {
-    width: auto;
     flex-shrink: 0;
+    width: auto;
     padding: 7px 12px;
     font-size: 12px;
   }

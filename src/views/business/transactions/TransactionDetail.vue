@@ -325,14 +325,14 @@ onMounted(async () => {
 
   .detail-header {
     flex-direction: column;
-    align-items: flex-start;
     gap: 12px;
+    align-items: flex-start;
   }
 
   .detail-header__left {
     flex-direction: column;
-    align-items: flex-start;
     gap: 8px;
+    align-items: flex-start;
   }
 
   .info-card {

@@ -175,7 +175,9 @@ function cancel() {
                   :size="13"
                   class="time-picker-icon"
                 />
-                <span class="time-picker-value">{{ schedule[day.key].open }}</span>
+                <span class="time-picker-value"
+                  >{{ schedule[day.key].open }}</span
+                >
                 <ChevronDown
                   :size="14"
                   class="time-picker-chevron"
@@ -196,7 +198,9 @@ function cancel() {
                   :size="13"
                   class="time-picker-icon"
                 />
-                <span class="time-picker-value">{{ schedule[day.key].close }}</span>
+                <span class="time-picker-value"
+                  >{{ schedule[day.key].close }}</span
+                >
                 <ChevronDown
                   :size="14"
                   class="time-picker-chevron"
@@ -382,8 +386,8 @@ function cancel() {
 .col--hours {
   flex: 1;
   gap: 10px;
-  min-width: 0;
   order: 2;
+  min-width: 0;
 }
 
 .col--status {
@@ -404,9 +408,9 @@ function cancel() {
 /* ===== Day rows ===== */
 .day-row {
   display: flex;
+  gap: 16px;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
   padding: 12px 0;
   border-bottom: 1px solid var(--border);
 }
@@ -421,12 +425,12 @@ function cancel() {
 
 .day-name {
   flex-shrink: 0;
+  order: 1;
   width: 120px;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: var(--foreground);
-  order: 1;
 }
 
 .status-toggle-group {
@@ -435,8 +439,8 @@ function cancel() {
   gap: 10px;
   align-items: center;
   justify-content: flex-end;
-  width: 150px;
   order: 3;
+  width: 150px;
 }
 
 .closed-indicator {
@@ -459,8 +463,8 @@ function cancel() {
 
   .day-row {
     flex-direction: column;
-    align-items: flex-start;
     gap: 12px;
+    align-items: flex-start;
     padding: 16px 0;
   }
 
@@ -472,18 +476,18 @@ function cancel() {
   }
 
   .day-name {
-    width: auto;
     order: unset;
+    width: auto;
   }
 
   .status-toggle-group {
-    width: auto;
     order: unset;
+    width: auto;
   }
 
   .col--hours {
-    width: 100%;
     order: unset;
+    width: 100%;
   }
 
   .time-picker {

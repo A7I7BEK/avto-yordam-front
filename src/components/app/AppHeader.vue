@@ -92,6 +92,8 @@ const store = useProfessionalAppStore();
 }
 
 .user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -99,8 +101,6 @@ const store = useProfessionalAppStore();
   color: var(--foreground);
   letter-spacing: -0.3px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .user-spec {
@@ -124,14 +124,14 @@ const store = useProfessionalAppStore();
 }
 
 .org-names {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 11px;
   font-weight: 500;
   line-height: 1.3;
   color: var(--muted-foreground);
   letter-spacing: 0.2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .header-right {
