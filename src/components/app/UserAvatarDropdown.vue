@@ -34,7 +34,7 @@ onUnmounted(() => {
 function goToProfile() {
   isOpen.value = false;
   if (router.currentRoute.value.path.startsWith('/business')) {
-    router.push({ name: 'biz-settings-legal' });
+    router.push({ name: 'biz-settings-profile' });
   } else {
     router.push({ name: 'pro-settings' });
   }

@@ -194,7 +194,12 @@ export const businessRoutes: RouteRecordRaw[] = [
       // === Settings ===
       {
         path: 'settings',
-        redirect: '/business/settings/legal',
+        redirect: '/business/settings/profile',
+      },
+      {
+        path: 'settings/profile',
+        name: 'biz-settings-profile',
+        component: () => import('@/views/business/Settings.vue'),
       },
       {
         path: 'settings/legal',
