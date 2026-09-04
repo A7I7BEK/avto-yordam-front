@@ -244,6 +244,37 @@ onMounted(async () => {
   gap: 16px;
 }
 
+/* Buttons */
+.btn {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 20px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn--primary {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn--outline {
+  color: var(--foreground);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
 @media (max-width: 640px) {
   .page {
     padding: 16px 12px;
@@ -305,37 +336,6 @@ onMounted(async () => {
   font-family: var(--font-primary);
   font-size: 12px;
   color: var(--destructive);
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  padding: 10px 20px;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  border: none;
-  border-radius: var(--radius-md);
-  transition: opacity 0.15s;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-.btn--primary {
-  color: var(--primary-foreground);
-  background: var(--primary);
-}
-
-.btn--outline {
-  color: var(--foreground);
-  background: transparent;
-  border: 1px solid var(--border);
 }
 
 /* Success toast */
