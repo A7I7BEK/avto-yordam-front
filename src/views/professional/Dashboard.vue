@@ -5,22 +5,48 @@
 import {
   Calendar,
   CalendarCheck,
-  Car,
   ChevronDown,
-  ChevronRight,
-  Cog,
-  Droplet,
   Star,
-  Timer,
-  TrendingUp,
   Wallet,
-  Zap,
 } from '@lucide/vue';
+import type { Component } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import BreadcrumbBar from '@/components/app/BreadcrumbBar.vue';
 import KpiCard from '@/components/app/KpiCard.vue';
 import StatusBadge from '@/components/app/StatusBadge.vue';
+import { getMasterOverviewDashboard } from '@/services/dashboardService';
 
-const kpiCards = [
+interface KpiItem {
+  label: string;
+  value: string;
+  trend: string;
+  icon: Component;
+  iconBg: string;
+  iconColor: string;
+}
+
+interface PerfRow {
+  name: string;
+  orders: number;
+  trendPct: string | null;
+  trendUp: boolean;
+}
+
+interface ChartBar {
+  completed: number;
+  cancelled: number;
+}
+
+interface BookingRow {
+  id: string;
+  customer: string;
+  service: string;
+  status: string;
+  variant: 'green' | 'amber' | 'grey';
+  amount: string;
+}
+
+const fallbackKpi: KpiItem[] = [
   {
     label: 'Total bookings',
     value: '1,284',
@@ -31,7 +57,7 @@ const kpiCards = [
   },
   {
     label: 'Revenue this month',
-    value: '$24,860',
+    value: '48.2M UZS',
     trend: '+8.2%',
     icon: Wallet,
     iconBg: 'rgba(161,229,161,0.2)',
@@ -45,105 +71,16 @@ const kpiCards = [
     iconBg: 'rgba(255,217,178,0.4)',
     iconColor: '#B26B00',
   },
-  {
-    label: 'Response time',
-    value: '3m 12s',
-    trend: '-18s',
-    icon: Timer,
-    iconBg: 'rgba(201,214,240,0.4)',
-    iconColor: '#1E3A8A',
-  },
 ];
 
-const performanceRows = [
-  {
-    icon: Droplet,
-    name: 'Engine',
-    subcats: '8 subcategories',
-    rating: 4.9,
-    orders: 148,
-    trendPct: '+12%',
-    trendWidth: 166,
-  },
-  {
-    icon: Car,
-    name: 'Chassis',
-    subcats: '6 subcategories',
-    rating: 4.8,
-    orders: 92,
-    trendPct: '+8%',
-    trendWidth: 126,
-  },
-  {
-    icon: Zap,
-    name: 'Electrical',
-    subcats: '5 subcategories',
-    rating: 4.7,
-    orders: 54,
-    trendPct: '+3%',
-    trendWidth: 81,
-  },
-  {
-    icon: Cog,
-    name: 'Transmission',
-    subcats: '4 subcategories',
-    rating: 4.6,
-    orders: 31,
-    trendPct: '+5%',
-    trendWidth: 54,
-  },
+const fallbackPerf: PerfRow[] = [
+  { name: 'Engine', orders: 148, trendPct: '+12%', trendUp: true },
+  { name: 'Chassis', orders: 92, trendPct: '+8%', trendUp: true },
+  { name: 'Electrical', orders: 54, trendPct: '+3%', trendUp: true },
+  { name: 'Transmission', orders: 31, trendPct: '+5%', trendUp: true },
 ];
 
-const recentBookings = [
-  {
-    id: '#ORD-2847',
-    customer: 'Alisher Usmonov',
-    service: 'Engine diagnostic',
-    date: 'Jun 10, 2026',
-    status: 'Completed',
-    variant: 'green' as const,
-    amount: '$320',
-  },
-  {
-    id: '#ORD-2846',
-    customer: 'Bekzod Toshmatov',
-    service: 'Oil change',
-    date: 'Jun 10, 2026',
-    status: 'In progress',
-    variant: 'amber' as const,
-    amount: '$85',
-  },
-  {
-    id: '#ORD-2845',
-    customer: 'Dilshod Karimov',
-    service: 'Brake replacement',
-    date: 'Jun 9, 2026',
-    status: 'Completed',
-    variant: 'green' as const,
-    amount: '$450',
-  },
-  {
-    id: '#ORD-2844',
-    customer: 'Farhod Rahimov',
-    service: 'A/C service',
-    date: 'Jun 9, 2026',
-    status: 'Cancelled',
-    variant: 'grey' as const,
-    amount: '$120',
-  },
-  {
-    id: '#ORD-2843',
-    customer: 'Gulnora Azizova',
-    service: 'Transmission flush',
-    date: 'Jun 8, 2026',
-    status: 'Completed',
-    variant: 'green' as const,
-    amount: '$280',
-  },
-];
-
-const chartDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const chartData = [
+const fallbackChart: ChartBar[] = [
   { completed: 85, cancelled: 8 },
   { completed: 92, cancelled: 5 },
   { completed: 78, cancelled: 12 },
@@ -153,7 +90,161 @@ const chartData = [
   { completed: 38, cancelled: 2 },
 ];
 
-const maxCompleted = Math.max(...chartData.map((d) => d.completed));
+const fallbackBookings: BookingRow[] = [
+  {
+    id: '#ORD-2847',
+    customer: 'Alisher Usmonov',
+    service: 'Engine diagnostic',
+    status: 'Completed',
+    variant: 'green',
+    amount: '320K UZS',
+  },
+  {
+    id: '#ORD-2846',
+    customer: 'Bekzod Toshmatov',
+    service: 'Oil change',
+    status: 'In progress',
+    variant: 'green',
+    amount: '85K UZS',
+  },
+  {
+    id: '#ORD-2845',
+    customer: 'Dilshod Karimov',
+    service: 'Brake replacement',
+    status: 'Completed',
+    variant: 'green',
+    amount: '450K UZS',
+  },
+  {
+    id: '#ORD-2844',
+    customer: 'Farhod Rahimov',
+    service: 'A/C service',
+    status: 'Cancelled',
+    variant: 'grey',
+    amount: '120K UZS',
+  },
+  {
+    id: '#ORD-2843',
+    customer: 'Gulnora Azizova',
+    service: 'Transmission flush',
+    status: 'Completed',
+    variant: 'green',
+    amount: '280K UZS',
+  },
+];
+
+const chartDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+const kpiCards = ref<KpiItem[]>(fallbackKpi);
+const performanceRows = ref<PerfRow[]>(fallbackPerf);
+const chartData = ref<ChartBar[]>(fallbackChart);
+const recentBookings = ref<BookingRow[]>(fallbackBookings);
+
+const maxCompleted = computed(() =>
+  Math.max(...chartData.value.map((d) => d.completed), 1),
+);
+
+const maxOrders = computed(() =>
+  Math.max(...performanceRows.value.map((r) => r.orders), 1),
+);
+
+function perfBarWidth(orders: number): number {
+  return Math.max(Math.round((orders / maxOrders.value) * 100), 4);
+}
+
+function formatCount(value: number): string {
+  return value.toLocaleString('en-US');
+}
+
+function formatRevenue(value: number): string {
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(1).replace(/\.0$/, '')}M UZS`;
+  }
+  if (value >= 1_000) {
+    return `${Math.round(value / 1_000)}K UZS`;
+  }
+  return `${Math.round(value)} UZS`;
+}
+
+function statusMeta(
+  status: string,
+): { label: string; variant: 'green' | 'amber' | 'grey' } {
+  switch (status) {
+    case 'done':
+      return { label: 'Completed', variant: 'green' };
+    case 'active':
+      return { label: 'In progress', variant: 'green' };
+    case 'pending':
+      return { label: 'Pending', variant: 'amber' };
+    default:
+      return { label: 'Cancelled', variant: 'grey' };
+  }
+}
+
+onMounted(async () => {
+  const data = await getMasterOverviewDashboard();
+  if (!data) {
+    return;
+  }
+
+  const kpi: KpiItem[] = [];
+  if (data.totalBookings != null) {
+    kpi.push({
+      label: 'Total bookings',
+      value: formatCount(Number(data.totalBookings)),
+      trend: data.totalBookingsTrend || '—',
+      icon: CalendarCheck,
+      iconBg: 'rgba(87,73,244,0.1)',
+      iconColor: 'var(--primary)',
+    });
+  }
+  if (data.revenueMonth != null) {
+    kpi.push({
+      label: 'Revenue this month',
+      value: formatRevenue(Number(data.revenueMonth)),
+      trend: data.revenueMonthTrend || '—',
+      icon: Wallet,
+      iconBg: 'rgba(161,229,161,0.2)',
+      iconColor: '#1F8F3D',
+    });
+  }
+  if (data.avgRating != null) {
+    kpi.push({
+      label: 'Avg rating',
+      value: Number(data.avgRating).toFixed(2),
+      trend: data.avgRatingTrend || '—',
+      icon: Star,
+      iconBg: 'rgba(255,217,178,0.4)',
+      iconColor: '#B26B00',
+    });
+  }
+
+  performanceRows.value = (data.catalogOrders ?? []).map((c) => ({
+    name: c.service ?? '—',
+    orders: Math.round(Number(c.ordersCount ?? 0)),
+    trendPct: c.avgRatingTrend,
+    trendUp: c.avgRatingTrendUp,
+  }));
+
+  chartData.value = (data.weeklyOrders ?? []).map((w) => ({
+    completed: Math.round(Number(w.countCompleted ?? 0)),
+    cancelled: Math.round(Number(w.countCancelled ?? 0)),
+  }));
+
+  recentBookings.value = (data.recentOrders ?? []).map((r) => {
+    const meta = statusMeta(r.status);
+    return {
+      id: r.id ?? '—',
+      customer: r.customerName ?? '—',
+      service: r.service ?? '—',
+      status: meta.label,
+      variant: meta.variant,
+      amount: r.amount ?? '0 UZS',
+    };
+  });
+
+  kpiCards.value = kpi;
+});
 </script>
 
 <template>
@@ -171,7 +262,7 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
           :size="13"
           color="var(--foreground)"
         />
-        <span>Last 6 months</span>
+        <span>This month</span>
         <ChevronDown
           :size="12"
           color="var(--muted-foreground)"
@@ -196,7 +287,6 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
         <div class="table-scroll-wrapper">
           <div class="table-header">
             <span class="col-category">CATEGORY</span>
-            <span class="col-rating">RATING</span>
             <span class="col-orders">ORDERS</span>
             <span class="col-trend">TREND</span>
           </div>
@@ -206,24 +296,9 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
             class="table-row"
           >
             <div class="col-category">
-              <div class="cat-icon">
-                <component
-                  :is="row.icon"
-                  :size="16"
-                  color="var(--muted-foreground)"
-                />
-              </div>
               <div class="cat-text">
                 <span class="cat-name">{{ row.name }}</span>
-                <span class="cat-sub">{{ row.subcats }}</span>
               </div>
-            </div>
-            <div class="col-rating">
-              <Star
-                :size="14"
-                color="#FBBF24"
-              />
-              <span>{{ row.rating }}</span>
             </div>
             <div class="col-orders">
               {{ row.orders }}
@@ -232,10 +307,15 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
               <div class="trend-track">
                 <div
                   class="trend-fill"
-                  :style="{ width: `${(row.trendWidth / 180) * 100}%` }"
+                  :style="{
+                    width: `${perfBarWidth(row.orders)}%`,
+                    background: row.trendUp
+                      ? 'var(--success)'
+                      : 'var(--muted-foreground)',
+                  }"
                 />
               </div>
-              <span class="trend-pct">{{ row.trendPct }}</span>
+              <span class="trend-pct">{{ row.trendPct ?? '—' }}</span>
             </div>
           </div>
         </div>
@@ -294,7 +374,6 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
               <th>Order ID</th>
               <th>Customer</th>
               <th>Service</th>
-              <th>Date</th>
               <th>Status</th>
               <th>Amount</th>
             </tr>
@@ -307,7 +386,6 @@ const maxCompleted = Math.max(...chartData.map((d) => d.completed));
               <td class="order-id">{{ b.id }}</td>
               <td>{{ b.customer }}</td>
               <td>{{ b.service }}</td>
-              <td>{{ b.date }}</td>
               <td>
                 <StatusBadge
                   :status="b.status"

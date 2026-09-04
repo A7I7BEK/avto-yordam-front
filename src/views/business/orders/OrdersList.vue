@@ -15,7 +15,7 @@ const store = useBusinessAppStore();
 const orders = ref<Order[]>([]);
 const activeTab = ref('all');
 const searchQuery = ref('');
-const viewMode = ref<'list' | 'board'>('list');
+const viewMode = ref<'list' | 'board'>('board');
 
 async function loadOrders() {
   orders.value = await getOrders();
@@ -135,18 +135,18 @@ function goToCreateOrder() {
           <button
             type="button"
             class="view-toggle__btn"
-            :class="{ active: viewMode === 'list' }"
-            @click="viewMode = 'list'"
-          >
-            List
-          </button>
-          <button
-            type="button"
-            class="view-toggle__btn"
             :class="{ active: viewMode === 'board' }"
             @click="viewMode = 'board'"
           >
             Board
+          </button>
+          <button
+            type="button"
+            class="view-toggle__btn"
+            :class="{ active: viewMode === 'list' }"
+            @click="viewMode = 'list'"
+          >
+            List
           </button>
         </div>
         <button

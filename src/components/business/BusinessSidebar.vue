@@ -229,7 +229,10 @@ const isInvitationActive = computed(() =>
           </div>
           <div class="sidebar__mobile-user-info">
             <span class="sidebar__mobile-user-name">{{ store.userName }}</span>
-            <span class="sidebar__mobile-user-role">{{ store.userRole }} • {{ store.orgName }}</span>
+            <span class="sidebar__mobile-user-role"
+              >{{ store.userRole }}
+              • {{ store.orgName }}</span
+            >
           </div>
         </div>
         <div class="sidebar__mobile-actions">
@@ -500,21 +503,21 @@ const isInvitationActive = computed(() =>
 }
 
 .sidebar__mobile-user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: var(--foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .sidebar__mobile-user-role {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: Inter, sans-serif;
   font-size: 11px;
   color: var(--muted-foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 

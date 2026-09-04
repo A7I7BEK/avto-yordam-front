@@ -40,6 +40,8 @@ function formatDate(dateStr: string): string {
   });
 }
 
+const PERMISSION_SUFFIX_REGEX = /_(CREATE|READ|UPDATE|DELETE)$/;
+
 function mapRoleResponseToRole(r: RoleResponse): Role {
   return {
     id: r.id,
@@ -57,21 +59,39 @@ function mapRoleResponseToRole(r: RoleResponse): Role {
   };
 }
 
+/**
+ * Group the real backend permission catalog (GET /permission) into readable
+ * categories (e.g. all ORDER_CREATE / ORDER_READ grouped under "Order"),
+ * marking each permission as allowed when it belongs to the role.
+ */
 function mapBackendPermissionsToCategories(
-  backendPerms: { id: string }[],
+  backendPerms: PermissionResponse[],
+  allowedIds: Set<string>,
 ): PermissionCategory[] {
-  const template = JSON.parse(
-    JSON.stringify(permissionTemplates.blank),
-  ) as PermissionCategory[];
-  const backendIds = new Set(backendPerms.map((p) => p.id));
-  for (const cat of template) {
-    for (const perm of cat.permissions) {
-      if (backendIds.has(perm.id)) {
-        perm.allowed = true;
-      }
+  const groups = new Map<string, PermissionCategory>();
+
+  for (const perm of backendPerms) {
+    const prefix = perm.code.replace(PERMISSION_SUFFIX_REGEX, '');
+    const catKey = prefix || 'OTHER';
+    let group = groups.get(catKey);
+    if (!group) {
+      const name = catKey
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+      group = { id: catKey, name, permissions: [] };
+      groups.set(catKey, group);
     }
+    group.permissions.push({
+      id: perm.id,
+      label: perm.name || perm.code,
+      allowed: allowedIds.has(perm.id),
+    });
   }
-  return template;
+
+  return Array.from(groups.values()).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
 }
 
 function collectAllowedPermissionIds(
@@ -239,8 +259,14 @@ export async function getRolePermissions(
   }
 
   try {
-    const data: RoleResponse = await apiClient.get(`/role/${roleId}`);
-    return mapBackendPermissionsToCategories(data.permissions ?? []);
+    const [perms, roleData] = await Promise.all([
+      getPermissions(),
+      apiClient.get(`/role/${roleId}`),
+    ]);
+    const allowedIds = new Set(
+      (roleData?.permissions ?? []).map((p: { id: string }) => p.id),
+    );
+    return mapBackendPermissionsToCategories(perms, allowedIds);
   } catch {
     return getPermissionCategoriesForRole(roleId);
   }

@@ -40,6 +40,13 @@ const router = createRouter({
     // === Business Workspace (with AppShell layout) ===
     ...businessRoutes,
 
+    // === Public invite link landing ===
+    {
+      path: '/invite/:invitationId',
+      name: 'invite-landing',
+      component: () => import('@/views/utility/InviteLanding.vue'),
+    },
+
     // === Utility (no layout) ===
     {
       path: '/:pathMatch(.*)*',

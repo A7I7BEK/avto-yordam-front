@@ -133,3 +133,8 @@ export async function deleteInvitation(id: string): Promise<void> {
   }
   await apiClient.delete(`${BASE}/${id}`);
 }
+
+/** Build the shareable invite link for a given invitation id. */
+export function buildInviteLink(invitationId: string): string {
+  return `${window.location.origin}/invite/${invitationId}`;
+}

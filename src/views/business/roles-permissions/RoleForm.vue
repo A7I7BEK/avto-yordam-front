@@ -5,7 +5,7 @@
 import { ArrowLeft, Check, ChevronDown, Loader2 } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { colorSwatches, permissionTemplates } from '@/data/roles';
+import { permissionTemplates } from '@/data/roles';
 import {
   createRole,
   getPermissions,
@@ -331,10 +331,6 @@ async function handleSave() {
 function goBack() {
   router.push('/business/roles-permissions');
 }
-
-function selectColor(color: string) {
-  form.value.color = color;
-}
 </script>
 
 <template>
@@ -409,23 +405,6 @@ function selectColor(color: string) {
           class="form-error"
           >{{ errors.description }}</span
         >
-      </div>
-
-      <!-- Color tag -->
-      <div class="form-group">
-        <span class="form-label">Color tag</span>
-        <div class="swatch-row">
-          <button
-            v-for="swatch in colorSwatches"
-            :key="swatch"
-            type="button"
-            class="swatch"
-            :class="{ 'swatch--selected': form.color === swatch }"
-            :style="{ background: swatch }"
-            :aria-label="`Color ${swatch}`"
-            @click="selectColor(swatch)"
-          ></button>
-        </div>
       </div>
 
       <!-- Template -->
@@ -678,8 +657,8 @@ function selectColor(color: string) {
   }
 
   .page__header .btn {
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 
   .form-card {
@@ -756,32 +735,6 @@ function selectColor(color: string) {
   font-family: Inter, sans-serif;
   font-size: 12px;
   color: var(--muted-foreground);
-}
-
-/* Color swatches */
-.swatch-row {
-  display: flex;
-  gap: 14px;
-}
-
-.swatch {
-  width: 34px;
-  height: 34px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: var(--radius-pill);
-  transition:
-    border-color 0.15s,
-    transform 0.15s;
-}
-
-.swatch:hover {
-  transform: scale(1.1);
-}
-
-.swatch--selected {
-  border-color: currentColor;
-  box-shadow: 0 0 0 1px var(--background) inset;
 }
 
 /* ── Permissions section ── */

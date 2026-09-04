@@ -23,10 +23,16 @@ import CopyInviteLinkModal from '@/components/business/CopyInviteLinkModal.vue';
 import InviteMemberModal from '@/components/business/InviteMemberModal.vue';
 import RemoveMemberModal from '@/components/business/RemoveMemberModal.vue';
 import ResendInvitationModal from '@/components/business/ResendInvitationModal.vue';
-import { createInvitation } from '@/services/invitationsService';
+import {
+  buildInviteLink,
+  createInvitation,
+  deleteInvitation,
+  getOrganizationInvitations,
+} from '@/services/invitationsService';
 import { getMembers } from '@/services/membersService';
 import { getRoles } from '@/services/rolesService';
 import type {
+  OrganizationInvitation,
   OrganizationInvitationRequest,
   TeamMember,
 } from '@/types/business';
@@ -200,6 +206,11 @@ function openRemoveModal(id: string) {
 function confirmRemove() {
   const target = removeTarget.value;
   if (target) {
+    if (target.invitationId) {
+      deleteInvitation(target.invitationId).catch(() => {
+        // The row is removed optimistically regardless of backend outcome.
+      });
+    }
     members.value = members.value.filter((m) => m.id !== target.id);
   }
   showRemoveModal.value = false;
@@ -234,27 +245,72 @@ function cancelResend() {
 // ── Copy invite link modal ────────────────────────────────
 const showCopyLinkModal = ref(false);
 const copyLinkTarget = ref<TeamMember | null>(null);
+const copyInviteLink = ref('');
 
 function openCopyLinkModal(id: string) {
   closeDropdown();
-  copyLinkTarget.value = members.value.find((m) => m.id === id) ?? null;
+  const member = members.value.find((m) => m.id === id) ?? null;
+  copyLinkTarget.value = member;
+  copyInviteLink.value = member?.invitationId
+    ? buildInviteLink(member.invitationId)
+    : '';
   showCopyLinkModal.value = true;
 }
 
 function closeCopyLinkModal() {
   showCopyLinkModal.value = false;
   copyLinkTarget.value = null;
+  copyInviteLink.value = '';
 }
 
 function onDocumentClick() {
   closeDropdown();
 }
 
+/** Turn a pending backend invitation into an "Invited" member row. */
+function invitationToMember(inv: OrganizationInvitation): TeamMember {
+  const contact = inv.email ?? inv.phoneNumber ?? '';
+  const sourceName = inv.userName ?? contact.split('@')[0] ?? '';
+  const displayName =
+    sourceName
+      .replace(/[^a-zA-Z0-9 ]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/\b\w/g, (c) => c.toUpperCase()) || 'Invited Member';
+  return {
+    id: `inv-${inv.id}`,
+    invitationId: inv.id,
+    userId: inv.userId,
+    name: displayName,
+    email: contact,
+    initials:
+      displayName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2) || 'IN',
+    avatarColor: 'var(--border)',
+    role: inv.roleName || 'Member',
+    specialties: [],
+    rating: 0,
+    orders: 0,
+    status: 'Invited',
+    joined: 'Invited',
+  };
+}
+
 async function loadMembers() {
   try {
     loading.value = true;
-    const data = await getMembers();
-    members.value = data ?? [];
+    const [accepted, invites] = await Promise.all([
+      getMembers(),
+      getOrganizationInvitations(),
+    ]);
+    const pendingInvites = (invites ?? [])
+      .filter((i) => i.canDelete)
+      .map(invitationToMember);
+    members.value = [...(accepted ?? []), ...pendingInvites];
   } catch {
     members.value = [];
   } finally {
@@ -324,6 +380,8 @@ async function onInviteSend(data: {
         : { phoneNumber: formatPhoneWithPrefix(data.phone) }),
     };
     await createInvitation(request);
+    // Reload so the new invitation shows as an "Invited" row with its real id.
+    await loadMembers();
   } catch {
     // The optimistic member row stays; the error can be surfaced later
   }
@@ -445,115 +503,115 @@ async function onInviteSend(data: {
     <div class="data-table-card">
       <div class="data-table-scroll">
         <table class="data-table">
-        <thead>
-          <tr class="column-headers">
-            <th>Member</th>
-            <th>Role</th>
-            <th>Specialties</th>
-            <th>Rating</th>
-            <th>Orders</th>
-            <th>Status</th>
-            <th>Joined</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="pagedMembers.length === 0">
-            <td
-              colspan="8"
-              class="empty-state"
+          <thead>
+            <tr class="column-headers">
+              <th>Member</th>
+              <th>Role</th>
+              <th>Specialties</th>
+              <th>Rating</th>
+              <th>Orders</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="pagedMembers.length === 0">
+              <td
+                colspan="8"
+                class="empty-state"
+              >
+                No members found
+              </td>
+            </tr>
+            <tr
+              v-for="member in pagedMembers"
+              :key="member.id"
+              class="data-row"
             >
-              No members found
-            </td>
-          </tr>
-          <tr
-            v-for="member in pagedMembers"
-            :key="member.id"
-            class="data-row"
-          >
-            <!-- Member cell -->
-            <td>
-              <div class="member-info">
-                <div class="member-info__avatar">{{ member.initials }}</div>
-                <div class="member-info__text">
-                  <span class="member-info__name">{{ member.name }}</span>
-                  <span class="member-info__email">{{ member.email }}</span>
+              <!-- Member cell -->
+              <td>
+                <div class="member-info">
+                  <div class="member-info__avatar">{{ member.initials }}</div>
+                  <div class="member-info__text">
+                    <span class="member-info__name">{{ member.name }}</span>
+                    <span class="member-info__email">{{ member.email }}</span>
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <!-- Role cell -->
-            <td>
-              <span class="badge badge--role">{{ member.role }}</span>
-            </td>
+              <!-- Role cell -->
+              <td>
+                <span class="badge badge--role">{{ member.role }}</span>
+              </td>
 
-            <!-- Specialties cell -->
-            <td>
-              <div class="specialty-list">
+              <!-- Specialties cell -->
+              <td>
+                <div class="specialty-list">
+                  <span
+                    v-for="spec in member.specialties"
+                    :key="spec"
+                    class="badge badge--specialty"
+                    >{{ spec }}</span
+                  >
+                </div>
+              </td>
+
+              <!-- Rating cell -->
+              <td>
+                <div class="rating">
+                  <Star
+                    :size="12"
+                    class="rating__star"
+                  />
+                  <span class="rating__value"
+                    >{{ member.rating.toFixed(1) }}</span
+                  >
+                </div>
+              </td>
+
+              <!-- Orders cell -->
+              <td>
+                <span class="orders-value">{{ member.orders }}</span>
+              </td>
+
+              <!-- Status cell -->
+              <td>
                 <span
-                  v-for="spec in member.specialties"
-                  :key="spec"
-                  class="badge badge--specialty"
-                  >{{ spec }}</span
-                >
-              </div>
-            </td>
-
-            <!-- Rating cell -->
-            <td>
-              <div class="rating">
-                <Star
-                  :size="12"
-                  class="rating__star"
-                />
-                <span class="rating__value"
-                  >{{ member.rating.toFixed(1) }}</span
-                >
-              </div>
-            </td>
-
-            <!-- Orders cell -->
-            <td>
-              <span class="orders-value">{{ member.orders }}</span>
-            </td>
-
-            <!-- Status cell -->
-            <td>
-              <span
-                class="badge badge--status"
-                :class="{
+                  class="badge badge--status"
+                  :class="{
                 'badge--accepted': member.status === 'Accepted',
                 'badge--invited': member.status === 'Invited',
                 'badge--declined': member.status === 'Declined',
                 'badge--expired': member.status === 'Expired',
               }"
-              >
-                <Check
-                  v-if="member.status === 'Accepted'"
-                  :size="10"
-                />
-                {{ member.status }}
-              </span>
-            </td>
+                >
+                  <Check
+                    v-if="member.status === 'Accepted'"
+                    :size="10"
+                  />
+                  {{ member.status }}
+                </span>
+              </td>
 
-            <!-- Joined cell -->
-            <td>
-              <span class="joined-date">{{ member.joined }}</span>
-            </td>
+              <!-- Joined cell -->
+              <td>
+                <span class="joined-date">{{ member.joined }}</span>
+              </td>
 
-            <!-- Actions cell -->
-            <td>
-              <button
-                type="button"
-                class="kebab-btn"
-                @click.stop="toggleDropdown(member.id, $event)"
-              >
-                <EllipsisVertical :size="16" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <!-- Actions cell -->
+              <td>
+                <button
+                  type="button"
+                  class="kebab-btn"
+                  @click.stop="toggleDropdown(member.id, $event)"
+                >
+                  <EllipsisVertical :size="16" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Table Footer -->
@@ -636,6 +694,7 @@ async function onInviteSend(data: {
           <button
             type="button"
             class="action-dropdown__item"
+            :disabled="!openMember?.invitationId"
             @click="openCopyLinkModal(openDropdownId)"
           >
             <Link :size="15" />
@@ -681,6 +740,7 @@ async function onInviteSend(data: {
     <CopyInviteLinkModal
       :is-open="showCopyLinkModal"
       :member-name="copyLinkTarget?.name"
+      :invite-link="copyInviteLink"
       @cancel="closeCopyLinkModal"
     />
   </div>

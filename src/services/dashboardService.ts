@@ -54,6 +54,18 @@ export async function getReceptionistDashboard() {
   }
 }
 
+export async function getMasterOverviewDashboard() {
+  if (isMockMode()) {
+    return null;
+  }
+
+  try {
+    return await apiClient.get('/dashboard/master/overview');
+  } catch {
+    return null;
+  }
+}
+
 export async function getOverviewDashboard() {
   if (isMockMode()) {
     return {

@@ -234,8 +234,8 @@ function breadcrumbItems() {
   }
 
   .nav-item {
-    width: auto;
     flex-shrink: 0;
+    width: auto;
     padding: 7px 12px;
     font-size: 12px;
   }

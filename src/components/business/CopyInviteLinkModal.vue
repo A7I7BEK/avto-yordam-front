@@ -5,9 +5,11 @@
 import { Check, Copy, Link } from '@lucide/vue';
 import { ref } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   isOpen: boolean;
   memberName?: string;
+  /** Real, per-invitation share link (e.g. /invite/{invitationId}). */
+  inviteLink: string;
 }>();
 
 const emit = defineEmits<{
@@ -15,7 +17,6 @@ const emit = defineEmits<{
 }>();
 
 const copied = ref(false);
-const inviteLink = 'https://autofix.uz/invite/a7f3b2c9';
 
 function selectAllText(event: FocusEvent) {
   (event.target as HTMLInputElement).select();
@@ -23,7 +24,7 @@ function selectAllText(event: FocusEvent) {
 
 async function copyLink() {
   try {
-    await navigator.clipboard.writeText(inviteLink);
+    await navigator.clipboard.writeText(props.inviteLink);
     copied.value = true;
     setTimeout(() => {
       copied.value = false;
@@ -31,7 +32,7 @@ async function copyLink() {
   } catch {
     // Fallback for older browsers
     const input = document.createElement('input');
-    input.value = inviteLink;
+    input.value = props.inviteLink;
     document.body.appendChild(input);
     input.select();
     document.execCommand('copy');
